@@ -384,7 +384,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
         <div class="ct">⛏️ Mine Your Land</div>
         <div style="font-size:11px;color:#aaa;margin-bottom:8px;">Dig for hidden minerals in your soil!</div>
         <button class="btn bfu" onclick="doMine()" style="background:#2a2a0a;border-color:#5a5a2a;color:#ffd700;">⛏️ Mine (10💧)</button>
-        <button class="btn bb bfu" onclick="doMineGems()" style="margin-top:4px;">💎 Deep Mine (20💎) — Rare!</button>
+        <button class="btn bb bfu" onclick="spendMineGems()" style="margin-top:4px;">💎 Deep Mine (75💎) — Rare!</button>
       </div>
       <div class="card">
         <div class="ct">💎 Minerals Found: <span id="mine-count">0</span></div>
@@ -409,7 +409,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
         <div style="font-size:11px;color:#7db8ff;margin-bottom:8px;">Your pond is ready! Cast your line.</div>
         <div id="fres" style="font-size:12px;color:#aaa;margin-bottom:8px;min-height:20px;">No catch yet</div>
         <button class="btn bb bfu" onclick="goFishing()">🎣 Fish (5💧)</button>
-        <button class="btn bfu" onclick="goFishing2()" style="margin-top:4px;">💎 Premium Cast (10💎) — Rare!</button>
+        <button class="btn bfu" onclick="goFish2()" style="margin-top:4px;">💎 Premium Cast (40💎) — Rare!</button>
       </div>
       <div class="card"><div class="ct">🐟 Caught: <span id="ftot">0</span></div><div id="flog" style="font-size:9px;color:#aaa;max-height:100px;overflow-y:auto;"></div></div>
       <div class="sh">🏊 Pond Upgrades</div><div class="sg" id="pshop"></div>
@@ -474,14 +474,14 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     </div>
     <div class="sh">⚡ Spend Gems</div>
     <div class="sg">
-      <div class="si" onclick="spendGems(10,'grow')"><div class="sie">⚡</div><div class="sin">Instant Grow</div><div class="sic" style="color:#a8d8ff;">10💎</div><div class="sid">All crops ready</div></div>
-      <div class="si" onclick="spendGems(5,'water')"><div class="sie">💧</div><div class="sin">Water Refill</div><div class="sic" style="color:#a8d8ff;">5💎</div><div class="sid">Fill water max</div></div>
-      <div class="si" onclick="spendGems(20,'gold')"><div class="sie">💰</div><div class="sin">Gold Boost</div><div class="sic" style="color:#a8d8ff;">20💎</div><div class="sid">+200 gold now</div></div>
-      <div class="si" onclick="spendGems(50,'seed')"><div class="sie">🌟</div><div class="sin">Golden Seed</div><div class="sic" style="color:#a8d8ff;">50💎</div><div class="sid">Worth 500g!</div></div>
-      <div class="si" onclick="spendGems(15,'feed')"><div class="sie">🌾</div><div class="sin">Animal Feast</div><div class="sic" style="color:#a8d8ff;">15💎</div><div class="sid">Feed all animals</div></div>
-      <div class="si" onclick="spendGems(100,'plots')"><div class="sie">🗺️</div><div class="sin">Expand Farm</div><div class="sic" style="color:#a8d8ff;">100💎</div><div class="sid">+8 new plots</div></div>
-      <div class="si" onclick="spendGems(30,'spin')"><div class="sie">🎰</div><div class="sin">Extra Spin</div><div class="sic" style="color:#a8d8ff;">30💎</div><div class="sid">Spin again now</div></div>
-      <div class="si" onclick="spendGems(200,'vip')"><div class="sie">👑</div><div class="sin">VIP Boost</div><div class="sic" style="color:#a8d8ff;">200💎</div><div class="sid">Skip to next VIP</div></div>
+      <div class="si" onclick="spendGems(50,'grow')"><div class="sie">⚡</div><div class="sin">Instant Grow</div><div class="sic" style="color:#a8d8ff;">150💎</div><div class="sid">All crops ready</div></div>
+      <div class="si" onclick="spendGems(25,'water')"><div class="sie">💧</div><div class="sin">Water Refill</div><div class="sic" style="color:#a8d8ff;">25💎</div><div class="sid">Fill water max</div></div>
+      <div class="si" onclick="spendGems(75,'gold')"><div class="sie">💰</div><div class="sin">Gold Boost</div><div class="sic" style="color:#a8d8ff;">75💎</div><div class="sid">+200 gold now</div></div>
+      <div class="si" onclick="spendGems(150,'seed')"><div class="sie">🌟</div><div class="sin">Golden Seed</div><div class="sic" style="color:#a8d8ff;">150💎</div><div class="sid">Worth 500g!</div></div>
+      <div class="si" onclick="spendGems(60,'feed')"><div class="sie">🌾</div><div class="sin">Animal Feast</div><div class="sic" style="color:#a8d8ff;">60💎</div><div class="sid">Feed all animals</div></div>
+      <div class="si" onclick="spendGems(300,'plots')"><div class="sie">🗺️</div><div class="sin">Expand Farm</div><div class="sic" style="color:#a8d8ff;">300💎</div><div class="sid">+8 new plots</div></div>
+      <div class="si" onclick="spendGems(100,'spin')"><div class="sie">🎰</div><div class="sin">Extra Spin</div><div class="sic" style="color:#a8d8ff;">100💎</div><div class="sid">Spin again now</div></div>
+      <div class="si" onclick="spendGems(500,'vip')"><div class="sie">👑</div><div class="sin">VIP Boost</div><div class="sic" style="color:#a8d8ff;">500💎</div><div class="sid">Skip to next VIP</div></div>
     </div>
     <div style="font-size:9px;color:#333;text-align:center;margin-top:8px;padding:8px;">⚠️ App Store purchases coming soon. Demo mode active.</div>
   </div>
@@ -1224,9 +1224,9 @@ function goFishing(){
   recordFish(fish);
 }
 
-function goFishing2(){
+function goFish2(){
   if(G.level<3){showToast('❌ Pond unlocks at Level 3!');return;}
-  if(G.gems<10){showToast('❌ Need 10💎!');return;}
+  if(G.gems<40){showToast('❌ Need 40💎!');return;}
   G.gems-=10;updateHUD();
   let fish=catchFish(RARE_FISH,0);
   recordFish(fish);
@@ -1632,20 +1632,20 @@ function showProfile(){showToast(`${AVATARS[G.avatar]||'🌱'} ${G.name} | Level
 // ===== BUILDING SUPPLIES =====
 const BUILD_SUPPLIES = {
   // Basic (Lv 1-3)
-  wood:     {n:'Wood',      e:'🪵', c:30,  gem:5,  tier:1, desc:'Basic building material'},
-  nails:    {n:'Nails',     e:'🔩', c:25,  gem:4,  tier:1, desc:'Holds it all together'},
-  paint:    {n:'Paint',     e:'🎨', c:40,  gem:6,  tier:1, desc:'Finish and protect'},
-  screws:   {n:'Screws',    e:'⚙️', c:35,  gem:5,  tier:1, desc:'Heavy-duty fasteners'},
+  wood:     {n:'Wood',      e:'🪵', c:30,  gem:20,  tier:1, desc:'Basic building material'},
+  nails:    {n:'Nails',     e:'🔩', c:25,  gem:50,  tier:1, desc:'Holds it all together'},
+  paint:    {n:'Paint',     e:'🎨', c:40,  gem:80,  tier:1, desc:'Finish and protect'},
+  screws:   {n:'Screws',    e:'⚙️', c:35,  gem:20,  tier:1, desc:'Heavy-duty fasteners'},
   // Advanced (Lv 4-6)
-  lumber:   {n:'Lumber',    e:'🏗️', c:80,  gem:12, tier:2, desc:'Structural wood'},
-  concrete: {n:'Concrete',  e:'🪨', c:100, gem:15, tier:2, desc:'Foundation material'},
-  wire:     {n:'Wire',      e:'🔌', c:90,  gem:13, tier:2, desc:'Electrical wiring'},
-  pipes:    {n:'Pipes',     e:'🔧', c:75,  gem:11, tier:2, desc:'Plumbing pipes'},
+  lumber:   {n:'Lumber',    e:'🏗️', c:80,  gem:40, tier:2, desc:'Structural wood'},
+  concrete: {n:'Concrete',  e:'🪨', c:100, gem:50, tier:2, desc:'Foundation material'},
+  wire:     {n:'Wire',      e:'🔌', c:90,  gem:130, tier:2, desc:'Electrical wiring'},
+  pipes:    {n:'Pipes',     e:'🔧', c:75,  gem:38, tier:2, desc:'Plumbing pipes'},
   // Premium (Lv 7-10)
-  steel:    {n:'Steel',     e:'⚡', c:200, gem:25, tier:3, desc:'Heavy-duty metal'},
-  glass:    {n:'Glass',     e:'🪟', c:180, gem:22, tier:3, desc:'Windows & panels'},
-  solar:    {n:'Solar Panel',e:'☀️', c:300, gem:35, tier:3, desc:'Energy upgrade'},
-  smart:    {n:'Smart Tech', e:'🤖', c:400, gem:45, tier:3, desc:'Automated systems'},
+  steel:    {n:'Steel',     e:'⚡', c:200, gem:80, tier:3, desc:'Heavy-duty metal'},
+  glass:    {n:'Glass',     e:'🪟', c:180, gem:75, tier:3, desc:'Windows & panels'},
+  solar:    {n:'Solar Panel',e:'☀️', c:300, gem:100, tier:3, desc:'Energy upgrade'},
+  smart:    {n:'Smart Tech', e:'🤖', c:400, gem:130, tier:3, desc:'Automated systems'},
 };
 
 // What each building level requires
@@ -2085,7 +2085,7 @@ function showHUDPop(type) {
     <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#7db8ff;font-weight:bold;">${G.water}/${G.maxWater}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill per day</span><span>+4💧</span></div>
     <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Home Bonus</span><span>${G.homeType==='cabin'?'♾️ Infinite!':'Standard'}</span></div>
-    <button class="btn bb bfu" onclick="spendGems(5,'water');closeHUDPop()" style="margin-top:8px;">💎 Instant Refill (5💎)</button>`;
+    <button class="btn bb bfu" onclick="spendGems(25,'water');closeHUDPop()" style="margin-top:8px;">💎 Instant Refill (5💎)</button>`;
   } else if (type === 'season') {
     let cropList = Object.values(CROPS_D||CROPS||{}).filter(c=>c.seasons?.includes(G.season)||c.sea?.includes(G.season)).map(c=>c.emoji||c.e).slice(0,6).join(' ');
     content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${SEASONS[G.season].emoji} Season Info</div>
@@ -2281,8 +2281,8 @@ function doMine() {
   showToast(`⛏️ Found: ${found.map(m => m.e + m.n).join(', ')}${supDrop}`);
 }
 
-function doMineGems() {
-  if ((G.gems || 0) < 20) { showToast('❌ Need 20💎!'); return; }
+function spendMineGems() {
+  if ((G.gems || 0) < 75) { showToast('❌ Need 75💎!'); return; }
   G.gems -= 20; updateHUD();
   let rare = MINERALS.slice(4);
   let m = rare[Math.floor(Math.random() * rare.length)];
