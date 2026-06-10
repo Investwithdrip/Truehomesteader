@@ -39,7 +39,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 .hspin{background:#4a2a0a;border-color:#8a5a1a;color:#ffd700;}
 
 /* Game area */
-#gc{position:fixed;top:74px;bottom:58px;left:0;right:0;overflow:hidden;}
+#gc{position:fixed;top:80px;bottom:58px;left:0;right:0;overflow:hidden;}
 .panel{position:absolute;inset:0;background:#0d1f0d;overflow-y:auto;display:none;padding:10px;}
 .panel.active{display:block;}
 .ptitle{font-size:15px;color:#7dff7d;margin-bottom:10px;text-align:center;letter-spacing:2px;text-transform:uppercase;}
@@ -89,8 +89,9 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 .pe{font-size:26px;line-height:1;margin-bottom:2px;}.pl{font-size:9px;color:#aaa;}.pt{font-size:9px;color:#7dff7d;font-weight:bold;}.pw{position:absolute;top:3px;right:4px;font-size:10px;}.plv{position:absolute;bottom:3px;right:4px;font-size:8px;color:#ffd700;}
 
 /* Nav */
-#bn{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.95);border-top:1px solid #2a4a2a;display:flex;z-index:100;height:58px;}
-.nb{flex:1;padding:4px 2px;text-align:center;cursor:pointer;font-size:8px;color:#888;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;}
+#bn{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.95);border-top:1px solid #2a4a2a;display:flex;z-index:100;height:58px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+#bn::-webkit-scrollbar{display:none;}
+.nb{flex:0 0 auto;min-width:50px;padding:4px 3px;text-align:center;cursor:pointer;font-size:7px;color:#888;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;}
 .nb:active{background:#1a2a1a;}.nb.active{color:#7dff7d;border-top:2px solid #7dff7d;}
 .ni{font-size:16px;}
 
@@ -279,8 +280,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     <div style="display:flex;gap:6px;padding:0 6px 6px;flex-wrap:wrap;">
       <button class="btn bg bsm" onclick="harvestAll()" style="flex:1;">🌾 Harvest All</button>
       <button class="btn bb bsm" onclick="waterAll()" style="flex:1;">💧 Water All</button>
-      <button class="btn bsm" id="auto-collect-btn" onclick="toggleAutoCollect()" style="flex:1;display:none;">🤖 Auto Harvest: OFF</button>
-      <button class="btn br bsm" onclick="resetGame()" style="font-size:9px;padding:3px 6px;">🗑️Reset</button>
+      <button class="btn bsm" style="flex:1;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;" onclick="speedUpAllCrops()">⚡ Speed All</button>
+      <button class="btn bsm" id="auto-collect-btn" onclick="toggleAutoCollect()" style="flex:1;display:none;">🤖 Auto: OFF</button>
     </div>
     <!-- Auto-Plant on farm screen -->
     <div id="ap-farm-section" style="padding:0 6px 6px;">
@@ -408,18 +409,30 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </div>
 
   <!-- POND -->
-  <div id="panel-pond" class="panel">
+<div id="panel-pond" class="panel">
     <div class="ptitle">🎣 Pond & Fishing</div>
     <div id="pond-lock" class="card" style="text-align:center;display:none;"><div style="font-size:36px;">🔒</div><div style="font-size:12px;color:#ff7d7d;margin-top:6px;">Unlocks at Level 3!</div></div>
     <div id="pond-ok">
-      <div class="pp"><div class="pem">🎣</div>
-        <div style="font-size:11px;color:#7db8ff;margin-bottom:8px;">Your pond is ready! Cast your line.</div>
-        <div id="fres" style="font-size:12px;color:#aaa;margin-bottom:8px;min-height:20px;">No catch yet</div>
-        <button class="btn bb bfu" onclick="goFishing()">🎣 Fish (5💧)</button>
-        <button class="btn bfu" onclick="goFish2()" style="margin-top:4px;">💎 Premium Cast (40💎) — Rare!</button>
+      <div class="pp">
+        <div class="pem" id="pond-emoji">🎣</div>
+        <div id="fish-status" style="font-size:12px;color:#7db8ff;margin-bottom:6px;">Cast your line!</div>
+        <div id="fish-timer-wrap" style="display:none;margin-bottom:8px;">
+          <div style="font-size:10px;color:#aaa;margin-bottom:4px;">⏱️ <span id="fish-timer-text">Waiting...</span></div>
+          <div style="height:8px;background:#0a1a2a;border-radius:4px;overflow:hidden;">
+            <div id="fish-timer-bar" style="height:100%;background:linear-gradient(90deg,#1a4a8a,#7db8ff);border-radius:4px;width:0%;transition:width 0.5s;"></div>
+          </div>
+          <button class="btn bsm bfu" onclick="speedUpFishing()" style="margin-top:6px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed Up (<span id="fish-speed-cost">10</span>💎)</button>
+        </div>
+        <div id="fish-ready-wrap" style="display:none;margin-bottom:8px;">
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;margin-bottom:6px;" id="fish-catch-preview">🐟 Something biting!</div>
+          <button class="btn bg bfu" onclick="collectFish()">🎣 Collect Catch!</button>
+        </div>
+        <div id="fish-cast-wrap">
+          <button class="btn bb bfu" onclick="castLine(false)">🎣 Cast (5💧) — 30s wait</button>
+          <button class="btn bfu" onclick="castLine(true)" style="margin-top:4px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">💎 Premium Cast (40💎) — Rare! 15s</button>
+        </div>
       </div>
-      <div class="card"><div class="ct">🐟 Caught: <span id="ftot">0</span></div><div id="flog" style="font-size:9px;color:#aaa;max-height:100px;overflow-y:auto;"></div></div>
-      <div class="sh">🏊 Pond Upgrades</div><div class="sg" id="pshop"></div>
+      <div class="card"><div class="ct">🐟 Total Caught: <span id="ftot">0</span></div><div id="flog" style="font-size:9px;color:#aaa;max-height:100px;overflow-y:auto;"></div></div>
     </div>
   </div>
 
@@ -955,9 +968,23 @@ function showWaterModal(i){
   let p=G.plots[i];
   let allCrops={...CROPS,...TREES};
   let crop=allCrops[p.crop];
-  showModal('🌿 Crop',`<div style="text-align:center;margin-bottom:10px;"><div style="font-size:36px;">${crop.emoji}</div><div style="font-size:12px;color:#7dff7d;">${crop.name}</div><div style="font-size:10px;color:#aaa;margin-top:3px;">${p.watered?'✅ Watered':'💧 Needs water'}</div></div>
-  <button class="btn bb bfu" onclick="waterPlot(${i});closeModal()">💧 Water (1💧)</button>
-  <button class="btn br bfu" onclick="removeCrop(${i});closeModal()" style="margin-top:4px;">❌ Remove</button>`);
+  if(!crop){showToast('❌ Unknown crop!');return;}
+  let elapsed=(Date.now()-p.plantTime)/1000;
+  let cropTime=crop.time||crop.t||120;
+  let rem=Math.max(0,Math.ceil(cropTime-elapsed));
+  let remStr=rem>=3600?Math.ceil(rem/3600)+'h':rem>=60?Math.ceil(rem/60)+'m':rem+'s';
+  // Speed up cost: 1 gem per 10 minutes remaining
+  let speedCost=Math.max(5,Math.ceil(rem/600));
+  showModal('🌿 Crop',`
+    <div style="text-align:center;margin-bottom:10px;">
+      <div style="font-size:36px;">${crop.emoji}</div>
+      <div style="font-size:12px;color:#7dff7d;">${crop.name}</div>
+      <div style="font-size:10px;color:#aaa;margin-top:3px;">${p.watered?'✅ Watered':'💧 Needs water'}</div>
+      <div style="font-size:10px;color:#ffd700;margin-top:3px;">⏱️ ${remStr} remaining</div>
+    </div>
+    <button class="btn bb bfu" onclick="waterPlot(${i});closeModal()">💧 Water (1💧) — Grows faster</button>
+    <button class="btn bfu" onclick="speedUpCrop(${i});closeModal()" style="margin-top:4px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed Up (${speedCost}💎) — Ready now!</button>
+    <button class="btn br bfu" onclick="removeCrop(${i});closeModal()" style="margin-top:4px;">❌ Remove</button>`);
 }
 
 function plantCrop(i,key){
@@ -1174,6 +1201,7 @@ function renderAnimals(){
       <div style="display:flex;flex-direction:column;gap:4px;">
         <button class="btn bsm" onclick="feedAnimal(${i})">Feed ${d.feed}g</button>
         <button class="btn bsm bg" onclick="collectAnimal(${i})">Collect</button>
+        <button class="btn bsm" onclick="speedUpAnimal(${i})" style="background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed</button>
       </div>
     </div>`;
   }).join('');
@@ -1202,67 +1230,130 @@ function collectAnimal(i){
 }
 
 // ============ POND ============
+// ===== FISHING TIMER SYSTEM =====
+let fishState = {casting:false,premium:false,startTime:0,duration:0,pendingFish:null,timer:null};
+
+// Use FISH and RARE_FISH defined above
+const FISH_DATA = FISH; // alias
+
+function castLine(isPremium){
+  if(G.level<3){showToast('❌ Pond unlocks at Level 3!');return;}
+  if(fishState.casting){showToast('⏱️ Already fishing! Wait for your catch!');return;}
+  if(fishState.pendingFish){showToast('🎣 You have a catch waiting! Collect it first!');return;}
+  if(isPremium){
+    if((G.gems||0)<40){showToast('❌ Need 40💎!');return;}
+    G.gems-=40;
+  }else{
+    if(G.water<5){showToast('❌ Need 5💧!');return;}
+    G.water-=5;
+  }
+  updateHUD();
+  let pool=isPremium?RARE_FISH:FISH_DATA;
+  let roll=Math.random(),cum=0,caught=pool[0];
+  for(let f of pool){cum+=f.rarity;if(roll<=cum){caught=f;break;}}
+  fishState={casting:true,premium:isPremium,startTime:Date.now(),duration:isPremium?15000:30000,pendingFish:caught,timer:null};
+  let cw=document.getElementById('fish-cast-wrap');
+  let tw=document.getElementById('fish-timer-wrap');
+  let rw=document.getElementById('fish-ready-wrap');
+  if(cw)cw.style.display='none';
+  if(rw)rw.style.display='none';
+  if(tw)tw.style.display='block';
+  let st=document.getElementById('fish-status');
+  if(st)st.textContent=isPremium?'💎 Premium line cast...':'🎣 Line in the water...';
+  let sc=document.getElementById('fish-speed-cost');
+  if(sc)sc.textContent=isPremium?20:10;
+  fishState.timer=setInterval(updateFishTimer,500);
+  playSound('fish');
+  showToast(`🎣 Line cast! ${isPremium?'15s':'30s'} until catch!`);
+}
+
+function updateFishTimer(){
+  if(!fishState.casting){clearInterval(fishState.timer);return;}
+  let elapsed=Date.now()-fishState.startTime;
+  let pct=Math.min(elapsed/fishState.duration*100,100);
+  let rem=Math.max(0,Math.ceil((fishState.duration-elapsed)/1000));
+  let bar=document.getElementById('fish-timer-bar');
+  let txt=document.getElementById('fish-timer-text');
+  if(bar)bar.style.width=pct+'%';
+  if(txt)txt.textContent=rem>0?`${rem}s remaining...`:'Ready to collect!';
+  if(elapsed>=fishState.duration){clearInterval(fishState.timer);fishState.casting=false;showFishReady();}
+}
+
+function showFishReady(){
+  let f=fishState.pendingFish;
+  let tw=document.getElementById('fish-timer-wrap');
+  let rw=document.getElementById('fish-ready-wrap');
+  let cp=document.getElementById('fish-catch-preview');
+  if(tw)tw.style.display='none';
+  if(rw)rw.style.display='block';
+  if(cp)cp.textContent=`${f.emoji} ${f.name} is on the line!`;
+  playSound('fish');
+  showToast(`🎣 Something biting! Go to Pond to collect!`);
+}
+
+function collectFish(){
+  let f=fishState.pendingFish;
+  if(!f){showToast('❌ Nothing to collect!');return;}
+  G.gold+=f.value;G.totalEarned+=f.value;G.fishCaught++;
+  addXP(Math.floor(f.value/2));addItem(f.name,1);
+  if(!G.fishLog)G.fishLog=[];
+  G.fishLog.push(`${f.emoji} ${f.name} +${f.value}💰`);
+  fishState.pendingFish=null;
+  let rw=document.getElementById('fish-ready-wrap');
+  let cw=document.getElementById('fish-cast-wrap');
+  let st=document.getElementById('fish-status');
+  if(rw)rw.style.display='none';
+  if(cw)cw.style.display='block';
+  if(st)st.textContent=`✅ Caught ${f.emoji} ${f.name} for ${f.value}💰!`;
+  updateQuestProgress('fish',G.fishCaught);
+  if(G.fishCaught>=5)checkAchievement('a_fish5');
+  let ftot=document.getElementById('ftot');
+  if(ftot)ftot.textContent=G.fishCaught;
+  let flog=document.getElementById('flog');
+  if(flog)flog.innerHTML=(G.fishLog||[]).slice(-8).reverse().map(l=>`<div>${l}</div>`).join('');
+  showFloat('+'+f.value+'💰','pond-ok');
+  playSound('harvest');updateHUD();saveGame();
+  showToast(`${f.emoji} ${f.name} — +${f.value}💰!`);
+}
+
+function speedUpFishing(){
+  let cost=fishState.premium?20:10;
+  if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎!`);return;}
+  G.gems-=cost;
+  clearInterval(fishState.timer);
+  fishState.casting=false;
+  showFishReady();
+  updateHUD();
+  showToast(`⚡ Fish ready! (-${cost}💎)`);
+}
+
 function renderPond(){
   let lk=document.getElementById('pond-lock');
   let ok=document.getElementById('pond-ok');
   if(!lk||!ok)return;
   if(G.level<3){lk.style.display='block';ok.style.display='none';return;}
   lk.style.display='none';ok.style.display='block';
-  document.getElementById('ftot').textContent=G.fishCaught;
+  let ftot=document.getElementById('ftot');
+  if(ftot)ftot.textContent=G.fishCaught||0;
   let flog=document.getElementById('flog');
-  if(flog) flog.innerHTML=(G.fishLog||[]).slice(-8).reverse().map(f=>`<div>${f}</div>`).join('');
-  let pu=document.getElementById('pshop');
-  if(pu) pu.innerHTML=Object.entries(POND_UPG).map(([k,u])=>{
-    let owned=(G.inventory[u.name]||0)>0,lk2=G.level<u.reqLv;
-    return `<div class="si ${lk2||owned?'lk':''}" onclick="${!lk2&&!owned?`buyPondUpg('${k}')`:''}" ><div class="sie">${u.emoji}</div><div class="sin">${u.name}</div><div class="sic">${owned?'✅':lk2?`🔒Lv${u.reqLv}`:u.cost+'g'}</div><div class="sid">${u.desc}</div></div>`;
-  }).join('');
+  if(flog)flog.innerHTML=(G.fishLog||[]).slice(-8).reverse().map(l=>`<div>${l}</div>`).join('');
+  if(fishState.casting){
+    let cw=document.getElementById('fish-cast-wrap');
+    let tw=document.getElementById('fish-timer-wrap');
+    if(cw)cw.style.display='none';
+    if(tw)tw.style.display='block';
+  }else if(fishState.pendingFish){
+    let cw=document.getElementById('fish-cast-wrap');
+    let rw=document.getElementById('fish-ready-wrap');
+    let cp=document.getElementById('fish-catch-preview');
+    if(cw)cw.style.display='none';
+    if(rw)rw.style.display='block';
+    if(cp)cp.textContent=`${fishState.pendingFish.emoji} ${fishState.pendingFish.name} is on the line!`;
+  }
 }
 
-function buyPondUpg(k){
-  let u=POND_UPG[k];
-  if(G.gold<u.cost){showToast('❌ Not enough gold!');return;}
-  G.gold-=u.cost;addItem(u.name,1);updateHUD();renderPond();
-  showToast(`${u.emoji} Got ${u.name}!`);
-}
-
-function goFishing(){
-  if(G.level<3){showToast('❌ Pond unlocks at Level 3!');return;}
-  if(G.water<5){showToast('❌ Need 5💧!');return;}
-  G.water-=5;
-  let hasBait=(G.inventory['Better Bait']||0)>0;
-  let fish=catchFish(FISH,hasBait?0.1:0);
-  recordFish(fish);
-}
-
-function goFish2(){
-  if(G.level<3){showToast('❌ Pond unlocks at Level 3!');return;}
-  if(G.gems<40){showToast('❌ Need 40💎!');return;}
-  G.gems-=10;updateHUD();
-  let fish=catchFish(RARE_FISH,0);
-  recordFish(fish);
-}
-
-function catchFish(pool,bonus){
-  let roll=Math.random()-bonus,cum=0;
-  for(let f of pool){cum+=f.rarity;if(roll<=cum)return f;}
-  return pool[0];
-}
-
-function recordFish(fish){
-  G.gold+=fish.value;G.totalEarned+=fish.value;G.fishCaught++;
-  addXP(Math.floor(fish.value/2));addItem(fish.name,1);
-  if(!G.fishLog)G.fishLog=[];
-  let now=new Date();
-  G.fishLog.push(`${fish.emoji} ${fish.name} +${fish.value}💰`);
-  updateQuestProgress('fish',G.fishCaught);
-  if(G.fishCaught===1) showTutorial('first_fish');
-  if(G.fishCaught>=5) checkAchievement('a_fish5');
-  showFloating('+'+fish.value+'💰','pond-ok');
-  document.getElementById('fres').textContent=`${fish.emoji} Caught ${fish.name}! +${fish.value}💰`;
-  renderPond();updateHUD();
-  playSound('fish');
-  showToast(`${fish.emoji} ${fish.name} — ${fish.value}💰!`);
-}
+function goFishing(){castLine(false);}
+function goFish2(){castLine(true);}
 
 // ============ VIP ============
 function renderVIP(){
@@ -2005,6 +2096,68 @@ function getMineralDrop() {
   return '';
 }
 
+// ===== SPEED UP SYSTEM =====
+function speedUpCrop(i) {
+  let p = G.plots[i];
+  let allCrops = {...CROPS, ...TREES};
+  let crop = allCrops[p.crop];
+  if (!crop) return;
+  let elapsed = (Date.now() - p.plantTime) / 1000;
+  let cropTime = crop.time || crop.t || 120;
+  let rem = Math.max(0, cropTime - elapsed);
+  let cost = Math.max(5, Math.ceil(rem / 600));
+  if ((G.gems || 0) < cost) { showToast(`❌ Need ${cost}💎 to speed up!`); return; }
+  G.gems -= cost;
+  // Set plant time so crop is ready now
+  p.plantTime = Date.now() - cropTime * 1000;
+  p.state = 'ready';
+  playSound('harvest');
+  renderFarm(); updateHUD();
+  showToast(`⚡ ${crop.emoji} ${crop.name} is ready! (-${cost}💎)`);
+}
+
+function speedUpAllCrops() {
+  let planted = G.plots.filter(p => p.state === 'planted' || p.state === 'growing');
+  if (!planted.length) { showToast('❌ No crops growing!'); return; }
+  let totalCost = 0;
+  let allCrops = {...CROPS, ...TREES};
+  planted.forEach(p => {
+    let crop = allCrops[p.crop];
+    if (!crop) return;
+    let elapsed = (Date.now() - p.plantTime) / 1000;
+    let rem = Math.max(0, (crop.time || crop.t || 120) - elapsed);
+    totalCost += Math.max(5, Math.ceil(rem / 600));
+  });
+  if ((G.gems || 0) < totalCost) { showToast(`❌ Need ${totalCost}💎 to speed up all!`); return; }
+  if (!confirm(`Speed up all ${planted.length} crops for ${totalCost}💎?`)) return;
+  G.gems -= totalCost;
+  G.plots.forEach(p => {
+    if (p.state === 'planted' || p.state === 'growing') {
+      let crop = allCrops[p.crop];
+      if (crop) { p.plantTime = Date.now() - (crop.time || crop.t || 120) * 1000; p.state = 'ready'; }
+    }
+  });
+  playSound('harvest'); renderFarm(); updateHUD();
+  showToast(`⚡ All crops ready! (-${totalCost}💎)`);
+}
+
+function speedUpAnimal(i) {
+  let a = G.animals[i];
+  let d = ANIMALS_D[a.type];
+  if (!d) return;
+  let rem = Math.max(0, d.pTime - (a.produceTimer || 0));
+  let cost = Math.max(10, Math.ceil(rem / 600));
+  if ((G.gems || 0) < cost) { showToast(`❌ Need ${cost}💎!`); return; }
+  G.gems -= cost;
+  a.produceTimer = d.pTime;
+  renderAnimals(); updateHUD();
+  showToast(`⚡ ${d.emoji} ${a.name} ready to collect! (-${cost}💎)`);
+}
+
+function buildingSpeedUp(k) {
+  showToast('⚡ Building upgrades are instant — no timer needed!');
+}
+
 // ===== HARVEST ALL =====
 function harvestAll() {
   let now=Date.now();
@@ -2453,4 +2606,3 @@ document.addEventListener('keydown',e=>{
 </script>
 </body>
 </html>
-
