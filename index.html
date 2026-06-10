@@ -623,7 +623,24 @@ function renderFarm(){
   grid.innerHTML='';let now=Date.now();
   G.plots.forEach((p,i)=>{
     let el=document.createElement('div');el.className='plot '+p.state;el.onclick=()=>plotClick(i);
-    if(p.state==='home'){let h=homeTypes[G.homeType]||'🏡 Home';el.innerHTML=`<div class="pe">${h.split(' ')[0]}</div><div class="pl">${G.name}'s Home</div>`;}
+    if(p.state==='home'){
+      let hlv=G.homeLevel||1;
+      let homeEmojis={
+        cottage:  ['🏡','🏡','🏘️','🏰','✨🏰','👑🏰'],
+        ranch:    ['🏚️','🏚️','🏠','🏡','🌟🏡','👑🏡'],
+        farmhouse:['🏠','🏠','🏡','🏘️','✨🏘️','👑🏘️'],
+        cabin:    ['🛖','🛖','🏕️','🏡','✨🏡','👑🏡'],
+        manor:    ['🏰','🏰','🏰','🏯','✨🏯','👑🏯'],
+        modern:   ['🏗️','🏗️','🏢','🏬','✨🏬','👑🏬'],
+        van:      ['🚐','🚐','🚌','🏕️','✨🏕️','👑🏕️'],
+        camp:     ['⛺','⛺','🏕️','🛖','✨🛖','👑🛖'],
+      };
+      let emap=homeEmojis[G.homeType]||homeEmojis.farmhouse;
+      let emoji=emap[Math.min(hlv,5)];
+      let glowStyle=hlv>=5?'box-shadow:0 0 14px #ffd700;border-color:#ffd700;':hlv>=4?'box-shadow:0 0 10px #a8d8ff;border-color:#a8d8ff;':hlv>=3?'box-shadow:0 0 8px #7dff7d;':'' ;
+      el.style.cssText+=glowStyle;
+      el.innerHTML=`<div class="pe">${emoji}</div><div class="pl" style="color:#ffd700;">Lv${hlv} Home</div><div style="font-size:8px;color:#aaa;">${G.name}'s</div>`;
+    }
     else if(p.state==='empty')el.innerHTML=`<div class="pe">🟫</div><div class="pl">Till</div>`;
     else if(p.state==='tilled')el.innerHTML=`<div class="pe">🪱</div><div class="pl">Plant</div>`;
     else if(p.state==='building'){let b=BUILDINGS_DATA[p.building]||{emoji:'🏠',name:p.building};let lv=(G.buildingLevels&&G.buildingLevels[p.building])||1;el.innerHTML=`<div class="pe">${b.emoji||'🏠'}</div><div class="pl">${b.name||p.building}</div><div class="plv">Lv${lv}</div>`;}
@@ -651,7 +668,7 @@ function renderFarm(){
 function plotClick(i){
   let p=G.plots[i];
   if(p.state==='planted'||p.state==='growing'){let allC={...CROPS,...TREES};let crop=allC[p.crop];if(crop){let elapsed=(Date.now()-p.plantTime)/1000;if(elapsed>=(crop.time||120))p.state='ready';}}
-  if(p.state==='home'){showToast(`🏡 ${G.name}'s home! Level up to upgrade it!`);return;}
+  if(p.state==='home'){showHomeUpgradeModal();return;}
   if(p.state==='damaged'){if(G.gold>=10){G.gold-=10;p.state='tilled';p.crop=null;renderFarm();updateHUD();showToast('🔧 Plot repaired!');}else showToast('❌ Need 10g to repair!');return;}
   if(p.state==='empty'){p.state='tilled';renderFarm();playSound('till');showToast('🪱 Soil tilled!');}
   else if(p.state==='tilled')showPlantModal(i);
@@ -1011,7 +1028,187 @@ function renderMining(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine')
 function doMine(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');if(!hasMine){showToast('❌ Buy a Mine Plot from Store first!');return;}if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.water<10){showToast('❌ Need 10💧 to mine!');return;}G.water-=10;let campBonus=G.homeType==='camp'?2:1,found=[];for(let r=0;r<campBonus;r++){let roll=Math.random(),cum=0;for(let m of MINERALS){cum+=m.r;if(roll<=cum){found.push(m);break;}}}if(!found.length)found.push(MINERALS[0]);found.forEach(m=>{G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);});let supDrop=getMineralDrop();renderMining();updateHUD();playSound('build');showToast(`⛏️ Found: ${found.map(m=>m.e+m.n).join(', ')}${supDrop}`);}
 function spendMineGems(){if((G.gems||0)<75){showToast('❌ Need 75💎!');return;}G.gems-=75;updateHUD();let rare=MINERALS.slice(4),m=rare[Math.floor(Math.random()*rare.length)];G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);renderMining();updateHUD();showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);}
 function buyMinePlot(){if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.gold<300){showToast('❌ Need 300g!');return;}if(G.hasMine){showToast('✅ Mine already built!');return;}G.gold-=300;G.hasMine=true;updateHUD();renderMining();renderShop();showToast('⛏️ Mine built! Go to Mine tab to start digging!');}
-function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+// ===== HOME UPGRADE SYSTEM =====
+// Cost multipliers per home type (how expensive to upgrade)
+const HOME_COST_MULT={
+  cottage:1.0, ranch:1.1, farmhouse:1.2, cabin:1.3,
+  manor:1.8, modern:1.5, van:0.9, camp:1.0
+};
+
+// Per-home bonus descriptions per level
+const HOME_BONUSES={
+  cottage:{
+    1:'🌾 +20% crop speed',
+    2:'🌾 +30% crop speed | 🗺️ +3 plots',
+    3:'🌾 +40% crop speed | 🗺️ +6 plots | 💧 Auto-water 1',
+    4:'🌾 +50% crop speed | 🗺️ +10 plots | 💧 Auto-water 2',
+    5:'🌾 +75% crop speed | 🗺️ +15 plots | 💧 Auto-water 4 | ⚡ Crops never wilt',
+  },
+  ranch:{
+    1:'🐄 +2 free animal slots',
+    2:'🐄 +4 animal slots | 🥛 +10% animal value',
+    3:'🐄 +6 animal slots | 🥛 +20% animal value | 🌾 Auto-feed 1',
+    4:'🐄 +8 animal slots | 🥛 +30% animal value | 🌾 Auto-feed 2',
+    5:'🐄 +12 animal slots | 🥛 +50% animal value | 🌾 Auto-feed all | 👑 Breed animals',
+  },
+  farmhouse:{
+    1:'💰 +10% all earnings',
+    2:'💰 +20% all earnings | 🗺️ +2 plots',
+    3:'💰 +30% all earnings | 🗺️ +4 plots | 💤 Offline earnings',
+    4:'💰 +40% all earnings | 🗺️ +8 plots | 💤 2x offline earnings',
+    5:'💰 +60% all earnings | 🗺️ +12 plots | 💤 3x offline | 👑 Market prices always peak',
+  },
+  cabin:{
+    1:'💧 Water never depletes',
+    2:'💧 Infinite water | 🌿 +10% crop speed',
+    3:'💧 Infinite water | 🌿 +20% crop speed | ❄️ Grow in any weather',
+    4:'💧 Infinite water | 🌿 +30% crop speed | ❄️ Any weather | 🪵 Supplies cost -25%',
+    5:'💧 Infinite water | 🌿 +50% crop speed | ❄️ Any weather | 🪵 Supplies -50% | 👑 Off-grid master',
+  },
+  manor:{
+    1:'🏰 Start with 1 extra acre',
+    2:'🏰 +2 acres | 💰 +10% earnings | 🗺️ +4 plots',
+    3:'🏰 +4 acres | 💰 +20% earnings | 🗺️ +8 plots | 👑 VIP xp 2x',
+    4:'🏰 +8 acres | 💰 +35% earnings | 🗺️ +14 plots | 👑 VIP xp 3x',
+    5:'🏰 +15 acres | 💰 +50% earnings | 🗺️ +20 plots | 👑 VIP xp 5x | 🌟 True Estate',
+  },
+  modern:{
+    1:'🤖 Auto-water 2 plots',
+    2:'🤖 Auto-water 4 plots | ⚡ Speed Up costs -10%',
+    3:'🤖 Auto-water 6 plots | ⚡ Speed Up -20% | 🔧 Buildings build faster',
+    4:'🤖 Auto-water 8 plots | ⚡ Speed Up -30% | 🔧 Upgrade costs -15%',
+    5:'🤖 Auto-water 12 plots | ⚡ Speed Up -50% | 🔧 Upgrade -25% | 👑 Full automation',
+  },
+  van:{
+    1:'⭐ 3x early XP (first 10 levels)',
+    2:'⭐ 3x XP (Lv20) | 💰 +5% earnings | 🎰 Daily spin cooldown -2h',
+    3:'⭐ 3x XP (Lv30) | 💰 +10% earnings | 🎰 Spin -4h | 🗺️ +4 plots',
+    4:'⭐ 3x XP (Lv50) | 💰 +15% earnings | 🎰 Spin -6h | 🗺️ +8 plots',
+    5:'⭐ 3x XP forever | 💰 +25% earnings | 🎰 2x daily spins | 🗺️ +12 plots | 👑 Nomad King',
+  },
+  camp:{
+    1:'⛏️ 2x minerals found',
+    2:'⛏️ 2x minerals | 💎 Rare mineral +10% | 🌿 Forage bonus',
+    3:'⛏️ 3x minerals | 💎 Rare +20% | 🌿 Forage 2x | 💧 Water from rain +10',
+    4:'⛏️ 3x minerals | 💎 Rare +35% | 🌿 Forage 3x | 💧 Rain +20 | 🐾 Wild animals',
+    5:'⛏️ 4x minerals | 💎 Rare +50% | 🌿 Forage 5x | 💧 Infinite rain water | 👑 Off-Grid Legend',
+  },
+};
+
+// Base upgrade requirements (multiplied by HOME_COST_MULT per home type)
+const HOME_UPGRADE_REQ={
+  2:{gold:1500, supplies:[{n:'Wood',q:5},{n:'Nails',q:8},{n:'Paint',q:3}], reqLv:8},
+  3:{gold:4000, supplies:[{n:'Lumber',q:6},{n:'Concrete',q:4},{n:'Wire',q:4},{n:'Pipes',q:3}], reqLv:18},
+  4:{gold:9000, supplies:[{n:'Steel',q:5},{n:'Glass',q:4},{n:'Lumber',q:8},{n:'Concrete',q:6}], reqLv:30},
+  5:{gold:20000,supplies:[{n:'Steel',q:10},{n:'Glass',q:8},{n:'Solar Panel',q:4},{n:'Smart Tech',q:4}], reqLv:50},
+};
+
+function getHomeReq(lv){
+  let base=HOME_UPGRADE_REQ[lv];if(!base)return null;
+  let mult=HOME_COST_MULT[G.homeType]||1.0;
+  return{
+    gold:Math.floor(base.gold*mult),
+    supplies:base.supplies.map(s=>({n:s.n,q:Math.ceil(s.q*mult)})),
+    reqLv:base.reqLv,
+  };
+}
+
+function showHomeUpgradeModal(){
+  let hlv=G.homeLevel||1;
+  let homeName={cottage:'Cottage',ranch:'Ranch House',farmhouse:'Farmhouse',cabin:'Cabin',manor:'Manor',modern:'Modern Farm',van:'Homestead Van',camp:'Camp'}[G.homeType]||'Home';
+  let homeEmojis={cottage:['🏡','🏡','🏘️','🏰','✨🏰','👑🏰'],ranch:['🏚️','🏚️','🏠','🏡','🌟🏡','👑🏡'],farmhouse:['🏠','🏠','🏡','🏘️','✨🏘️','👑🏘️'],cabin:['🛖','🛖','🏕️','🏡','✨🏡','👑🏡'],manor:['🏰','🏰','🏰','🏯','✨🏯','👑🏯'],modern:['🏗️','🏗️','🏢','🏬','✨🏬','👑🏬'],van:['🚐','🚐','🚌','🏕️','✨🏕️','👑🏕️'],camp:['⛺','⛺','🏕️','🛖','✨🛖','👑🛖']};
+  let emap=homeEmojis[G.homeType]||homeEmojis.farmhouse;
+  let curBonus=HOME_BONUSES[G.homeType]?.[hlv]||'No bonus';
+  let nextLv=hlv+1;
+  let req=getHomeReq(nextLv);
+  let nextBonus=HOME_BONUSES[G.homeType]?.[nextLv]||'MAX REACHED';
+
+  // Build level dots
+  let dots=Array.from({length:5},(_,i)=>`<div style="width:28px;height:10px;border-radius:3px;background:${i<hlv?'#ffd700':'#1a2a1a'};border:1px solid ${i<hlv?'#ffd700':'#2a4a2a'};margin:1px;"></div>`).join('');
+
+  let upgradeSection='';
+  if(hlv>=5){
+    upgradeSection=`<div style="text-align:center;padding:12px;background:#1a1a0a;border-radius:8px;border:1px solid #ffd700;"><div style="font-size:24px;">👑</div><div style="font-size:12px;color:#ffd700;font-weight:bold;margin-top:4px;">MAX LEVEL!</div><div style="font-size:10px;color:#aaa;margin-top:3px;">Your home has reached its full potential!</div></div>`;
+  } else if(req){
+    let hasGold=G.gold>=req.gold,hasLv=G.level>=req.reqLv;
+    let supLines=req.supplies.map(s=>{let have=G.inventory[s.n]||0,ok=have>=s.q;return `<div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px;"><span>${s.n}</span><span style="color:${ok?'#7dff7d':'#ff7d7d'}">${have}/${s.q}</span></div>`;}).join('');
+    let canUpgrade=hasGold&&hasLv&&req.supplies.every(s=>(G.inventory[s.n]||0)>=s.q);
+    upgradeSection=`
+      <div style="background:#0a1a0a;border-radius:8px;padding:10px;margin-bottom:8px;">
+        <div style="font-size:10px;color:#7dff7d;font-weight:bold;margin-bottom:6px;">⬆️ Upgrade to Level ${nextLv}</div>
+        <div style="font-size:10px;color:#aaa;margin-bottom:6px;">Unlocks: ${nextBonus}</div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:6px;">
+          <span>💰 Gold</span>
+          <span style="color:${hasGold?'#7dff7d':'#ff7d7d'}">${G.gold}/${req.gold}g</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:6px;">
+          <span>⭐ Level Required</span>
+          <span style="color:${hasLv?'#7dff7d':'#ff7d7d'}">Lv${req.reqLv} (you: ${G.level})</span>
+        </div>
+        <div style="font-size:10px;color:#aaa;margin-bottom:4px;">🔨 Supplies needed:</div>
+        ${supLines}
+        <button class="btn bfu ${canUpgrade?'bg':'br'}" onclick="upgradeHome();closeModal()" style="margin-top:8px;">
+          ${canUpgrade?`🏠 Upgrade to Lv${nextLv}!`:'❌ Missing requirements'}
+        </button>
+        <button class="btn bfu bb" onclick="closeModal();showPanel('upmarket')" style="margin-top:4px;font-size:10px;">🏪 Get Supplies</button>
+      </div>`;
+  }
+
+  let body=`
+    <div style="text-align:center;margin-bottom:10px;">
+      <div style="font-size:48px;">${emap[Math.min(hlv,5)]}</div>
+      <div style="font-size:13px;color:#7dff7d;font-weight:bold;">${G.name}'s ${homeName}</div>
+      <div style="font-size:11px;color:#ffd700;margin-top:2px;">Level ${hlv}/5</div>
+      <div style="display:flex;justify-content:center;margin:8px 0;">${dots}</div>
+    </div>
+    <div style="background:#1a2e1a;border-radius:8px;padding:8px;margin-bottom:8px;">
+      <div style="font-size:10px;color:#aaa;margin-bottom:4px;">✅ Current Bonuses:</div>
+      <div style="font-size:10px;color:#7dff7d;">${curBonus}</div>
+    </div>
+    ${upgradeSection}`;
+
+  showModal(`🏠 ${homeName}`,body);
+}
+
+function upgradeHome(){
+  let hlv=G.homeLevel||1;
+  let nextLv=hlv+1;
+  if(nextLv>5){showToast('👑 Home already at max level!');return;}
+  let req=getHomeReq(nextLv);
+  if(!req)return;
+  if(G.level<req.reqLv){showToast(`❌ Need Level ${req.reqLv}!`);return;}
+  if(G.gold<req.gold){showToast(`❌ Need ${req.gold}g!`);return;}
+  for(let s of req.supplies){
+    if((G.inventory[s.n]||0)<s.q){showToast(`❌ Need ${s.q}x ${s.n}!`);return;}
+  }
+  // Deduct costs
+  G.gold-=req.gold;
+  req.supplies.forEach(s=>{G.inventory[s.n]-=s.q;});
+  G.homeLevel=nextLv;
+  // Apply bonus effects
+  applyHomeLevelBonus(nextLv);
+  addXP(nextLv*200);
+  playSound('levelup');
+  renderFarm();updateHUD();saveGame();
+  showToast(`🏠 Home upgraded to Level ${nextLv}! New look unlocked! 🎉`);
+}
+
+function applyHomeLevelBonus(lv){
+  let ht=G.homeType;
+  // Extra plots
+  let extraPlots={cottage:[0,0,3,3,4,5],ranch:[0,0,0,0,0,0],farmhouse:[0,0,2,2,4,4],cabin:[0,0,0,0,0,0],manor:[0,0,4,4,6,6],modern:[0,0,0,0,0,0],van:[0,0,0,0,4,4],camp:[0,0,0,0,0,0]};
+  let plots=(extraPlots[ht]||[])[lv]||0;
+  for(let i=0;i<plots;i++)G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});
+  // Extra acres for manor
+  if(ht==='manor'){let acreBonus=[0,0,1,2,4,7];G.acreage+=(acreBonus[lv]||0);}
+  // Max water boost for cabin
+  if(ht==='cabin')G.maxWater=999;
+  // Water refill for modern
+  if(ht==='modern'){let waterBonus=[0,0,0,0,0,0];G.water=Math.min(G.water,G.maxWater);}
+}
+
+// ===== END HOME UPGRADE SYSTEM =====
 function saveGame(){try{G.lastOnline=Date.now();localStorage.setItem('th_v4',JSON.stringify(G));}catch(e){}}
 function loadGame(){try{let s=localStorage.getItem('th_v4')||localStorage.getItem('th_v3')||localStorage.getItem('th_v2');if(s){let data=JSON.parse(s);data=migrateData(data);Object.assign(G,data);return true;}}catch(e){console.log('Load error:',e);}return false;}
 function resetGame(){if(confirm('Reset ALL progress?')){localStorage.removeItem('th_v4');localStorage.removeItem('th_v3');localStorage.removeItem('th_v2');location.reload();}}
