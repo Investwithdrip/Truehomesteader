@@ -39,7 +39,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 .hspin{background:#4a2a0a;border-color:#8a5a1a;color:#ffd700;}
 
 /* Game area */
-#gc{position:fixed;top:74px;bottom:58px;left:0;right:0;overflow:hidden;}
+#gc{position:fixed;top:80px;bottom:58px;left:0;right:0;overflow:hidden;}
 .panel{position:absolute;inset:0;background:#0d1f0d;overflow-y:auto;display:none;padding:10px;}
 .panel.active{display:block;}
 .ptitle{font-size:15px;color:#7dff7d;margin-bottom:10px;text-align:center;letter-spacing:2px;text-transform:uppercase;}
@@ -89,8 +89,9 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 .pe{font-size:26px;line-height:1;margin-bottom:2px;}.pl{font-size:9px;color:#aaa;}.pt{font-size:9px;color:#7dff7d;font-weight:bold;}.pw{position:absolute;top:3px;right:4px;font-size:10px;}.plv{position:absolute;bottom:3px;right:4px;font-size:8px;color:#ffd700;}
 
 /* Nav */
-#bn{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.95);border-top:1px solid #2a4a2a;display:flex;z-index:100;height:58px;}
-.nb{flex:1;padding:4px 2px;text-align:center;cursor:pointer;font-size:8px;color:#888;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;}
+#bn{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.95);border-top:1px solid #2a4a2a;display:flex;z-index:100;height:58px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+#bn::-webkit-scrollbar{display:none;}
+.nb{flex:0 0 auto;min-width:50px;padding:4px 3px;text-align:center;cursor:pointer;font-size:7px;color:#888;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;}
 .nb:active{background:#1a2a1a;}.nb.active{color:#7dff7d;border-top:2px solid #7dff7d;}
 .ni{font-size:16px;}
 
@@ -279,8 +280,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     <div style="display:flex;gap:6px;padding:0 6px 6px;flex-wrap:wrap;">
       <button class="btn bg bsm" onclick="harvestAll()" style="flex:1;">🌾 Harvest All</button>
       <button class="btn bb bsm" onclick="waterAll()" style="flex:1;">💧 Water All</button>
-      <button class="btn bsm" id="auto-collect-btn" onclick="toggleAutoCollect()" style="flex:1;display:none;">🤖 Auto Harvest: OFF</button>
-      <button class="btn br bsm" onclick="resetGame()" style="font-size:9px;padding:3px 6px;">🗑️Reset</button>
+      <button class="btn bsm" style="flex:1;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;" onclick="speedUpAllCrops()">⚡ Speed All</button>
+      <button class="btn bsm" id="auto-collect-btn" onclick="toggleAutoCollect()" style="flex:1;display:none;">🤖 Auto: OFF</button>
     </div>
     <!-- Auto-Plant on farm screen -->
     <div id="ap-farm-section" style="padding:0 6px 6px;">
@@ -955,9 +956,23 @@ function showWaterModal(i){
   let p=G.plots[i];
   let allCrops={...CROPS,...TREES};
   let crop=allCrops[p.crop];
-  showModal('🌿 Crop',`<div style="text-align:center;margin-bottom:10px;"><div style="font-size:36px;">${crop.emoji}</div><div style="font-size:12px;color:#7dff7d;">${crop.name}</div><div style="font-size:10px;color:#aaa;margin-top:3px;">${p.watered?'✅ Watered':'💧 Needs water'}</div></div>
-  <button class="btn bb bfu" onclick="waterPlot(${i});closeModal()">💧 Water (1💧)</button>
-  <button class="btn br bfu" onclick="removeCrop(${i});closeModal()" style="margin-top:4px;">❌ Remove</button>`);
+  if(!crop){showToast('❌ Unknown crop!');return;}
+  let elapsed=(Date.now()-p.plantTime)/1000;
+  let cropTime=crop.time||crop.t||120;
+  let rem=Math.max(0,Math.ceil(cropTime-elapsed));
+  let remStr=rem>=3600?Math.ceil(rem/3600)+'h':rem>=60?Math.ceil(rem/60)+'m':rem+'s';
+  // Speed up cost: 1 gem per 10 minutes remaining
+  let speedCost=Math.max(5,Math.ceil(rem/600));
+  showModal('🌿 Crop',`
+    <div style="text-align:center;margin-bottom:10px;">
+      <div style="font-size:36px;">${crop.emoji}</div>
+      <div style="font-size:12px;color:#7dff7d;">${crop.name}</div>
+      <div style="font-size:10px;color:#aaa;margin-top:3px;">${p.watered?'✅ Watered':'💧 Needs water'}</div>
+      <div style="font-size:10px;color:#ffd700;margin-top:3px;">⏱️ ${remStr} remaining</div>
+    </div>
+    <button class="btn bb bfu" onclick="waterPlot(${i});closeModal()">💧 Water (1💧) — Grows faster</button>
+    <button class="btn bfu" onclick="speedUpCrop(${i});closeModal()" style="margin-top:4px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed Up (${speedCost}💎) — Ready now!</button>
+    <button class="btn br bfu" onclick="removeCrop(${i});closeModal()" style="margin-top:4px;">❌ Remove</button>`);
 }
 
 function plantCrop(i,key){
@@ -1174,6 +1189,7 @@ function renderAnimals(){
       <div style="display:flex;flex-direction:column;gap:4px;">
         <button class="btn bsm" onclick="feedAnimal(${i})">Feed ${d.feed}g</button>
         <button class="btn bsm bg" onclick="collectAnimal(${i})">Collect</button>
+        <button class="btn bsm" onclick="speedUpAnimal(${i})" style="background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed</button>
       </div>
     </div>`;
   }).join('');
@@ -2003,6 +2019,68 @@ function getMineralDrop() {
     return ` + ${s.e} ${s.n}!`;
   }
   return '';
+}
+
+// ===== SPEED UP SYSTEM =====
+function speedUpCrop(i) {
+  let p = G.plots[i];
+  let allCrops = {...CROPS, ...TREES};
+  let crop = allCrops[p.crop];
+  if (!crop) return;
+  let elapsed = (Date.now() - p.plantTime) / 1000;
+  let cropTime = crop.time || crop.t || 120;
+  let rem = Math.max(0, cropTime - elapsed);
+  let cost = Math.max(5, Math.ceil(rem / 600));
+  if ((G.gems || 0) < cost) { showToast(`❌ Need ${cost}💎 to speed up!`); return; }
+  G.gems -= cost;
+  // Set plant time so crop is ready now
+  p.plantTime = Date.now() - cropTime * 1000;
+  p.state = 'ready';
+  playSound('harvest');
+  renderFarm(); updateHUD();
+  showToast(`⚡ ${crop.emoji} ${crop.name} is ready! (-${cost}💎)`);
+}
+
+function speedUpAllCrops() {
+  let planted = G.plots.filter(p => p.state === 'planted' || p.state === 'growing');
+  if (!planted.length) { showToast('❌ No crops growing!'); return; }
+  let totalCost = 0;
+  let allCrops = {...CROPS, ...TREES};
+  planted.forEach(p => {
+    let crop = allCrops[p.crop];
+    if (!crop) return;
+    let elapsed = (Date.now() - p.plantTime) / 1000;
+    let rem = Math.max(0, (crop.time || crop.t || 120) - elapsed);
+    totalCost += Math.max(5, Math.ceil(rem / 600));
+  });
+  if ((G.gems || 0) < totalCost) { showToast(`❌ Need ${totalCost}💎 to speed up all!`); return; }
+  if (!confirm(`Speed up all ${planted.length} crops for ${totalCost}💎?`)) return;
+  G.gems -= totalCost;
+  G.plots.forEach(p => {
+    if (p.state === 'planted' || p.state === 'growing') {
+      let crop = allCrops[p.crop];
+      if (crop) { p.plantTime = Date.now() - (crop.time || crop.t || 120) * 1000; p.state = 'ready'; }
+    }
+  });
+  playSound('harvest'); renderFarm(); updateHUD();
+  showToast(`⚡ All crops ready! (-${totalCost}💎)`);
+}
+
+function speedUpAnimal(i) {
+  let a = G.animals[i];
+  let d = ANIMALS_D[a.type];
+  if (!d) return;
+  let rem = Math.max(0, d.pTime - (a.produceTimer || 0));
+  let cost = Math.max(10, Math.ceil(rem / 600));
+  if ((G.gems || 0) < cost) { showToast(`❌ Need ${cost}💎!`); return; }
+  G.gems -= cost;
+  a.produceTimer = d.pTime;
+  renderAnimals(); updateHUD();
+  showToast(`⚡ ${d.emoji} ${a.name} ready to collect! (-${cost}💎)`);
+}
+
+function buildingSpeedUp(k) {
+  showToast('⚡ Building upgrades are instant — no timer needed!');
 }
 
 // ===== HARVEST ALL =====
