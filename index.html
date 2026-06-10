@@ -272,7 +272,12 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
   <!-- FARM -->
   <div id="panel-farm" class="panel active">
-    <div class="ptitle">🌱 Your Homestead</div>
+    <div class="ptitle">🌱 <span id="farm-title">Your Homestead</span></div>
+    <div style="display:flex;gap:6px;padding:0 6px 6px;flex-wrap:wrap;">
+      <button class="btn bg bsm" onclick="harvestAll()" style="flex:1;">🌾 Harvest All Ready</button>
+      <button class="btn bb bsm" onclick="waterAll()" style="flex:1;">💧 Water All (1💧 each)</button>
+      <button class="btn bsm" id="auto-collect-btn" onclick="toggleAutoCollect()" style="flex:1;display:none;">🤖 Auto OFF</button>
+    </div>
     <div id="fg"></div>
   </div>
 
@@ -740,6 +745,7 @@ function initGame(){
   startCycles();
   updateHUD();
   checkOfflineEarnings();
+  checkAutoCollectBtn();
   setTimeout(()=>showTutorial('spin'),3000);
   showToast(`🌱 Welcome ${G.name}! Your homestead awaits!`);
 }
@@ -930,15 +936,23 @@ function harvestPlot(i){
   let p=G.plots[i];
   let allCrops={...CROPS,...TREES};
   let crop=allCrops[p.crop];
-  let price=crop.sell;
-  if(G.buildings.includes('silo')) price=Math.floor(price*1.5);
-  if(G.buildings.includes('root_cellar')) price=Math.floor(price*1.25);
-  if(G.buildings.includes('market')) price=Math.floor(price*1.2);
-  let vip=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
-  let bonus=vip?([5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100,100][G.vipLevel-1]||0):0;
-  price=Math.floor(price*(1+bonus/100));
+  if(!crop){p.state='tilled';p.crop=null;renderFarm();return;}
+  // Handle both old format (sell/name/xp) and new format (s/n/xp)
+  let sellPrice=crop.sell||crop.s||10;
+  let cropName=crop.name||crop.n||p.crop;
+  let cropEmoji=crop.emoji||crop.e||'🌾';
+  let cropXP=crop.xp||10;
+  // Building bonuses - handle both array and object
+  let hasBld=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
+  let price=sellPrice;
+  if(hasBld('silo')) price=Math.floor(price*1.5);
+  if(hasBld('root_cellar')) price=Math.floor(price*1.25);
+  if(hasBld('market')) price=Math.floor(price*1.2);
+  if(G.homeType==='farmhouse') price=Math.floor(price*1.1);
+  let vipBonus=[0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0;
+  price=Math.floor(price*(1+vipBonus/100));
   G.gold+=price;G.totalEarned+=price;G.totalHarvested++;
-  addXP(crop.xp);addItem(crop.name,1);
+  addXP(cropXP);addItem(cropName,1);
   G.plots[i]={state:'tilled',crop:null,plantTime:0,watered:false,building:null};
   playSound('harvest');
   showFloating('+'+price+'💰','fg');
@@ -948,7 +962,7 @@ function harvestPlot(i){
   updateQuestProgress('harvest',G.totalHarvested);
   updateQuestProgress('gold',G.gold);
   renderFarm();updateHUD();
-  showToast(`🌾 ${crop.emoji} ${crop.name} → ${price}💰!`);
+  showToast(`🌾 ${cropEmoji} ${cropName} → ${price}💰!`);
 }
 
 // ============ SHOP ============
@@ -1331,7 +1345,7 @@ function addXP(amount){
     if(G.level>=3&&!G.seenTutorials['pond']){showTutorial('pond');}
     if(G.level===5){showTutorial('level5');}
     if(G.level===10){showTutorial('level10');}
-    if(G.level>=10) checkAchievement('a_lv10');
+    if(G.level>=10){checkAchievement('a_lv10');checkAutoCollectBtn();}
     if(G.level>=25) checkAchievement('a_lv25');
     renderShop();renderQuests();
   }
@@ -1573,6 +1587,89 @@ function showToast(msg){let t=document.getElementById('toast');t.textContent=msg
 function showProfile(){showToast(`${AVATARS[G.avatar]||'🌱'} ${G.name} | Level ${G.level} | ${G.state} | ${G.acreage?.toFixed(1)||0.5} acres`);}
 
 // ============ SAVE/LOAD ============
+// ===== HARVEST ALL =====
+function harvestAll() {
+  let ready = G.plots.filter(p => p.state === 'ready');
+  if (ready.length === 0) { showToast('❌ No crops ready to harvest!'); return; }
+  let totalGold = 0;
+  let hasBld=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
+  G.plots.forEach((p, i) => {
+    if (p.state === 'ready') {
+      let allC = {...CROPS, ...TREES};
+      let crop = allC[p.crop];
+      if (!crop) { G.plots[i].state='tilled'; G.plots[i].crop=null; return; }
+      let price = crop.sell||crop.s||10;
+      if (hasBld('silo')) price = Math.floor(price * 1.5);
+      if (hasBld('market')) price = Math.floor(price * 1.2);
+      if (G.homeType === 'farmhouse') price = Math.floor(price * 1.1);
+      let vipBonus=[0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0;
+      price=Math.floor(price*(1+vipBonus/100));
+      G.gold += price; G.totalEarned += price; G.totalHarvested++;
+      totalGold += price;
+      addXP(crop.xp||10);
+      addItem(crop.name||crop.n||p.crop, 1);
+      G.plots[i] = {state:'tilled', crop:null, plantTime:0, watered:false, building:null};
+    }
+  });
+  if(totalGold===0){showToast('❌ Nothing to harvest!');return;}
+  playSound('harvest');
+  updateQuestProgress('harvest', G.totalHarvested);
+  updateQuestProgress('gold', G.gold);
+  if (G.totalHarvested >= 1) checkAchievement('a_h1');
+  if (G.totalHarvested >= 50) checkAchievement('a_h50');
+  renderFarm(); updateHUD();
+  showToast(`🌾 Harvested all! +${totalGold}💰!`);
+}
+
+function waterAll() {
+  let planted = G.plots.filter(p => (p.state === 'planted' || p.state === 'growing') && !p.watered);
+  if (planted.length === 0) { showToast('✅ All crops already watered!'); return; }
+  let cost = planted.length;
+  if (G.water < cost) { showToast(`❌ Need ${cost}💧 to water all! Have ${G.water}.`); return; }
+  G.water -= cost;
+  G.plots.forEach(p => {
+    if ((p.state === 'planted' || p.state === 'growing') && !p.watered) {
+      let allC = {...CROPS, ...TREES};
+      let crop = allC[p.crop];
+      p.watered = true;
+      if (crop) p.plantTime -= (crop.time || crop.t || 60) * 200;
+    }
+  });
+  playSound('water'); renderFarm(); updateHUD();
+  showToast(`💧 Watered ${planted.length} crops! -${cost}💧`);
+}
+
+let autoCollectOn = false;
+let autoCollectTimer = null;
+
+function toggleAutoCollect() {
+  if (G.level < 10) { showToast('❌ Auto-collect unlocks at Level 10!'); return; }
+  autoCollectOn = !autoCollectOn;
+  let btn = document.getElementById('auto-collect-btn');
+  if (autoCollectOn) {
+    btn.textContent = '🤖 Auto ON';
+    btn.style.background = '#1a4a1a';
+    btn.style.borderColor = '#3a8a3a';
+    autoCollectTimer = setInterval(() => {
+      let ready = G.plots.some(p => p.state === 'ready');
+      if (ready) harvestAll();
+    }, 5000);
+    showToast('🤖 Auto-collect ON! Harvests every 5s!');
+  } else {
+    btn.textContent = '🤖 Auto OFF';
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    if (autoCollectTimer) { clearInterval(autoCollectTimer); autoCollectTimer = null; }
+    showToast('🤖 Auto-collect OFF');
+  }
+}
+
+// Show auto-collect button at level 10+
+function checkAutoCollectBtn() {
+  let btn = document.getElementById('auto-collect-btn');
+  if (btn && G.level >= 10) btn.style.display = 'block';
+}
+
 // ===== HUD INTERACTIVE POPUPS =====
 function showHUDPop(type) {
   let pop = document.getElementById('hpop');
@@ -1888,6 +1985,7 @@ if(loadGame()&&G.name){
   renderAll();startCycles();
   updateHUD();
   checkOfflineEarnings();
+  checkAutoCollectBtn();
   showToast(`📂 Welcome back ${G.name}!`);
 } // else avatar screen shows
 
@@ -1901,4 +1999,3 @@ document.addEventListener('keydown',e=>{
 </script>
 </body>
 </html>
-
