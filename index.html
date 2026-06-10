@@ -68,17 +68,22 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 .tc{font-size:11px;color:#7dff7d;cursor:pointer;text-align:right;font-weight:bold;}
 
 /* Farm */
-#fg{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;padding:6px;}
-.plot{background:#1a2e1a;border:1px solid #2a4a2a;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;min-height:56px;font-size:10px;text-align:center;padding:3px;position:relative;}
+#fg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:6px;}
+.plot{background:#1a2e1a;border:1px solid #2a4a2a;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;min-height:90px;font-size:10px;text-align:center;padding:6px;position:relative;}
 .plot:active{transform:scale(0.9);}
 .plot.tilled{background:#2a1a0a;border-color:#4a3a1a;}
 .plot.planted,.plot.growing{background:#1a3a1a;border-color:#3a6a2a;}
 .plot.ready{background:#1a5a1a;border-color:#5aaa3a;animation:pg 1s ease-in-out infinite;}
 .plot.building{background:#1a1a2a;border-color:#3a3a6a;}
 .plot.pond{background:#0a1a3a;border-color:#1a4a8a;animation:ps 2s ease-in-out infinite;}
-@keyframes pg{0%,100%{box-shadow:0 0 4px #5aaa3a}50%{box-shadow:0 0 12px #5aaa3a}}
-@keyframes ps{0%,100%{box-shadow:0 0 4px #1a4a8a}50%{box-shadow:0 0 10px #3a8aff}}
-.pe{font-size:20px;line-height:1;}.pl{font-size:8px;color:#aaa;margin-top:1px;}.pt{font-size:8px;color:#7dff7d;}.pw{position:absolute;top:1px;right:2px;font-size:8px;}
+.plot.home{background:#2a1a0a;border-color:#8a6a2a;animation:hgl 2s ease-in-out infinite;}
+.plot.mine{background:#1a1a0a;border-color:#4a4a2a;}
+.plot.damaged{border-color:#ff4444;background:#2a0a0a;animation:dmg 0.5s ease-in-out 3;}
+@keyframes pg{0%,100%{box-shadow:0 0 6px #5aaa3a}50%{box-shadow:0 0 16px #5aaa3a}}
+@keyframes ps{0%,100%{box-shadow:0 0 6px #1a4a8a}50%{box-shadow:0 0 14px #3a8aff}}
+@keyframes hgl{0%,100%{box-shadow:0 0 6px #8a6a2a}50%{box-shadow:0 0 14px #ffd700}}
+@keyframes dmg{0%,100%{box-shadow:0 0 4px #ff4444}50%{box-shadow:0 0 16px #ff4444}}
+.pe{font-size:26px;line-height:1;margin-bottom:2px;}.pl{font-size:9px;color:#aaa;}.pt{font-size:9px;color:#7dff7d;font-weight:bold;}.pw{position:absolute;top:3px;right:4px;font-size:10px;}.plv{position:absolute;bottom:3px;right:4px;font-size:8px;color:#ffd700;}
 
 /* Nav */
 #bn{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.95);border-top:1px solid #2a4a2a;display:flex;z-index:100;height:58px;}
@@ -136,6 +141,23 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
 /* Gem */
 .gp{background:#1a1a2a;border:1px solid #3a3a6a;border-radius:8px;padding:10px;text-align:center;cursor:pointer;transition:all 0.15s;}
+#hpop{position:fixed;top:78px;left:8px;right:8px;background:#0a2a0a;border:2px solid #3a6a3a;border-radius:12px;padding:14px;z-index:300;display:none;}
+#hpop.show{display:block;animation:su 0.2s ease-out;}
+#critalert{position:fixed;top:80px;left:10px;right:10px;background:#2a0a0a;border:2px solid #8a2a2a;border-radius:12px;padding:12px;z-index:500;display:none;}
+#critalert.show{display:block;animation:shake 0.5s ease-in-out;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.hbtn-crit{background:#4a0a0a;border-color:#8a2a2a;color:#ff7d7d;animation:pulse-red 1s infinite;}
+@keyframes pulse-red{0%,100%{opacity:1}50%{opacity:0.5}}
+.hm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%;max-width:340px;margin-bottom:4px;}
+.hm-card{background:#1a2e1a;border:2px solid #2a4a2a;border-radius:10px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.hm-card.sel{border-color:#ffd700;background:#2a2a0a;box-shadow:0 0 10px #ffd70044;}
+.stg-badge{font-size:9px;padding:1px 6px;border-radius:8px;font-weight:bold;display:inline-block;margin-left:4px;}
+.stg0{background:#2a1a4a;color:#d8a8ff;}.stg1{background:#1a2a1a;color:#aaa;}.stg2{background:#2a2a0a;color:#ffd700;}.stg3{background:#1a3a1a;color:#7dff7d;}.stg4{background:#2a1a0a;color:#ffd700;box-shadow:0 0 6px #ffd70044;}
+.bu-card{background:#1a2e1a;border:1px solid #2a4a2a;border-radius:8px;padding:8px;margin-bottom:7px;}
+.bu-tiers{display:flex;gap:6px;margin-top:6px;}
+.bu-tier{flex:1;background:#0a1a0a;border:1px solid #2a4a2a;border-radius:6px;padding:6px;text-align:center;font-size:9px;cursor:pointer;}
+.bu-tier.active{border-color:#7dff7d;background:#1a2a1a;}.bu-tier.locked{opacity:0.4;cursor:default;}
+.mine-card{background:#1a1a0a;border:1px solid #4a4a2a;border-radius:8px;padding:10px;margin-bottom:8px;}
 .gp:active{transform:scale(0.95);}
 
 /* Toast & Modal */
@@ -164,15 +186,26 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </select>
   <div class="av-label">Choose Female Avatar</div>
   <div class="av-grid">
-    <div class="av-card" onclick="selAvatar('f1',this)"><div class="av-emoji">👩🏽</div><div class="av-name">City Grower</div><div class="av-desc">Natural hair, overalls</div></div>
-    <div class="av-card" onclick="selAvatar('f2',this)"><div class="av-emoji">👩🏾</div><div class="av-name">Country Girl</div><div class="av-desc">Box braids, boots</div></div>
-    <div class="av-card" onclick="selAvatar('f3',this)"><div class="av-emoji">👩🏻</div><div class="av-name">Off-Grid Mom</div><div class="av-desc">Ponytail, sun hat</div></div>
+    <div class="av-card" onclick="selAvatar('f1',this)"><div class="av-emoji">👩🏽</div><div class="av-name">City Grower</div><div class="av-desc">Natural hair</div></div>
+    <div class="av-card" onclick="selAvatar('f2',this)"><div class="av-emoji">👩🏾</div><div class="av-name">Country Girl</div><div class="av-desc">Box braids</div></div>
+    <div class="av-card" onclick="selAvatar('f3',this)"><div class="av-emoji">👩🏻</div><div class="av-name">Off-Grid Mom</div><div class="av-desc">Sun hat</div></div>
   </div>
   <div class="av-label">Choose Male Avatar</div>
   <div class="av-grid">
-    <div class="av-card" onclick="selAvatar('m1',this)"><div class="av-emoji">👨🏽</div><div class="av-name">Urban Farmer</div><div class="av-desc">Fade cut, work shirt</div></div>
-    <div class="av-card" onclick="selAvatar('m2',this)"><div class="av-emoji">👨🏾</div><div class="av-name">Ranch Hand</div><div class="av-desc">Locs, cowboy hat</div></div>
-    <div class="av-card" onclick="selAvatar('m3',this)"><div class="av-emoji">👨🏻</div><div class="av-name">Tech Farmer</div><div class="av-desc">Cap, flannel shirt</div></div>
+    <div class="av-card" onclick="selAvatar('m1',this)"><div class="av-emoji">👨🏽</div><div class="av-name">Urban Farmer</div><div class="av-desc">Fade cut</div></div>
+    <div class="av-card" onclick="selAvatar('m2',this)"><div class="av-emoji">👨🏾</div><div class="av-name">Ranch Hand</div><div class="av-desc">Cowboy hat</div></div>
+    <div class="av-card" onclick="selAvatar('m3',this)"><div class="av-emoji">👨🏻</div><div class="av-name">Tech Farmer</div><div class="av-desc">Flannel</div></div>
+  </div>
+  <div class="av-label">Choose Your Home Type</div>
+  <div class="hm-grid">
+    <div class="hm-card" onclick="selHomeType('cottage',this)"><div style="font-size:28px;">🏡</div><div style="font-size:10px;font-weight:bold;">Cottage</div><div style="font-size:9px;color:#ffd700;">+20% crop speed</div></div>
+    <div class="hm-card" onclick="selHomeType('ranch',this)"><div style="font-size:28px;">🏚️</div><div style="font-size:10px;font-weight:bold;">Ranch House</div><div style="font-size:9px;color:#ffd700;">+2 free animal slots</div></div>
+    <div class="hm-card" onclick="selHomeType('farmhouse',this)"><div style="font-size:28px;">🏠</div><div style="font-size:10px;font-weight:bold;">Farmhouse</div><div style="font-size:9px;color:#ffd700;">+10% all earnings</div></div>
+    <div class="hm-card" onclick="selHomeType('cabin',this)"><div style="font-size:28px;">🛖</div><div style="font-size:10px;font-weight:bold;">Cabin</div><div style="font-size:9px;color:#ffd700;">Water never depletes</div></div>
+    <div class="hm-card" onclick="selHomeType('manor',this)"><div style="font-size:28px;">🏰</div><div style="font-size:10px;font-weight:bold;">Manor</div><div style="font-size:9px;color:#ffd700;">Start with 1 extra acre</div></div>
+    <div class="hm-card" onclick="selHomeType('modern',this)"><div style="font-size:28px;">🏗️</div><div style="font-size:10px;font-weight:bold;">Modern Farm</div><div style="font-size:9px;color:#ffd700;">Auto-water 2 plots</div></div>
+    <div class="hm-card" onclick="selHomeType('van',this)"><div style="font-size:28px;">🚐</div><div style="font-size:10px;font-weight:bold;">Homestead Van</div><div style="font-size:9px;color:#ffd700;">3x early XP</div></div>
+    <div class="hm-card" onclick="selHomeType('camp',this)"><div style="font-size:28px;">⛺</div><div style="font-size:10px;font-weight:bold;">Camp</div><div style="font-size:9px;color:#ffd700;">2x minerals found</div></div>
   </div>
   <button class="start-btn" onclick="startGame()">🌱 START YOUR HOMESTEAD</button>
   <div style="height:20px;"></div>
@@ -181,23 +214,41 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 <!-- HUD -->
 <div id="hud" style="display:none;">
   <div id="hud-r1">
-    <div class="hs" id="hud-av" style="cursor:pointer;" onclick="showProfile()">🌱</div>
-    <div class="hs">💰<span id="hg">50</span>g</div>
-    <div class="hs hg">💎<span id="hgem">0</span></div>
-    <div class="hs">⭐Lv<span id="hlv">1</span></div>
-    <div class="hs">🌾<span id="hcr">0</span></div>
-    <div class="hs">💧<span id="hw">10/10</span></div>
-    <div id="sb">🌸 Spring D1</div>
+    <div class="hs" id="hud-av" onclick="showHUDPop('profile')" style="cursor:pointer;">🌱</div>
+    <div class="hs" onclick="showHUDPop('gold')" style="cursor:pointer;">💰<span id="hg">50</span>g</div>
+    <div class="hs hg" onclick="showHUDPop('gems')" style="cursor:pointer;">💎<span id="hgem">0</span></div>
+    <div class="hs" onclick="showHUDPop('level')" style="cursor:pointer;">⭐Lv<span id="hlv">1</span></div>
+    <div class="hs" onclick="showHUDPop('water')" style="cursor:pointer;">💧<span id="hw">10/10</span></div>
+    <div id="sb" onclick="showHUDPop('season')" style="cursor:pointer;">🌸 Spring D1</div>
   </div>
   <div id="hud-r2">
     <div class="hs" id="wbadge">☀️ Sunny</div>
     <div class="hs" id="hvip" style="color:#d8a8ff;display:none;">👑 VIP1</div>
+    <div class="hbtn hbtn-crit" id="crit-btn" onclick="showCritAlert()" style="display:none;">🐛 ATTACK!</div>
     <div class="hbtn hspin" onclick="openSpin()">🎰 SPIN</div>
     <div class="hbtn" onclick="saveGame()" style="margin-left:auto;">💾</div>
   </div>
 </div>
 
+<!-- HUD POPUP -->
+<div id="hpop">
+  <div id="hpop-content"></div>
+  <button class="btn bsm" onclick="closeHUDPop()" style="margin-top:8px;width:100%;">Close</button>
+</div>
+
+<!-- CRITTER ALERT -->
+<div id="critalert">
+  <div style="font-size:13px;color:#ff7d7d;font-weight:bold;margin-bottom:5px;" id="crit-title">🐛 Attack!</div>
+  <div style="font-size:11px;color:#e8f5e8;margin-bottom:8px;" id="crit-text"></div>
+  <div style="display:flex;gap:6px;">
+    <button class="btn br" style="flex:1;" onclick="fightCritter()">⚔️ Fight! +30💰</button>
+    <button class="btn bg" style="flex:1;" onclick="bribeCritter()">💰 Bribe -50g</button>
+    <button class="btn bsm" onclick="ignoreCritter()">Ignore</button>
+  </div>
+</div>
+
 <div id="toast"></div>
+
 <div id="luf"></div>
 <div id="lub"><div style="font-size:40px;">⭐</div><div id="lub-text" style="font-size:16px;color:#7dff7d;font-weight:bold;margin-top:8px;"></div><div id="lub-unlock" style="font-size:11px;color:#aaa;margin-top:6px;"></div><button class="btn bfu" onclick="document.getElementById('lub').classList.remove('show')" style="margin-top:12px;">Awesome!</button></div>
 
@@ -232,6 +283,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     <div class="sh">🌳 Fruit Trees</div><div class="sg" id="tree-shop"></div>
     <div class="sh">🔧 Tools & Equipment</div><div class="sg" id="tool-shop"></div>
     <div class="sh">🏠 Buildings</div><div class="sg" id="building-shop"></div>
+    <div class="sh">⛏️ Mining</div><div class="sg" id="mine-store"></div>
+    <div class="sh">🛡️ Critter Defense</div><div class="sg" id="defense-shop"></div>
     <div class="sh">⚒️ Supplies</div><div class="sg" id="supply-shop"></div>
     <div class="sh">🐄 Animals</div><div class="sg" id="animal-shop"></div>
   </div>
@@ -268,6 +321,37 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </div>
 
   <!-- QUESTS -->
+  <!-- BUILDINGS UPGRADE -->
+  <div id="panel-buildings" class="panel">
+    <div class="ptitle">🏠 Buildings</div>
+    <div id="bupgrade-list"></div>
+    <div id="no-bld" class="card" style="text-align:center;color:#888;">
+      <div style="font-size:36px;">🏗️</div>
+      <div style="font-size:11px;margin-top:6px;">No buildings yet! Buy from Store.</div>
+    </div>
+  </div>
+
+  <!-- MINING -->
+  <div id="panel-mining" class="panel">
+    <div class="ptitle">⛏️ Mining</div>
+    <div id="mine-lock" class="card" style="text-align:center;">
+      <div style="font-size:36px;">🔒</div>
+      <div style="font-size:12px;color:#ff7d7d;margin-top:6px;">Buy a Mine Plot from Store! (Level 10+)</div>
+    </div>
+    <div id="mine-ok" style="display:none;">
+      <div class="mine-card">
+        <div class="ct">⛏️ Mine Your Land</div>
+        <div style="font-size:11px;color:#aaa;margin-bottom:8px;">Dig for hidden minerals in your soil!</div>
+        <button class="btn bfu" onclick="doMine()" style="background:#2a2a0a;border-color:#5a5a2a;color:#ffd700;">⛏️ Mine (10💧)</button>
+        <button class="btn bb bfu" onclick="doMineGems()" style="margin-top:4px;">💎 Deep Mine (20💎) — Rare!</button>
+      </div>
+      <div class="card">
+        <div class="ct">💎 Minerals Found: <span id="mine-count">0</span></div>
+        <div id="mine-log" style="font-size:9px;color:#aaa;max-height:100px;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="panel-quests" class="panel">
     <div class="ptitle">📜 Quests</div>
     <div class="sh">Active Quests</div><div id="qlist"></div>
@@ -368,6 +452,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <button class="nb active" onclick="showPanel('farm')" id="nav-farm"><span class="ni">🌱</span>Farm</button>
   <button class="nb" onclick="showPanel('shop')" id="nav-shop"><span class="ni">🏪</span>Store</button>
   <button class="nb" onclick="showPanel('animals')" id="nav-animals"><span class="ni">🐄</span>Animals</button>
+  <button class="nb" onclick="showPanel('buildings')" id="nav-buildings"><span class="ni">🏠</span>Builds</button>
+  <button class="nb" onclick="showPanel('mining')" id="nav-mining"><span class="ni">⛏️</span>Mine</button>
   <button class="nb" onclick="showPanel('pond')" id="nav-pond"><span class="ni">🎣</span>Pond</button>
   <button class="nb" onclick="showPanel('vip')" id="nav-vip"><span class="ni">👑</span>VIP</button>
   <button class="nb" onclick="showPanel('quests')" id="nav-quests"><span class="ni">📜</span>Quests</button>
@@ -451,6 +537,7 @@ const BUILDINGS_D={
   water_tower: {name:'Water Tower', emoji:'🗼',cost:900,desc:'+20 max water',           reqLv:25,buildTime:28800, effect:()=>{G.maxWater+=20;}},
   windmill2:   {name:'Big Windmill',emoji:'💨',cost:1200,desc:'Auto-waters 6 plots',   reqLv:35,buildTime:43200, effect:()=>{}},
 };
+const BUILDINGS_DATA = BUILDINGS_D; // alias
 
 const SUPPLIES={
   compost:   {name:'Compost Bin',   emoji:'♻️',cost:80, desc:'2x crop yield',         reqLv:3},
@@ -591,11 +678,17 @@ const WHEEL_PRIZES=[
 function xpForLevel(lv){return Math.floor(100*Math.pow(lv,1.4));}
 
 // ============ AVATAR SELECTION ============
-let selectedAvatar='';
+let selectedAvatar='f1';
+let selectedHomeType='farmhouse';
 function selAvatar(id,el){
   document.querySelectorAll('.av-card').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
   selectedAvatar=id;
+}
+function selHomeType(id,el){
+  document.querySelectorAll('.hm-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedHomeType=id;
 }
 
 function startGame(){
@@ -604,7 +697,11 @@ function startGame(){
   if(!name){showToast('❌ Enter your name!');return;}
   if(!state){showToast('❌ Select your state!');return;}
   if(!selectedAvatar){showToast('❌ Choose an avatar!');return;}
-  G.name=name; G.state=state; G.avatar=selectedAvatar;
+  G.name=name; G.state=state; G.avatar=selectedAvatar; G.homeType=selectedHomeType||'farmhouse';
+  if(!G.buildingLevels) G.buildingLevels={};
+  if(Array.isArray(G.buildings)){let bd={};G.buildings.forEach(k=>{bd[k]=1;});G.buildings=bd;}
+  if(selectedHomeType==='manor') G.acreage+=1;
+  if(selectedHomeType==='cabin') G.maxWater=999;
   document.getElementById('avatar-screen').classList.add('hidden');
   document.getElementById('hud').style.display='block';
   document.getElementById('gc').style.display='block';
@@ -634,18 +731,21 @@ async function fetchRealWeather(){
 
 // ============ INIT ============
 function initGame(){
-  for(let i=0;i<24;i++) G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});
+  for(let i=0;i<25;i++) G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});
+  G.plots[0].state='home'; // Home plot
   QUESTS_D.forEach(q=>{G.quests[q.id]={progress:0,completed:false};});
   ACH_D.forEach(a=>{G.achievements[a.id]=false;});
+  if(!G.buildingLevels) G.buildingLevels={};
   renderAll();
   startCycles();
   updateHUD();
+  checkOfflineEarnings();
   setTimeout(()=>showTutorial('spin'),3000);
   showToast(`🌱 Welcome ${G.name}! Your homestead awaits!`);
 }
 
 function renderAll(){
-  renderFarm();renderShop();renderQuests();renderInventory();renderAnimals();renderPond();renderVIP();renderChat();renderAIMessages();updateHUD();updateWeatherFX();
+  renderFarm();renderShop();renderQuests();renderInventory();renderAnimals();renderPond();renderVIP();renderBuildings();renderMining();renderChat();renderAIMessages();updateHUD();updateWeatherFX();
 }
 
 // ============ CYCLES ============
@@ -732,25 +832,33 @@ function updateWeatherFX(){
 // ============ FARM ============
 function renderFarm(){
   let grid=document.getElementById('fg');if(!grid)return;
+  let ft=document.getElementById('farm-title');
+  let homeTypes={cottage:'🏡 Cottage',ranch:'🏚️ Ranch',farmhouse:'🏠 Farmhouse',cabin:'🛖 Cabin',manor:'🏰 Manor',modern:'🏗️ Modern',van:'🚐 Van',camp:'⛺ Camp'};
+  if(ft)ft.textContent=`${homeTypes[G.homeType]?.split(' ')[0]||'🌱'} ${G.name}'s Homestead`;
   grid.innerHTML='';let now=Date.now();
   G.plots.forEach((p,i)=>{
     let el=document.createElement('div');el.className='plot '+p.state;el.onclick=()=>plotClick(i);
-    if(p.state==='empty') el.innerHTML=`<div class="pe">🟫</div><div class="pl">Till</div>`;
+    if(p.state==='home'){let h=homeTypes[G.homeType]||'🏡 Home';el.innerHTML=`<div class="pe">${h.split(' ')[0]}</div><div class="pl">${G.name}'s Home</div>`;}
+    else if(p.state==='empty') el.innerHTML=`<div class="pe">🟫</div><div class="pl">Till</div>`;
     else if(p.state==='tilled') el.innerHTML=`<div class="pe">🪱</div><div class="pl">Plant</div>`;
-    else if(p.state==='building') el.innerHTML=`<div class="pe">${BUILDINGS_D[p.building]?.emoji||'🏠'}</div><div class="pl">${BUILDINGS_D[p.building]?.name||''}</div>`;
+    else if(p.state==='building'){let b=BUILDINGS_DATA[p.building]||{emoji:'🏠',name:p.building};let lv=(G.buildingLevels&&G.buildingLevels[p.building])||1;el.innerHTML=`<div class="pe">${b.emoji||b.e||'🏠'}</div><div class="pl">${b.name||b.n||p.building}</div><div class="plv">Lv${lv}</div>`;}
     else if(p.state==='pond') el.innerHTML=`<div class="pe">🏊</div><div class="pl">Pond</div>`;
+    else if(p.state==='mine') el.innerHTML=`<div class="pe">⛏️</div><div class="pl">Mine</div>`;
+    else if(p.state==='damaged') el.innerHTML=`<div class="pe">💀</div><div class="pl">Damaged!</div><div style="font-size:8px;color:#ff7d7d;">Tap repair</div>`;
     else{
       let allCrops={...CROPS,...TREES};
       let crop=allCrops[p.crop];if(!crop)return;
       let elapsed=(now-p.plantTime)/1000;
-      let pct=Math.min(elapsed/crop.time,1);
-      if(pct>=1){p.state='ready';el.className='plot ready';el.innerHTML=`<div class="pe">${crop.emoji}</div><div class="pl">${crop.name}</div><div class="pt">READY!</div>`;}
+      let speedMult=G.homeType==='cottage'?1.2:(G.buildings.includes&&G.buildings.includes('greenhouse')||G.buildings['greenhouse']>0)?1.25:1;
+      let adjTime=crop.time/speedMult;
+      let pct=Math.min(elapsed/adjTime,1);
+      if(pct>=1){p.state='ready';el.className='plot ready';el.innerHTML=`<div class="pe" style="font-size:30px;">${crop.emoji}</div><div class="pl">${crop.name}</div><div class="pt">READY! 🌟</div>`;}
       else{
-        let stage=pct<0.33?'🌱':pct<0.66?'🌿':crop.emoji;
-        let rem=Math.ceil(crop.time-elapsed);
+        let stage=pct<0.25?'🌱':pct<0.5?'🌿':pct<0.75?crop.emoji:crop.emoji;
+        let rem=Math.ceil(adjTime-elapsed);
         let remStr=rem>=3600?Math.ceil(rem/3600)+'h':rem>=60?Math.ceil(rem/60)+'m':rem+'s';
-        el.innerHTML=`<div class="pe">${stage}</div><div class="pl">${crop.name}</div><div class="pt">${remStr}</div>`;
-        if(!p.watered) el.innerHTML+=`<div class="pw">💧?</div>`;
+        el.innerHTML=`<div class="pe" style="font-size:${pct>0.5?'28':'22'}px;">${stage}</div><div class="pl">${crop.name}</div><div class="pt">${remStr}</div>`;
+        if(!p.watered)el.innerHTML+=`<div class="pw">💧?</div>`;
       }
     }
     grid.appendChild(el);
@@ -759,12 +867,15 @@ function renderFarm(){
 
 function plotClick(i){
   let p=G.plots[i];
+  if(p.state==='home'){showToast(`🏡 ${G.name}'s home! Level up to upgrade it!`);return;}
+  if(p.state==='damaged'){if(G.gold>=10){G.gold-=10;p.state='tilled';p.crop=null;renderFarm();updateHUD();showToast('🔧 Plot repaired!');}else{showToast('❌ Need 10g to repair!');}return;}
   if(p.state==='empty'){p.state='tilled';renderFarm();playSound('till');showToast('🪱 Soil tilled!');}
   else if(p.state==='tilled') showPlantModal(i);
   else if(p.state==='planted'||p.state==='growing') showWaterModal(i);
   else if(p.state==='ready') harvestPlot(i);
-  else if(p.state==='building') showToast(`${BUILDINGS_D[p.building]?.emoji} ${BUILDINGS_D[p.building]?.desc}`);
+  else if(p.state==='building'){showPanel('buildings');}
   else if(p.state==='pond') showPanel('pond');
+  else if(p.state==='mine') showPanel('mining');
 }
 
 function showPlantModal(idx){
@@ -842,7 +953,7 @@ function harvestPlot(i){
 
 // ============ SHOP ============
 function renderShop(){
-  let hasGH=G.buildings.includes('greenhouse');
+  let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);
   // Seeds
   document.getElementById('seed-shop').innerHTML=Object.entries(CROPS).map(([k,c])=>{
     let lk=G.level<c.reqLv;
@@ -860,16 +971,36 @@ function renderShop(){
     `<div class="si" onclick="buyTool('${k}','${t.n}',${t.c},'${t.e}')"><div class="sie">${t.e}</div><div class="sin">${t.n}</div><div class="sic">${t.c}g</div><div class="sid">${t.d}</div></div>`
   ).join('');
   // Buildings
-  document.getElementById('building-shop').innerHTML=Object.entries(BUILDINGS_D).map(([k,b])=>{
-    let owned=G.buildings.includes(k),lk=G.level<b.reqLv;
-    let bt=b.buildTime>=3600?Math.ceil(b.buildTime/3600)+'h build':Math.ceil(b.buildTime/60)+'m build';
-    return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyBuilding('${k}')`:''}" ><div class="sie">${b.emoji}</div><div class="sin">${b.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${b.reqLv}`:b.cost+'g'}</div><div class="sid">${owned?b.desc:bt}</div></div>`;
+  document.getElementById('building-shop').innerHTML=Object.entries(BUILDINGS_DATA).map(([k,b])=>{
+    let owned=Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
+    let lk=G.level<b.reqLv;
+    return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyBuilding('${k}')`:''}" ><div class="sie">${b.emoji}</div><div class="sin">${b.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${b.reqLv}`:b.cost+'g'}</div><div class="sid">${b.desc}</div></div>`;
   }).join('');
+  // Mine
+  let mineEl=document.getElementById('mine-store');
+  if(mineEl){
+    let hasMine=G.plots.some(p=>p.state==='mine');
+    mineEl.innerHTML=`
+      <div class="si ${G.level<10?'lk':''}" onclick="${G.level>=10?'buyMinePlot()':''}"><div class="sie">⛏️</div><div class="sin">Mine Plot</div><div class="sic">${G.level<10?'🔒Lv10':'300g'}</div><div class="sid">${hasMine?'✅ Built':'Unlock mining'}</div></div>
+      <div class="si ${G.level<20?'lk':''}" onclick="${G.level>=20?'buyDeepMine()':''}"><div class="sie">🪨</div><div class="sin">Deep Mine</div><div class="sic">${G.level<20?'🔒Lv20':'800g'}</div><div class="sid">Find rare minerals</div></div>`;
+  }
+  // Defense
+  const DEFENSE_ITEMS={scarecrow:{n:'Scarecrow',e:'🎃',c:100,d:'vs rabbits/deer',lv:1},dog:{n:'Farm Dog',e:'🐕',c:300,d:'vs fox/wolf',lv:5},pest:{n:'Pesticide',e:'🧪',c:80,d:'vs aphids/locusts',lv:3},trap:{n:'Trap',e:'🪤',c:120,d:'vs rabbits/rats',lv:2},cat:{n:'Farm Cat',e:'🐈',c:200,d:'vs rats/snakes',lv:6},fence:{n:'Elec Fence',e:'⚡',c:500,d:'vs bears/wolves',lv:15}};
+  let defEl=document.getElementById('defense-shop');
+  if(defEl){
+    defEl.innerHTML=Object.entries(DEFENSE_ITEMS).map(([k,d])=>{
+      let owned=(G.inventory[d.n]||0)>0,lk=G.level<d.lv;
+      return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyDefense('${k}','${d.n}',${d.c},'${d.e}')`:''}" ><div class="sie">${d.e}</div><div class="sin">${d.n}</div><div class="sic">${owned?'✅':lk?`🔒Lv${d.lv}`:d.c+'g'}</div><div class="sid">${d.d}</div></div>`;
+    }).join('');
+  }
   // Supplies
-  document.getElementById('supply-shop').innerHTML=Object.entries(SUPPLIES).map(([k,s])=>{
-    let lk=G.level<s.reqLv,owned=(G.inventory[s.name]||0)>0;
-    return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buySupply('${k}')`:''}" ><div class="sie">${s.emoji}</div><div class="sin">${s.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${s.reqLv}`:s.cost+'g'}</div><div class="sid">${s.desc}</div></div>`;
-  }).join('');
+  let supEl=document.getElementById('supply-shop');
+  if(supEl&&typeof SUPPLIES!=='undefined'){
+    supEl.innerHTML=Object.entries(SUPPLIES).map(([k,s])=>{
+      let lk=G.level<s.reqLv,owned=(G.inventory[s.name]||0)>0;
+      return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buySupply('${k}')`:''}" ><div class="sie">${s.emoji}</div><div class="sin">${s.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${s.reqLv}`:s.cost+'g'}</div><div class="sid">${s.desc}</div></div>`;
+    }).join('');
+  }
   // Animals
   document.getElementById('animal-shop').innerHTML=Object.entries(ANIMALS_D).map(([k,a])=>{
     let lk=G.level<a.reqLv;
@@ -898,16 +1029,33 @@ function buyTool(k,name,cost,emoji){
   showToast(`${emoji} Bought ${name}!`);
 }
 function buyBuilding(k){
-  let b=BUILDINGS_D[k];
-  if(G.buildings.includes(k)){showToast('Already built!');return;}
+  let b=BUILDINGS_DATA[k];if(!b)return;
+  let owned=Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
+  if(owned){showToast('Already built! Upgrade in Buildings tab.');return;}
   if(G.gold<b.cost){showToast('❌ Not enough gold!');return;}
   let ep=G.plots.findIndex(p=>p.state==='empty');
   if(ep===-1){showToast('❌ No empty plots!');return;}
-  G.gold-=b.cost;G.buildings.push(k);
+  G.gold-=b.cost;
+  if(Array.isArray(G.buildings))G.buildings.push(k);
+  else G.buildings[k]=1;
+  if(!G.buildingLevels)G.buildingLevels={};
+  G.buildingLevels[k]=1;
   G.plots[ep].state='building';G.plots[ep].building=k;
   b.effect();addXP(100);checkAchievement('a_bld1');
-  playSound('build');renderFarm();renderShop();updateHUD();
-  showToast(`${b.emoji} Building ${b.name}! (${Math.ceil(b.buildTime/60)}min)`);
+  if(k==='well'){G.maxWater+=10;}
+  playSound('build');renderFarm();renderShop();renderBuildings();updateHUD();
+  showToast(`${b.emoji} Built ${b.name}!`);
+}
+function buyDefense(k,name,cost,emoji){
+  if(G.gold<cost){showToast('❌ Not enough gold!');return;}
+  G.gold-=cost;addItem(name,1);updateHUD();renderShop();
+  showToast(`${emoji} Got ${name}! You're protected!`);
+}
+function buyDeepMine(){
+  if(G.level<20){showToast('❌ Need Level 20!');return;}
+  if(G.gold<800){showToast('❌ Need 800g!');return;}
+  G.gold-=800;addItem('Deep Mine Kit',1);updateHUD();
+  showToast('⛏️ Deep Mine Kit acquired! Find rare minerals!');
 }
 function buySupply(k){
   let s=SUPPLIES[k];
@@ -917,11 +1065,13 @@ function buySupply(k){
 }
 function buyAnimal(k){
   let a=ANIMALS_D[k];
-  let max=G.buildings.includes('barn')?8:G.buildings.includes('chicken_coop')?4:2;
+  let hasBarn=Array.isArray(G.buildings)?G.buildings.includes('barn'):(G.buildings['barn']>0);
+  let hasCoop=Array.isArray(G.buildings)?G.buildings.includes('chicken_coop'):(G.buildings['chicken_coop']>0);
+  let max=hasBarn?8:hasCoop?4:2;
   if(G.animals.length>=max){showToast('❌ Need Barn for more animals!');return;}
   if(G.gold<a.cost){showToast('❌ Not enough gold!');return;}
   G.gold-=a.cost;
-  G.animals.push({type:k,name:a.name,emoji:a.emoji,hunger:100,happiness:100,produceTimer:0});
+  G.animals.push({type:k,name:a.name,emoji:a.emoji,hunger:100,happiness:100,produceTimer:0,feeds:0});
   addXP(a.xp);playSound('animal');
   updateQuestProgress('animals',G.animals.length);
   if(G.animals.length===1) showTutorial('first_animal');
@@ -938,16 +1088,22 @@ function renderAnimals(){
   noA.style.display='none';
   list.innerHTML=G.animals.map((a,i)=>{
     let d=ANIMALS_D[a.type];
+    let stage=getAnimalStage(a);
     let h=a.hunger||100,pp=Math.min(((a.produceTimer||0)/d.pTime)*100,100);
     let hc=h>50?'#7dff7d':h>20?'#ffd700':'#ff4444';
     let pt=d.pTime>=3600?Math.ceil((d.pTime-(a.produceTimer||0))/3600)+'h':Math.ceil((d.pTime-(a.produceTimer||0))/60)+'m';
+    let nextFeeds=stage.idx<4?ANIMAL_STAGES[stage.idx+1]?.feedsNeeded-(a.feeds||0):0;
     return `<div class="animal-card">
       <div style="font-size:28px;">${a.emoji}</div>
       <div style="flex:1;">
-        <div style="font-size:12px;color:#7dff7d;font-weight:bold;">${a.name}</div>
-        <div style="font-size:9px;color:#aaa;">Hunger: ${Math.floor(h)}%</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+          <span style="font-size:12px;color:#7dff7d;font-weight:bold;">${a.name}</span>
+          <span class="stg-badge ${stage.cls}">${stage.emoji} ${stage.name}</span>
+        </div>
+        ${stage.idx<4?`<div style="font-size:9px;color:#aaa;">${nextFeeds} feeds to ${ANIMAL_STAGES[Math.min(stage.idx+1,4)].name}</div>`:'<div style="font-size:9px;color:#ffd700;">👑 MAX! Can breed at Level 20!</div>'}
+        <div style="font-size:9px;color:#aaa;margin-top:2px;">Hunger: ${Math.floor(h)}% | Produce rate: ${Math.floor(stage.mult*100)}%</div>
         <div class="animal-bar"><div class="animal-bar-fill" style="width:${h}%;background:${hc}"></div></div>
-        <div style="font-size:9px;color:#aaa;">Produce: ${Math.floor(pp)}% (${pt} left)</div>
+        <div style="font-size:9px;color:#aaa;margin-top:2px;">Production: ${Math.floor(pp)}% (${pt} left)</div>
         <div class="animal-bar"><div class="animal-bar-fill" style="width:${pp}%;background:#7db8ff"></div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;">
@@ -962,19 +1118,22 @@ function feedAnimal(i){
   let a=G.animals[i],d=ANIMALS_D[a.type];
   if(G.gold<d.feed){showToast('❌ Not enough gold!');return;}
   G.gold-=d.feed;a.hunger=Math.min(100,(a.hunger||0)+30);
-  playSound('animal');renderAnimals();updateHUD();showToast(`${a.emoji} Fed!`);
+  a.feeds=(a.feeds||0)+1;
+  let stage=getAnimalStage(a);
+  playSound('animal');renderAnimals();updateHUD();
+  showToast(`${a.emoji} Fed! Stage: ${stage.name}`);
 }
 
 function collectAnimal(i){
   let a=G.animals[i],d=ANIMALS_D[a.type];
-  if((a.produceTimer||0)<d.pTime*0.5){showToast(`${a.emoji} Not ready yet! Keep waiting.`);return;}
-  let vip=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
-  let mult=G.vipLevel>=10?2:1;
-  let val=Math.floor(d.pVal*mult);
+  let stage=getAnimalStage(a);
+  if(stage.mult===0){showToast(`${a.emoji} Still a baby! Feed to grow!`);return;}
+  if((a.produceTimer||0)<d.pTime*0.5){showToast(`${a.emoji} Not ready yet!`);return;}
+  let val=Math.floor(d.pVal*stage.mult);
   G.gold+=val;G.totalEarned+=val;a.produceTimer=0;
   addXP(d.xp);addItem(d.pName,1);
   showFloating('+'+val+'💰','alist');
-  renderAnimals();updateHUD();showToast(`${d.produces} Collected for ${val}💰!`);
+  renderAnimals();updateHUD();showToast(`${d.produces} Collected ${val}💰! (${stage.name} rate)`);
 }
 
 // ============ POND ============
@@ -1382,6 +1541,7 @@ function playSound(type){
   else if(type==='animal') playTone(300,0.3,'sine',0.08);
   else if(type==='fish'){playTone(440,0.1,'sine',0.1);setTimeout(()=>playTone(550,0.2,'sine',0.1),150);}
   else if(type==='build'){[200,250,300].forEach((f,i)=>setTimeout(()=>playTone(f,0.15,'square',0.1),i*80));}
+  else if(type==='critter'){playTone(200,0.1,'sawtooth',0.1);setTimeout(()=>playTone(150,0.2,'sawtooth',0.1),100);}
 }
 
 // ============ NAVIGATION ============
@@ -1390,12 +1550,15 @@ function showPanel(name){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
   let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');
   let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');
+  closeHUDPop();
   if(name==='inventory')renderInventory();
   if(name==='animals')renderAnimals();
   if(name==='quests')renderQuests();
   if(name==='shop')renderShop();
   if(name==='pond')renderPond();
   if(name==='vip')renderVIP();
+  if(name==='buildings')renderBuildings();
+  if(name==='mining')renderMining();
   if(name==='chat')renderChat();
   if(name==='ai')renderAIMessages();
   if(name==='iap')updateHUD();
@@ -1410,19 +1573,321 @@ function showToast(msg){let t=document.getElementById('toast');t.textContent=msg
 function showProfile(){showToast(`${AVATARS[G.avatar]||'🌱'} ${G.name} | Level ${G.level} | ${G.state} | ${G.acreage?.toFixed(1)||0.5} acres`);}
 
 // ============ SAVE/LOAD ============
-function saveGame(){try{localStorage.setItem('th_v2',JSON.stringify(G));}catch(e){}}
-function loadGame(){try{let s=localStorage.getItem('th_v2');if(s){Object.assign(G,JSON.parse(s));return true;}}catch(e){}return false;}
-function resetGame(){if(confirm('Reset ALL progress?')){localStorage.removeItem('th_v2');location.reload();}}
+// ===== HUD INTERACTIVE POPUPS =====
+function showHUDPop(type) {
+  let pop = document.getElementById('hpop');
+  let con = document.getElementById('hpop-content');
+  if (!pop || !con) return;
+  let content = '';
+  if (type === 'gold') {
+    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💰 Gold Info</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gold</span><span style="color:#ffd700;font-weight:bold;">${G.gold}g</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Total Earned</span><span>${G.totalEarned}g</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Offline Rate</span><span>${G.vipLevel>=4?'20g/hr':'Need VIP 4'}</span></div>
+    <div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest crops & collect animal products for gold!</div>
+    <button class="btn bg bfu" onclick="showPanel('shop');closeHUDPop()" style="margin-top:8px;">Go to Store</button>`;
+  } else if (type === 'gems') {
+    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💎 Gems Info</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gems</span><span style="color:#a8d8ff;font-weight:bold;">${G.gems||0}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>VIP Daily Gift</span><span>${G.vipLevel>=2?'Yes ✅':'No'}</span></div>
+    <div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Use gems to skip timers and get boosts!</div>
+    <button class="btn bfu" onclick="showPanel('iap');closeHUDPop()" style="margin-top:8px;background:#1a1a3a;border-color:#3a3a6a;color:#a8d8ff;">Buy Gems</button>`;
+  } else if (type === 'level') {
+    let needed = xpForLevel(G.level);
+    let pct = Math.floor((G.xp / needed) * 100);
+    const unlocks = {3:'🎣 Pond',5:'🌿 Greenhouse',10:'⛏️ Mining',15:'🏗️ Silo',20:'🏪 Market',25:'🦚 Exotic Animals',30:'🍄 Rare Crops'};
+    let nextUnlock = Object.entries(unlocks).find(([lv]) => parseInt(lv) > G.level);
+    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">⭐ Level Info</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Level</span><span style="color:#7dff7d;font-weight:bold;">${G.level}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>XP Progress</span><span>${G.xp}/${needed} (${pct}%)</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Next Unlock</span><span style="color:#ffd700;">${nextUnlock?`Lv${nextUnlock[0]}: ${nextUnlock[1]}`:'Keep going!'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>VIP Level</span><span>${G.vipLevel>0?'VIP '+G.vipLevel:'None - need Lv5'}</span></div>
+    <div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest, fish, and mine for fast XP!</div>`;
+  } else if (type === 'water') {
+    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💧 Water Info</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#7db8ff;font-weight:bold;">${G.water}/${G.maxWater}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill per day</span><span>+4💧</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Home Bonus</span><span>${G.homeType==='cabin'?'♾️ Infinite!':'Standard'}</span></div>
+    <button class="btn bb bfu" onclick="spendGems(5,'water');closeHUDPop()" style="margin-top:8px;">💎 Instant Refill (5💎)</button>`;
+  } else if (type === 'season') {
+    let cropList = Object.values(CROPS_D||CROPS||{}).filter(c=>c.seasons?.includes(G.season)||c.sea?.includes(G.season)).map(c=>c.emoji||c.e).slice(0,6).join(' ');
+    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${SEASONS[G.season].emoji} Season Info</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Season</span><span style="color:${SEASONS[G.season].color};font-weight:bold;">${SEASONS[G.season].name}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Day</span><span>${G.seasonDay}/28</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Weather</span><span>${WEATHER_TYPES[G.weather].emoji} ${WEATHER_TYPES[G.weather].name}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Days left</span><span>${28-G.seasonDay}</span></div>
+    <div style="font-size:9px;color:#aaa;margin-top:6px;">Best crops this season: ${cropList||'Check Store'}</div>`;
+  } else if (type === 'profile') {
+    let h = {cottage:'🏡 Cottage',ranch:'🏚️ Ranch',farmhouse:'🏠 Farmhouse',cabin:'🛖 Cabin',manor:'🏰 Manor',modern:'🏗️ Modern',van:'🚐 Van',camp:'⛺ Camp'};
+    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${AVATARS[G.avatar]||'🌱'} ${G.name}</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Home</span><span>${h[G.homeType]||'Farmhouse'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>State</span><span>${G.state}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Acreage</span><span>${(G.acreage||0.5).toFixed(1)} acres</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>VIP</span><span>${G.vipLevel>0?'VIP '+G.vipLevel:'None yet'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Harvests</span><span>${G.totalHarvested}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Critters Def.</span><span>${G.crittersDef||0}</span></div>`;
+  }
+  con.innerHTML = content;
+  pop.classList.add('show');
+}
+function closeHUDPop() { document.getElementById('hpop')?.classList.remove('show'); }
+
+// ===== CRITTER SYSTEM =====
+const CRITTERS_DATA = [
+  {n:'Aphids',e:'🐛',dmg:'slow your crops',sea:[0],oh:2},
+  {n:'Rabbits',e:'🐇',dmg:'eat your crops',sea:[0,2],oh:3},
+  {n:'Fox',e:'🦊',dmg:'steal animal produce',sea:[0,1,2,3],oh:4},
+  {n:'Raccoon',e:'🦝',dmg:'destroy corn/pumpkin',sea:[2],oh:3},
+  {n:'Locusts',e:'🦗',dmg:'destroy 2 crops',sea:[1],oh:6},
+  {n:'Rats',e:'🐀',dmg:'steal 5% of your gold',sea:[0,1,2,3],oh:5},
+  {n:'Deer',e:'🦌',dmg:'eat your vegetables',sea:[0,1,2],oh:4},
+  {n:'Bear',e:'🐻',dmg:'steal your honey',sea:[1,2],oh:8},
+  {n:'Wolf',e:'🐺',dmg:'scare your animals',sea:[3],oh:6},
+];
+
+function triggerCritter(hoursAway) {
+  let possible = CRITTERS_DATA.filter(c => c.sea.includes(G.season) && hoursAway >= c.oh);
+  if (!possible.length) return;
+  let critter = possible[Math.floor(Math.random() * possible.length)];
+  G.activeCritter = critter;
+  document.getElementById('crit-title').textContent = `${critter.e} ${critter.n} Attack!`;
+  document.getElementById('crit-text').textContent = `A ${critter.n} is attacking your homestead! They will ${critter.dmg}!`;
+  document.getElementById('critalert').classList.add('show');
+  document.getElementById('crit-btn').style.display = 'block';
+  playSound('critter');
+  showToast(`🐛 ${critter.n} attacking! Check the alert!`);
+}
+
+function showCritAlert() {
+  if (G.activeCritter) document.getElementById('critalert').classList.add('show');
+}
+
+function fightCritter() {
+  if (!G.activeCritter) return;
+  G.crittersDef = (G.crittersDef || 0) + 1;
+  G.gold += 30; G.totalEarned += 30;
+  addXP(50);
+  G.activeCritter = null;
+  document.getElementById('critalert').classList.remove('show');
+  document.getElementById('crit-btn').style.display = 'none';
+  checkAchievement('a_def1');
+  updateQuestProgress('defend', G.crittersDef);
+  updateHUD(); playSound('harvest');
+  showToast('⚔️ Critter defeated! +30💰 +50XP!');
+}
+
+function bribeCritter() {
+  if (!G.activeCritter) return;
+  if (G.gold < 50) { showToast('❌ Need 50g to bribe!'); return; }
+  G.gold -= 50; G.activeCritter = null;
+  document.getElementById('critalert').classList.remove('show');
+  document.getElementById('crit-btn').style.display = 'none';
+  updateHUD(); showToast('💰 Bribed critter away! -50g');
+}
+
+function ignoreCritter() {
+  if (G.activeCritter) {
+    let c = G.activeCritter;
+    if (c.n === 'Rats') {
+      let stolen = Math.floor(G.gold * 0.05);
+      G.gold -= stolen;
+      showToast(`🐀 Rats stole ${stolen}💰!`);
+    } else {
+      let planted = G.plots.filter(p => p.state === 'planted' || p.state === 'ready');
+      if (planted.length > 0) { planted[0].state = 'tilled'; planted[0].crop = null; }
+      showToast(`${c.e} ${c.n} damaged your farm!`);
+    }
+    G.activeCritter = null;
+    document.getElementById('crit-btn').style.display = 'none';
+    renderFarm(); updateHUD();
+  }
+  document.getElementById('critalert').classList.remove('show');
+}
+
+function checkOfflineEarnings() {
+  let now = Date.now();
+  let hoursAway = Math.floor((now - (G.lastOnline || now)) / 3600000);
+  G.lastOnline = now;
+  if (hoursAway < 0.1) return;
+  if (G.vipLevel >= 4) {
+    let mult = G.vipLevel >= 17 ? 3 : G.vipLevel >= 14 ? 2 : G.vipLevel >= 11 ? 1.5 : 1;
+    let earned = Math.floor(hoursAway * 20 * mult);
+    G.gold += earned; G.totalEarned += earned;
+    G.totalOfflineGold = (G.totalOfflineGold || 0) + earned;
+    showToast(`💤 Away ${hoursAway}h — earned ${earned}💰!`);
+  }
+  if (hoursAway >= 2) triggerCritter(hoursAway);
+}
+
+// ===== ANIMAL STAGE LEVELING =====
+const ANIMAL_STAGES = [
+  {name:'Baby',    emoji:'🥚', mult:0,    feedsNeeded:0,   cls:'stg0'},
+  {name:'Juvenile',emoji:'🐣', mult:0.5,  feedsNeeded:10,  cls:'stg1'},
+  {name:'Young',   emoji:'🌱', mult:0.75, feedsNeeded:25,  cls:'stg2'},
+  {name:'Adult',   emoji:'💪', mult:1.0,  feedsNeeded:50,  cls:'stg3'},
+  {name:'Prime',   emoji:'👑', mult:1.5,  feedsNeeded:100, cls:'stg4'},
+];
+
+function getAnimalStage(animal) {
+  let feeds = animal.feeds || 0;
+  let stage = 0;
+  for (let i = ANIMAL_STAGES.length - 1; i >= 0; i--) {
+    if (feeds >= ANIMAL_STAGES[i].feedsNeeded) { stage = i; break; }
+  }
+  return { ...ANIMAL_STAGES[stage], idx: stage };
+}
+
+// ===== BUILDING UPGRADES =====
+const BUILDING_TIERS = {
+  well:       [{n:'Basic Well',b:'+10💧',c:0},{n:'Deep Well',b:'+20💧',c:400},{n:'Rain Collector',b:'+30💧+auto',c:800}],
+  barn:       [{n:'Small Barn',b:'+4 animals',c:0},{n:'Big Barn',b:'+8 animals',c:800},{n:'Mega Barn',b:'+16 animals',c:2000}],
+  greenhouse: [{n:'Small GH',b:'All seasons',c:0},{n:'Full GH',b:'+25% speed',c:1000},{n:'Solar GH',b:'+50% speed',c:2500}],
+  silo:       [{n:'Basic Silo',b:'+50% sell',c:0},{n:'Big Silo',b:'+75% sell',c:1000},{n:'Mega Silo',b:'+100% sell',c:2500}],
+  windmill:   [{n:'Windmill',b:'Auto-water 2',c:0},{n:'Big Windmill',b:'Auto-water 4',c:1200},{n:'Power Mill',b:'Auto-water 8',c:3000}],
+  market:     [{n:'Farm Stand',b:'+20% sell',c:0},{n:'Farm Market',b:'+35% sell',c:1600},{n:'Mega Market',b:'+50% sell',c:4000}],
+};
+
+function renderBuildings() {
+  let list = document.getElementById('bupgrade-list');
+  let noBld = document.getElementById('no-bld');
+  if (!list) return;
+  let owned = G.buildings.filter ? G.buildings : Object.keys(G.buildings || {});
+  let bldKeys = Array.isArray(G.buildings) ? G.buildings : Object.keys(G.buildings || {}).filter(k => G.buildings[k] > 0 || G.buildings[k] === true);
+  if (!bldKeys.length) { noBld.style.display = 'block'; list.innerHTML = ''; return; }
+  noBld.style.display = 'none';
+  list.innerHTML = bldKeys.map(k => {
+    let tiers = BUILDING_TIERS[k];
+    if (!tiers) return '';
+    let curLv = (G.buildingLevels && G.buildingLevels[k]) || 1;
+    let bld = BUILDINGS_DATA[k];
+    let tiersHtml = tiers.map((tier, idx) => {
+      let isActive = curLv === idx + 1;
+      let isLocked = idx + 1 > curLv;
+      let canUpgrade = isLocked && curLv === idx && tier.c > 0 && G.gold >= tier.c;
+      return `<div class="bu-tier ${isActive ? 'active' : isLocked ? 'locked' : ''}" onclick="${canUpgrade ? `upgradeBld('${k}',${idx+1})` : ''}" >
+        <div style="font-size:10px;font-weight:bold;">${isActive ? '✅' : `Lv${idx+1}`}</div>
+        <div style="font-size:9px;color:#7dff7d;">${tier.b}</div>
+        ${isLocked && tier.c > 0 ? `<div style="font-size:9px;color:#ffd700;">${tier.c}g</div>` : ''}
+      </div>`;
+    }).join('');
+    return `<div class="bu-card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <div style="font-size:26px;">${bld?.emoji || bld?.e || '🏠'}</div>
+        <div><div style="font-size:12px;color:#7dff7d;font-weight:bold;">${bld?.name || bld?.n || k}</div>
+        <div style="font-size:9px;color:#aaa;">Level ${curLv}/3</div></div>
+      </div>
+      <div class="bu-tiers">${tiersHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function upgradeBld(key, newLv) {
+  let tiers = BUILDING_TIERS[key];
+  if (!tiers || !tiers[newLv - 1]) return;
+  let cost = tiers[newLv - 1].c;
+  if (G.gold < cost) { showToast(`❌ Need ${cost}g!`); return; }
+  G.gold -= cost;
+  if (!G.buildingLevels) G.buildingLevels = {};
+  G.buildingLevels[key] = newLv;
+  if (key === 'well') G.maxWater += 10;
+  addXP(150); playSound('build');
+  renderBuildings(); updateHUD();
+  showToast(`🏠 ${BUILDINGS_DATA[key]?.name || key} upgraded to Level ${newLv}!`);
+}
+
+// ===== MINING SYSTEM =====
+const MINERALS = [
+  {n:'Stone',  e:'🪨', v:5,   r:0.35},
+  {n:'Clay',   e:'🟤', v:8,   r:0.25},
+  {n:'Coal',   e:'⚫', v:15,  r:0.18},
+  {n:'Iron',   e:'🔩', v:25,  r:0.10},
+  {n:'Silver', e:'🥈', v:60,  r:0.06},
+  {n:'Gold Ore',e:'🥇',v:100, r:0.04},
+  {n:'Diamond',e:'💎', v:300, r:0.015},
+  {n:'Crystal',e:'🔮', v:500, r:0.005},
+];
+
+function renderMining() {
+  let hasMine = G.plots.some(p => p.state === 'mine');
+  let lk = document.getElementById('mine-lock');
+  let ok = document.getElementById('mine-ok');
+  if (!lk || !ok) return;
+  if (!hasMine || G.level < 10) {
+    lk.style.display = 'block'; ok.style.display = 'none';
+    let t = document.querySelector('#mine-lock div:last-child');
+    if (t) t.textContent = G.level < 10 ? 'Mining unlocks at Level 10!' : 'Buy a Mine Plot from Store first!';
+  } else {
+    lk.style.display = 'none'; ok.style.display = 'block';
+    let cnt = document.getElementById('mine-count');
+    if (cnt) cnt.textContent = G.mineralsMined || 0;
+    let mlog = document.getElementById('mine-log');
+    if (mlog) mlog.innerHTML = (G.mineLog || []).slice(-6).reverse().map(m => `<div>${m}</div>`).join('');
+  }
+}
+
+function doMine() {
+  let hasMine = G.plots.some(p => p.state === 'mine');
+  if (!hasMine) { showToast('❌ Buy a Mine Plot from Store first!'); return; }
+  if (G.level < 10) { showToast('❌ Mining unlocks at Level 10!'); return; }
+  if (G.water < 10) { showToast('❌ Need 10💧 to mine!'); return; }
+  G.water -= 10;
+  let campBonus = G.homeType === 'camp' ? 2 : 1;
+  let found = [];
+  for (let r = 0; r < campBonus; r++) {
+    let roll = Math.random(), cum = 0;
+    for (let m of MINERALS) { cum += m.r; if (roll <= cum) { found.push(m); break; } }
+  }
+  if (!found.length) found.push(MINERALS[0]);
+  found.forEach(m => {
+    G.gold += m.v; G.totalEarned += m.v; G.mineralsMined = (G.mineralsMined || 0) + 1;
+    addItem(m.n, 1);
+    if (!G.mineLog) G.mineLog = [];
+    G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);
+  });
+  updateQuestProgress('minerals', G.mineralsMined || 0);
+  if ((G.mineralsMined || 0) >= 5) checkAchievement('a_mine5');
+  renderMining(); updateHUD(); playSound('build');
+  showToast(`⛏️ Found: ${found.map(m => m.e + m.n).join(', ')}!`);
+}
+
+function doMineGems() {
+  if ((G.gems || 0) < 20) { showToast('❌ Need 20💎!'); return; }
+  G.gems -= 20; updateHUD();
+  let rare = MINERALS.slice(4);
+  let m = rare[Math.floor(Math.random() * rare.length)];
+  G.gold += m.v; G.totalEarned += m.v; G.mineralsMined = (G.mineralsMined || 0) + 1;
+  addItem(m.n, 1);
+  if (!G.mineLog) G.mineLog = [];
+  G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);
+  renderMining(); updateHUD();
+  showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);
+}
+
+function buyMinePlot() {
+  if (G.level < 10) { showToast('❌ Mining unlocks at Level 10!'); return; }
+  if (G.gold < 300) { showToast('❌ Need 300g!'); return; }
+  let ep = G.plots.findIndex(p => p.state === 'empty');
+  if (ep === -1) { showToast('❌ No empty plots!'); return; }
+  G.gold -= 300; G.plots[ep].state = 'mine';
+  renderFarm(); updateHUD(); renderMining();
+  showToast('⛏️ Mine plot created! Go to Mine tab!');
+}
+
+function saveGame(){try{G.lastOnline=Date.now();localStorage.setItem('th_v3',JSON.stringify(G));}catch(e){}}
+function loadGame(){try{let s=localStorage.getItem('th_v3')||localStorage.getItem('th_v2');if(s){Object.assign(G,JSON.parse(s));if(!G.buildingLevels)G.buildingLevels={};if(Array.isArray(G.buildings)){let bd={};G.buildings.forEach(k=>{bd[k]=1;});G.buildings=bd;}return true;}}catch(e){}return false;}
+function resetGame(){if(confirm('Reset ALL progress?')){localStorage.removeItem('th_v3');localStorage.removeItem('th_v2');location.reload();}}
 setInterval(saveGame,30000);
 
 // ============ START ============
 if(loadGame()&&G.name){
-  document.getElementById('avatar-screen').classList.add('hidden');
+  document.getElementById('avs')?.classList.add('hidden');
+  document.getElementById('avatar-screen')?.classList.add('hidden');
   document.getElementById('hud').style.display='block';
   document.getElementById('gc').style.display='block';
   document.getElementById('bn').style.display='flex';
   renderAll();startCycles();
   updateHUD();
+  checkOfflineEarnings();
   showToast(`📂 Welcome back ${G.name}!`);
 } // else avatar screen shows
 
