@@ -115,6 +115,19 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 .xb{height:7px;background:#0a1a0a;border-radius:4px;overflow:hidden;margin-top:3px;}
 .xf{height:100%;background:linear-gradient(90deg,#1a6aaa,#7db8ff);border-radius:4px;transition:width 0.5s;}
 
+/* ===== ANIMAL CARDS ===== */
+.animal-card{background:#1a2e1a;border:1px solid #2a4a2a;border-radius:10px;padding:10px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;}
+.animal-bar{height:6px;background:#0a1a0a;border-radius:3px;overflow:hidden;margin-top:2px;margin-bottom:2px;}
+.animal-bar-fill{height:100%;border-radius:3px;transition:width 0.5s;}
+
+/* ===== QUEST & ACHIEVEMENT CARDS ===== */
+.quest-item{background:#1a2e1a;border:1px solid #2a4a2a;border-radius:8px;padding:10px;margin-bottom:7px;}
+.quest-title{font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:3px;}
+.quest-progress{height:6px;background:#0a1a0a;border-radius:3px;overflow:hidden;margin-bottom:3px;}
+.quest-progress-fill{height:100%;background:linear-gradient(90deg,#2a6a2a,#5aaa3a);border-radius:3px;transition:width 0.5s;}
+.achievement{background:#1a2e1a;border:1px solid #2a4a2a;border-radius:8px;padding:8px;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.achievement.locked{opacity:0.4;}
+
 /* Spin */
 #so{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;}
 #so.show{display:flex;}
@@ -235,13 +248,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </div>
 </div>
 
-<!-- HUD POPUP -->
-<div id="hpop">
-  <div id="hpop-content"></div>
-  <button class="btn bsm" onclick="closeHUDPop()" style="margin-top:8px;width:100%;">Close</button>
-</div>
-
-<!-- CRITTER ALERT -->
+<div id="hpop"><div id="hpop-content"></div><button class="btn bsm" onclick="closeHUDPop()" style="margin-top:8px;width:100%;">Close</button></div>
 <div id="critalert">
   <div style="font-size:13px;color:#ff7d7d;font-weight:bold;margin-bottom:5px;" id="crit-title">🐛 Attack!</div>
   <div style="font-size:11px;color:#e8f5e8;margin-bottom:8px;" id="crit-text"></div>
@@ -251,13 +258,9 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     <button class="btn bsm" onclick="ignoreCritter()">Ignore</button>
   </div>
 </div>
-
 <div id="toast"></div>
-
 <div id="luf"></div>
 <div id="lub"><div style="font-size:40px;">⭐</div><div id="lub-text" style="font-size:16px;color:#7dff7d;font-weight:bold;margin-top:8px;"></div><div id="lub-unlock" style="font-size:11px;color:#aaa;margin-top:6px;"></div><button class="btn bfu" onclick="document.getElementById('lub').classList.remove('show')" style="margin-top:12px;">Awesome!</button></div>
-
-<!-- TUTORIAL POPUP -->
 <div id="tp"><div class="tt" id="tt-title"></div><div class="tx" id="tt-text"></div><div class="tc" onclick="closeTutorial()">Got it! ✓</div></div>
 
 <!-- SPIN WHEEL -->
@@ -284,11 +287,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
       <button class="btn bsm" style="flex:1;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;" onclick="speedUpAllCrops()">⚡ Speed All</button>
       <button class="btn bsm" id="auto-collect-btn" onclick="toggleAutoCollect()" style="flex:1;display:none;">🤖 Auto: OFF</button>
     </div>
-    <!-- Auto-Plant on farm screen -->
     <div id="ap-farm-section" style="padding:0 6px 6px;">
-      <div id="ap-farm-locked" style="display:none;">
-        <div style="font-size:9px;color:#555;text-align:center;padding:4px;">🤖 Auto-Plant unlocks at Level 15</div>
-      </div>
+      <div id="ap-farm-locked" style="display:none;"><div style="font-size:9px;color:#555;text-align:center;padding:4px;">🤖 Auto-Plant unlocks at Level 15</div></div>
       <div id="ap-farm-ok" style="display:none;">
         <div style="display:flex;gap:4px;align-items:center;margin-bottom:4px;">
           <div style="font-size:10px;color:#7dff7d;font-weight:bold;">🤖 Auto-Plant:</div>
@@ -298,7 +298,6 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
         </div>
         <div id="ap-slots" style="display:flex;flex-wrap:wrap;gap:4px;min-height:32px;background:#0a1a0a;border-radius:6px;padding:4px;"></div>
       </div>
-    </div>
     </div>
     <div id="fg"></div>
   </div>
@@ -339,17 +338,13 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
       <div class="cr"><span>XP</span><span><span id="ixp">0</span>/<span id="ixpn">100</span></span></div>
       <div class="xb"><div class="xf" id="xpf" style="width:0%"></div></div>
     </div>
-    <div class="card"><div class="ct">👑 VIP Status</div>
-      <div id="vip-status" style="font-size:11px;color:#aaa;">Not VIP yet. Reach Level 5!</div>
-    </div>
+    <div class="card"><div class="ct">👑 VIP Status</div><div id="vip-status" style="font-size:11px;color:#aaa;">Not VIP yet. Reach Level 5!</div></div>
     <div class="card"><div class="ct">🎒 Items</div><div id="igrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;"></div></div>
     <div class="card"><div class="ct">🏠 Buildings</div><div id="blist" style="font-size:10px;color:#aaa;">None yet</div></div>
     <button class="btn br bfu" onclick="resetGame()" style="margin-top:8px;">🗑️ Reset Game</button>
   </div>
 
-  <!-- QUESTS -->
-  <!-- BUILDINGS UPGRADE -->
-  <!-- BUILDINGS ZONE -->
+  <!-- BUILDINGS -->
   <div id="panel-buildings" class="panel">
     <div class="ptitle">🏠 Building Zone</div>
     <div class="card" style="margin-bottom:8px;background:#1a1a0a;border-color:#4a4a1a;">
@@ -360,10 +355,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     <div class="sh">🏠 Your Buildings (Lv 1-10)</div>
     <div id="bzone" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;"></div>
     <div id="bupgrade-list"></div>
-    <div id="no-bld" class="card" style="text-align:center;color:#888;">
-      <div style="font-size:36px;">🏗️</div>
-      <div style="font-size:11px;margin-top:6px;">No buildings yet! Buy from Store.</div>
-    </div>
+    <div id="no-bld" class="card" style="text-align:center;color:#888;"><div style="font-size:36px;">🏗️</div><div style="font-size:11px;margin-top:6px;">No buildings yet! Buy from Store.</div></div>
   </div>
 
   <!-- UPGRADE MARKET -->
@@ -384,10 +376,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <!-- MINING -->
   <div id="panel-mining" class="panel">
     <div class="ptitle">⛏️ Mining</div>
-    <div id="mine-lock" class="card" style="text-align:center;">
-      <div style="font-size:36px;">🔒</div>
-      <div style="font-size:12px;color:#ff7d7d;margin-top:6px;">Buy a Mine Plot from Store! (Level 10+)</div>
-    </div>
+    <div id="mine-lock" class="card" style="text-align:center;"><div style="font-size:36px;">🔒</div><div style="font-size:12px;color:#ff7d7d;margin-top:6px;">Buy a Mine Plot from Store! (Level 10+)</div></div>
     <div id="mine-ok" style="display:none;">
       <div class="mine-card">
         <div class="ct">⛏️ Mine Your Land</div>
@@ -395,13 +384,11 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
         <button class="btn bfu" onclick="doMine()" style="background:#2a2a0a;border-color:#5a5a2a;color:#ffd700;">⛏️ Mine (10💧)</button>
         <button class="btn bb bfu" onclick="spendMineGems()" style="margin-top:4px;">💎 Deep Mine (75💎) — Rare!</button>
       </div>
-      <div class="card">
-        <div class="ct">💎 Minerals Found: <span id="mine-count">0</span></div>
-        <div id="mine-log" style="font-size:9px;color:#aaa;max-height:100px;overflow-y:auto;"></div>
-      </div>
+      <div class="card"><div class="ct">💎 Minerals Found: <span id="mine-count">0</span></div><div id="mine-log" style="font-size:9px;color:#aaa;max-height:100px;overflow-y:auto;"></div></div>
     </div>
   </div>
 
+  <!-- QUESTS -->
   <div id="panel-quests" class="panel">
     <div class="ptitle">📜 Quests</div>
     <div class="sh">Active Quests</div><div id="qlist"></div>
@@ -410,7 +397,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </div>
 
   <!-- POND -->
-<div id="panel-pond" class="panel">
+  <div id="panel-pond" class="panel">
     <div class="ptitle">🎣 Pond & Fishing</div>
     <div id="pond-lock" class="card" style="text-align:center;display:none;"><div style="font-size:36px;">🔒</div><div style="font-size:12px;color:#ff7d7d;margin-top:6px;">Unlocks at Level 3!</div></div>
     <div id="pond-ok">
@@ -419,9 +406,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
         <div id="fish-status" style="font-size:12px;color:#7db8ff;margin-bottom:6px;">Cast your line!</div>
         <div id="fish-timer-wrap" style="display:none;margin-bottom:8px;">
           <div style="font-size:10px;color:#aaa;margin-bottom:4px;">⏱️ <span id="fish-timer-text">Waiting...</span></div>
-          <div style="height:8px;background:#0a1a2a;border-radius:4px;overflow:hidden;">
-            <div id="fish-timer-bar" style="height:100%;background:linear-gradient(90deg,#1a4a8a,#7db8ff);border-radius:4px;width:0%;transition:width 0.5s;"></div>
-          </div>
+          <div style="height:8px;background:#0a1a2a;border-radius:4px;overflow:hidden;"><div id="fish-timer-bar" style="height:100%;background:linear-gradient(90deg,#1a4a8a,#7db8ff);border-radius:4px;width:0%;transition:width 0.5s;"></div></div>
           <button class="btn bsm bfu" onclick="speedUpFishing()" style="margin-top:6px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed Up (<span id="fish-speed-cost">10</span>💎)</button>
         </div>
         <div id="fish-ready-wrap" style="display:none;margin-bottom:8px;">
@@ -503,13 +488,12 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
       <div class="si" onclick="spendGems(300,'plots')"><div class="sie">🗺️</div><div class="sin">Expand Farm</div><div class="sic" style="color:#a8d8ff;">300💎</div><div class="sid">+8 new plots</div></div>
       <div class="si" onclick="spendGems(100,'spin')"><div class="sie">🎰</div><div class="sin">Extra Spin</div><div class="sic" style="color:#a8d8ff;">100💎</div><div class="sid">Spin again now</div></div>
       <div class="si" onclick="spendGems(500,'vip')"><div class="sie">👑</div><div class="sin">VIP Boost</div><div class="sic" style="color:#a8d8ff;">500💎</div><div class="sid">Skip to next VIP</div></div>
-      <div class="si" onclick="buyGemsWithGold(500)"><div class="sie">💰➡️💎</div><div class="sin">Buy 5💎</div><div class="sic" style="color:#ffd700;">500g</div><div class="sid">Convert gold to gems</div></div>
-      <div class="si" onclick="buyGemsWithGold(2000)"><div class="sie">💰➡️💎</div><div class="sin">Buy 25💎</div><div class="sic" style="color:#ffd700;">2000g</div><div class="sid">Convert gold to gems</div></div>
+      <div class="si" onclick="buyGemsWithGold(500)"><div class="sie">💰➡️💎</div><div class="sin">Buy 5💎</div><div class="sic" style="color:#ffd700;">500g</div><div class="sid">Convert gold</div></div>
+      <div class="si" onclick="buyGemsWithGold(2000)"><div class="sie">💰➡️💎</div><div class="sin">Buy 25💎</div><div class="sic" style="color:#ffd700;">2000g</div><div class="sid">Convert gold</div></div>
     </div>
     <div style="font-size:9px;color:#333;text-align:center;margin-top:8px;padding:8px;">⚠️ App Store purchases coming soon. Demo mode active.</div>
   </div>
-
-</div><!-- end gc -->
+</div>
 
 <!-- NAV -->
 <div id="bn" style="display:none;">
@@ -530,364 +514,107 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
 <!-- MODAL -->
 <div id="modal"><div id="mc"><div id="mt"></div><div id="mb"></div><button class="btn bfu" onclick="closeModal()" style="margin-top:10px;">Close</button></div></div>
-
 <script>
-// ============ STATE ============
-let G = {
-  gold:50,gems:0,xp:0,level:1,water:10,maxWater:10,
-  day:1,seasonDay:1,season:0,weather:0,
-  totalHarvested:0,totalEarned:50,fishCaught:0,
-  plots:[],inventory:{},animals:[],buildings:[],
-  achievements:{},quests:{},fishLog:[],
-  lastSpin:0,spinCount:0,vip:false,vipLevel:0,
-  name:'',avatar:'',state:'',
-  seenTutorials:{},acreage:0.5
-};
-
+let G={gold:50,gems:0,xp:0,level:1,water:10,maxWater:10,day:1,seasonDay:1,season:0,weather:0,totalHarvested:0,totalEarned:50,fishCaught:0,plots:[],inventory:{},animals:[],buildings:[],achievements:{},quests:{},fishLog:[],lastSpin:0,spinCount:0,vip:false,vipLevel:0,name:'',avatar:'',state:'',seenTutorials:{},acreage:0.5};
 const SEASONS=[{name:'Spring',emoji:'🌸',color:'#ff9acd'},{name:'Summer',emoji:'☀️',color:'#ffd700'},{name:'Fall',emoji:'🍂',color:'#ff7a2a'},{name:'Winter',emoji:'❄️',color:'#a8d8ff'}];
 const WEATHER=[{name:'Sunny',emoji:'☀️'},{name:'Cloudy',emoji:'☁️'},{name:'Rainy',emoji:'🌧️'},{name:'Stormy',emoji:'⛈️'},{name:'Snowy',emoji:'🌨️'}];
-
 const AVATARS={f1:'👩🏽',f2:'👩🏾',f3:'👩🏻',m1:'👨🏽',m2:'👨🏾',m3:'👨🏻'};
-
-// EXTENDED TIMERS - longer = more valuable
-const CROPS={
-  wheat:     {name:'Wheat',     emoji:'🌾',cost:5,  time:120,  sell:12, xp:8,  seasons:[0,1,2],  reqLv:1},
-  carrot:    {name:'Carrot',    emoji:'🥕',cost:8,  time:300,  sell:18, xp:12, seasons:[0,2],    reqLv:1},
-  potato:    {name:'Potato',    emoji:'🥔',cost:10, time:480,  sell:22, xp:15, seasons:[0,2,3],  reqLv:1},
-  strawberry:{name:'Strawberry',emoji:'🍓',cost:18, time:600,  sell:40, xp:25, seasons:[0,1],    reqLv:2},
-  tomato:    {name:'Tomato',    emoji:'🍅',cost:12, time:900,  sell:28, xp:18, seasons:[1],      reqLv:2},
-  corn:      {name:'Corn',      emoji:'🌽',cost:15, time:1800, sell:35, xp:22, seasons:[1,2],    reqLv:3},
-  pepper:    {name:'Pepper',    emoji:'🌶️',cost:22,time:2400, sell:45, xp:28, seasons:[1],      reqLv:4},
-  pumpkin:   {name:'Pumpkin',   emoji:'🎃',cost:20, time:3600, sell:50, xp:30, seasons:[2],      reqLv:4},
-  sunflower: {name:'Sunflower', emoji:'🌻',cost:25, time:5400, sell:55, xp:35, seasons:[1,2],    reqLv:7},
-  blueberry: {name:'Blueberry', emoji:'🫐',cost:30, time:7200, sell:70, xp:40, seasons:[1,2],    reqLv:9},
-  lavender:  {name:'Lavender',  emoji:'💜',cost:35, time:10800,sell:90, xp:50, seasons:[0,1],    reqLv:12},
-  ginger:    {name:'Ginger',    emoji:'🫚',cost:45, time:14400,sell:120,xp:65, seasons:[1,2,3],  reqLv:15},
-  truffle:   {name:'Truffle',   emoji:'🍄',cost:80, time:21600,sell:200,xp:80, seasons:[0,1,2,3],reqLv:30},
-  saffron:   {name:'Saffron',   emoji:'🌸',cost:100,time:28800,sell:280,xp:100,seasons:[0,1,2,3],reqLv:30},
-};
-
-const TREES={
-  apple:  {name:'Apple Tree', emoji:'🍎',cost:50, time:86400,sell:80, xp:60, reqLv:5},
-  peach:  {name:'Peach Tree', emoji:'🍑',cost:60, time:172800,sell:120,xp:80, reqLv:8},
-  lemon:  {name:'Lemon Tree', emoji:'🍋',cost:70, time:259200,sell:160,xp:100,reqLv:12},
-  cherry: {name:'Cherry Tree',emoji:'🍒',cost:80, time:432000,sell:220,xp:130,reqLv:18},
-};
-
-const ANIMALS_D={
-  chicken:{name:'Chicken',emoji:'🐔',cost:80, produces:'🥚',pName:'Egg',   pVal:15, pTime:1800, xp:20,feed:5, reqLv:4},
-  duck:   {name:'Duck',   emoji:'🦆',cost:100,produces:'🥚',pName:'Duck Egg',pVal:20,pTime:2400,xp:25,feed:6, reqLv:5},
-  goat:   {name:'Goat',   emoji:'🐐',cost:130,produces:'🥛',pName:'Goat Milk',pVal:30,pTime:3600,xp:30,feed:8,reqLv:7},
-  cow:    {name:'Cow',    emoji:'🐄',cost:200,produces:'🥛',pName:'Milk',  pVal:40, pTime:7200, xp:40,feed:12,reqLv:6},
-  sheep:  {name:'Sheep',  emoji:'🐑',cost:150,produces:'🧶',pName:'Wool',  pVal:35, pTime:10800,xp:35,feed:10,reqLv:8},
-  pig:    {name:'Pig',    emoji:'🐷',cost:120,produces:'🍖',pName:'Meat',  pVal:50, pTime:14400,xp:30,feed:8, reqLv:12},
-  turkey: {name:'Turkey', emoji:'🦃',cost:140,produces:'🍗',pName:'Turkey',pVal:60, pTime:18000,xp:35,feed:10,reqLv:14},
-  bee:    {name:'Bee',    emoji:'🐝',cost:100,produces:'🍯',pName:'Honey', pVal:60, pTime:21600,xp:45,feed:3, reqLv:14},
-  rabbit: {name:'Rabbit', emoji:'🐰',cost:90, produces:'🧤',pName:'Fur',   pVal:30, pTime:7200, xp:25,feed:4, reqLv:18},
-  horse:  {name:'Horse',  emoji:'🐴',cost:500,produces:'💪',pName:'Labor', pVal:100,pTime:43200,xp:80,feed:20,reqLv:25},
-  peacock:{name:'Peacock',emoji:'🦚',cost:400,produces:'✨',pName:'Feather',pVal:120,pTime:86400,xp:80,feed:15,reqLv:25},
-  alpaca: {name:'Alpaca', emoji:'🦙',cost:350,produces:'🧣',pName:'Fleece',pVal:100,pTime:64800,xp:70,feed:12,reqLv:25},
-};
-
-const BUILDINGS_D={
-  chicken_coop:{name:'Chicken Coop',emoji:'🏚️',cost:200,desc:'+2 animal slots',       reqLv:1, buildTime:1800,  effect:()=>{}},
-  barn:        {name:'Barn',        emoji:'🏠',cost:400,desc:'+4 animal slots, +5💧',   reqLv:3, buildTime:3600,  effect:()=>{G.maxWater+=5;}},
-  well:        {name:'Well',        emoji:'🪣',cost:200,desc:'+10 max water',           reqLv:2, buildTime:1800,  effect:()=>{G.maxWater+=10;}},
-  greenhouse:  {name:'Greenhouse',  emoji:'🌿',cost:500,desc:'Grow crops any season',   reqLv:5, buildTime:7200,  effect:()=>{}},
-  root_cellar: {name:'Root Cellar', emoji:'🪨',cost:300,desc:'+25% sell price',         reqLv:6, buildTime:5400,  effect:()=>{}},
-  smokehouse:  {name:'Smokehouse',  emoji:'🏭',cost:400,desc:'Smoke meat for 2x value', reqLv:8, buildTime:7200,  effect:()=>{}},
-  silo:        {name:'Silo',        emoji:'🏗️',cost:500,desc:'+50% crop sell price',   reqLv:15,buildTime:14400, effect:()=>{}},
-  windmill:    {name:'Windmill',    emoji:'🌀',cost:600,desc:'Auto-waters 2 plots',     reqLv:10,buildTime:10800, effect:()=>{}},
-  solar:       {name:'Solar Panels',emoji:'☀️',cost:700,desc:'+5💧 per day free',      reqLv:20,buildTime:21600, effect:()=>{}},
-  market:      {name:'Farm Market', emoji:'🏪',cost:800,desc:'Premium sell prices',     reqLv:20,buildTime:18000, effect:()=>{}},
-  water_tower: {name:'Water Tower', emoji:'🗼',cost:900,desc:'+20 max water',           reqLv:25,buildTime:28800, effect:()=>{G.maxWater+=20;}},
-  windmill2:   {name:'Big Windmill',emoji:'💨',cost:1200,desc:'Auto-waters 6 plots',   reqLv:35,buildTime:43200, effect:()=>{}},
-};
-const BUILDINGS_DATA = BUILDINGS_D; // alias
-
-const SUPPLIES={
-  compost:   {name:'Compost Bin',   emoji:'♻️',cost:80, desc:'2x crop yield',         reqLv:3},
-  rain_barrel:{name:'Rain Barrel',  emoji:'🪣',cost:100,desc:'+5💧 when it rains',    reqLv:4},
-  beehive:   {name:'Beehive',       emoji:'🍯',cost:120,desc:'Bees pollinate faster', reqLv:6},
-  dehydrator:{name:'Dehydrator',    emoji:'🌡️',cost:150,desc:'Preserve food 3x value',reqLv:8},
-  canning:   {name:'Canning Kit',   emoji:'🥫',cost:100,desc:'Sell preserved goods',  reqLv:5},
-  tractor:   {name:'Tractor',       emoji:'🚜',cost:500,desc:'Till all plots at once',reqLv:15},
-  plow:      {name:'Plow',          emoji:'⚙️',cost:200,desc:'Till 4 plots at once',  reqLv:10},
-  cider_press:{name:'Cider Press',  emoji:'🍺',cost:300,desc:'Make cider from apples',reqLv:12},
-};
-
-const POND_UPG={
-  bait:{name:'Better Bait',emoji:'🪱',cost:150,desc:'2x catch rate',reqLv:5},
-  rod: {name:'Fishing Rod', emoji:'🎣',cost:300,desc:'Access rare fish',reqLv:10},
-  net: {name:'Fish Net',    emoji:'🕸️',cost:500,desc:'Catch 2 fish',  reqLv:20},
-};
-
-const FISH=[
-  {name:'Minnow',   emoji:'🐟',value:8,  rarity:0.32},
-  {name:'Bass',     emoji:'🐠',value:20, rarity:0.25},
-  {name:'Catfish',  emoji:'🐡',value:35, rarity:0.18},
-  {name:'Salmon',   emoji:'🍣',value:55, rarity:0.10},
-  {name:'Trout',    emoji:'🐟',value:45, rarity:0.08},
-  {name:'Lobster',  emoji:'🦞',value:90, rarity:0.04},
-  {name:'Swordfish',emoji:'🗡️',value:140,rarity:0.02},
-  {name:'Treasure', emoji:'💎',value:200,rarity:0.01},
-];
-
-const RARE_FISH=[
-  {name:'Golden Fish',emoji:'✨',value:500,rarity:0.3},
-  {name:'Dragon Fish',emoji:'🐉',value:1000,rarity:0.1},
-  {name:'Gem Fish',   emoji:'💎',value:300,rarity:0.6},
-];
-
-const QUESTS_D=[
-  {id:'h1', title:'First Harvest', desc:'Harvest 1 crop',    goal:1,  reward:30,  xp:50,  type:'harvest'},
-  {id:'h10',title:'Growing Strong',desc:'Harvest 10 crops',  goal:10, reward:80,  xp:100, type:'harvest'},
-  {id:'h50',title:'Farming Pro',   desc:'Harvest 50 crops',  goal:50, reward:300, xp:400, type:'harvest'},
-  {id:'h100',title:'Crop Master',  desc:'Harvest 100 crops', goal:100,reward:600, xp:800, type:'harvest'},
-  {id:'a1', title:'Animal Friend', desc:'Buy 1 animal',      goal:1,  reward:50,  xp:60,  type:'animals'},
-  {id:'a5', title:'Old MacDonald', desc:'Own 5 animals',     goal:5,  reward:200, xp:200, type:'animals'},
-  {id:'f1', title:'Gone Fishin\'', desc:'Catch 1 fish',      goal:1,  reward:40,  xp:50,  type:'fish'},
-  {id:'f10',title:'Angler',        desc:'Catch 10 fish',     goal:10, reward:150, xp:150, type:'fish'},
-  {id:'g500',title:'Saver',        desc:'Have 500 gold',     goal:500,reward:0,   xp:100, type:'gold'},
-  {id:'g5000',title:'Wealthy',     desc:'Have 5000 gold',    goal:5000,reward:0,  xp:500, type:'gold'},
-  {id:'lv5', title:'Apprentice',   desc:'Reach Level 5',     goal:5,  reward:200, xp:0,   type:'level'},
-  {id:'lv10',title:'Journeyman',   desc:'Reach Level 10',    goal:10, reward:500, xp:0,   type:'level'},
-  {id:'lv25',title:'Expert',       desc:'Reach Level 25',    goal:25, reward:1000,xp:0,   type:'level'},
-  {id:'lv50',title:'Master',       desc:'Reach Level 50',    goal:50, reward:3000,xp:0,   type:'level'},
-];
-
-const ACH_D=[
-  {id:'a_h1',  name:'Green Thumb',    emoji:'🌱',desc:'Harvest 1 crop'},
-  {id:'a_h25', name:'Crop Master',    emoji:'🌾',desc:'Harvest 25 crops'},
-  {id:'a_h100',name:'Farm Legend',    emoji:'🏆',desc:'Harvest 100 crops'},
-  {id:'a_lv3', name:'Apprentice',     emoji:'⭐',desc:'Reach Level 3'},
-  {id:'a_lv10',name:'Expert',         emoji:'🌟',desc:'Reach Level 10'},
-  {id:'a_lv25',name:'Master Farmer',  emoji:'👑',desc:'Reach Level 25'},
-  {id:'a_ani3',name:'Animal Lover',   emoji:'🐾',desc:'Own 3 animals'},
-  {id:'a_fish5',name:'Angler',        emoji:'🎣',desc:'Catch 5 fish'},
-  {id:'a_bld1',name:'Builder',        emoji:'🏠',desc:'Build 1 structure'},
-  {id:'a_spin5',name:'Lucky Spinner', emoji:'🎰',desc:'Spin 5 times'},
-  {id:'a_vip1',name:'VIP Member',     emoji:'💎',desc:'Reach VIP Level 1'},
-];
-
-// VIP LEVELS 1-20
-const VIP_LEVELS=[
-  {lv:1, reqGameLv:5,  name:'🌱 Seedling',      acres:0.1, autoWater:1, autoFeed:false,autoGather:false,bonus:'5% gold bonus'},
-  {lv:2, reqGameLv:10, name:'🌿 Sprout',         acres:0.2, autoWater:1, autoFeed:true, autoGather:false,bonus:'Daily 5💎 gift'},
-  {lv:3, reqGameLv:15, name:'🌾 Grower',         acres:0.3, autoWater:2, autoFeed:true, autoGather:false,bonus:'10% gold bonus'},
-  {lv:4, reqGameLv:20, name:'🚜 Farmer',         acres:0.5, autoWater:2, autoFeed:true, autoGather:true, bonus:'Exclusive crop unlock'},
-  {lv:5, reqGameLv:25, name:'🐄 Rancher',        acres:0.5, autoWater:3, autoFeed:true, autoGather:true, bonus:'Auto-feed all animals'},
-  {lv:6, reqGameLv:30, name:'🏚️ Settler',       acres:1.0, autoWater:4, autoFeed:true, autoGather:true, bonus:'15% gold bonus'},
-  {lv:7, reqGameLv:35, name:'🌻 Cultivator',     acres:1.0, autoWater:4, autoFeed:true, autoGather:true, bonus:'Daily 15💎 gift'},
-  {lv:8, reqGameLv:40, name:'🍯 Keeper',         acres:1.0, autoWater:5, autoFeed:true, autoGather:true, bonus:'Exclusive building'},
-  {lv:9, reqGameLv:45, name:'🏡 Homesteader',    acres:2.0, autoWater:6, autoFeed:true, autoGather:true, bonus:'20% gold bonus'},
-  {lv:10,reqGameLv:50, name:'🌲 Landowner',      acres:2.0, autoWater:6, autoFeed:true, autoGather:true, bonus:'Full auto-farm'},
-  {lv:11,reqGameLv:60, name:'🦚 Rancher Pro',    acres:2.0, autoWater:8, autoFeed:true, autoGather:true, bonus:'Exotic animals unlock'},
-  {lv:12,reqGameLv:70, name:'🏆 Harvest King',   acres:3.0, autoWater:8, autoFeed:true, autoGather:true, bonus:'Daily 25💎 gift'},
-  {lv:13,reqGameLv:80, name:'💎 Gem Lord',       acres:3.0, autoWater:10,autoFeed:true, autoGather:true, bonus:'25% gold bonus'},
-  {lv:14,reqGameLv:90, name:'🌍 Land Baron',     acres:5.0, autoWater:10,autoFeed:true, autoGather:true, bonus:'Auto-build upgrades'},
-  {lv:15,reqGameLv:100,name:'👑 Estate Owner',   acres:5.0, autoWater:12,autoFeed:true, autoGather:true, bonus:'Full passive income'},
-  {lv:16,reqGameLv:120,name:'🔱 Patriarch',      acres:10,  autoWater:16,autoFeed:true, autoGather:true, bonus:'Offline earnings 2x'},
-  {lv:17,reqGameLv:150,name:'⚜️ Dynasty',        acres:10,  autoWater:20,autoFeed:true, autoGather:true, bonus:'Triple passive gold'},
-  {lv:18,reqGameLv:175,name:'🌟 Legend',         acres:15,  autoWater:24,autoFeed:true, autoGather:true, bonus:'Double all earnings'},
-  {lv:19,reqGameLv:200,name:'💫 Mythic',         acres:20,  autoWater:30,autoFeed:true, autoGather:true, bonus:'Custom farm name'},
-  {lv:20,reqGameLv:250,name:'🏅 True Homesteader',acres:50, autoWater:99,autoFeed:true, autoGather:true, bonus:'Ultimate — all unlocked!'},
-];
-
-const LEVEL_UNLOCKS=[
-  {lv:1, emoji:'🌱',name:'Basic Farm',    desc:'Start your journey!'},
-  {lv:2, emoji:'🪣',name:'Well',          desc:'Buy the Well in Store'},
-  {lv:3, emoji:'🎣',name:'Pond',          desc:'Fish for gold!'},
-  {lv:4, emoji:'🐔',name:'Chickens',      desc:'First animal unlocked'},
-  {lv:5, emoji:'🌿',name:'Greenhouse',    desc:'Grow any season'},
-  {lv:7, emoji:'🌻',name:'Sunflower',     desc:'New crop'},
-  {lv:8, emoji:'🍑',name:'Peach Tree',    desc:'Fruit trees!'},
-  {lv:9, emoji:'🫐',name:'Blueberry',     desc:'Premium crop'},
-  {lv:10,emoji:'🌀',name:'Windmill',      desc:'Auto-water plots'},
-  {lv:12,emoji:'💜',name:'Lavender',      desc:'High value crop'},
-  {lv:15,emoji:'🏗️',name:'Silo',         desc:'+50% crop prices'},
-  {lv:20,emoji:'🏪',name:'Farm Market',   desc:'Premium prices'},
-  {lv:25,emoji:'🦚',name:'Exotic Animals',desc:'Peacock & Alpaca'},
-  {lv:30,emoji:'🍄',name:'Rare Crops',    desc:'Truffle & Saffron'},
-  {lv:35,emoji:'🔨',name:'Workshop',      desc:'Craft premium items'},
-  {lv:50,emoji:'🏆',name:'Farm Legend',   desc:'Master status!'},
-  {lv:100,emoji:'👑',name:'Estate Owner', desc:'True empire!'},
-];
-
-const TUTORIALS={
-  pond:{title:'🎣 Pond Unlocked!',text:'Your pond is ready! Go to the Pond tab to fish. It costs 5💧 per cast. Better bait means better fish. Premium casts use gems for rare catches!'},
-  greenhouse:{title:'🌿 Greenhouse Unlocked!',text:'Amazing! Your Greenhouse lets you grow ANY crop in ANY season. No more waiting for the right weather. Plant anything year round!'},
-  first_harvest:{title:'🌾 First Harvest!',text:'Great job! Every harvest earns gold and XP. The more valuable the crop the longer it takes to grow. Use gems to speed things up!'},
-  first_animal:{title:'🐄 First Animal!',text:'Welcome your new friend! Feed them daily to keep hunger up. Happy animals produce faster. Collect their products for gold!'},
-  level5:{title:'⭐ Level 5!',text:'You unlocked the Greenhouse and VIP Level 1! Check the VIP tab to see your new auto-water perk and land expansion. Keep leveling!'},
-  level10:{title:'⭐ Level 10!',text:'Windmill unlocked! It auto-waters 2 of your plots every minute. Also check your VIP progress — you are getting more land!'},
-  spin:{title:'🎰 Spin Wheel!',text:'You get a FREE spin every 24 hours! Win gold, gems, seeds, water refills and more. Extra spins cost 30💎. Tap SPIN in the top bar anytime!'},
-  vip1:{title:'👑 VIP Level 1!',text:'You are now a VIP Seedling! Your farm auto-waters 1 plot. You earn 5% more gold on everything. Check the VIP tab to see your land growing!'},
-};
-
-// SPIN WHEEL
-const WHEEL_PRIZES=[
-  {label:'50💰',  color:'#2a5a2a',reward:()=>{G.gold+=50;G.totalEarned+=50;updateHUD();showToast('🎰 Won 50 gold!');}},
-  {label:'10💎',  color:'#1a1a4a',reward:()=>{G.gems+=10;updateHUD();showToast('🎰 Won 10 gems!');}},
-  {label:'💧Full',color:'#0a2a4a',reward:()=>{G.water=G.maxWater;updateHUD();showToast('🎰 Water refilled!');}},
-  {label:'200💰', color:'#3a6a2a',reward:()=>{G.gold+=200;G.totalEarned+=200;updateHUD();showToast('🎰 Won 200 gold!');}},
-  {label:'25💎',  color:'#2a1a4a',reward:()=>{G.gems+=25;updateHUD();showToast('🎰 Won 25 gems!');}},
-  {label:'30💰',  color:'#1a4a1a',reward:()=>{G.gold+=30;G.totalEarned+=30;updateHUD();showToast('🎰 Won 30 gold!');}},
-  {label:'Seeds', color:'#1a3a1a',reward:()=>{addItem('Wheat',3);showToast('🎰 Won 3 Wheat!');}},
-  {label:'100💎', color:'#0a0a3a',reward:()=>{G.gems+=100;updateHUD();showToast('🎰 JACKPOT! 100 gems!');}},
-  {label:'500XP', color:'#2a2a0a',reward:()=>{addXP(500);showToast('🎰 Won 500 XP!');}},
-  {label:'100💰', color:'#2a5a1a',reward:()=>{G.gold+=100;G.totalEarned+=100;updateHUD();showToast('🎰 Won 100 gold!');}},
-  {label:'❌ Miss',color:'#3a1a1a',reward:()=>{showToast('🎰 Better luck next time!');}},
-  {label:'75💰',  color:'#1a4a2a',reward:()=>{G.gold+=75;G.totalEarned+=75;updateHUD();showToast('🎰 Won 75 gold!');}},
-];
+const CROPS={wheat:{name:'Wheat',emoji:'🌾',cost:5,time:120,sell:12,xp:8,seasons:[0,1,2],reqLv:1},carrot:{name:'Carrot',emoji:'🥕',cost:8,time:300,sell:18,xp:12,seasons:[0,2],reqLv:1},potato:{name:'Potato',emoji:'🥔',cost:10,time:480,sell:22,xp:15,seasons:[0,2,3],reqLv:1},strawberry:{name:'Strawberry',emoji:'🍓',cost:18,time:600,sell:40,xp:25,seasons:[0,1],reqLv:2},tomato:{name:'Tomato',emoji:'🍅',cost:12,time:900,sell:28,xp:18,seasons:[1],reqLv:2},corn:{name:'Corn',emoji:'🌽',cost:15,time:1800,sell:35,xp:22,seasons:[1,2],reqLv:3},pepper:{name:'Pepper',emoji:'🌶️',cost:22,time:2400,sell:45,xp:28,seasons:[1],reqLv:4},pumpkin:{name:'Pumpkin',emoji:'🎃',cost:20,time:3600,sell:50,xp:30,seasons:[2],reqLv:4},sunflower:{name:'Sunflower',emoji:'🌻',cost:25,time:5400,sell:55,xp:35,seasons:[1,2],reqLv:7},blueberry:{name:'Blueberry',emoji:'🫐',cost:30,time:7200,sell:70,xp:40,seasons:[1,2],reqLv:9},lavender:{name:'Lavender',emoji:'💜',cost:35,time:10800,sell:90,xp:50,seasons:[0,1],reqLv:12},ginger:{name:'Ginger',emoji:'🫚',cost:45,time:14400,sell:120,xp:65,seasons:[1,2,3],reqLv:15},truffle:{name:'Truffle',emoji:'🍄',cost:80,time:21600,sell:200,xp:80,seasons:[0,1,2,3],reqLv:30},saffron:{name:'Saffron',emoji:'🌸',cost:100,time:28800,sell:280,xp:100,seasons:[0,1,2,3],reqLv:30}};
+const TREES={apple:{name:'Apple Tree',emoji:'🍎',cost:50,time:86400,sell:80,xp:60,reqLv:5},peach:{name:'Peach Tree',emoji:'🍑',cost:60,time:172800,sell:120,xp:80,reqLv:8},lemon:{name:'Lemon Tree',emoji:'🍋',cost:70,time:259200,sell:160,xp:100,reqLv:12},cherry:{name:'Cherry Tree',emoji:'🍒',cost:80,time:432000,sell:220,xp:130,reqLv:18}};
+const ANIMALS_D={chicken:{name:'Chicken',emoji:'🐔',cost:80,produces:'🥚',pName:'Egg',pVal:15,pTime:1800,xp:20,feed:5,reqLv:4},duck:{name:'Duck',emoji:'🦆',cost:100,produces:'🥚',pName:'Duck Egg',pVal:20,pTime:2400,xp:25,feed:6,reqLv:5},goat:{name:'Goat',emoji:'🐐',cost:130,produces:'🥛',pName:'Goat Milk',pVal:30,pTime:3600,xp:30,feed:8,reqLv:7},cow:{name:'Cow',emoji:'🐄',cost:200,produces:'🥛',pName:'Milk',pVal:40,pTime:7200,xp:40,feed:12,reqLv:6},sheep:{name:'Sheep',emoji:'🐑',cost:150,produces:'🧶',pName:'Wool',pVal:35,pTime:10800,xp:35,feed:10,reqLv:8},pig:{name:'Pig',emoji:'🐷',cost:120,produces:'🍖',pName:'Meat',pVal:50,pTime:14400,xp:30,feed:8,reqLv:12},turkey:{name:'Turkey',emoji:'🦃',cost:140,produces:'🍗',pName:'Turkey',pVal:60,pTime:18000,xp:35,feed:10,reqLv:14},bee:{name:'Bee',emoji:'🐝',cost:100,produces:'🍯',pName:'Honey',pVal:60,pTime:21600,xp:45,feed:3,reqLv:14},rabbit:{name:'Rabbit',emoji:'🐰',cost:90,produces:'🧤',pName:'Fur',pVal:30,pTime:7200,xp:25,feed:4,reqLv:18},horse:{name:'Horse',emoji:'🐴',cost:500,produces:'💪',pName:'Labor',pVal:100,pTime:43200,xp:80,feed:20,reqLv:25},peacock:{name:'Peacock',emoji:'🦚',cost:400,produces:'✨',pName:'Feather',pVal:120,pTime:86400,xp:80,feed:15,reqLv:25},alpaca:{name:'Alpaca',emoji:'🦙',cost:350,produces:'🧣',pName:'Fleece',pVal:100,pTime:64800,xp:70,feed:12,reqLv:25}};
+const BUILDINGS_D={chicken_coop:{name:'Chicken Coop',emoji:'🏚️',cost:200,desc:'+2 animal slots',reqLv:1,buildTime:1800,effect:()=>{}},barn:{name:'Barn',emoji:'🏠',cost:400,desc:'+4 animal slots, +5💧',reqLv:3,buildTime:3600,effect:()=>{G.maxWater+=5;}},well:{name:'Well',emoji:'🪣',cost:200,desc:'+10 max water',reqLv:2,buildTime:1800,effect:()=>{G.maxWater+=10;}},greenhouse:{name:'Greenhouse',emoji:'🌿',cost:500,desc:'Grow crops any season',reqLv:5,buildTime:7200,effect:()=>{}},root_cellar:{name:'Root Cellar',emoji:'🪨',cost:300,desc:'+25% sell price',reqLv:6,buildTime:5400,effect:()=>{}},smokehouse:{name:'Smokehouse',emoji:'🏭',cost:400,desc:'Smoke meat for 2x value',reqLv:8,buildTime:7200,effect:()=>{}},silo:{name:'Silo',emoji:'🏗️',cost:500,desc:'+50% crop sell price',reqLv:15,buildTime:14400,effect:()=>{}},windmill:{name:'Windmill',emoji:'🌀',cost:600,desc:'Auto-waters 2 plots',reqLv:10,buildTime:10800,effect:()=>{}},solar:{name:'Solar Panels',emoji:'☀️',cost:700,desc:'+5💧 per day free',reqLv:20,buildTime:21600,effect:()=>{}},market:{name:'Farm Market',emoji:'🏪',cost:800,desc:'Premium sell prices',reqLv:20,buildTime:18000,effect:()=>{}},water_tower:{name:'Water Tower',emoji:'🗼',cost:900,desc:'+20 max water',reqLv:25,buildTime:28800,effect:()=>{G.maxWater+=20;}},windmill2:{name:'Big Windmill',emoji:'💨',cost:1200,desc:'Auto-waters 6 plots',reqLv:35,buildTime:43200,effect:()=>{}}};
+const BUILDINGS_DATA=BUILDINGS_D;
+const SUPPLIES={compost:{name:'Compost Bin',emoji:'♻️',cost:80,desc:'2x crop yield',reqLv:3},rain_barrel:{name:'Rain Barrel',emoji:'🪣',cost:100,desc:'+5💧 when it rains',reqLv:4},beehive:{name:'Beehive',emoji:'🍯',cost:120,desc:'Bees pollinate faster',reqLv:6},dehydrator:{name:'Dehydrator',emoji:'🌡️',cost:150,desc:'Preserve food 3x value',reqLv:8},canning:{name:'Canning Kit',emoji:'🥫',cost:100,desc:'Sell preserved goods',reqLv:5},tractor:{name:'Tractor',emoji:'🚜',cost:500,desc:'Till all plots at once',reqLv:15},plow:{name:'Plow',emoji:'⚙️',cost:200,desc:'Till 4 plots at once',reqLv:10},cider_press:{name:'Cider Press',emoji:'🍺',cost:300,desc:'Make cider from apples',reqLv:12}};
+const FISH=[{name:'Minnow',emoji:'🐟',value:8,rarity:0.32},{name:'Bass',emoji:'🐠',value:20,rarity:0.25},{name:'Catfish',emoji:'🐡',value:35,rarity:0.18},{name:'Salmon',emoji:'🍣',value:55,rarity:0.10},{name:'Trout',emoji:'🐟',value:45,rarity:0.08},{name:'Lobster',emoji:'🦞',value:90,rarity:0.04},{name:'Swordfish',emoji:'🗡️',value:140,rarity:0.02},{name:'Treasure',emoji:'💎',value:200,rarity:0.01}];
+const RARE_FISH=[{name:'Golden Fish',emoji:'✨',value:500,rarity:0.3},{name:'Dragon Fish',emoji:'🐉',value:1000,rarity:0.1},{name:'Gem Fish',emoji:'💎',value:300,rarity:0.6}];
+const FISH_DATA=FISH;
+const QUESTS_D=[{id:'h1',title:'First Harvest',desc:'Harvest 1 crop',goal:1,reward:30,xp:50,type:'harvest'},{id:'h10',title:'Growing Strong',desc:'Harvest 10 crops',goal:10,reward:80,xp:100,type:'harvest'},{id:'h50',title:'Farming Pro',desc:'Harvest 50 crops',goal:50,reward:300,xp:400,type:'harvest'},{id:'h100',title:'Crop Master',desc:'Harvest 100 crops',goal:100,reward:600,xp:800,type:'harvest'},{id:'a1',title:'Animal Friend',desc:'Buy 1 animal',goal:1,reward:50,xp:60,type:'animals'},{id:'a5',title:'Old MacDonald',desc:'Own 5 animals',goal:5,reward:200,xp:200,type:'animals'},{id:'f1',title:"Gone Fishin'",desc:'Catch 1 fish',goal:1,reward:40,xp:50,type:'fish'},{id:'f10',title:'Angler',desc:'Catch 10 fish',goal:10,reward:150,xp:150,type:'fish'},{id:'g500',title:'Saver',desc:'Have 500 gold',goal:500,reward:0,xp:100,type:'gold'},{id:'g5000',title:'Wealthy',desc:'Have 5000 gold',goal:5000,reward:0,xp:500,type:'gold'},{id:'lv5',title:'Apprentice',desc:'Reach Level 5',goal:5,reward:200,xp:0,type:'level'},{id:'lv10',title:'Journeyman',desc:'Reach Level 10',goal:10,reward:500,xp:0,type:'level'},{id:'lv25',title:'Expert',desc:'Reach Level 25',goal:25,reward:1000,xp:0,type:'level'},{id:'lv50',title:'Master',desc:'Reach Level 50',goal:50,reward:3000,xp:0,type:'level'}];
+const ACH_D=[{id:'a_h1',name:'Green Thumb',emoji:'🌱',desc:'Harvest 1 crop'},{id:'a_h25',name:'Crop Master',emoji:'🌾',desc:'Harvest 25 crops'},{id:'a_h100',name:'Farm Legend',emoji:'🏆',desc:'Harvest 100 crops'},{id:'a_lv3',name:'Apprentice',emoji:'⭐',desc:'Reach Level 3'},{id:'a_lv10',name:'Expert',emoji:'🌟',desc:'Reach Level 10'},{id:'a_lv25',name:'Master Farmer',emoji:'👑',desc:'Reach Level 25'},{id:'a_ani3',name:'Animal Lover',emoji:'🐾',desc:'Own 3 animals'},{id:'a_fish5',name:'Angler',emoji:'🎣',desc:'Catch 5 fish'},{id:'a_bld1',name:'Builder',emoji:'🏠',desc:'Build 1 structure'},{id:'a_spin5',name:'Lucky Spinner',emoji:'🎰',desc:'Spin 5 times'},{id:'a_vip1',name:'VIP Member',emoji:'💎',desc:'Reach VIP Level 1'}];
+const VIP_LEVELS=[{lv:1,reqGameLv:5,name:'🌱 Seedling',acres:0.1,autoWater:1,autoFeed:false,autoGather:false,bonus:'5% gold bonus'},{lv:2,reqGameLv:10,name:'🌿 Sprout',acres:0.2,autoWater:1,autoFeed:true,autoGather:false,bonus:'Daily 5💎 gift'},{lv:3,reqGameLv:15,name:'🌾 Grower',acres:0.3,autoWater:2,autoFeed:true,autoGather:false,bonus:'10% gold bonus'},{lv:4,reqGameLv:20,name:'🚜 Farmer',acres:0.5,autoWater:2,autoFeed:true,autoGather:true,bonus:'Exclusive crop unlock'},{lv:5,reqGameLv:25,name:'🐄 Rancher',acres:0.5,autoWater:3,autoFeed:true,autoGather:true,bonus:'Auto-feed all animals'},{lv:6,reqGameLv:30,name:'🏚️ Settler',acres:1.0,autoWater:4,autoFeed:true,autoGather:true,bonus:'15% gold bonus'},{lv:7,reqGameLv:35,name:'🌻 Cultivator',acres:1.0,autoWater:4,autoFeed:true,autoGather:true,bonus:'Daily 15💎 gift'},{lv:8,reqGameLv:40,name:'🍯 Keeper',acres:1.0,autoWater:5,autoFeed:true,autoGather:true,bonus:'Exclusive building'},{lv:9,reqGameLv:45,name:'🏡 Homesteader',acres:2.0,autoWater:6,autoFeed:true,autoGather:true,bonus:'20% gold bonus'},{lv:10,reqGameLv:50,name:'🌲 Landowner',acres:2.0,autoWater:6,autoFeed:true,autoGather:true,bonus:'Full auto-farm'},{lv:11,reqGameLv:60,name:'🦚 Rancher Pro',acres:2.0,autoWater:8,autoFeed:true,autoGather:true,bonus:'Exotic animals unlock'},{lv:12,reqGameLv:70,name:'🏆 Harvest King',acres:3.0,autoWater:8,autoFeed:true,autoGather:true,bonus:'Daily 25💎 gift'},{lv:13,reqGameLv:80,name:'💎 Gem Lord',acres:3.0,autoWater:10,autoFeed:true,autoGather:true,bonus:'25% gold bonus'},{lv:14,reqGameLv:90,name:'🌍 Land Baron',acres:5.0,autoWater:10,autoFeed:true,autoGather:true,bonus:'Auto-build upgrades'},{lv:15,reqGameLv:100,name:'👑 Estate Owner',acres:5.0,autoWater:12,autoFeed:true,autoGather:true,bonus:'Full passive income'},{lv:16,reqGameLv:120,name:'🔱 Patriarch',acres:10,autoWater:16,autoFeed:true,autoGather:true,bonus:'Offline earnings 2x'},{lv:17,reqGameLv:150,name:'⚜️ Dynasty',acres:10,autoWater:20,autoFeed:true,autoGather:true,bonus:'Triple passive gold'},{lv:18,reqGameLv:175,name:'🌟 Legend',acres:15,autoWater:24,autoFeed:true,autoGather:true,bonus:'Double all earnings'},{lv:19,reqGameLv:200,name:'💫 Mythic',acres:20,autoWater:30,autoFeed:true,autoGather:true,bonus:'Custom farm name'},{lv:20,reqGameLv:250,name:'🏅 True Homesteader',acres:50,autoWater:99,autoFeed:true,autoGather:true,bonus:'Ultimate — all unlocked!'}];
+const LEVEL_UNLOCKS=[{lv:1,emoji:'🌱',name:'Basic Farm',desc:'Start your journey!'},{lv:2,emoji:'🪣',name:'Well',desc:'Buy the Well in Store'},{lv:3,emoji:'🎣',name:'Pond',desc:'Fish for gold!'},{lv:4,emoji:'🐔',name:'Chickens',desc:'First animal unlocked'},{lv:5,emoji:'🌿',name:'Greenhouse',desc:'Grow any season'},{lv:7,emoji:'🌻',name:'Sunflower',desc:'New crop'},{lv:8,emoji:'🍑',name:'Peach Tree',desc:'Fruit trees!'},{lv:9,emoji:'🫐',name:'Blueberry',desc:'Premium crop'},{lv:10,emoji:'🌀',name:'Windmill',desc:'Auto-water plots'},{lv:12,emoji:'💜',name:'Lavender',desc:'High value crop'},{lv:15,emoji:'🏗️',name:'Silo',desc:'+50% crop prices'},{lv:20,emoji:'🏪',name:'Farm Market',desc:'Premium prices'},{lv:25,emoji:'🦚',name:'Exotic Animals',desc:'Peacock & Alpaca'},{lv:30,emoji:'🍄',name:'Rare Crops',desc:'Truffle & Saffron'},{lv:35,emoji:'🔨',name:'Workshop',desc:'Craft premium items'},{lv:50,emoji:'🏆',name:'Farm Legend',desc:'Master status!'},{lv:100,emoji:'👑',name:'Estate Owner',desc:'True empire!'}];
+const TUTORIALS={pond:{title:'🎣 Pond Unlocked!',text:'Your pond is ready! Go to the Pond tab to fish. It costs 5💧 per cast. Better bait means better fish. Premium casts use gems for rare catches!'},greenhouse:{title:'🌿 Greenhouse Unlocked!',text:'Amazing! Your Greenhouse lets you grow ANY crop in ANY season. No more waiting for the right weather. Plant anything year round!'},first_harvest:{title:'🌾 First Harvest!',text:'Great job! Every harvest earns gold and XP. The more valuable the crop the longer it takes to grow. Use gems to speed things up!'},first_animal:{title:'🐄 First Animal!',text:'Welcome your new friend! Feed them daily to keep hunger up. Happy animals produce faster. Collect their products for gold!'},level5:{title:'⭐ Level 5!',text:'You unlocked the Greenhouse and VIP Level 1! Check the VIP tab to see your new auto-water perk and land expansion. Keep leveling!'},level10:{title:'⭐ Level 10!',text:'Windmill unlocked! It auto-waters 2 of your plots every minute. Also check your VIP progress — you are getting more land! Auto-Collect is now available on your farm!'},spin:{title:'🎰 Spin Wheel!',text:'You get a FREE spin every 24 hours! Win gold, gems, seeds, water refills and more. Extra spins cost 30💎. Tap SPIN in the top bar anytime!'},vip1:{title:'👑 VIP Level 1!',text:'You are now a VIP Seedling! Your farm auto-waters 1 plot. You earn 5% more gold on everything. Check the VIP tab to see your land growing!'}};
+const WHEEL_PRIZES=[{label:'50💰',color:'#2a5a2a',reward:()=>{G.gold+=50;G.totalEarned+=50;updateHUD();showToast('🎰 Won 50 gold!');}},{label:'10💎',color:'#1a1a4a',reward:()=>{G.gems+=10;updateHUD();showToast('🎰 Won 10 gems!');}},{label:'💧Full',color:'#0a2a4a',reward:()=>{G.water=G.maxWater;updateHUD();showToast('🎰 Water refilled!');}},{label:'200💰',color:'#3a6a2a',reward:()=>{G.gold+=200;G.totalEarned+=200;updateHUD();showToast('🎰 Won 200 gold!');}},{label:'25💎',color:'#2a1a4a',reward:()=>{G.gems+=25;updateHUD();showToast('🎰 Won 25 gems!');}},{label:'30💰',color:'#1a4a1a',reward:()=>{G.gold+=30;G.totalEarned+=30;updateHUD();showToast('🎰 Won 30 gold!');}},{label:'Seeds',color:'#1a3a1a',reward:()=>{addItem('Wheat',3);showToast('🎰 Won 3 Wheat!');}},{label:'100💎',color:'#0a0a3a',reward:()=>{G.gems+=100;updateHUD();showToast('🎰 JACKPOT! 100 gems!');}},{label:'500XP',color:'#2a2a0a',reward:()=>{addXP(500);showToast('🎰 Won 500 XP!');}},{label:'100💰',color:'#2a5a1a',reward:()=>{G.gold+=100;G.totalEarned+=100;updateHUD();showToast('🎰 Won 100 gold!');}},{label:'❌ Miss',color:'#3a1a1a',reward:()=>{showToast('🎰 Better luck next time!');}},{label:'75💰',color:'#1a4a2a',reward:()=>{G.gold+=75;G.totalEarned+=75;updateHUD();showToast('🎰 Won 75 gold!');}}];
+const ANIMAL_STAGES=[{name:'Baby',emoji:'🥚',mult:0,feedsNeeded:0,cls:'stg0'},{name:'Juvenile',emoji:'🐣',mult:0.5,feedsNeeded:10,cls:'stg1'},{name:'Young',emoji:'🌱',mult:0.75,feedsNeeded:25,cls:'stg2'},{name:'Adult',emoji:'💪',mult:1.0,feedsNeeded:50,cls:'stg3'},{name:'Prime',emoji:'👑',mult:1.5,feedsNeeded:100,cls:'stg4'}];
+const BUILD_SUPPLIES={wood:{n:'Wood',e:'🪵',c:50,gem:30,tier:1,desc:'Basic building material'},nails:{n:'Nails',e:'🔩',c:40,gem:25,tier:1,desc:'Holds it all together'},paint:{n:'Paint',e:'🎨',c:60,gem:35,tier:1,desc:'Finish and protect'},screws:{n:'Screws',e:'⚙️',c:55,gem:30,tier:1,desc:'Heavy-duty fasteners'},lumber:{n:'Lumber',e:'🏗️',c:150,gem:75,tier:2,desc:'Structural wood'},concrete:{n:'Concrete',e:'🪨',c:180,gem:90,tier:2,desc:'Foundation material'},wire:{n:'Wire',e:'🔌',c:160,gem:80,tier:2,desc:'Electrical wiring'},pipes:{n:'Pipes',e:'🔧',c:140,gem:70,tier:2,desc:'Plumbing pipes'},steel:{n:'Steel',e:'⚡',c:400,gem:150,tier:3,desc:'Heavy-duty metal'},glass:{n:'Glass',e:'🪟',c:350,gem:130,tier:3,desc:'Windows & panels'},solar:{n:'Solar Panel',e:'☀️',c:600,gem:200,tier:3,desc:'Energy upgrade'},smart:{n:'Smart Tech',e:'🤖',c:800,gem:250,tier:3,desc:'Automated systems'}};
+const BLD_LV_REQ={1:{gold:0,supplies:[]},2:{gold:200,supplies:[{n:'Wood',q:2},{n:'Nails',q:3}]},3:{gold:400,supplies:[{n:'Wood',q:3},{n:'Screws',q:2},{n:'Paint',q:1}]},4:{gold:700,supplies:[{n:'Lumber',q:2},{n:'Concrete',q:1},{n:'Nails',q:4}]},5:{gold:1000,supplies:[{n:'Lumber',q:3},{n:'Wire',q:2},{n:'Pipes',q:1}]},6:{gold:1500,supplies:[{n:'Lumber',q:4},{n:'Concrete',q:2},{n:'Wire',q:2}]},7:{gold:2000,supplies:[{n:'Steel',q:1},{n:'Concrete',q:3},{n:'Glass',q:1}]},8:{gold:3000,supplies:[{n:'Steel',q:2},{n:'Glass',q:2},{n:'Wire',q:3}]},9:{gold:4500,supplies:[{n:'Steel',q:3},{n:'Solar Panel',q:1},{n:'Smart Tech',q:1}]},10:{gold:7000,supplies:[{n:'Steel',q:4},{n:'Solar Panel',q:2},{n:'Smart Tech',q:2}]}};
+const BLD_LV_BONUS={well:(lv)=>`+${lv*5}💧 max water`,barn:(lv)=>`+${lv*2} animal slots`,greenhouse:(lv)=>`+${lv*10}% crop speed`,silo:(lv)=>`+${lv*10}% sell price`,windmill:(lv)=>`Auto-water ${lv*2} plots`,market:(lv)=>`+${lv*5}% sell price`,chicken_coop:(lv)=>`+${lv} animal slots`};
+const MINERALS=[{n:'Stone',e:'🪨',v:5,r:0.35},{n:'Clay',e:'🟤',v:8,r:0.25},{n:'Coal',e:'⚫',v:15,r:0.18},{n:'Iron',e:'🔩',v:25,r:0.10},{n:'Silver',e:'🥈',v:60,r:0.06},{n:'Gold Ore',e:'🥇',v:100,r:0.04},{n:'Diamond',e:'💎',v:300,r:0.015},{n:'Crystal',e:'🔮',v:500,r:0.005}];
+const CRITTERS_DATA=[{n:'Aphids',e:'🐛',dmg:'slow your crops',sea:[0],oh:2},{n:'Rabbits',e:'🐇',dmg:'eat your crops',sea:[0,2],oh:3},{n:'Fox',e:'🦊',dmg:'steal animal produce',sea:[0,1,2,3],oh:4},{n:'Raccoon',e:'🦝',dmg:'destroy corn/pumpkin',sea:[2],oh:3},{n:'Locusts',e:'🦗',dmg:'destroy 2 crops',sea:[1],oh:6},{n:'Rats',e:'🐀',dmg:'steal 5% of your gold',sea:[0,1,2,3],oh:5},{n:'Deer',e:'🦌',dmg:'eat your vegetables',sea:[0,1,2],oh:4},{n:'Bear',e:'🐻',dmg:'steal your honey',sea:[1,2],oh:8},{n:'Wolf',e:'🐺',dmg:'scare your animals',sea:[3],oh:6}];
 
 function xpForLevel(lv){return Math.floor(100*Math.pow(lv,1.4));}
-
-// ============ AVATAR SELECTION ============
-let selectedAvatar='f1';
-let selectedHomeType='farmhouse';
-function selAvatar(id,el){
-  document.querySelectorAll('.av-card').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  selectedAvatar=id;
-}
-function selHomeType(id,el){
-  document.querySelectorAll('.hm-card').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  selectedHomeType=id;
-}
-
+let selectedAvatar='f1',selectedHomeType='farmhouse';
+function selAvatar(id,el){document.querySelectorAll('.av-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');selectedAvatar=id;}
+function selHomeType(id,el){document.querySelectorAll('.hm-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');selectedHomeType=id;}
 function startGame(){
   let name=document.getElementById('pname').value.trim();
   let state=document.getElementById('sstate').value;
   if(!name){showToast('❌ Enter your name!');return;}
   if(!state){showToast('❌ Select your state!');return;}
-  if(!selectedAvatar){showToast('❌ Choose an avatar!');return;}
-  G.name=name; G.state=state; G.avatar=selectedAvatar; G.homeType=selectedHomeType||'farmhouse';
-  if(!G.buildingLevels) G.buildingLevels={};
+  G.name=name;G.state=state;G.avatar=selectedAvatar;G.homeType=selectedHomeType||'farmhouse';
+  if(!G.buildingLevels)G.buildingLevels={};
   if(Array.isArray(G.buildings)){let bd={};G.buildings.forEach(k=>{bd[k]=1;});G.buildings=bd;}
-  if(selectedHomeType==='manor') G.acreage+=1;
-  if(selectedHomeType==='cabin') G.maxWater=999;
+  if(selectedHomeType==='manor')G.acreage+=1;
+  if(selectedHomeType==='cabin')G.maxWater=999;
   document.getElementById('avatar-screen').classList.add('hidden');
   document.getElementById('hud').style.display='block';
   document.getElementById('gc').style.display='block';
   document.getElementById('bn').style.display='flex';
-  initGame();
-  fetchRealWeather();
+  initGame();fetchRealWeather();
 }
-
 async function fetchRealWeather(){
-  // Use Open-Meteo free API based on state
   const STATE_COORDS={GA:[32.7,-83.5],FL:[27.8,-81.8],TX:[31.0,-100.0],CA:[36.8,-119.4],NY:[42.9,-75.5],OH:[40.4,-82.7],NC:[35.5,-79.0],TN:[35.8,-86.3],AL:[32.8,-86.8],SC:[33.8,-80.9]};
   let coords=STATE_COORDS[G.state]||[33.0,-84.0];
   try{
-    let url=`https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&current=weathercode&timezone=auto`;
-    let res=await fetch(url);
-    let data=await res.json();
-    let code=data.current?.weathercode||0;
-    if(code===0||code===1) G.weather=0;
-    else if(code<=3) G.weather=1;
-    else if(code<=67) G.weather=2;
-    else if(code<=77) G.weather=4;
-    else G.weather=3;
-    updateHUD();updateWeatherFX();
-    showToast(`🌤️ Real weather loaded for ${G.state}!`);
-  }catch(e){console.log('Weather API unavailable, using simulated');}
+    let res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&current=weathercode&timezone=auto`);
+    let data=await res.json();let code=data.current?.weathercode||0;
+    if(code<=1)G.weather=0;else if(code<=3)G.weather=1;else if(code<=67)G.weather=2;else if(code<=77)G.weather=4;else G.weather=3;
+    updateHUD();updateWeatherFX();showToast(`🌤️ Real weather loaded for ${G.state}!`);
+  }catch(e){}
 }
-
-// ============ INIT ============
 function initGame(){
-  for(let i=0;i<25;i++) G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});
-  G.plots[0].state='home'; // Home plot
+  for(let i=0;i<25;i++)G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});
+  G.plots[0].state='home';
   QUESTS_D.forEach(q=>{G.quests[q.id]={progress:0,completed:false};});
   ACH_D.forEach(a=>{G.achievements[a.id]=false;});
-  if(!G.buildingLevels) G.buildingLevels={};
-  renderAll();
-  startCycles();
-  updateHUD();
-  checkOfflineEarnings();
-  checkAutoCollectBtn();
+  if(!G.buildingLevels)G.buildingLevels={};
+  renderAll();startCycles();updateHUD();checkOfflineEarnings();checkAutoCollectBtn();
   setTimeout(()=>showTutorial('spin'),3000);
   showToast(`🌱 Welcome ${G.name}! Your homestead awaits!`);
 }
-
-function renderAll(){
-  renderFarm();renderShop();renderQuests();renderInventory();renderAnimals();renderPond();renderVIP();renderBuildings();renderMining();renderChat();renderAIMessages();updateHUD();updateWeatherFX();
-}
-
-// ============ CYCLES ============
-function startCycles(){
-  setInterval(gameTick,10000);
-  setInterval(dayTick,120000); // 2 min = 1 game day
-}
-
+function renderAll(){renderFarm();renderShop();renderQuests();renderInventory();renderAnimals();renderPond();renderVIP();renderBuildings();renderMining();renderChat();renderAIMessages();updateHUD();updateWeatherFX();}
+function startCycles(){setInterval(gameTick,10000);setInterval(dayTick,120000);}
 function gameTick(){
   let hasBld=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
-  // Animal production
   G.animals.forEach(a=>{
     a.hunger=Math.max(0,(a.hunger||100)-0.5);
-    if((a.hunger||0)>20){
-      a.produceTimer=(a.produceTimer||0)+10;
-      let d=ANIMALS_D[a.type];
-      if(d&&a.produceTimer>=d.pTime){
-        a.produceTimer=0;
-        addItem(d.pName||d.pn||'Produce',1);
-        showToast(`${d.emoji||d.e} ${a.name} produced!`);
-      }
-    }
+    if((a.hunger||0)>20){a.produceTimer=(a.produceTimer||0)+10;let d=ANIMALS_D[a.type];if(d&&a.produceTimer>=d.pTime){a.produceTimer=0;addItem(d.pName||'Produce',1);showToast(`${d.emoji} ${a.name} produced!`);}}
   });
-  // VIP auto-water
-  let vip=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
-  let autoW=(vip?.autoWater||vip?.aw||0);
-  if(autoW>0){
-    let w=0;
-    G.plots.forEach(p=>{if(w<autoW&&(p.state==='planted'||p.state==='growing')&&!p.watered){p.watered=true;w++;}});
-  }
-  // Windmill
-  if(hasBld('windmill')||hasBld('windmill2')){
-    let max=hasBld('windmill2')?6:2;
-    let w=0;
-    G.plots.forEach(p=>{if(w<max&&p.state==='planted'&&!p.watered){p.watered=true;w++;}});
-  }
+  let vip=VIP_LEVELS.find(v=>v.lv===G.vipLevel);let autoW=(vip?.autoWater||0);
+  if(autoW>0){let w=0;G.plots.forEach(p=>{if(w<autoW&&(p.state==='planted'||p.state==='growing')&&!p.watered){p.watered=true;w++;}});}
+  if(hasBld('windmill')||hasBld('windmill2')){let max=hasBld('windmill2')?6:2,w=0;G.plots.forEach(p=>{if(w<max&&p.state==='planted'&&!p.watered){p.watered=true;w++;}});}
   renderFarm();renderAnimals();
 }
-
 function dayTick(){
-  G.day++;G.seasonDay++;
-  G.water=Math.min(G.water+3,G.maxWater);
-  let _hb=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);if(_hb('solar')) G.water=Math.min(G.water+5,G.maxWater);
+  G.day++;G.seasonDay++;G.water=Math.min(G.water+3,G.maxWater);
+  let hb=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
+  if(hb('solar'))G.water=Math.min(G.water+5,G.maxWater);
   if(G.seasonDay>28){G.seasonDay=1;G.season=(G.season+1)%4;showToast(`${SEASONS[G.season].emoji} New season: ${SEASONS[G.season].name}!`);}
-  changeWeather();
-  updateQuestProgress('gold',G.gold);
-  // VIP daily gem gift
+  changeWeather();updateQuestProgress('gold',G.gold);
   let vip=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
-  if(vip){
-    let gift=vip.lv>=16?50:vip.lv>=12?25:vip.lv>=7?15:vip.lv>=2?5:0;
-    if(gift>0){G.gems+=gift;showToast(`👑 VIP Daily Gift: +${gift}💎!`);}
-  }
+  if(vip){let gift=vip.lv>=16?50:vip.lv>=12?25:vip.lv>=7?15:vip.lv>=2?5:0;if(gift>0){G.gems+=gift;showToast(`👑 VIP Daily Gift: +${gift}💎!`);}}
   updateHUD();renderFarm();saveGame();
 }
-
 function changeWeather(){
-  // Only override real weather sometimes
   let s=G.season,roll=Math.random();
-  if(s===3) G.weather=roll<0.4?4:roll<0.6?2:1;
-  else if(s===1) G.weather=roll<0.5?0:roll<0.7?1:2;
-  else G.weather=roll<0.3?0:roll<0.5?1:roll<0.75?2:roll<0.9?3:4;
-  if(G.weather===2||G.weather===3){
-    G.plots.forEach(p=>{if(p.state==='planted'||p.state==='growing')p.watered=true;});
-    showToast('🌧️ Rain! All crops watered!');
-  }
+  if(s===3)G.weather=roll<0.4?4:roll<0.6?2:1;else if(s===1)G.weather=roll<0.5?0:roll<0.7?1:2;else G.weather=roll<0.3?0:roll<0.5?1:roll<0.75?2:roll<0.9?3:4;
+  if(G.weather===2||G.weather===3){G.plots.forEach(p=>{if(p.state==='planted'||p.state==='growing')p.watered=true;});showToast('🌧️ Rain! All crops watered!');}
   updateWeatherFX();
 }
-
 function updateWeatherFX(){
   let o=document.getElementById('wo');if(!o)return;o.innerHTML='';
   if(G.weather===2||G.weather===3){for(let i=0;i<40;i++){let d=document.createElement('div');d.className='rd';d.style.cssText=`left:${Math.random()*100}%;height:${10+Math.random()*15}px;animation-duration:${0.5+Math.random()*0.5}s;animation-delay:${Math.random()*2}s;`;o.appendChild(d);}}
   else if(G.weather===4){for(let i=0;i<25;i++){let f=document.createElement('div');f.className='sf';f.style.cssText=`left:${Math.random()*100}%;animation-duration:${2+Math.random()*3}s;animation-delay:${Math.random()*3}s;`;o.appendChild(f);}}
 }
-
-// ============ FARM ============
 function renderFarm(){
   let grid=document.getElementById('fg');if(!grid)return;
   let ft=document.getElementById('farm-title');
@@ -897,24 +624,21 @@ function renderFarm(){
   G.plots.forEach((p,i)=>{
     let el=document.createElement('div');el.className='plot '+p.state;el.onclick=()=>plotClick(i);
     if(p.state==='home'){let h=homeTypes[G.homeType]||'🏡 Home';el.innerHTML=`<div class="pe">${h.split(' ')[0]}</div><div class="pl">${G.name}'s Home</div>`;}
-    else if(p.state==='empty') el.innerHTML=`<div class="pe">🟫</div><div class="pl">Till</div>`;
-    else if(p.state==='tilled') el.innerHTML=`<div class="pe">🪱</div><div class="pl">Plant</div>`;
-    else if(p.state==='building'){let b=BUILDINGS_DATA[p.building]||{emoji:'🏠',name:p.building};let lv=(G.buildingLevels&&G.buildingLevels[p.building])||1;el.innerHTML=`<div class="pe">${b.emoji||b.e||'🏠'}</div><div class="pl">${b.name||b.n||p.building}</div><div class="plv">Lv${lv}</div>`;}
-    else if(p.state==='pond') el.innerHTML=`<div class="pe">🏊</div><div class="pl">Pond</div>`;
-    else if(p.state==='mine') el.innerHTML=`<div class="pe">⛏️</div><div class="pl">Mine</div>`;
-    else if(p.state==='damaged') el.innerHTML=`<div class="pe">💀</div><div class="pl">Damaged!</div><div style="font-size:8px;color:#ff7d7d;">Tap repair</div>`;
+    else if(p.state==='empty')el.innerHTML=`<div class="pe">🟫</div><div class="pl">Till</div>`;
+    else if(p.state==='tilled')el.innerHTML=`<div class="pe">🪱</div><div class="pl">Plant</div>`;
+    else if(p.state==='building'){let b=BUILDINGS_DATA[p.building]||{emoji:'🏠',name:p.building};let lv=(G.buildingLevels&&G.buildingLevels[p.building])||1;el.innerHTML=`<div class="pe">${b.emoji||'🏠'}</div><div class="pl">${b.name||p.building}</div><div class="plv">Lv${lv}</div>`;}
+    else if(p.state==='pond')el.innerHTML=`<div class="pe">🏊</div><div class="pl">Pond</div>`;
+    else if(p.state==='mine')el.innerHTML=`<div class="pe">⛏️</div><div class="pl">Mine</div>`;
+    else if(p.state==='damaged')el.innerHTML=`<div class="pe">💀</div><div class="pl">Damaged!</div><div style="font-size:8px;color:#ff7d7d;">Tap repair</div>`;
     else{
-      let allCrops={...CROPS,...TREES};
-      let crop=allCrops[p.crop];if(!crop)return;
-      let elapsed=(now-p.plantTime)/1000;
-      let cropTime=crop.time||crop.t||120;
+      let allCrops={...CROPS,...TREES};let crop=allCrops[p.crop];if(!crop)return;
+      let elapsed=(now-p.plantTime)/1000,cropTime=crop.time||120;
       let hasBld2=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
       let speedMult=G.homeType==='cottage'?1.2:hasBld2('greenhouse')?1.25:1;
-      let adjTime=cropTime/speedMult;
-      let pct=Math.min(elapsed/adjTime,1);
+      let adjTime=cropTime/speedMult,pct=Math.min(elapsed/adjTime,1);
       if(pct>=1){p.state='ready';el.className='plot ready';el.innerHTML=`<div class="pe" style="font-size:30px;">${crop.emoji}</div><div class="pl">${crop.name}</div><div class="pt">READY! 🌟</div>`;}
       else{
-        let stage=pct<0.25?'🌱':pct<0.5?'🌿':pct<0.75?crop.emoji:crop.emoji;
+        let stage=pct<0.25?'🌱':pct<0.5?'🌿':crop.emoji;
         let rem=Math.ceil(adjTime-elapsed);
         let remStr=rem>=3600?Math.ceil(rem/3600)+'h':rem>=60?Math.ceil(rem/60)+'m':rem+'s';
         el.innerHTML=`<div class="pe" style="font-size:${pct>0.5?'28':'22'}px;">${stage}</div><div class="pl">${crop.name}</div><div class="pt">${remStr}</div>`;
@@ -924,238 +648,85 @@ function renderFarm(){
     grid.appendChild(el);
   });
 }
-
 function plotClick(i){
   let p=G.plots[i];
-  // Check if planted crop is actually ready by time
-  if(p.state==='planted'||p.state==='growing'){
-    let allC={...CROPS,...TREES};
-    let crop=allC[p.crop];
-    if(crop){
-      let elapsed=(Date.now()-p.plantTime)/1000;
-      let cropTime=crop.time||crop.t||120;
-      if(elapsed>=cropTime){p.state='ready';}
-    }
-  }
+  if(p.state==='planted'||p.state==='growing'){let allC={...CROPS,...TREES};let crop=allC[p.crop];if(crop){let elapsed=(Date.now()-p.plantTime)/1000;if(elapsed>=(crop.time||120))p.state='ready';}}
   if(p.state==='home'){showToast(`🏡 ${G.name}'s home! Level up to upgrade it!`);return;}
-  if(p.state==='damaged'){if(G.gold>=10){G.gold-=10;p.state='tilled';p.crop=null;renderFarm();updateHUD();showToast('🔧 Plot repaired!');}else{showToast('❌ Need 10g to repair!');}return;}
+  if(p.state==='damaged'){if(G.gold>=10){G.gold-=10;p.state='tilled';p.crop=null;renderFarm();updateHUD();showToast('🔧 Plot repaired!');}else showToast('❌ Need 10g to repair!');return;}
   if(p.state==='empty'){p.state='tilled';renderFarm();playSound('till');showToast('🪱 Soil tilled!');}
-  else if(p.state==='tilled') showPlantModal(i);
-  else if(p.state==='planted'||p.state==='growing') showWaterModal(i);
-  else if(p.state==='ready') harvestPlot(i);
-  else if(p.state==='building'){showPanel('buildings');}
-  else if(p.state==='pond') showPanel('pond');
-  else if(p.state==='mine') showPanel('mining');
+  else if(p.state==='tilled')showPlantModal(i);
+  else if(p.state==='planted'||p.state==='growing')showWaterModal(i);
+  else if(p.state==='ready')harvestPlot(i);
+  else if(p.state==='building')showPanel('buildings');
+  else if(p.state==='pond')showPanel('pond');
+  else if(p.state==='mine')showPanel('mining');
 }
-
 function showPlantModal(idx){
   let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);
-  let allCrops={...CROPS,...TREES};
-  let body='<div class="sg">';
+  let allCrops={...CROPS,...TREES};let body='<div class="sg">';
   Object.entries(allCrops).forEach(([key,c])=>{
     let canGrow=hasGH||!c.seasons||c.seasons.includes(G.season);
-    let canAfford=G.gold>=c.cost;
-    let meetsLv=G.level>=c.reqLv;
-    let ok=canGrow&&canAfford&&meetsLv;
+    let canAfford=G.gold>=c.cost,meetsLv=G.level>=c.reqLv,ok=canGrow&&canAfford&&meetsLv;
     let rem=!meetsLv?`🔒Lv${c.reqLv}`:!canGrow?'❌Season':!canAfford?'❌Gold':`💰${c.cost}g`;
     let t=c.time>=3600?Math.ceil(c.time/3600)+'h':c.time>=60?Math.ceil(c.time/60)+'m':c.time+'s';
     body+=`<div class="si ${ok?'':'lk'}" onclick="${ok?`plantCrop(${idx},'${key}');closeModal()`:''}" ><div class="sie">${c.emoji}</div><div class="sin">${c.name}</div><div class="sic">${rem}</div><div class="sid">Sells ${c.sell}g|${t}</div></div>`;
   });
-  body+='</div>';
-  showModal('🌱 Plant',body);
+  body+='</div>';showModal('🌱 Plant',body);
 }
-
 function showWaterModal(i){
-  let p=G.plots[i];
-  let allCrops={...CROPS,...TREES};
-  let crop=allCrops[p.crop];
+  let p=G.plots[i];let allCrops={...CROPS,...TREES};let crop=allCrops[p.crop];
   if(!crop){showToast('❌ Unknown crop!');return;}
-  let elapsed=(Date.now()-p.plantTime)/1000;
-  let cropTime=crop.time||crop.t||120;
+  let elapsed=(Date.now()-p.plantTime)/1000,cropTime=crop.time||120;
   let rem=Math.max(0,Math.ceil(cropTime-elapsed));
   let remStr=rem>=3600?Math.ceil(rem/3600)+'h':rem>=60?Math.ceil(rem/60)+'m':rem+'s';
-  // Speed up cost: 1 gem per 10 minutes remaining
   let speedCost=Math.max(5,Math.ceil(rem/600));
-  showModal('🌿 Crop',`
-    <div style="text-align:center;margin-bottom:10px;">
-      <div style="font-size:36px;">${crop.emoji}</div>
-      <div style="font-size:12px;color:#7dff7d;">${crop.name}</div>
-      <div style="font-size:10px;color:#aaa;margin-top:3px;">${p.watered?'✅ Watered':'💧 Needs water'}</div>
-      <div style="font-size:10px;color:#ffd700;margin-top:3px;">⏱️ ${remStr} remaining</div>
-    </div>
-    <button class="btn bb bfu" onclick="waterPlot(${i});closeModal()">💧 Water (1💧) — Grows faster</button>
-    <button class="btn bfu" onclick="speedUpCrop(${i});closeModal()" style="margin-top:4px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed Up (${speedCost}💎) — Ready now!</button>
-    <button class="btn br bfu" onclick="removeCrop(${i});closeModal()" style="margin-top:4px;">❌ Remove</button>`);
+  showModal('🌿 Crop',`<div style="text-align:center;margin-bottom:10px;"><div style="font-size:36px;">${crop.emoji}</div><div style="font-size:12px;color:#7dff7d;">${crop.name}</div><div style="font-size:10px;color:#aaa;margin-top:3px;">${p.watered?'✅ Watered':'💧 Needs water'}</div><div style="font-size:10px;color:#ffd700;margin-top:3px;">⏱️ ${remStr} remaining</div></div><button class="btn bb bfu" onclick="waterPlot(${i});closeModal()">💧 Water (1💧) — Grows faster</button><button class="btn bfu" onclick="speedUpCrop(${i});closeModal()" style="margin-top:4px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed Up (${speedCost}💎) — Ready now!</button><button class="btn br bfu" onclick="removeCrop(${i});closeModal()" style="margin-top:4px;">❌ Remove</button>`);
 }
-
-function plantCrop(i,key){
-  let allCrops={...CROPS,...TREES};
-  let crop=allCrops[key];
-  if(G.gold<crop.cost){showToast('❌ Not enough gold!');return;}
-  G.gold-=crop.cost;
-  G.plots[i]={state:'planted',crop:key,plantTime:Date.now(),watered:false,building:null};
-  playSound('plant');renderFarm();updateHUD();
-  showToast(`🌱 Planted ${crop.emoji} ${crop.name}!`);
-}
-
-function waterPlot(i){
-  if(G.water<=0){showToast('❌ No water!');return;}
-  let p=G.plots[i];
-  let allCrops={...CROPS,...TREES};
-  let crop=allCrops[p.crop];
-  p.watered=true;p.plantTime-=crop.time*200;
-  G.water--;playSound('water');renderFarm();updateHUD();
-  showToast('💧 Watered! Growing faster!');
-}
-
+function plantCrop(i,key){let allCrops={...CROPS,...TREES};let crop=allCrops[key];if(G.gold<crop.cost){showToast('❌ Not enough gold!');return;}G.gold-=crop.cost;G.plots[i]={state:'planted',crop:key,plantTime:Date.now(),watered:false,building:null};playSound('plant');renderFarm();updateHUD();showToast(`🌱 Planted ${crop.emoji} ${crop.name}!`);}
+function waterPlot(i){if(G.water<=0){showToast('❌ No water!');return;}let p=G.plots[i];let allCrops={...CROPS,...TREES};let crop=allCrops[p.crop];p.watered=true;p.plantTime-=crop.time*200;G.water--;playSound('water');renderFarm();updateHUD();showToast('💧 Watered! Growing faster!');}
 function removeCrop(i){G.plots[i]={state:'tilled',crop:null,plantTime:0,watered:false,building:null};renderFarm();}
-
 function harvestPlot(i){
-  let p=G.plots[i];
-  let allCrops={...CROPS,...TREES};
-  let crop=allCrops[p.crop];
+  let p=G.plots[i];let allCrops={...CROPS,...TREES};let crop=allCrops[p.crop];
   if(!crop){p.state='tilled';p.crop=null;renderFarm();return;}
-  // Handle both old format (sell/name/xp) and new format (s/n/xp)
-  let sellPrice=crop.sell||crop.s||10;
-  let cropName=crop.name||crop.n||p.crop;
-  let cropEmoji=crop.emoji||crop.e||'🌾';
-  let cropXP=crop.xp||10;
-  // Building bonuses - handle both array and object
+  let sellPrice=crop.sell||10,cropName=crop.name||p.crop,cropEmoji=crop.emoji||'🌾',cropXP=crop.xp||10;
   let hasBld=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
   let price=sellPrice;
-  if(hasBld('silo')) price=Math.floor(price*1.5);
-  if(hasBld('root_cellar')) price=Math.floor(price*1.25);
-  if(hasBld('market')) price=Math.floor(price*1.2);
-  if(G.homeType==='farmhouse') price=Math.floor(price*1.1);
+  if(hasBld('silo'))price=Math.floor(price*1.5);
+  if(hasBld('root_cellar'))price=Math.floor(price*1.25);
+  if(hasBld('market'))price=Math.floor(price*1.2);
+  if(G.homeType==='farmhouse')price=Math.floor(price*1.1);
   let vipBonus=[0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0;
   price=Math.floor(price*(1+vipBonus/100));
   G.gold+=price;G.totalEarned+=price;G.totalHarvested++;
   addXP(cropXP);addItem(cropName,1);
   G.plots[i]={state:'tilled',crop:null,plantTime:0,watered:false,building:null};
-  playSound('harvest');
-  showFloating('+'+price+'💰','fg');
+  playSound('harvest');showFloating('+'+price+'💰','fg');
   if(G.totalHarvested===1){showTutorial('first_harvest');checkAchievement('a_h1');}
-  if(G.totalHarvested>=25) checkAchievement('a_h25');
-  if(G.totalHarvested>=100) checkAchievement('a_h100');
-  updateQuestProgress('harvest',G.totalHarvested);
-  updateQuestProgress('gold',G.gold);
-  renderFarm();updateHUD();
-  showToast(`🌾 ${cropEmoji} ${cropName} → ${price}💰!`);
+  if(G.totalHarvested>=25)checkAchievement('a_h25');
+  if(G.totalHarvested>=100)checkAchievement('a_h100');
+  updateQuestProgress('harvest',G.totalHarvested);updateQuestProgress('gold',G.gold);
+  renderFarm();updateHUD();showToast(`🌾 ${cropEmoji} ${cropName} → ${price}💰!`);
 }
-
-// ============ SHOP ============
 function renderShop(){
-  let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);
-  // Seeds
-  document.getElementById('seed-shop').innerHTML=Object.entries(CROPS).map(([k,c])=>{
-    let lk=G.level<c.reqLv;
-    return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buySeed('${k}')`}"><div class="sie">${c.emoji}</div><div class="sin">${c.name}</div><div class="sic">${lk?`🔒Lv${c.reqLv}`:c.cost+'g'}</div><div class="sid">→${c.sell}g</div></div>`;
-  }).join('');
-  // Trees
-  document.getElementById('tree-shop').innerHTML=Object.entries(TREES).map(([k,c])=>{
-    let lk=G.level<c.reqLv;
-    let t=c.time>=86400?Math.ceil(c.time/86400)+'d':Math.ceil(c.time/3600)+'h';
-    return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buyTree('${k}')`}"><div class="sie">${c.emoji}</div><div class="sin">${c.name}</div><div class="sic">${lk?`🔒Lv${c.reqLv}`:c.cost+'g'}</div><div class="sid">→${c.sell}g|${t}</div></div>`;
-  }).join('');
-  // Tools
-  const TOOLS={watercan:{n:'Better Can',e:'🪣',c:100,d:'+5💧'},fertilizer:{n:'Fertilizer',e:'🌿',c:60,d:'2x speed'},compass:{n:'Compass',e:'🧭',c:120,d:'+10% XP'},};
-  document.getElementById('tool-shop').innerHTML=Object.entries(TOOLS).map(([k,t])=>
-    `<div class="si" onclick="buyTool('${k}','${t.n}',${t.c},'${t.e}')"><div class="sie">${t.e}</div><div class="sin">${t.n}</div><div class="sic">${t.c}g</div><div class="sid">${t.d}</div></div>`
-  ).join('');
-  // Buildings
-  document.getElementById('building-shop').innerHTML=Object.entries(BUILDINGS_DATA).map(([k,b])=>{
-    let owned=Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
-    let lk=G.level<b.reqLv;
-    return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyBuilding('${k}')`:''}" ><div class="sie">${b.emoji}</div><div class="sin">${b.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${b.reqLv}`:b.cost+'g'}</div><div class="sid">${b.desc}</div></div>`;
-  }).join('');
-  // Mine
+  document.getElementById('seed-shop').innerHTML=Object.entries(CROPS).map(([k,c])=>{let lk=G.level<c.reqLv;return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buySeed('${k}')`}"><div class="sie">${c.emoji}</div><div class="sin">${c.name}</div><div class="sic">${lk?`🔒Lv${c.reqLv}`:c.cost+'g'}</div><div class="sid">→${c.sell}g</div></div>`;}).join('');
+  document.getElementById('tree-shop').innerHTML=Object.entries(TREES).map(([k,c])=>{let lk=G.level<c.reqLv;let t=c.time>=86400?Math.ceil(c.time/86400)+'d':Math.ceil(c.time/3600)+'h';return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buyTree('${k}')`}"><div class="sie">${c.emoji}</div><div class="sin">${c.name}</div><div class="sic">${lk?`🔒Lv${c.reqLv}`:c.cost+'g'}</div><div class="sid">→${c.sell}g|${t}</div></div>`;}).join('');
+  const TOOLS={watercan:{n:'Better Can',e:'🪣',c:100,d:'+5💧'},fertilizer:{n:'Fertilizer',e:'🌿',c:60,d:'2x speed'},compass:{n:'Compass',e:'🧭',c:120,d:'+10% XP'}};
+  document.getElementById('tool-shop').innerHTML=Object.entries(TOOLS).map(([k,t])=>`<div class="si" onclick="buyTool('${k}','${t.n}',${t.c},'${t.e}')"><div class="sie">${t.e}</div><div class="sin">${t.n}</div><div class="sic">${t.c}g</div><div class="sid">${t.d}</div></div>`).join('');
+  document.getElementById('building-shop').innerHTML=Object.entries(BUILDINGS_DATA).map(([k,b])=>{let owned=Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);let lk=G.level<b.reqLv;return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyBuilding('${k}')`:''}" ><div class="sie">${b.emoji}</div><div class="sin">${b.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${b.reqLv}`:b.cost+'g'}</div><div class="sid">${b.desc}</div></div>`;}).join('');
   let mineEl=document.getElementById('mine-store');
-  if(mineEl){
-    let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');
-    mineEl.innerHTML=`
-      <div class="si ${G.level<10?'lk':''}" onclick="${G.level>=10?'buyMinePlot()':''}"><div class="sie">⛏️</div><div class="sin">Mine Plot</div><div class="sic">${G.level<10?'🔒Lv10':'300g'}</div><div class="sid">${hasMine?'✅ Built':'Unlock mining'}</div></div>
-      <div class="si ${G.level<20?'lk':''}" onclick="${G.level>=20?'buyDeepMine()':''}"><div class="sie">🪨</div><div class="sin">Deep Mine</div><div class="sic">${G.level<20?'🔒Lv20':'800g'}</div><div class="sid">Find rare minerals</div></div>`;
-  }
-  // Defense
-  const DEFENSE_ITEMS={scarecrow:{n:'Scarecrow',e:'🎃',c:100,d:'vs rabbits/deer',lv:1},dog:{n:'Farm Dog',e:'🐕',c:300,d:'vs fox/wolf',lv:5},pest:{n:'Pesticide',e:'🧪',c:80,d:'vs aphids/locusts',lv:3},trap:{n:'Trap',e:'🪤',c:120,d:'vs rabbits/rats',lv:2},cat:{n:'Farm Cat',e:'🐈',c:200,d:'vs rats/snakes',lv:6},fence:{n:'Elec Fence',e:'⚡',c:500,d:'vs bears/wolves',lv:15}};
-  let defEl=document.getElementById('defense-shop');
-  if(defEl){
-    defEl.innerHTML=Object.entries(DEFENSE_ITEMS).map(([k,d])=>{
-      let owned=(G.inventory[d.n]||0)>0,lk=G.level<d.lv;
-      return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyDefense('${k}','${d.n}',${d.c},'${d.e}')`:''}" ><div class="sie">${d.e}</div><div class="sin">${d.n}</div><div class="sic">${owned?'✅':lk?`🔒Lv${d.lv}`:d.c+'g'}</div><div class="sid">${d.d}</div></div>`;
-    }).join('');
-  }
-  // Supplies
-  let supEl=document.getElementById('supply-shop');
-  if(supEl&&typeof SUPPLIES!=='undefined'){
-    supEl.innerHTML=Object.entries(SUPPLIES).map(([k,s])=>{
-      let lk=G.level<s.reqLv,owned=(G.inventory[s.name]||0)>0;
-      return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buySupply('${k}')`:''}" ><div class="sie">${s.emoji}</div><div class="sin">${s.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${s.reqLv}`:s.cost+'g'}</div><div class="sid">${s.desc}</div></div>`;
-    }).join('');
-  }
-  // Animals
-  document.getElementById('animal-shop').innerHTML=Object.entries(ANIMALS_D).map(([k,a])=>{
-    let lk=G.level<a.reqLv;
-    return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buyAnimal('${k}')`}"><div class="sie">${a.emoji}</div><div class="sin">${a.name}</div><div class="sic">${lk?`🔒Lv${a.reqLv}`:a.cost+'g'}</div><div class="sid">Makes ${a.produces}</div></div>`;
-  }).join('');
+  if(mineEl){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');mineEl.innerHTML=`<div class="si ${G.level<10?'lk':''}" onclick="${G.level>=10?'buyMinePlot()':''}"><div class="sie">⛏️</div><div class="sin">Mine Plot</div><div class="sic">${G.level<10?'🔒Lv10':'300g'}</div><div class="sid">${hasMine?'✅ Built':'Unlock mining'}</div></div><div class="si ${G.level<20?'lk':''}" onclick="${G.level>=20?'buyDeepMine()':''}"><div class="sie">🪨</div><div class="sin">Deep Mine</div><div class="sic">${G.level<20?'🔒Lv20':'800g'}</div><div class="sid">Find rare minerals</div></div>`;}
+  const DEF={scarecrow:{n:'Scarecrow',e:'🎃',c:100,d:'vs rabbits/deer',lv:1},dog:{n:'Farm Dog',e:'🐕',c:300,d:'vs fox/wolf',lv:5},pest:{n:'Pesticide',e:'🧪',c:80,d:'vs aphids/locusts',lv:3},trap:{n:'Trap',e:'🪤',c:120,d:'vs rabbits/rats',lv:2},cat:{n:'Farm Cat',e:'🐈',c:200,d:'vs rats/snakes',lv:6},fence:{n:'Elec Fence',e:'⚡',c:500,d:'vs bears/wolves',lv:15}};
+  let defEl=document.getElementById('defense-shop');if(defEl)defEl.innerHTML=Object.entries(DEF).map(([k,d])=>{let owned=(G.inventory[d.n]||0)>0,lk=G.level<d.lv;return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyDefense('${k}','${d.n}',${d.c},'${d.e}')`:''}" ><div class="sie">${d.e}</div><div class="sin">${d.n}</div><div class="sic">${owned?'✅':lk?`🔒Lv${d.lv}`:d.c+'g'}</div><div class="sid">${d.d}</div></div>`;}).join('');
+  let supEl=document.getElementById('supply-shop');if(supEl)supEl.innerHTML=Object.entries(SUPPLIES).map(([k,s])=>{let lk=G.level<s.reqLv,owned=(G.inventory[s.name]||0)>0;return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buySupply('${k}')`:''}" ><div class="sie">${s.emoji}</div><div class="sin">${s.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${s.reqLv}`:s.cost+'g'}</div><div class="sid">${s.desc}</div></div>`;}).join('');
+  document.getElementById('animal-shop').innerHTML=Object.entries(ANIMALS_D).map(([k,a])=>{let lk=G.level<a.reqLv;return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buyAnimal('${k}')`}"><div class="sie">${a.emoji}</div><div class="sin">${a.name}</div><div class="sic">${lk?`🔒Lv${a.reqLv}`:a.cost+'g'}</div><div class="sid">Makes ${a.produces}</div></div>`;}).join('');
 }
-
-function buySeed(k){
-  let c=CROPS[k];if(G.gold<c.cost){showToast('❌ Not enough gold!');return;}
-  let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);
-  if(!hasGH&&!c.seasons.includes(G.season)){showToast(`❌ ${c.name} needs ${SEASONS[G.season].name} or Greenhouse!`);return;}
-  let t=G.plots.findIndex(p=>p.state==='tilled');
-  if(t===-1){showToast('❌ Till a plot first!');return;}
-  plantCrop(t,k);
-}
-function buyTree(k){
-  let c=TREES[k];if(G.gold<c.cost){showToast('❌ Not enough gold!');return;}
-  let t=G.plots.findIndex(p=>p.state==='tilled');
-  if(t===-1){showToast('❌ Till a plot first!');return;}
-  plantCrop(t,k);
-}
-function buyTool(k,name,cost,emoji){
-  if(G.gold<cost){showToast('❌ Not enough gold!');return;}
-  G.gold-=cost;addItem(name,1);updateHUD();
-  if(k==='watercan'){G.maxWater+=5;G.water=Math.min(G.water+5,G.maxWater);}
-  showToast(`${emoji} Bought ${name}!`);
-}
-function buyBuilding(k){
-  let b=BUILDINGS_DATA[k];if(!b)return;
-  let owned=Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
-  if(owned){showToast('Already built! Upgrade in Builds tab.');return;}
-  if(G.gold<b.cost){showToast(`❌ Need ${b.cost}g!`);return;}
-  G.gold-=b.cost;
-  // Buildings go in their OWN zone — never take farm plots!
-  if(Array.isArray(G.buildings)){let bd={};G.buildings.forEach(x=>{bd[x]=1;});G.buildings=bd;}
-  G.buildings[k]=1;
-  if(!G.buildingLevels)G.buildingLevels={};
-  G.buildingLevels[k]=1;
-  // Apply building effect
-  b.effect();
-  addXP(100);checkAchievement('a_bld1');
-  if(k==='well'){G.maxWater+=10;}
-  playSound('build');
-  renderShop();renderBuildings();updateHUD();
-  showToast(`${b.emoji} ${b.name} built! Check Builds tab to upgrade!`);
-}
-function buyDefense(k,name,cost,emoji){
-  if(G.gold<cost){showToast('❌ Not enough gold!');return;}
-  G.gold-=cost;addItem(name,1);updateHUD();renderShop();
-  showToast(`${emoji} Got ${name}! You're protected!`);
-}
-function buyDeepMine(){
-  if(G.level<20){showToast('❌ Need Level 20!');return;}
-  if(G.gold<800){showToast('❌ Need 800g!');return;}
-  G.gold-=800;addItem('Deep Mine Kit',1);updateHUD();
-  showToast('⛏️ Deep Mine Kit acquired! Find rare minerals!');
-}
-function buySupply(k){
-  let s=SUPPLIES[k];
-  if(G.gold<s.cost){showToast('❌ Not enough gold!');return;}
-  G.gold-=s.cost;addItem(s.name,1);updateHUD();renderShop();
-  showToast(`${s.emoji} Bought ${s.name}!`);
-}
+function buySeed(k){let c=CROPS[k];if(G.gold<c.cost){showToast('❌ Not enough gold!');return;}let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);if(!hasGH&&!c.seasons.includes(G.season)){showToast(`❌ ${c.name} needs ${SEASONS[G.season].name} or Greenhouse!`);return;}let t=G.plots.findIndex(p=>p.state==='tilled');if(t===-1){showToast('❌ Till a plot first!');return;}plantCrop(t,k);}
+function buyTree(k){let c=TREES[k];if(G.gold<c.cost){showToast('❌ Not enough gold!');return;}let t=G.plots.findIndex(p=>p.state==='tilled');if(t===-1){showToast('❌ Till a plot first!');return;}plantCrop(t,k);}
+function buyTool(k,name,cost,emoji){if(G.gold<cost){showToast('❌ Not enough gold!');return;}G.gold-=cost;addItem(name,1);updateHUD();if(k==='watercan'){G.maxWater+=5;G.water=Math.min(G.water+5,G.maxWater);}showToast(`${emoji} Bought ${name}!`);}
+function buyBuilding(k){let b=BUILDINGS_DATA[k];if(!b)return;let owned=Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);if(owned){showToast('Already built! Upgrade in Builds tab.');return;}if(G.gold<b.cost){showToast(`❌ Need ${b.cost}g!`);return;}G.gold-=b.cost;if(Array.isArray(G.buildings)){let bd={};G.buildings.forEach(x=>{bd[x]=1;});G.buildings=bd;}G.buildings[k]=1;if(!G.buildingLevels)G.buildingLevels={};G.buildingLevels[k]=1;b.effect();addXP(100);checkAchievement('a_bld1');if(k==='well')G.maxWater+=10;playSound('build');renderShop();renderBuildings();updateHUD();showToast(`${b.emoji} ${b.name} built! Check Builds tab to upgrade!`);}
+function buyDefense(k,name,cost,emoji){if(G.gold<cost){showToast('❌ Not enough gold!');return;}G.gold-=cost;addItem(name,1);updateHUD();renderShop();showToast(`${emoji} Got ${name}! You're protected!`);}
+function buyDeepMine(){if(G.level<20){showToast('❌ Need Level 20!');return;}if(G.gold<800){showToast('❌ Need 800g!');return;}G.gold-=800;addItem('Deep Mine Kit',1);updateHUD();showToast('⛏️ Deep Mine Kit acquired!');}
+function buySupply(k){let s=SUPPLIES[k];if(G.gold<s.cost){showToast('❌ Not enough gold!');return;}G.gold-=s.cost;addItem(s.name,1);updateHUD();renderShop();showToast(`${s.emoji} Bought ${s.name}!`);}
 function buyAnimal(k){
   let a=ANIMALS_D[k];
   let hasBarn=Array.isArray(G.buildings)?G.buildings.includes('barn'):(G.buildings['barn']>0);
@@ -1163,25 +734,18 @@ function buyAnimal(k){
   let max=hasBarn?8:hasCoop?4:2;
   if(G.animals.length>=max){showToast('❌ Need Barn for more animals!');return;}
   if(G.gold<a.cost){showToast('❌ Not enough gold!');return;}
-  G.gold-=a.cost;
-  G.animals.push({type:k,name:a.name,emoji:a.emoji,hunger:100,happiness:100,produceTimer:0,feeds:0});
-  addXP(a.xp);playSound('animal');
-  updateQuestProgress('animals',G.animals.length);
-  if(G.animals.length===1) showTutorial('first_animal');
-  if(G.animals.length>=3) checkAchievement('a_ani3');
+  G.gold-=a.cost;G.animals.push({type:k,name:a.name,emoji:a.emoji,hunger:100,happiness:100,produceTimer:0,feeds:0});
+  addXP(a.xp);playSound('animal');updateQuestProgress('animals',G.animals.length);
+  if(G.animals.length===1)showTutorial('first_animal');if(G.animals.length>=3)checkAchievement('a_ani3');
   renderAnimals();updateHUD();showToast(`${a.emoji} Got a ${a.name}!`);
 }
-
-// ============ ANIMALS ============
+function getAnimalStage(animal){let feeds=animal.feeds||0,stage=0;for(let i=ANIMAL_STAGES.length-1;i>=0;i--){if(feeds>=ANIMAL_STAGES[i].feedsNeeded){stage=i;break;}}return{...ANIMAL_STAGES[stage],idx:stage};}
 function renderAnimals(){
-  let list=document.getElementById('alist');
-  let noA=document.getElementById('noani');
-  if(!list)return;
+  let list=document.getElementById('alist'),noA=document.getElementById('noani');if(!list)return;
   if(G.animals.length===0){list.innerHTML='';noA.style.display='block';return;}
   noA.style.display='none';
   list.innerHTML=G.animals.map((a,i)=>{
-    let d=ANIMALS_D[a.type];
-    let stage=getAnimalStage(a);
+    let d=ANIMALS_D[a.type],stage=getAnimalStage(a);
     let h=a.hunger||100,pp=Math.min(((a.produceTimer||0)/d.pTime)*100,100);
     let hc=h>50?'#7dff7d':h>20?'#ffd700':'#ff4444';
     let pt=d.pTime>=3600?Math.ceil((d.pTime-(a.produceTimer||0))/3600)+'h':Math.ceil((d.pTime-(a.produceTimer||0))/60)+'m';
@@ -1194,7 +758,7 @@ function renderAnimals(){
           <span class="stg-badge ${stage.cls}">${stage.emoji} ${stage.name}</span>
         </div>
         ${stage.idx<4?`<div style="font-size:9px;color:#aaa;">${nextFeeds} feeds to ${ANIMAL_STAGES[Math.min(stage.idx+1,4)].name}</div>`:'<div style="font-size:9px;color:#ffd700;">👑 MAX! Can breed at Level 20!</div>'}
-        <div style="font-size:9px;color:#aaa;margin-top:2px;">Hunger: ${Math.floor(h)}% | Produce rate: ${Math.floor(stage.mult*100)}%</div>
+        <div style="font-size:9px;color:#aaa;margin-top:2px;">Hunger: ${Math.floor(h)}% | Rate: ${Math.floor(stage.mult*100)}%</div>
         <div class="animal-bar"><div class="animal-bar-fill" style="width:${h}%;background:${hc}"></div></div>
         <div style="font-size:9px;color:#aaa;margin-top:2px;">Production: ${Math.floor(pp)}% (${pt} left)</div>
         <div class="animal-bar"><div class="animal-bar-fill" style="width:${pp}%;background:#7db8ff"></div></div>
@@ -1207,1403 +771,253 @@ function renderAnimals(){
     </div>`;
   }).join('');
 }
-
-function feedAnimal(i){
-  let a=G.animals[i],d=ANIMALS_D[a.type];
-  if(G.gold<d.feed){showToast('❌ Not enough gold!');return;}
-  G.gold-=d.feed;a.hunger=Math.min(100,(a.hunger||0)+30);
-  a.feeds=(a.feeds||0)+1;
-  let stage=getAnimalStage(a);
-  playSound('animal');renderAnimals();updateHUD();
-  showToast(`${a.emoji} Fed! Stage: ${stage.name}`);
-}
-
-function collectAnimal(i){
-  let a=G.animals[i],d=ANIMALS_D[a.type];
-  let stage=getAnimalStage(a);
-  if(stage.mult===0){showToast(`${a.emoji} Still a baby! Feed to grow!`);return;}
-  if((a.produceTimer||0)<d.pTime*0.5){showToast(`${a.emoji} Not ready yet!`);return;}
-  let val=Math.floor(d.pVal*stage.mult);
-  G.gold+=val;G.totalEarned+=val;a.produceTimer=0;
-  addXP(d.xp);addItem(d.pName,1);
-  showFloating('+'+val+'💰','alist');
-  renderAnimals();updateHUD();showToast(`${d.produces} Collected ${val}💰! (${stage.name} rate)`);
-}
-
-// ============ POND ============
-// ===== FISHING TIMER SYSTEM =====
-let fishState = {casting:false,premium:false,startTime:0,duration:0,pendingFish:null,timer:null};
-
-// Use FISH and RARE_FISH defined above
-const FISH_DATA = FISH; // alias
-
+function feedAnimal(i){let a=G.animals[i],d=ANIMALS_D[a.type];if(G.gold<d.feed){showToast('❌ Not enough gold!');return;}G.gold-=d.feed;a.hunger=Math.min(100,(a.hunger||0)+30);a.feeds=(a.feeds||0)+1;let stage=getAnimalStage(a);playSound('animal');renderAnimals();updateHUD();showToast(`${a.emoji} Fed! Stage: ${stage.name}`);}
+function collectAnimal(i){let a=G.animals[i],d=ANIMALS_D[a.type];let stage=getAnimalStage(a);if(stage.mult===0){showToast(`${a.emoji} Still a baby! Feed to grow!`);return;}if((a.produceTimer||0)<d.pTime*0.5){showToast(`${a.emoji} Not ready yet!`);return;}let val=Math.floor(d.pVal*stage.mult);G.gold+=val;G.totalEarned+=val;a.produceTimer=0;addXP(d.xp);addItem(d.pName,1);showFloating('+'+val+'💰','alist');renderAnimals();updateHUD();showToast(`${d.produces} Collected ${val}💰! (${stage.name} rate)`);}
+let fishState={casting:false,premium:false,startTime:0,duration:0,pendingFish:null,timer:null};
 function castLine(isPremium){
   if(G.level<3){showToast('❌ Pond unlocks at Level 3!');return;}
-  if(fishState.casting){showToast('⏱️ Already fishing! Wait for your catch!');return;}
-  if(fishState.pendingFish){showToast('🎣 You have a catch waiting! Collect it first!');return;}
-  if(isPremium){
-    if((G.gems||0)<40){showToast('❌ Need 40💎!');return;}
-    G.gems-=40;
-  }else{
-    if(G.water<5){showToast('❌ Need 5💧!');return;}
-    G.water-=5;
-  }
+  if(fishState.casting){showToast('⏱️ Already fishing!');return;}
+  if(fishState.pendingFish){showToast('🎣 Collect your catch first!');return;}
+  if(isPremium){if((G.gems||0)<40){showToast('❌ Need 40💎!');return;}G.gems-=40;}
+  else{if(G.water<5){showToast('❌ Need 5💧!');return;}G.water-=5;}
   updateHUD();
-  let pool=isPremium?RARE_FISH:FISH_DATA;
-  let roll=Math.random(),cum=0,caught=pool[0];
+  let pool=isPremium?RARE_FISH:FISH_DATA,roll=Math.random(),cum=0,caught=pool[0];
   for(let f of pool){cum+=f.rarity;if(roll<=cum){caught=f;break;}}
   fishState={casting:true,premium:isPremium,startTime:Date.now(),duration:isPremium?15000:30000,pendingFish:caught,timer:null};
-  let cw=document.getElementById('fish-cast-wrap');
-  let tw=document.getElementById('fish-timer-wrap');
-  let rw=document.getElementById('fish-ready-wrap');
-  if(cw)cw.style.display='none';
-  if(rw)rw.style.display='none';
-  if(tw)tw.style.display='block';
-  let st=document.getElementById('fish-status');
-  if(st)st.textContent=isPremium?'💎 Premium line cast...':'🎣 Line in the water...';
-  let sc=document.getElementById('fish-speed-cost');
-  if(sc)sc.textContent=isPremium?20:10;
-  fishState.timer=setInterval(updateFishTimer,500);
-  playSound('fish');
+  let cw=document.getElementById('fish-cast-wrap'),tw=document.getElementById('fish-timer-wrap'),rw=document.getElementById('fish-ready-wrap');
+  if(cw)cw.style.display='none';if(rw)rw.style.display='none';if(tw)tw.style.display='block';
+  let st=document.getElementById('fish-status');if(st)st.textContent=isPremium?'💎 Premium line cast...':'🎣 Line in the water...';
+  let sc=document.getElementById('fish-speed-cost');if(sc)sc.textContent=isPremium?20:10;
+  fishState.timer=setInterval(updateFishTimer,500);playSound('fish');
   showToast(`🎣 Line cast! ${isPremium?'15s':'30s'} until catch!`);
 }
-
 function updateFishTimer(){
   if(!fishState.casting){clearInterval(fishState.timer);return;}
-  let elapsed=Date.now()-fishState.startTime;
-  let pct=Math.min(elapsed/fishState.duration*100,100);
-  let rem=Math.max(0,Math.ceil((fishState.duration-elapsed)/1000));
-  let bar=document.getElementById('fish-timer-bar');
-  let txt=document.getElementById('fish-timer-text');
-  if(bar)bar.style.width=pct+'%';
-  if(txt)txt.textContent=rem>0?`${rem}s remaining...`:'Ready to collect!';
+  let elapsed=Date.now()-fishState.startTime,pct=Math.min(elapsed/fishState.duration*100,100),rem=Math.max(0,Math.ceil((fishState.duration-elapsed)/1000));
+  let bar=document.getElementById('fish-timer-bar'),txt=document.getElementById('fish-timer-text');
+  if(bar)bar.style.width=pct+'%';if(txt)txt.textContent=rem>0?`${rem}s remaining...`:'Ready to collect!';
   if(elapsed>=fishState.duration){clearInterval(fishState.timer);fishState.casting=false;showFishReady();}
 }
-
-function showFishReady(){
-  let f=fishState.pendingFish;
-  let tw=document.getElementById('fish-timer-wrap');
-  let rw=document.getElementById('fish-ready-wrap');
-  let cp=document.getElementById('fish-catch-preview');
-  if(tw)tw.style.display='none';
-  if(rw)rw.style.display='block';
-  if(cp)cp.textContent=`${f.emoji} ${f.name} is on the line!`;
-  playSound('fish');
-  showToast(`🎣 Something biting! Go to Pond to collect!`);
-}
-
+function showFishReady(){let f=fishState.pendingFish;let tw=document.getElementById('fish-timer-wrap'),rw=document.getElementById('fish-ready-wrap'),cp=document.getElementById('fish-catch-preview');if(tw)tw.style.display='none';if(rw)rw.style.display='block';if(cp)cp.textContent=`${f.emoji} ${f.name} is on the line!`;playSound('fish');showToast(`🎣 Something biting! Go to Pond!`);}
 function collectFish(){
-  let f=fishState.pendingFish;
-  if(!f){showToast('❌ Nothing to collect!');return;}
-  G.gold+=f.value;G.totalEarned+=f.value;G.fishCaught++;
-  addXP(Math.floor(f.value/2));addItem(f.name,1);
-  if(!G.fishLog)G.fishLog=[];
-  G.fishLog.push(`${f.emoji} ${f.name} +${f.value}💰`);
+  let f=fishState.pendingFish;if(!f){showToast('❌ Nothing to collect!');return;}
+  G.gold+=f.value;G.totalEarned+=f.value;G.fishCaught++;addXP(Math.floor(f.value/2));addItem(f.name,1);
+  if(!G.fishLog)G.fishLog=[];G.fishLog.push(`${f.emoji} ${f.name} +${f.value}💰`);
   fishState.pendingFish=null;
-  let rw=document.getElementById('fish-ready-wrap');
-  let cw=document.getElementById('fish-cast-wrap');
-  let st=document.getElementById('fish-status');
-  if(rw)rw.style.display='none';
-  if(cw)cw.style.display='block';
-  if(st)st.textContent=`✅ Caught ${f.emoji} ${f.name} for ${f.value}💰!`;
-  updateQuestProgress('fish',G.fishCaught);
-  if(G.fishCaught>=5)checkAchievement('a_fish5');
-  let ftot=document.getElementById('ftot');
-  if(ftot)ftot.textContent=G.fishCaught;
-  let flog=document.getElementById('flog');
-  if(flog)flog.innerHTML=(G.fishLog||[]).slice(-8).reverse().map(l=>`<div>${l}</div>`).join('');
-  showFloat('+'+f.value+'💰','pond-ok');
-  playSound('harvest');updateHUD();saveGame();
-  showToast(`${f.emoji} ${f.name} — +${f.value}💰!`);
+  let rw=document.getElementById('fish-ready-wrap'),cw=document.getElementById('fish-cast-wrap'),st=document.getElementById('fish-status');
+  if(rw)rw.style.display='none';if(cw)cw.style.display='block';if(st)st.textContent=`✅ Caught ${f.emoji} ${f.name} for ${f.value}💰!`;
+  updateQuestProgress('fish',G.fishCaught);if(G.fishCaught>=5)checkAchievement('a_fish5');
+  let ftot=document.getElementById('ftot');if(ftot)ftot.textContent=G.fishCaught;
+  let flog=document.getElementById('flog');if(flog)flog.innerHTML=(G.fishLog||[]).slice(-8).reverse().map(l=>`<div>${l}</div>`).join('');
+  playSound('harvest');updateHUD();saveGame();showToast(`${f.emoji} ${f.name} — +${f.value}💰!`);
 }
-
-function speedUpFishing(){
-  let cost=fishState.premium?20:10;
-  if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎!`);return;}
-  G.gems-=cost;
-  clearInterval(fishState.timer);
-  fishState.casting=false;
-  showFishReady();
-  updateHUD();
-  showToast(`⚡ Fish ready! (-${cost}💎)`);
-}
-
+function speedUpFishing(){let cost=fishState.premium?20:10;if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎!`);return;}G.gems-=cost;clearInterval(fishState.timer);fishState.casting=false;showFishReady();updateHUD();showToast(`⚡ Fish ready! (-${cost}💎)`);}
 function renderPond(){
-  let lk=document.getElementById('pond-lock');
-  let ok=document.getElementById('pond-ok');
-  if(!lk||!ok)return;
+  let lk=document.getElementById('pond-lock'),ok=document.getElementById('pond-ok');if(!lk||!ok)return;
   if(G.level<3){lk.style.display='block';ok.style.display='none';return;}
   lk.style.display='none';ok.style.display='block';
-  let ftot=document.getElementById('ftot');
-  if(ftot)ftot.textContent=G.fishCaught||0;
-  let flog=document.getElementById('flog');
-  if(flog)flog.innerHTML=(G.fishLog||[]).slice(-8).reverse().map(l=>`<div>${l}</div>`).join('');
-  if(fishState.casting){
-    let cw=document.getElementById('fish-cast-wrap');
-    let tw=document.getElementById('fish-timer-wrap');
-    if(cw)cw.style.display='none';
-    if(tw)tw.style.display='block';
-  }else if(fishState.pendingFish){
-    let cw=document.getElementById('fish-cast-wrap');
-    let rw=document.getElementById('fish-ready-wrap');
-    let cp=document.getElementById('fish-catch-preview');
-    if(cw)cw.style.display='none';
-    if(rw)rw.style.display='block';
-    if(cp)cp.textContent=`${fishState.pendingFish.emoji} ${fishState.pendingFish.name} is on the line!`;
-  }
+  let ftot=document.getElementById('ftot');if(ftot)ftot.textContent=G.fishCaught||0;
+  let flog=document.getElementById('flog');if(flog)flog.innerHTML=(G.fishLog||[]).slice(-8).reverse().map(l=>`<div>${l}</div>`).join('');
+  if(fishState.casting){let cw=document.getElementById('fish-cast-wrap'),tw=document.getElementById('fish-timer-wrap');if(cw)cw.style.display='none';if(tw)tw.style.display='block';}
+  else if(fishState.pendingFish){let cw=document.getElementById('fish-cast-wrap'),rw=document.getElementById('fish-ready-wrap'),cp=document.getElementById('fish-catch-preview');if(cw)cw.style.display='none';if(rw)rw.style.display='block';if(cp)cp.textContent=`${fishState.pendingFish.emoji} ${fishState.pendingFish.name} is on the line!`;}
 }
-
-function goFishing(){castLine(false);}
-function goFish2(){castLine(true);}
-
-// ============ VIP ============
 function renderVIP(){
   let list=document.getElementById('vip-list');if(!list)return;
-  let disp=document.getElementById('vip-lv-display');
-  let cur=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
-  if(disp) disp.textContent=cur?cur.name:'None yet';
-  list.innerHTML=VIP_LEVELS.map(v=>{
-    let unlocked=G.level>=v.reqGameLv;
-    let isCurrent=G.vipLevel===v.lv;
-    let cls=isCurrent?'vcur':unlocked?'vun':'vlk';
-    return `<div class="vc ${cls}">
-      <div style="font-size:22px;">${v.name.split(' ')[0]}</div>
-      <div style="flex:1;">
-        <div style="font-size:11px;color:#7dff7d;font-weight:bold;">${v.name}</div>
-        <div style="font-size:9px;color:#aaa;">+${v.acres} acres | Auto-water ${v.autoWater} plots</div>
-        <div style="font-size:9px;color:#ffd700;">${v.bonus}</div>
-      </div>
-      <div style="font-size:9px;color:${unlocked?'#7dff7d':'#ff4444'};">Lv${v.reqGameLv}</div>
-    </div>`;
-  }).join('');
+  let disp=document.getElementById('vip-lv-display');let cur=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
+  if(disp)disp.textContent=cur?cur.name:'None yet';
+  list.innerHTML=VIP_LEVELS.map(v=>{let unlocked=G.level>=v.reqGameLv,isCurrent=G.vipLevel===v.lv,cls=isCurrent?'vcur':unlocked?'vun':'vlk';return `<div class="vc ${cls}"><div style="font-size:22px;">${v.name.split(' ')[0]}</div><div style="flex:1;"><div style="font-size:11px;color:#7dff7d;font-weight:bold;">${v.name}</div><div style="font-size:9px;color:#aaa;">+${v.acres} acres | Auto-water ${v.autoWater} plots</div><div style="font-size:9px;color:#ffd700;">${v.bonus}</div></div><div style="font-size:9px;color:${unlocked?'#7dff7d':'#ff4444'};">Lv${v.reqGameLv}</div></div>`;}).join('');
 }
-
 function checkVIPLevel(){
-  let newVIP=0;
-  VIP_LEVELS.forEach(v=>{if(G.level>=v.reqGameLv) newVIP=v.lv;});
-  if(newVIP>G.vipLevel){
-    G.vipLevel=newVIP;
-    let vip=VIP_LEVELS.find(v=>v.lv===newVIP);
-    G.acreage=(G.acreage||0.5)+vip.acres;
-    let hvip=document.getElementById('hvip');
-    if(hvip){hvip.style.display='block';hvip.textContent=`👑 ${vip.name.split(' ')[0]}`;}
-    checkAchievement('a_vip1');
-    showTutorial('vip1');
-    renderVIP();
-    showToast(`👑 VIP Level ${newVIP} unlocked! +${vip.acres} acres!`);
-  }
+  let newVIP=0;VIP_LEVELS.forEach(v=>{if(G.level>=v.reqGameLv)newVIP=v.lv;});
+  if(newVIP>G.vipLevel){G.vipLevel=newVIP;let vip=VIP_LEVELS.find(v=>v.lv===newVIP);G.acreage=(G.acreage||0.5)+vip.acres;let hvip=document.getElementById('hvip');if(hvip){hvip.style.display='block';hvip.textContent=`👑 ${vip.name.split(' ')[0]}`;}checkAchievement('a_vip1');showTutorial('vip1');renderVIP();showToast(`👑 VIP Level ${newVIP} unlocked! +${vip.acres} acres!`);}
 }
-
-// ============ INVENTORY ============
 function addItem(name,qty){G.inventory[name]=(G.inventory[name]||0)+qty;}
-
 function renderInventory(){
-  let sn=document.getElementById('s-name');if(sn)sn.textContent=G.name||'-';
-  let ss=document.getElementById('s-state');if(ss)ss.textContent=G.state||'-';
-  let sh=document.getElementById('s-harv');if(sh)sh.textContent=G.totalHarvested;
-  let sd=document.getElementById('s-days');if(sd)sd.textContent=G.day;
-  let se=document.getElementById('s-earn');if(se)se.textContent=G.totalEarned+'g';
-  let sf=document.getElementById('s-fish');if(sf)sf.textContent=G.fishCaught;
-  let ss2=document.getElementById('s-season');if(ss2)ss2.textContent=`${SEASONS[G.season].name} D${G.seasonDay}`;
-  let xpN=xpForLevel(G.level);
-  let pct=Math.min((G.xp/xpN)*100,100);
-  let il=document.getElementById('il');if(il)il.textContent=G.level;
-  let ixp=document.getElementById('ixp');if(ixp)ixp.textContent=G.xp;
-  let ixpn=document.getElementById('ixpn');if(ixpn)ixpn.textContent=xpN;
-  let xpf=document.getElementById('xpf');if(xpf)xpf.style.width=pct+'%';
-  let vs=document.getElementById('vip-status');
-  let cur=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
-  if(vs) vs.innerHTML=cur?`<div style="color:#d8a8ff;font-weight:bold;">${cur.name}</div><div style="font-size:9px;color:#aaa;margin-top:2px;">${cur.bonus} | ${G.acreage?.toFixed(1)||0.5} acres</div>`:'<div style="font-size:10px;color:#aaa;">Not VIP yet. Reach Level 5!</div>';
+  let e=id=>document.getElementById(id);
+  if(e('s-name'))e('s-name').textContent=G.name||'-';if(e('s-state'))e('s-state').textContent=G.state||'-';
+  if(e('s-harv'))e('s-harv').textContent=G.totalHarvested;if(e('s-days'))e('s-days').textContent=G.day;
+  if(e('s-earn'))e('s-earn').textContent=G.totalEarned+'g';if(e('s-fish'))e('s-fish').textContent=G.fishCaught;
+  if(e('s-season'))e('s-season').textContent=`${SEASONS[G.season].name} D${G.seasonDay}`;
+  let xpN=xpForLevel(G.level),pct=Math.min((G.xp/xpN)*100,100);
+  if(e('il'))e('il').textContent=G.level;if(e('ixp'))e('ixp').textContent=G.xp;if(e('ixpn'))e('ixpn').textContent=xpN;if(e('xpf'))e('xpf').style.width=pct+'%';
+  let vs=e('vip-status'),cur=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
+  if(vs)vs.innerHTML=cur?`<div style="color:#d8a8ff;font-weight:bold;">${cur.name}</div><div style="font-size:9px;color:#aaa;margin-top:2px;">${cur.bonus} | ${G.acreage?.toFixed(1)||0.5} acres</div>`:'<div style="font-size:10px;color:#aaa;">Not VIP yet. Reach Level 5!</div>';
   let items=Object.entries(G.inventory).filter(([,q])=>q>0);
-  let ig=document.getElementById('igrid');
-  if(ig) ig.innerHTML=items.length?items.map(([name,qty])=>{
-    let allC={...CROPS,...TREES};let crop=Object.values(allC).find(c=>c.name===name);
-    return `<div style="background:#1a2e1a;border:1px solid #2a4a2a;border-radius:6px;padding:5px;text-align:center;font-size:9px;"><div style="font-size:18px;">${crop?crop.emoji:'📦'}</div>${name}<br><span style="color:#7dff7d;font-weight:bold;">x${qty}</span></div>`;
-  }).join(''):'<div style="color:#555;font-size:10px;grid-column:1/-1;text-align:center;padding:10px;">No items yet</div>';
-  let bl=document.getElementById('blist');
-  if(bl) bl.innerHTML=G.buildings.length?G.buildings.map(b=>`<div style="margin-bottom:3px;">${BUILDINGS_D[b]?.emoji} ${BUILDINGS_D[b]?.name}</div>`).join(''):'<span style="color:#555;font-size:10px;">None yet</span>';
+  let ig=e('igrid');if(ig)ig.innerHTML=items.length?items.map(([name,qty])=>{let allC={...CROPS,...TREES};let crop=Object.values(allC).find(c=>c.name===name);return `<div style="background:#1a2e1a;border:1px solid #2a4a2a;border-radius:6px;padding:5px;text-align:center;font-size:9px;"><div style="font-size:18px;">${crop?crop.emoji:'📦'}</div>${name}<br><span style="color:#7dff7d;font-weight:bold;">x${qty}</span></div>`;}).join(''):'<div style="color:#555;font-size:10px;grid-column:1/-1;text-align:center;padding:10px;">No items yet</div>';
+  let bl=e('blist');if(bl){let bldKeys=typeof G.buildings==='object'&&!Array.isArray(G.buildings)?Object.keys(G.buildings).filter(k=>G.buildings[k]>0):(G.buildings||[]);bl.innerHTML=bldKeys.length?bldKeys.map(b=>`<div style="margin-bottom:3px;">${BUILDINGS_D[b]?.emoji||'🏠'} ${BUILDINGS_D[b]?.name||b}</div>`).join(''):'<span style="color:#555;font-size:10px;">None yet</span>';}
 }
-
-// ============ QUESTS ============
-function updateQuestProgress(type,value){
-  QUESTS_D.forEach(q=>{
-    if(q.type===type&&!G.quests[q.id].completed){
-      G.quests[q.id].progress=value;
-      if(G.quests[q.id].progress>=q.goal){
-        G.quests[q.id].completed=true;
-        if(q.reward>0){G.gold+=q.reward;G.totalEarned+=q.reward;}
-        if(q.xp>0) addXP(q.xp);
-        showToast(`📜 Quest: ${q.title}! +${q.reward}💰`);
-      }
-    }
-  });
-  renderQuests();
-}
-
+function updateQuestProgress(type,value){QUESTS_D.forEach(q=>{if(q.type===type&&G.quests[q.id]&&!G.quests[q.id].completed){G.quests[q.id].progress=value;if(G.quests[q.id].progress>=q.goal){G.quests[q.id].completed=true;if(q.reward>0){G.gold+=q.reward;G.totalEarned+=q.reward;}if(q.xp>0)addXP(q.xp);showToast(`📜 Quest: ${q.title}! +${q.reward}💰`);}}});renderQuests();}
 function renderQuests(){
   let ql=document.getElementById('qlist');
-  if(ql) ql.innerHTML=QUESTS_D.map(q=>{
-    let s=G.quests[q.id]||{progress:0,completed:false};
-    let pct=Math.min((s.progress/q.goal)*100,100);
-    return `<div class="quest-item" style="${s.completed?'opacity:0.5;':''}">
-      <div class="quest-title">${s.completed?'✅':'📜'} ${q.title}</div>
-      <div style="font-size:9px;color:#aaa;margin-bottom:4px;">${q.desc}</div>
-      <div class="quest-progress"><div class="quest-progress-fill" style="width:${pct}%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa;"><span>${s.progress}/${q.goal}</span><span style="color:#ffd700;">${q.reward?'+'+q.reward+'💰':''} ${q.xp?'+'+q.xp+'XP':''}</span></div>
-    </div>`;
-  }).join('');
+  if(ql)ql.innerHTML=QUESTS_D.map(q=>{let s=G.quests[q.id]||{progress:0,completed:false};let pct=Math.min((s.progress/q.goal)*100,100);return `<div class="quest-item" style="${s.completed?'opacity:0.5;':''}"><div class="quest-title">${s.completed?'✅':'📜'} ${q.title}</div><div style="font-size:9px;color:#aaa;margin-bottom:4px;">${q.desc}</div><div class="quest-progress"><div class="quest-progress-fill" style="width:${pct}%"></div></div><div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa;"><span>${s.progress}/${q.goal}</span><span style="color:#ffd700;">${q.reward?'+'+q.reward+'💰':''} ${q.xp?'+'+q.xp+'XP':''}</span></div></div>`;}).join('');
   let al=document.getElementById('achlist');
-  if(al) al.innerHTML=ACH_D.map(a=>{
-    let u=G.achievements[a.id];
-    return `<div class="achievement ${u?'':'locked'}"><div style="font-size:22px;">${a.emoji}</div><div><div style="font-size:11px;color:#ffd700;font-weight:bold;">${a.name}</div><div style="font-size:9px;color:#aaa;">${a.desc}</div></div>${u?'<span style="color:#ffd700;">✨</span>':''}</div>`;
-  }).join('');
+  if(al)al.innerHTML=ACH_D.map(a=>{let u=G.achievements[a.id];return `<div class="achievement ${u?'':'locked'}"><div style="font-size:22px;">${a.emoji}</div><div><div style="font-size:11px;color:#ffd700;font-weight:bold;">${a.name}</div><div style="font-size:9px;color:#aaa;">${a.desc}</div></div>${u?'<span style="color:#ffd700;">✨</span>':''}</div>`;}).join('');
   let ul=document.getElementById('ulist');
-  if(ul) ul.innerHTML=LEVEL_UNLOCKS.map(u=>{
-    let done=G.level>=u.lv;
-    return `<div style="background:${done?'#1a2a0a':'#111'};border:1px solid ${done?'#5aaa3a':'#333'};border-radius:8px;padding:8px;margin-bottom:6px;display:flex;align-items:center;gap:8px;opacity:${done?1:0.5};">
-      <div style="font-size:22px;">${u.emoji}</div>
-      <div style="flex:1;"><div style="font-size:11px;color:#7dff7d;font-weight:bold;">${u.name}</div><div style="font-size:9px;color:#aaa;">${u.desc}</div></div>
-      <div style="font-size:9px;font-weight:bold;color:${done?'#7dff7d':'#ff4444'};">Lv${u.lv}</div>
-    </div>`;
-  }).join('');
+  if(ul)ul.innerHTML=LEVEL_UNLOCKS.map(u=>{let done=G.level>=u.lv;return `<div style="background:${done?'#1a2a0a':'#111'};border:1px solid ${done?'#5aaa3a':'#333'};border-radius:8px;padding:8px;margin-bottom:6px;display:flex;align-items:center;gap:8px;opacity:${done?1:0.5};"><div style="font-size:22px;">${u.emoji}</div><div style="flex:1;"><div style="font-size:11px;color:#7dff7d;font-weight:bold;">${u.name}</div><div style="font-size:9px;color:#aaa;">${u.desc}</div></div><div style="font-size:9px;font-weight:bold;color:${done?'#7dff7d':'#ff4444'};">Lv${u.lv}</div></div>`;}).join('');
 }
-
-function checkAchievement(id){
-  if(!G.achievements[id]){G.achievements[id]=true;let a=ACH_D.find(x=>x.id===id);if(a)showToast(`✨ Achievement: ${a.name}!`);renderQuests();}
-}
-
-// ============ XP & LEVELING ============
+function checkAchievement(id){if(!G.achievements[id]){G.achievements[id]=true;let a=ACH_D.find(x=>x.id===id);if(a)showToast(`✨ Achievement: ${a.name}!`);renderQuests();}}
 function addXP(amount){
-  G.xp+=amount;
-  let needed=xpForLevel(G.level);
+  G.xp+=amount;let needed=xpForLevel(G.level);
   while(G.xp>=needed&&G.level<9999){
-    G.xp-=needed;G.level++;
-    G.maxWater+=2;G.water=Math.min(G.water+2,G.maxWater);
-    playSound('levelup');
-    showLevelUp();
-    needed=xpForLevel(G.level);
-    updateQuestProgress('level',G.level);
-    checkVIPLevel();
+    G.xp-=needed;G.level++;G.maxWater+=2;G.water=Math.min(G.water+2,G.maxWater);
+    playSound('levelup');showLevelUp();needed=xpForLevel(G.level);
+    updateQuestProgress('level',G.level);checkVIPLevel();
     if(G.level>=3){checkAchievement('a_lv3');renderPond();}
-    if(G.level>=3&&!G.seenTutorials['pond']){showTutorial('pond');}
-    if(G.level===5){showTutorial('level5');}
-    if(G.level===10){showTutorial('level10');}
+    if(G.level>=3&&!G.seenTutorials['pond'])showTutorial('pond');
+    if(G.level===5)showTutorial('level5');
+    if(G.level===10)showTutorial('level10');
     if(G.level>=10){checkAchievement('a_lv10');checkAutoCollectBtn();}
-    if(G.level>=25) checkAchievement('a_lv25');
+    if(G.level>=25)checkAchievement('a_lv25');
     renderShop();renderQuests();
   }
   renderInventory();updateHUD();
 }
-
-function showLevelUp(){
-  let lub=document.getElementById('lub');
-  let txt=document.getElementById('lub-text');
-  let unl=document.getElementById('lub-unlock');
-  let unlock=LEVEL_UNLOCKS.find(u=>u.lv===G.level);
-  if(txt) txt.textContent=`Level ${G.level}! 🎉`;
-  if(unl) unl.textContent=unlock?`✨ Unlocked: ${unlock.emoji} ${unlock.name}`:'Keep farming!';
-  if(lub){lub.classList.add('show');setTimeout(()=>lub.classList.remove('show'),4000);}
-  let luf=document.getElementById('luf');
-  if(luf){luf.style.opacity='1';setTimeout(()=>luf.style.opacity='0',600);}
-}
-
-// ============ HUD ============
+function showLevelUp(){let lub=document.getElementById('lub'),txt=document.getElementById('lub-text'),unl=document.getElementById('lub-unlock'),unlock=LEVEL_UNLOCKS.find(u=>u.lv===G.level);if(txt)txt.textContent=`Level ${G.level}! 🎉`;if(unl)unl.textContent=unlock?`✨ Unlocked: ${unlock.emoji} ${unlock.name}`:'Keep farming!';if(lub){lub.classList.add('show');setTimeout(()=>lub.classList.remove('show'),4000);}let luf=document.getElementById('luf');if(luf){luf.style.opacity='1';setTimeout(()=>luf.style.opacity='0',600);}}
 function updateHUD(){
   let e=id=>document.getElementById(id);
-  if(e('hg'))e('hg').textContent=G.gold;
-  if(e('hgem'))e('hgem').textContent=G.gems||0;
-  if(e('hlv'))e('hlv').textContent=G.level;
-  if(e('hcr'))e('hcr').textContent=G.totalHarvested;
-  if(e('hw'))e('hw').textContent=`${G.water}/${G.maxWater}`;
-  if(e('hud-av'))e('hud-av').textContent=AVATARS[G.avatar]||'🌱';
-  let s=SEASONS[G.season];
-  let sb=e('sb');if(sb){sb.textContent=`${s.emoji} ${s.name} D${G.seasonDay}`;sb.style.cssText=`font-size:10px;padding:2px 7px;border-radius:4px;font-weight:bold;background:${s.color}22;color:${s.color};border:1px solid ${s.color}55;`;}
+  if(e('hg'))e('hg').textContent=G.gold;if(e('hgem'))e('hgem').textContent=G.gems||0;if(e('hlv'))e('hlv').textContent=G.level;if(e('hw'))e('hw').textContent=`${G.water}/${G.maxWater}`;if(e('hud-av'))e('hud-av').textContent=AVATARS[G.avatar]||'🌱';
+  let s=SEASONS[G.season],sb=e('sb');if(sb){sb.textContent=`${s.emoji} ${s.name} D${G.seasonDay}`;sb.style.cssText=`font-size:10px;padding:2px 7px;border-radius:4px;font-weight:bold;background:${s.color}22;color:${s.color};border:1px solid ${s.color}55;`;}
   if(e('wbadge'))e('wbadge').textContent=WEATHER[G.weather].emoji+' '+WEATHER[G.weather].name;
   if(e('gdisp'))e('gdisp').textContent=G.gems||0;
 }
-
-// ============ CHAT ============
-let chatMsgs=[
-  {user:'FarmerJoe',msg:'Just hit Level 5! Greenhouse unlocked! 🌿',time:'2:30pm'},
-  {user:'HomesteadQueen',msg:'Bees make the best passive income 🐝',time:'2:28pm'},
-  {user:'GreenThumb99',msg:'Build the Well first — trust me!',time:'2:25pm'},
-  {user:'WildEdgeFarm',msg:'Anyone fishing for treasure? 💎',time:'2:20pm'},
-  {user:'SystemBot',msg:'🌱 Welcome to True Homesteader!',time:'2:00pm'},
-];
+let chatMsgs=[{user:'FarmerJoe',msg:'Just hit Level 5! Greenhouse unlocked! 🌿',time:'2:30pm'},{user:'HomesteadQueen',msg:'Bees make the best passive income 🐝',time:'2:28pm'},{user:'GreenThumb99',msg:'Build the Well first — trust me!',time:'2:25pm'},{user:'WildEdgeFarm',msg:'Anyone fishing for treasure? 💎',time:'2:20pm'},{user:'SystemBot',msg:'🌱 Welcome to True Homesteader!',time:'2:00pm'}];
 let fakeUsers=['FarmerJoe','HomesteadQueen','GreenThumb99','WildEdgeFarm','SunflowerSam','CropKing','BeeKeeper','RuralDrip'];
 let chatReplies=['Nice work! 🌱','Same here lol','Great tip!','How do you get so much gold?','Try fishing!','Love this game!','Building my barn next!','This is addicting 😂'];
-
-function renderChat(){
-  let box=document.getElementById('cm');if(!box)return;
-  box.innerHTML=chatMsgs.slice(-25).map(m=>`<div class="cmsg"><span class="cu">${m.user}</span><span class="ctm">${m.time}</span><div style="color:#e8f5e8;margin-top:1px;">${m.msg}</div></div>`).join('');
-  box.scrollTop=box.scrollHeight;
-  let op=document.getElementById('op');
-  if(op) op.innerHTML=fakeUsers.slice(0,5).map(u=>`<span style="display:inline-block;background:#1a3a1a;border-radius:10px;padding:2px 7px;margin:2px;font-size:9px;">🟢 ${u}</span>`).join('');
-}
-
-function sendChat(){
-  let inp=document.getElementById('ci');let msg=inp.value.trim();if(!msg)return;
-  let now=new Date(),t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
-  chatMsgs.push({user:G.name||'You',msg,time:t});inp.value='';renderChat();
-  setTimeout(()=>{chatMsgs.push({user:fakeUsers[Math.floor(Math.random()*fakeUsers.length)],msg:chatReplies[Math.floor(Math.random()*chatReplies.length)],time:t});renderChat();},1500+Math.random()*2000);
-}
-
-// ============ AI ============
-let aiMsgs=[{role:'bot',text:'🌱 Hi! I\'m your Homestead AI. Ask me REAL questions about farming, animals, crops, land, food preservation, and off-grid living. For game tips, ask other players in Chat!'}];
-
-function renderAIMessages(){
-  let box=document.getElementById('aim');if(!box)return;
-  box.innerHTML=aiMsgs.map(m=>`<div class="${m.role==='user'?'abu':'abb'}"><div>${m.role==='bot'?'🤖 ':''}${m.text}</div></div>`).join('');
-  box.scrollTop=box.scrollHeight;
-}
-
+function renderChat(){let box=document.getElementById('cm');if(!box)return;box.innerHTML=chatMsgs.slice(-25).map(m=>`<div class="cmsg"><span class="cu">${m.user}</span><span class="ctm">${m.time}</span><div style="color:#e8f5e8;margin-top:1px;">${m.msg}</div></div>`).join('');box.scrollTop=box.scrollHeight;let op=document.getElementById('op');if(op)op.innerHTML=fakeUsers.slice(0,5).map(u=>`<span style="display:inline-block;background:#1a3a1a;border-radius:10px;padding:2px 7px;margin:2px;font-size:9px;">🟢 ${u}</span>`).join('');}
+function sendChat(){let inp=document.getElementById('ci');let msg=inp.value.trim();if(!msg)return;let now=new Date(),t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');chatMsgs.push({user:G.name||'You',msg,time:t});inp.value='';renderChat();setTimeout(()=>{chatMsgs.push({user:fakeUsers[Math.floor(Math.random()*fakeUsers.length)],msg:chatReplies[Math.floor(Math.random()*chatReplies.length)],time:t});renderChat();},1500+Math.random()*2000);}
+let aiMsgs=[{role:'bot',text:"🌱 Hi! I'm your Homestead AI. Ask me REAL questions about farming, animals, crops, land, food preservation, and off-grid living. For game tips, ask other players in Chat!"}];
+function renderAIMessages(){let box=document.getElementById('aim');if(!box)return;box.innerHTML=aiMsgs.map(m=>`<div class="${m.role==='user'?'abu':'abb'}"><div>${m.role==='bot'?'🤖 ':''}${m.text}</div></div>`).join('');box.scrollTop=box.scrollHeight;}
 function quickAsk(q){document.getElementById('aii').value=q;askAI();}
-
 async function askAI(){
   let inp=document.getElementById('aii');let q=inp.value.trim();if(!q)return;
-  inp.value='';aiMsgs.push({role:'user',text:q});
-  aiMsgs.push({role:'bot',text:'⏳ Thinking...'});renderAIMessages();
+  inp.value='';aiMsgs.push({role:'user',text:q});aiMsgs.push({role:'bot',text:'⏳ Thinking...'});renderAIMessages();
   try{
-    let res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,
-        system:`You are a real homesteading and farming expert assistant inside the True Homesteader app. Answer ONLY real-world homesteading, farming, crop growing, animal care, food preservation, land ownership, and off-grid living questions. Keep answers under 100 words. Be practical, encouraging, and specific. The user is in ${G.state||'the US'}. Do NOT answer game questions — tell them to use the Chat tab for that.`,
-        messages:[{role:'user',content:q}]})
-    });
-    let data=await res.json();
-    aiMsgs[aiMsgs.length-1]={role:'bot',text:data.content?.[0]?.text||'Sorry, try again!'};
-  }catch(e){
-    aiMsgs[aiMsgs.length-1]={role:'bot',text:`🌱 Great question! In ${G.state||'your area'}, focus on soil health first — compost is your best friend. Test your soil pH, aim for 6.0-7.0 for most vegetables. Start small with raised beds if you are a beginner!`};
-  }
+    let res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:`You are a real homesteading and farming expert assistant inside the True Homesteader app. Answer ONLY real-world homesteading, farming, crop growing, animal care, food preservation, land ownership, and off-grid living questions. Keep answers under 100 words. Be practical, encouraging, and specific. The user is in ${G.state||'the US'}. Do NOT answer game questions.`,messages:[{role:'user',content:q}]})});
+    let data=await res.json();aiMsgs[aiMsgs.length-1]={role:'bot',text:data.content?.[0]?.text||'Sorry, try again!'};
+  }catch(e){aiMsgs[aiMsgs.length-1]={role:'bot',text:`🌱 Great question! In ${G.state||'your area'}, focus on soil health first — compost is your best friend. Test your soil pH, aim for 6.0-7.0 for most vegetables. Start small with raised beds if you are a beginner!`};}
   renderAIMessages();
 }
-
-// ============ GEMS/IAP ============
-function buyGems(amount,price){
-  showModal('💎 Get Gems',`<div style="text-align:center;"><div style="font-size:40px;margin-bottom:8px;">💎</div><div style="font-size:13px;color:#a8d8ff;margin-bottom:6px;">${amount} Gems — ${price}</div><div style="font-size:10px;color:#aaa;margin-bottom:12px;">App Store purchases coming soon! Free demo gems for now.</div><button class="btn bg bfu" onclick="confirmGems(${amount});closeModal()">✅ Get ${amount} Gems (Demo)</button></div>`);
-}
-function buyGemsWithGold(cost){
-  let gems = cost===500?5:cost===2000?25:0;
-  if(!gems){showToast('❌ Invalid amount!');return;}
-  if(G.gold<cost){showToast(`❌ Need ${cost}g!`);return;}
-  G.gold-=cost; G.gems=(G.gems||0)+gems;
-  updateHUD(); saveGame();
-  showToast(`💰➡️💎 Converted ${cost}g into ${gems} gems!`);
-}
+function buyGems(amount,price){showModal('💎 Get Gems',`<div style="text-align:center;"><div style="font-size:40px;margin-bottom:8px;">💎</div><div style="font-size:13px;color:#a8d8ff;margin-bottom:6px;">${amount} Gems — ${price}</div><div style="font-size:10px;color:#aaa;margin-bottom:12px;">App Store purchases coming soon! Free demo gems for now.</div><button class="btn bg bfu" onclick="confirmGems(${amount});closeModal()">✅ Get ${amount} Gems (Demo)</button></div>`);}
+function buyGemsWithGold(cost){let gems=cost===500?5:cost===2000?25:cost===5000?75:cost===10000?200:0;if(!gems){showToast('❌ Invalid amount!');return;}if(G.gold<cost){showToast(`❌ Need ${cost}g!`);return;}G.gold-=cost;G.gems=(G.gems||0)+gems;updateHUD();saveGame();showToast(`💰➡️💎 Converted ${cost}g into ${gems} gems!`);}
 function confirmGems(n){G.gems=(G.gems||0)+n;updateHUD();saveGame();showToast(`💎 Got ${n} gems!`);}
-
 function spendGems(cost,type){
-  if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎!`);return;}
-  G.gems-=cost;updateHUD();
-  if(type==='grow'){G.plots.forEach(p=>{if(p.state==='planted'||p.state==='growing')p.plantTime=Date.now()-((CROPS[p.crop]||TREES[p.crop]||{time:0}).time*1000);});renderFarm();showToast('⚡ All crops ready!');}
+  if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎!`);return;}G.gems-=cost;updateHUD();
+  if(type==='grow'){G.plots.forEach(p=>{if(p.state==='planted'||p.state==='growing'){let crop=CROPS[p.crop]||TREES[p.crop];if(crop)p.plantTime=Date.now()-crop.time*1000;}});renderFarm();showToast('⚡ All crops ready!');}
   else if(type==='water'){G.water=G.maxWater;updateHUD();showToast('💧 Water full!');}
   else if(type==='gold'){G.gold+=500;G.totalEarned+=500;updateHUD();showToast('💰 +500 gold!');}
-  else if(type==='seed'){CROPS['goldenwheat']={name:'Golden Wheat',emoji:'✨',cost:0,time:30,sell:500,xp:100,seasons:[0,1,2,3],reqLv:1};let t=G.plots.findIndex(p=>p.state==='tilled');if(t!==-1){plantCrop(t,'goldenwheat');}else{addItem('Golden Wheat Seed',1);showToast('🌟 Till a plot first!');}}
+  else if(type==='seed'){CROPS['goldenwheat']={name:'Golden Wheat',emoji:'✨',cost:0,time:30,sell:500,xp:100,seasons:[0,1,2,3],reqLv:1};let t=G.plots.findIndex(p=>p.state==='tilled');if(t!==-1)plantCrop(t,'goldenwheat');else{addItem('Golden Wheat Seed',1);showToast('🌟 Till a plot first!');}}
   else if(type==='feed'){G.animals.forEach(a=>{a.hunger=100;a.happiness=100;});renderAnimals();showToast('🌾 All animals fed!');}
   else if(type==='plots'){for(let i=0;i<8;i++)G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});renderFarm();showToast('🗺️ Farm expanded! +8 plots!');}
   else if(type==='spin'){G.lastSpin=0;openSpin();showToast('🎰 Extra spin ready!');}
   else if(type==='vip'){if(G.level<5){showToast('❌ Need Level 5 first!');G.gems+=cost;updateHUD();return;}G.level=Math.max(G.level,VIP_LEVELS.find(v=>v.lv===G.vipLevel+1)?.reqGameLv||G.level);checkVIPLevel();renderVIP();showToast('👑 VIP boosted!');}
   saveGame();
 }
-
-// ============ SPIN WHEEL ============
 let isSpinning=false,curAngle=0,spinUnlocked=false;
-
-function drawWheel(angle){
-  let canvas=document.getElementById('wcan');if(!canvas)return;
-  let ctx=canvas.getContext('2d');
-  let cx=140,cy=140,r=135,slices=WHEEL_PRIZES.length,arc=(2*Math.PI)/slices;
-  ctx.clearRect(0,0,280,280);
-  for(let i=0;i<slices;i++){
-    let start=angle+i*arc,end=start+arc;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);
-    ctx.fillStyle=WHEEL_PRIZES[i].color;ctx.fill();
-    ctx.strokeStyle='#0a1a0a';ctx.lineWidth=2;ctx.stroke();
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(start+arc/2);
-    ctx.textAlign='right';ctx.fillStyle='#e8f5e8';ctx.font='bold 10px Courier New';
-    ctx.fillText(WHEEL_PRIZES[i].label,r-8,4);ctx.restore();
-  }
-  ctx.beginPath();ctx.arc(cx,cy,16,0,2*Math.PI);ctx.fillStyle='#0a1a0a';ctx.fill();ctx.strokeStyle='#ffd700';ctx.lineWidth=2;ctx.stroke();
-}
-
-function openSpin(){
-  document.getElementById('so').classList.add('show');
-  drawWheel(curAngle);updateSpinUI();
-  if(!G.seenTutorials?.spin) showTutorial('spin');
-}
+function drawWheel(angle){let canvas=document.getElementById('wcan');if(!canvas)return;let ctx=canvas.getContext('2d'),cx=140,cy=140,r=135,slices=WHEEL_PRIZES.length,arc=(2*Math.PI)/slices;ctx.clearRect(0,0,280,280);for(let i=0;i<slices;i++){let start=angle+i*arc,end=start+arc;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.fillStyle=WHEEL_PRIZES[i].color;ctx.fill();ctx.strokeStyle='#0a1a0a';ctx.lineWidth=2;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(start+arc/2);ctx.textAlign='right';ctx.fillStyle='#e8f5e8';ctx.font='bold 10px Courier New';ctx.fillText(WHEEL_PRIZES[i].label,r-8,4);ctx.restore();}ctx.beginPath();ctx.arc(cx,cy,16,0,2*Math.PI);ctx.fillStyle='#0a1a0a';ctx.fill();ctx.strokeStyle='#ffd700';ctx.lineWidth=2;ctx.stroke();}
+function openSpin(){document.getElementById('so').classList.add('show');drawWheel(curAngle);updateSpinUI();}
 function closeSpin(){document.getElementById('so').classList.remove('show');}
-
-function updateSpinUI(){
-  let now=Date.now(),elapsed=now-G.lastSpin,cd=24*60*60*1000;
-  let info=document.getElementById('sinfo'),btn=document.getElementById('sbtn');
-  if(G.lastSpin===0||elapsed>=cd){info.textContent='🎉 Free spin available!';btn.textContent='🎰 SPIN FREE!';btn.className='btn bg';spinUnlocked=true;}
-  else{let h=Math.ceil((cd-elapsed)/3600000);info.textContent=`Next free spin ~${h}h | Or 30💎`;btn.textContent='🎰 Spin (30💎)';btn.className='btn bp';spinUnlocked=false;}
-}
-
+function updateSpinUI(){let now=Date.now(),elapsed=now-G.lastSpin,cd=24*60*60*1000,info=document.getElementById('sinfo'),btn=document.getElementById('sbtn');if(G.lastSpin===0||elapsed>=cd){info.textContent='🎉 Free spin available!';btn.textContent='🎰 SPIN FREE!';btn.className='btn bg';spinUnlocked=true;}else{let h=Math.ceil((cd-elapsed)/3600000);info.textContent=`Next free spin ~${h}h | Or 30💎`;btn.textContent='🎰 Spin (30💎)';btn.className='btn bp';spinUnlocked=false;}}
 function spinWheel(){
   if(isSpinning)return;
-  if(!spinUnlocked){if(G.gems<30){showToast('❌ Need 30💎 or wait for free spin!');return;}G.gems-=30;updateHUD();}
-  else G.lastSpin=Date.now();
-  G.spinCount=(G.spinCount||0)+1;
-  if(G.spinCount>=5) checkAchievement('a_spin5');
-  isSpinning=true;
-  document.getElementById('sres').textContent='';
-  let extras=5+Math.floor(Math.random()*8);
-  let prizeIdx=Math.floor(Math.random()*WHEEL_PRIZES.length);
-  let arc=(2*Math.PI)/WHEEL_PRIZES.length;
-  let targetAngle=-(prizeIdx*arc)-arc/2+(2*Math.PI*extras)-(Math.PI/2);
-  let startAngle=curAngle,totalRot=targetAngle-startAngle,duration=4000,startTime=null;
-  function animate(ts){
-    if(!startTime)startTime=ts;
-    let progress=(ts-startTime)/duration;
-    if(progress>=1){curAngle=targetAngle%(2*Math.PI);drawWheel(curAngle);isSpinning=false;WHEEL_PRIZES[prizeIdx].reward();document.getElementById('sres').textContent='🎉 '+WHEEL_PRIZES[prizeIdx].label+'!';updateSpinUI();saveGame();return;}
-    let eased=1-Math.pow(1-progress,3);drawWheel(startAngle+totalRot*eased);requestAnimationFrame(animate);
-  }
+  if(!spinUnlocked){if(G.gems<30){showToast('❌ Need 30💎 or wait for free spin!');return;}G.gems-=30;updateHUD();}else G.lastSpin=Date.now();
+  G.spinCount=(G.spinCount||0)+1;if(G.spinCount>=5)checkAchievement('a_spin5');
+  isSpinning=true;document.getElementById('sres').textContent='';
+  let extras=5+Math.floor(Math.random()*8),prizeIdx=Math.floor(Math.random()*WHEEL_PRIZES.length),arc=(2*Math.PI)/WHEEL_PRIZES.length;
+  let targetAngle=-(prizeIdx*arc)-arc/2+(2*Math.PI*extras)-(Math.PI/2),startAngle=curAngle,totalRot=targetAngle-startAngle,duration=4000,startTime=null;
+  function animate(ts){if(!startTime)startTime=ts;let progress=(ts-startTime)/duration;if(progress>=1){curAngle=targetAngle%(2*Math.PI);drawWheel(curAngle);isSpinning=false;WHEEL_PRIZES[prizeIdx].reward();document.getElementById('sres').textContent='🎉 '+WHEEL_PRIZES[prizeIdx].label+'!';updateSpinUI();saveGame();return;}let eased=1-Math.pow(1-progress,3);drawWheel(startAngle+totalRot*eased);requestAnimationFrame(animate);}
   requestAnimationFrame(animate);
 }
-
-// ============ TUTORIAL ============
-function showTutorial(key){
-  let t=TUTORIALS[key];if(!t||G.seenTutorials?.[key])return;
-  if(!G.seenTutorials)G.seenTutorials={};
-  G.seenTutorials[key]=true;
-  let tp=document.getElementById('tp');
-  let tt=document.getElementById('tt-title');
-  let tx=document.getElementById('tt-text');
-  if(tt)tt.textContent=t.title;
-  if(tx)tx.textContent=t.text;
-  if(tp)tp.classList.add('show');
-}
+function showTutorial(key){let t=TUTORIALS[key];if(!t||G.seenTutorials?.[key])return;if(!G.seenTutorials)G.seenTutorials={};G.seenTutorials[key]=true;let tp=document.getElementById('tp'),tt=document.getElementById('tt-title'),tx=document.getElementById('tt-text');if(tt)tt.textContent=t.title;if(tx)tx.textContent=t.text;if(tp)tp.classList.add('show');}
 function closeTutorial(){let tp=document.getElementById('tp');if(tp)tp.classList.remove('show');}
-
-// ============ FLOATING NUMBERS ============
-function showFloating(text,parentId){
-  let fn=document.createElement('div');
-  fn.className='fn fg';fn.textContent=text;
-  fn.style.cssText=`left:${30+Math.random()*40}%;top:${40+Math.random()*20}%;`;
-  document.body.appendChild(fn);
-  setTimeout(()=>fn.remove(),1200);
-}
-
-// ============ SOUND (Web Audio) ============
+function showFloating(text,parentId){let fn=document.createElement('div');fn.className='fn fg';fn.textContent=text;fn.style.cssText=`left:${30+Math.random()*40}%;top:${40+Math.random()*20}%;`;document.body.appendChild(fn);setTimeout(()=>fn.remove(),1200);}
 let audioCtx=null;
 function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
-function playTone(freq,dur,type='square',vol=0.1){
-  try{
-    let ctx=getAudio();let osc=ctx.createOscillator();let gain=ctx.createGain();
-    osc.connect(gain);gain.connect(ctx.destination);
-    osc.type=type;osc.frequency.value=freq;gain.gain.value=vol;
-    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
-    osc.start();osc.stop(ctx.currentTime+dur);
-  }catch(e){}
-}
-function playSound(type){
-  if(type==='till') playTone(120,0.2,'sawtooth',0.08);
-  else if(type==='plant') playTone(440,0.15,'sine',0.1);
-  else if(type==='water'){playTone(880,0.1,'sine',0.08);playTone(660,0.15,'sine',0.08);}
-  else if(type==='harvest'){playTone(523,0.1,'square',0.1);setTimeout(()=>playTone(659,0.1,'square',0.1),100);setTimeout(()=>playTone(784,0.2,'square',0.1),200);}
-  else if(type==='levelup'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.2,'sine',0.12),i*100));}
-  else if(type==='animal') playTone(300,0.3,'sine',0.08);
-  else if(type==='fish'){playTone(440,0.1,'sine',0.1);setTimeout(()=>playTone(550,0.2,'sine',0.1),150);}
-  else if(type==='build'){[200,250,300].forEach((f,i)=>setTimeout(()=>playTone(f,0.15,'square',0.1),i*80));}
-  else if(type==='critter'){playTone(200,0.1,'sawtooth',0.1);setTimeout(()=>playTone(150,0.2,'sawtooth',0.1),100);}
-}
-
-// ============ NAVIGATION ============
-function showPanel(name){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
-  let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');
-  let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');
-  closeHUDPop();
-  if(name==='inventory')renderInventory();
-  if(name==='animals')renderAnimals();
-  if(name==='quests')renderQuests();
-  if(name==='shop')renderShop();
-  if(name==='pond')renderPond();
-  if(name==='vip')renderVIP();
-  if(name==='buildings'){renderBuildings();}
-  if(name==='upmarket'){renderUpgradeMarket();}
-  if(name==='mining')renderMining();
-  if(name==='chat')renderChat();
-  if(name==='ai')renderAIMessages();
-  if(name==='iap')updateHUD();
-}
-
-// ============ MODAL & TOAST ============
+function playTone(freq,dur,type='square',vol=0.1){try{let ctx=getAudio();let osc=ctx.createOscillator();let gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type=type;osc.frequency.value=freq;gain.gain.value=vol;gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);osc.start();osc.stop(ctx.currentTime+dur);}catch(e){}}
+function playSound(type){if(type==='till')playTone(120,0.2,'sawtooth',0.08);else if(type==='plant')playTone(440,0.15,'sine',0.1);else if(type==='water'){playTone(880,0.1,'sine',0.08);playTone(660,0.15,'sine',0.08);}else if(type==='harvest'){playTone(523,0.1,'square',0.1);setTimeout(()=>playTone(659,0.1,'square',0.1),100);setTimeout(()=>playTone(784,0.2,'square',0.1),200);}else if(type==='levelup'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.2,'sine',0.12),i*100));}else if(type==='animal')playTone(300,0.3,'sine',0.08);else if(type==='fish'){playTone(440,0.1,'sine',0.1);setTimeout(()=>playTone(550,0.2,'sine',0.1),150);}else if(type==='build'){[200,250,300].forEach((f,i)=>setTimeout(()=>playTone(f,0.15,'square',0.1),i*80));}else if(type==='critter'){playTone(200,0.1,'sawtooth',0.1);setTimeout(()=>playTone(150,0.2,'sawtooth',0.1),100);}}
+function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();}
 function showModal(title,body){document.getElementById('mt').textContent=title;document.getElementById('mb').innerHTML=body;document.getElementById('modal').classList.add('show');}
 function closeModal(){document.getElementById('modal').classList.remove('show');}
 let toastTO;
 function showToast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTO);toastTO=setTimeout(()=>t.classList.remove('show'),2500);}
-
-function showProfile(){showToast(`${AVATARS[G.avatar]||'🌱'} ${G.name} | Level ${G.level} | ${G.state} | ${G.acreage?.toFixed(1)||0.5} acres`);}
-
-// ============ SAVE/LOAD ============
-// ===== BUILDING SUPPLIES =====
-const BUILD_SUPPLIES = {
-  // Basic (Lv 1-3) — affordable gold, moderate gems
-  wood:     {n:'Wood',      e:'🪵', c:50,   gem:30,  tier:1, desc:'Basic building material'},
-  nails:    {n:'Nails',     e:'🔩', c:40,   gem:25,  tier:1, desc:'Holds it all together'},
-  paint:    {n:'Paint',     e:'🎨', c:60,   gem:35,  tier:1, desc:'Finish and protect'},
-  screws:   {n:'Screws',    e:'⚙️', c:55,  gem:30,  tier:1, desc:'Heavy-duty fasteners'},
-  // Advanced (Lv 4-6) — moderate gold, high gems
-  lumber:   {n:'Lumber',    e:'🏗️', c:150,  gem:75,  tier:2, desc:'Structural wood'},
-  concrete: {n:'Concrete',  e:'🪨', c:180,  gem:90,  tier:2, desc:'Foundation material'},
-  wire:     {n:'Wire',      e:'🔌', c:160,  gem:80,  tier:2, desc:'Electrical wiring'},
-  pipes:    {n:'Pipes',     e:'🔧', c:140,  gem:70,  tier:2, desc:'Plumbing pipes'},
-  // Premium (Lv 7-10) — expensive gold, very high gems
-  steel:    {n:'Steel',     e:'⚡', c:400,  gem:150, tier:3, desc:'Heavy-duty metal'},
-  glass:    {n:'Glass',     e:'🪟', c:350,  gem:130, tier:3, desc:'Windows & panels'},
-  solar:    {n:'Solar Panel',e:'☀️', c:600,  gem:200, tier:3, desc:'Energy upgrade'},
-  smart:    {n:'Smart Tech', e:'🤖', c:800,  gem:250, tier:3, desc:'Automated systems'},
-};
-
-// What each building level requires
-const BLD_LV_REQ = {
-  1:  {gold:0,   supplies:[]},
-  2:  {gold:200, supplies:[{n:'Wood',q:2},{n:'Nails',q:3}]},
-  3:  {gold:400, supplies:[{n:'Wood',q:3},{n:'Screws',q:2},{n:'Paint',q:1}]},
-  4:  {gold:700, supplies:[{n:'Lumber',q:2},{n:'Concrete',q:1},{n:'Nails',q:4}]},
-  5:  {gold:1000,supplies:[{n:'Lumber',q:3},{n:'Wire',q:2},{n:'Pipes',q:1}]},
-  6:  {gold:1500,supplies:[{n:'Lumber',q:4},{n:'Concrete',q:2},{n:'Wire',q:2}]},
-  7:  {gold:2000,supplies:[{n:'Steel',q:1},{n:'Concrete',q:3},{n:'Glass',q:1}]},
-  8:  {gold:3000,supplies:[{n:'Steel',q:2},{n:'Glass',q:2},{n:'Wire',q:3}]},
-  9:  {gold:4500,supplies:[{n:'Steel',q:3},{n:'Solar Panel',q:1},{n:'Smart Tech',q:1}]},
-  10: {gold:7000,supplies:[{n:'Steel',q:4},{n:'Solar Panel',q:2},{n:'Smart Tech',q:2}]},
-};
-
-// Building max level bonuses
-const BLD_LV_BONUS = {
-  well:       (lv)=>`+${lv*5}💧 max water`,
-  barn:       (lv)=>`+${lv*2} animal slots`,
-  greenhouse: (lv)=>`+${lv*10}% crop speed`,
-  silo:       (lv)=>`+${lv*10}% sell price`,
-  windmill:   (lv)=>`Auto-water ${lv*2} plots`,
-  market:     (lv)=>`+${lv*5}% sell price`,
-  chicken_coop:(lv)=>`+${lv} animal slots`,
-};
-
-function renderUpgradeMarket() {
-  const tiers = [{id:'sup-basic',tier:1},{id:'sup-mid',tier:2},{id:'sup-prem',tier:3}];
-  tiers.forEach(t => {
-    let el = document.getElementById(t.id);
-    if (!el) return;
-    el.innerHTML = Object.entries(BUILD_SUPPLIES)
-      .filter(([,s]) => s.tier === t.tier)
-      .map(([k,s]) => {
-        let owned = G.inventory[s.n] || 0;
-        return `<div class="si" onclick="buySupplyItem('${k}')">
-          <div class="sie">${s.e}</div>
-          <div class="sin">${s.n}</div>
-          <div style="font-size:9px;color:#ffd700;">${s.c}g each</div>
-          <div style="font-size:9px;color:#aaa;">Have: ${owned}</div>
-        </div>`;
-      }).join('');
-  });
-  // Gem supplies
-  let gemEl = document.getElementById('sup-gems');
-  if (gemEl) {
-    gemEl.innerHTML = Object.entries(BUILD_SUPPLIES).map(([k,s]) => `
-      <div class="si" onclick="buySupplyGems('${k}')">
-        <div class="sie">${s.e}</div>
-        <div class="sin">${s.n}</div>
-        <div style="font-size:9px;color:#a8d8ff;">${s.gem}💎 each</div>
-        <div style="font-size:9px;color:#888;">${s.desc}</div>
-      </div>`).join('');
-  }
+function showHUDPop(type){
+  let pop=document.getElementById('hpop'),con=document.getElementById('hpop-content');if(!pop||!con)return;
+  let content='';
+  if(type==='gold')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💰 Gold Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gold</span><span style="color:#ffd700;font-weight:bold;">${G.gold}g</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Total Earned</span><span>${G.totalEarned}g</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest crops & collect animal products for gold!</div><button class="btn bg bfu" onclick="showPanel('shop');closeHUDPop()" style="margin-top:8px;">Go to Store</button>`;
+  else if(type==='gems')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💎 Gems Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gems</span><span style="color:#a8d8ff;font-weight:bold;">${G.gems||0}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Use gems to skip timers and get boosts!</div><button class="btn bfu" onclick="showPanel('iap');closeHUDPop()" style="margin-top:8px;background:#1a1a3a;border-color:#3a3a6a;color:#a8d8ff;">Buy Gems</button>`;
+  else if(type==='level'){let needed=xpForLevel(G.level),pct=Math.floor((G.xp/needed)*100);const unlocks={3:'🎣 Pond',5:'🌿 Greenhouse',10:'⛏️ Mining',15:'🏗️ Silo',20:'🏪 Market',25:'🦚 Exotic Animals',30:'🍄 Rare Crops'};let nextUnlock=Object.entries(unlocks).find(([lv])=>parseInt(lv)>G.level);content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">⭐ Level Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Level</span><span style="color:#7dff7d;font-weight:bold;">${G.level}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>XP Progress</span><span>${G.xp}/${needed} (${pct}%)</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Next Unlock</span><span style="color:#ffd700;">${nextUnlock?`Lv${nextUnlock[0]}: ${nextUnlock[1]}`:'Keep going!'}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest, fish, and mine for fast XP!</div>`;}
+  else if(type==='water')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💧 Water Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#7db8ff;font-weight:bold;">${G.water}/${G.maxWater}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill per day</span><span>+3💧</span></div><button class="btn bb bfu" onclick="spendGems(25,'water');closeHUDPop()" style="margin-top:8px;">💎 Instant Refill (25💎)</button>`;
+  else if(type==='season'){let cropList=Object.values(CROPS).filter(c=>c.seasons?.includes(G.season)).map(c=>c.emoji).slice(0,6).join(' ');content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${SEASONS[G.season].emoji} Season Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Season</span><span style="color:${SEASONS[G.season].color};font-weight:bold;">${SEASONS[G.season].name}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Day</span><span>${G.seasonDay}/28</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Days left</span><span>${28-G.seasonDay}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">Best crops: ${cropList||'Check Store'}</div>`;}
+  else if(type==='profile'){let h={cottage:'🏡 Cottage',ranch:'🏚️ Ranch',farmhouse:'🏠 Farmhouse',cabin:'🛖 Cabin',manor:'🏰 Manor',modern:'🏗️ Modern',van:'🚐 Van',camp:'⛺ Camp'};content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${AVATARS[G.avatar]||'🌱'} ${G.name}</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Home</span><span>${h[G.homeType]||'Farmhouse'}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>State</span><span>${G.state}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Acreage</span><span>${(G.acreage||0.5).toFixed(1)} acres</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>VIP</span><span>${G.vipLevel>0?'VIP '+G.vipLevel:'None yet'}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Harvests</span><span>${G.totalHarvested}</span></div>`;}
+  con.innerHTML=content;pop.classList.add('show');
 }
-
-function buySupplyItem(k) {
-  let s = BUILD_SUPPLIES[k];
-  if (G.gold < s.c) { showToast(`❌ Need ${s.c}g for ${s.n}!`); return; }
-  G.gold -= s.c;
-  addItem(s.n, 1);
-  updateHUD(); renderSupplyInv(); renderUpgradeMarket();
-  showToast(`${s.e} Bought ${s.n}!`);
+function closeHUDPop(){document.getElementById('hpop')?.classList.remove('show');}
+function triggerCritter(hoursAway){let possible=CRITTERS_DATA.filter(c=>c.sea.includes(G.season)&&hoursAway>=c.oh);if(!possible.length)return;let critter=possible[Math.floor(Math.random()*possible.length)];G.activeCritter=critter;document.getElementById('crit-title').textContent=`${critter.e} ${critter.n} Attack!`;document.getElementById('crit-text').textContent=`A ${critter.n} is attacking! They will ${critter.dmg}!`;document.getElementById('critalert').classList.add('show');document.getElementById('crit-btn').style.display='block';playSound('critter');showToast(`🐛 ${critter.n} attacking! Check the alert!`);}
+function showCritAlert(){if(G.activeCritter)document.getElementById('critalert').classList.add('show');}
+function fightCritter(){if(!G.activeCritter)return;G.crittersDef=(G.crittersDef||0)+1;G.gold+=30;G.totalEarned+=30;addXP(50);G.activeCritter=null;document.getElementById('critalert').classList.remove('show');document.getElementById('crit-btn').style.display='none';updateHUD();playSound('harvest');showToast('⚔️ Critter defeated! +30💰 +50XP!');}
+function bribeCritter(){if(!G.activeCritter)return;if(G.gold<50){showToast('❌ Need 50g to bribe!');return;}G.gold-=50;G.activeCritter=null;document.getElementById('critalert').classList.remove('show');document.getElementById('crit-btn').style.display='none';updateHUD();showToast('💰 Bribed critter away! -50g');}
+function ignoreCritter(){if(G.activeCritter){let c=G.activeCritter;if(c.n==='Rats'){let stolen=Math.floor(G.gold*0.05);G.gold-=stolen;showToast(`🐀 Rats stole ${stolen}💰!`);}else{let planted=G.plots.filter(p=>p.state==='planted'||p.state==='ready');if(planted.length>0){planted[0].state='tilled';planted[0].crop=null;}showToast(`${c.e} ${c.n} damaged your farm!`);}G.activeCritter=null;document.getElementById('crit-btn').style.display='none';renderFarm();updateHUD();}document.getElementById('critalert').classList.remove('show');}
+function checkOfflineEarnings(){let now=Date.now(),hoursAway=Math.floor((now-(G.lastOnline||now))/3600000);G.lastOnline=now;if(hoursAway<0.1)return;if(G.vipLevel>=4){let mult=G.vipLevel>=17?3:G.vipLevel>=14?2:G.vipLevel>=11?1.5:1;let earned=Math.floor(hoursAway*20*mult);G.gold+=earned;G.totalEarned+=earned;showToast(`💤 Away ${hoursAway}h — earned ${earned}💰!`);}if(hoursAway>=2)triggerCritter(hoursAway);}
+const BUILD_TIERS={well:[{n:'Basic Well',b:'+10💧',c:0},{n:'Deep Well',b:'+20💧',c:400},{n:'Rain Collector',b:'+30💧+auto',c:800}],barn:[{n:'Small Barn',b:'+4 animals',c:0},{n:'Big Barn',b:'+8 animals',c:800},{n:'Mega Barn',b:'+16 animals',c:2000}],greenhouse:[{n:'Small GH',b:'All seasons',c:0},{n:'Full GH',b:'+25% speed',c:1000},{n:'Solar GH',b:'+50% speed',c:2500}]};
+function renderUpgradeMarket(){
+  const tiers=[{id:'sup-basic',tier:1},{id:'sup-mid',tier:2},{id:'sup-prem',tier:3}];
+  tiers.forEach(t=>{let el=document.getElementById(t.id);if(!el)return;el.innerHTML=Object.entries(BUILD_SUPPLIES).filter(([,s])=>s.tier===t.tier).map(([k,s])=>{let owned=G.inventory[s.n]||0;return `<div class="si" onclick="buySupplyItem('${k}')"><div class="sie">${s.e}</div><div class="sin">${s.n}</div><div style="font-size:9px;color:#ffd700;">${s.c}g each</div><div style="font-size:9px;color:#aaa;">Have: ${owned}</div></div>`;}).join('');});
 }
-
-function buySupplyGems(k) {
-  let s = BUILD_SUPPLIES[k];
-  if ((G.gems||0) < s.gem) { showToast(`❌ Need ${s.gem}💎 for ${s.n}!`); return; }
-  G.gems -= s.gem;
-  addItem(s.n, 1);
-  updateHUD(); renderSupplyInv(); renderUpgradeMarket();
-  showToast(`${s.e} Bought ${s.n} with gems!`);
-}
-
-function renderSupplyInv() {
-  let inv = document.getElementById('supply-inv');
-  if (!inv) return;
-  let supplyItems = Object.values(BUILD_SUPPLIES).map(s => s.n);
-  let owned = Object.entries(G.inventory)
-    .filter(([n,q]) => supplyItems.includes(n) && q > 0);
-  if (owned.length === 0) {
-    inv.innerHTML = '<div style="color:#555;font-size:9px;grid-column:1/-1;text-align:center;padding:6px;">No supplies yet. Visit Upgrade Market!</div>';
-    return;
-  }
-  inv.innerHTML = owned.map(([n,q]) => {
-    let s = Object.values(BUILD_SUPPLIES).find(x => x.n === n);
-    return `<div style="background:#1a1a0a;border:1px solid #4a4a1a;border-radius:6px;padding:5px;text-align:center;font-size:9px;">
-      <div style="font-size:18px;">${s?.e||'📦'}</div>${n}<br>
-      <span style="color:#ffd700;font-weight:bold;">x${q}</span>
-    </div>`;
+function buySupplyItem(k){let s=BUILD_SUPPLIES[k];if(G.gold<s.c){showToast(`❌ Need ${s.c}g for ${s.n}!`);return;}G.gold-=s.c;addItem(s.n,1);updateHUD();renderSupplyInv();renderUpgradeMarket();showToast(`${s.e} Bought ${s.n}!`);}
+function buySupplyGems(k){let s=BUILD_SUPPLIES[k];if((G.gems||0)<s.gem){showToast(`❌ Need ${s.gem}💎 for ${s.n}!`);return;}G.gems-=s.gem;addItem(s.n,1);updateHUD();renderSupplyInv();renderUpgradeMarket();showToast(`${s.e} Bought ${s.n} with gems!`);}
+function renderSupplyInv(){let inv=document.getElementById('supply-inv');if(!inv)return;let supplyItems=Object.values(BUILD_SUPPLIES).map(s=>s.n);let owned=Object.entries(G.inventory).filter(([n,q])=>supplyItems.includes(n)&&q>0);if(owned.length===0){inv.innerHTML='<div style="color:#555;font-size:9px;grid-column:1/-1;text-align:center;padding:6px;">No supplies yet. Visit Upgrade Market!</div>';return;}inv.innerHTML=owned.map(([n,q])=>{let s=Object.values(BUILD_SUPPLIES).find(x=>x.n===n);return `<div style="background:#1a1a0a;border:1px solid #4a4a1a;border-radius:6px;padding:5px;text-align:center;font-size:9px;"><div style="font-size:18px;">${s?.e||'📦'}</div>${n}<br><span style="color:#ffd700;font-weight:bold;">x${q}</span></div>`;}).join('');}
+function renderBuildings(){
+  let list=document.getElementById('bupgrade-list'),noBld=document.getElementById('no-bld');if(!list)return;
+  renderSupplyInv();checkAutoPlantBtn();
+  let bzone=document.getElementById('bzone');
+  if(bzone){let bldKeys2=typeof G.buildings==='object'&&!Array.isArray(G.buildings)?Object.keys(G.buildings).filter(k=>G.buildings[k]>0):(G.buildings||[]);let zoneHtml=bldKeys2.map(k=>{let b=BUILDINGS_D[k];if(!b)return '';let lv=(G.buildingLevels&&G.buildingLevels[k])||1;return `<div style="background:#1a2e1a;border:1px solid #3a6a3a;border-radius:8px;padding:6px;text-align:center;cursor:pointer;" onclick="document.getElementById('bupgrade-list').scrollIntoView()"><div style="font-size:24px;">${b.emoji}</div><div style="font-size:9px;color:#7dff7d;">${b.name}</div><div style="font-size:8px;color:#ffd700;">Lv${lv}/10</div></div>`;}).join('');if(G.hasMine||G.plots?.some(p=>p.state==='mine'))zoneHtml+=`<div style="background:#1a1a0a;border:1px solid #4a4a2a;border-radius:8px;padding:6px;text-align:center;cursor:pointer;" onclick="showPanel('mining')"><div style="font-size:24px;">⛏️</div><div style="font-size:9px;color:#ffd700;">Mine</div><div style="font-size:8px;color:#aaa;">Active</div></div>`;bzone.innerHTML=zoneHtml||'<div style="color:#555;font-size:10px;padding:8px;">Buy buildings from Store!</div>';}
+  let bldKeys=typeof G.buildings==='object'&&!Array.isArray(G.buildings)?Object.keys(G.buildings).filter(k=>G.buildings[k]>0):(G.buildings||[]);
+  if(!bldKeys.length){noBld.style.display='block';list.innerHTML='';return;}noBld.style.display='none';
+  list.innerHTML=bldKeys.map(k=>{
+    let b=BUILDINGS_D[k];if(!b)return '';
+    let curLv=(G.buildingLevels&&G.buildingLevels[k])||1,nextLv=curLv+1,req=BLD_LV_REQ[nextLv],bonusFn=BLD_LV_BONUS[k];
+    let curBonus=bonusFn?bonusFn(curLv):'',nextBonus=bonusFn&&nextLv<=10?bonusFn(nextLv):'';
+    let canUpgrade=nextLv<=10&&req,hasGold=canUpgrade&&G.gold>=req.gold,hasSupplies=canUpgrade&&req.supplies.every(s=>(G.inventory[s.n]||0)>=s.q),canDo=hasGold&&hasSupplies;
+    let suppliesNeeded=canUpgrade?req.supplies.map(s=>{let have=G.inventory[s.n]||0,ok=have>=s.q;return `<span style="color:${ok?'#7dff7d':'#ff7d7d'}">${s.q}x ${s.n}(${have})</span>`;}).join(', '):'';
+    return `<div class="bu-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="font-size:26px;">${b.emoji}</div><div style="flex:1;"><div style="font-size:12px;color:#7dff7d;font-weight:bold;">${b.name}</div><div style="font-size:9px;color:#ffd700;">Level ${curLv}/10 — ${curBonus}</div></div>${curLv>=10?'<span style="font-size:11px;color:#ffd700;">👑 MAX</span>':''}</div>${canUpgrade&&nextLv<=10?`<div style="background:#0a1a0a;border-radius:6px;padding:8px;margin-bottom:6px;"><div style="font-size:9px;color:#aaa;margin-bottom:4px;">Upgrade to Lv${nextLv} → ${nextBonus}</div><div style="font-size:9px;margin-bottom:4px;"><span style="color:${hasGold?'#7dff7d':'#ff7d7d'}">💰 ${req.gold}g</span>${suppliesNeeded?' + '+suppliesNeeded:''}</div><button class="btn bsm ${canDo?'bg':'br'}" onclick="upgradeBldFull('${k}')" style="width:100%;">${canDo?`⬆️ Upgrade to Lv${nextLv}`:'❌ Missing resources'}</button></div>`:''}<div style="display:flex;gap:3px;flex-wrap:wrap;">${Array.from({length:10},(_,idx)=>`<div style="width:20px;height:8px;border-radius:2px;background:${idx<curLv?'#5aaa3a':'#1a2a1a'};border:1px solid ${idx<curLv?'#7dff7d':'#2a4a2a'};"></div>`).join('')}</div></div>`;
   }).join('');
 }
-
-// ===== UPDATED renderBuildings with Lv 1-10 =====
-function renderBuildings() {
-  let list = document.getElementById('bupgrade-list');
-  let noBld = document.getElementById('no-bld');
-  if (!list) return;
-  renderSupplyInv();
-
-  checkAutoPlantBtn();
-
-  // Render building zone grid
-  let bzone = document.getElementById('bzone');
-  if (bzone) {
-    let bldKeys2 = typeof G.buildings === 'object' && !Array.isArray(G.buildings)
-      ? Object.keys(G.buildings).filter(k => G.buildings[k] > 0)
-      : (G.buildings || []);
-    let zoneHtml = bldKeys2.map(k => {
-      let b = BUILDINGS_D[k]; if (!b) return '';
-      let lv = (G.buildingLevels && G.buildingLevels[k]) || 1;
-      return `<div style="background:#1a2e1a;border:1px solid #3a6a3a;border-radius:8px;padding:6px;text-align:center;cursor:pointer;" onclick="document.getElementById('bupgrade-list').scrollIntoView()">
-        <div style="font-size:24px;">${b.emoji}</div>
-        <div style="font-size:9px;color:#7dff7d;">${b.name}</div>
-        <div style="font-size:8px;color:#ffd700;">Lv${lv}/10</div>
-      </div>`;
-    }).join('');
-    // Add mine if built
-    if (G.hasMine || G.plots?.some(p=>p.state==='mine')) {
-      zoneHtml += `<div style="background:#1a1a0a;border:1px solid #4a4a2a;border-radius:8px;padding:6px;text-align:center;cursor:pointer;" onclick="showPanel('mining')">
-        <div style="font-size:24px;">⛏️</div>
-        <div style="font-size:9px;color:#ffd700;">Mine</div>
-        <div style="font-size:8px;color:#aaa;">Active</div>
-      </div>`;
-    }
-    bzone.innerHTML = zoneHtml || '<div style="color:#555;font-size:10px;padding:8px;">Buy buildings from Store — they appear here!</div>';
-  }
-
-  let bldKeys = typeof G.buildings === 'object' && !Array.isArray(G.buildings)
-    ? Object.keys(G.buildings).filter(k => G.buildings[k] > 0)
-    : (G.buildings || []);
-
-  if (!bldKeys.length) { noBld.style.display = 'block'; list.innerHTML = ''; return; }
-  noBld.style.display = 'none';
-
-  list.innerHTML = bldKeys.map(k => {
-    let b = BUILDINGS_D[k]; if (!b) return '';
-    let curLv = (G.buildingLevels && G.buildingLevels[k]) || 1;
-    let nextLv = curLv + 1;
-    let req = BLD_LV_REQ[nextLv];
-    let bonusFn = BLD_LV_BONUS[k];
-    let curBonus = bonusFn ? bonusFn(curLv) : '';
-    let nextBonus = bonusFn && nextLv <= 10 ? bonusFn(nextLv) : '';
-
-    // Check if can upgrade
-    let canUpgrade = nextLv <= 10 && req;
-    let hasGold = canUpgrade && G.gold >= req.gold;
-    let hasSupplies = canUpgrade && req.supplies.every(s => (G.inventory[s.n]||0) >= s.q);
-    let canDo = hasGold && hasSupplies;
-
-    let suppliesNeeded = canUpgrade ? req.supplies.map(s => {
-      let have = G.inventory[s.n]||0;
-      let ok = have >= s.q;
-      return `<span style="color:${ok?'#7dff7d':'#ff7d7d'}">${s.q}x ${s.n}(${have})</span>`;
-    }).join(', ') : '';
-
-    return `<div class="bu-card">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-        <div style="font-size:26px;">${b.emoji}</div>
-        <div style="flex:1;">
-          <div style="font-size:12px;color:#7dff7d;font-weight:bold;">${b.name}</div>
-          <div style="font-size:9px;color:#ffd700;">Level ${curLv}/10 — ${curBonus}</div>
-        </div>
-        ${curLv >= 10 ? '<span style="font-size:11px;color:#ffd700;">👑 MAX</span>' : ''}
-      </div>
-      ${canUpgrade && nextLv <= 10 ? `
-      <div style="background:#0a1a0a;border-radius:6px;padding:8px;margin-bottom:6px;">
-        <div style="font-size:9px;color:#aaa;margin-bottom:4px;">Upgrade to Lv${nextLv} → ${nextBonus}</div>
-        <div style="font-size:9px;margin-bottom:4px;">
-          <span style="color:${hasGold?'#7dff7d':'#ff7d7d'}">💰 ${req.gold}g</span>
-          ${suppliesNeeded ? ` + ${suppliesNeeded}` : ''}
-        </div>
-        <button class="btn bsm ${canDo?'bg':'br'}" onclick="upgradeBldFull('${k}')" style="width:100%;">
-          ${canDo ? `⬆️ Upgrade to Lv${nextLv}` : '❌ Missing resources'}
-        </button>
-      </div>` : ''}
-      <div style="display:flex;gap:3px;flex-wrap:wrap;">
-        ${Array.from({length:10},(_,idx)=>`<div style="width:20px;height:8px;border-radius:2px;background:${idx<curLv?'#5aaa3a':'#1a2a1a'};border:1px solid ${idx<curLv?'#7dff7d':'#2a4a2a'};"></div>`).join('')}
-      </div>
-    </div>`;
-  }).join('');
+function upgradeBldFull(k){let curLv=(G.buildingLevels&&G.buildingLevels[k])||1,nextLv=curLv+1;if(nextLv>10){showToast('👑 Already at max level!');return;}let req=BLD_LV_REQ[nextLv];if(!req)return;if(G.gold<req.gold){showToast(`❌ Need ${req.gold}g!`);return;}for(let s of req.supplies){if((G.inventory[s.n]||0)<s.q){showToast(`❌ Need ${s.q}x ${s.n}! Visit Upgrade Market.`);return;}}G.gold-=req.gold;req.supplies.forEach(s=>{G.inventory[s.n]-=s.q;});if(!G.buildingLevels)G.buildingLevels={};G.buildingLevels[k]=nextLv;let b=BUILDINGS_D[k];if(k==='well')G.maxWater+=5;addXP(nextLv*50);playSound('build');renderBuildings();updateHUD();showToast(`${b.emoji} ${b.name} upgraded to Level ${nextLv}! 🎉`);}
+let autoPlantOn=false,autoPlantTimer=null;
+function renderAutoPlantSlots(){let slots=document.getElementById('ap-slots');if(!slots)return;let list=G.autoPlantList||[];let html=list.map((key,i)=>{let crop=CROPS[key]||TREES[key];return `<div style="background:#1a3a1a;border:1px solid #3a6a3a;border-radius:6px;padding:4px 6px;display:flex;align-items:center;gap:3px;cursor:pointer;font-size:11px;" onclick="removeAutoPlant(${i})">${crop?crop.emoji:'?'} <span style="font-size:9px;color:#aaa;">${crop?crop.name:key}</span> <span style="font-size:9px;color:#ff7d7d;">✕</span></div>`;}).join('');if(!html)html='<span style="font-size:9px;color:#555;">No crops added. Tap "+ Add Crop"</span>';slots.innerHTML=html;let btn=document.getElementById('ap-btn-text');if(btn)btn.textContent=autoPlantOn?'ON 🟢':'OFF';}
+function addAutoPlant(cropKey){if(!G.autoPlantList)G.autoPlantList=[];if(G.autoPlantList.length>=10){showToast('❌ Max 10 crops in Auto-Plant!');return;}if(G.autoPlantList.includes(cropKey)){showToast('Already in list!');return;}G.autoPlantList.push(cropKey);renderAutoPlantSlots();let c=CROPS[cropKey]||TREES[cropKey];showToast(`${c.emoji} ${c.name} added to Auto-Plant!`);}
+function removeAutoPlant(i){if(!G.autoPlantList||G.autoPlantList[i]===undefined){showAutoPlantPicker();return;}G.autoPlantList.splice(i,1);renderAutoPlantSlots();showToast('Removed from Auto-Plant list');}
+function showAutoPlantPicker(){let body='<div style="font-size:11px;color:#aaa;margin-bottom:8px;">Tap a crop to add to Auto-Plant:</div><div class="sg">';let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);Object.entries({...CROPS,...TREES}).forEach(([key,c])=>{let canGrow=hasGH||!c.seasons||c.seasons.includes(G.season),meetsLv=G.level>=(c.reqLv||1),ok=canGrow&&meetsLv;body+=`<div class="si ${ok?'':'lk'}" onclick="${ok?`addAutoPlant('${key}');closeModal()`:''}" ><div class="sie">${c.emoji}</div><div class="sin">${c.name}</div><div class="sic" style="color:#ffd700;">${c.cost}g</div></div>`;});body+='</div>';showModal('🌱 Add to Auto-Plant',body);}
+function clearAutoPlant(){G.autoPlantList=[];renderAutoPlantSlots();showToast('Auto-Plant list cleared');}
+function toggleAutoPlant(){if(G.level<15){showToast('❌ Auto-Plant unlocks at Level 15!');return;}if(!G.autoPlantList||!G.autoPlantList.length){showToast('❌ Add crops to Auto-Plant list first!');return;}autoPlantOn=!autoPlantOn;let btn=document.getElementById('ap-btn-text');if(autoPlantOn){if(btn)btn.textContent='ON 🟢';autoPlantTimer=setInterval(doAutoPlant,8000);showToast('🤖 Auto-Plant ON!');}else{if(btn)btn.textContent='OFF';if(autoPlantTimer){clearInterval(autoPlantTimer);autoPlantTimer=null;}showToast('🤖 Auto-Plant OFF');}}
+function doAutoPlant(){if(!autoPlantOn||!G.autoPlantList||!G.autoPlantList.length)return;let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);let listIdx=0;G.plots.forEach((p,i)=>{if(p.state!=='tilled')return;if(listIdx>=G.autoPlantList.length)listIdx=0;let cropKey=G.autoPlantList[listIdx],crop=CROPS[cropKey]||TREES[cropKey];if(!crop){listIdx++;return;}let canGrow=hasGH||!crop.seasons||crop.seasons.includes(G.season),cost=crop.cost||0;if(!canGrow||G.gold<cost){listIdx++;return;}G.gold-=cost;G.plots[i]={state:'planted',crop:cropKey,plantTime:Date.now(),watered:false,building:null};listIdx++;});renderFarm();updateHUD();}
+function checkAutoPlantBtn(){let btn=document.getElementById('auto-collect-btn');if(btn&&G.level>=10)btn.style.display='block';let apLocked=document.getElementById('ap-farm-locked'),apOk=document.getElementById('ap-farm-ok');if(G.level>=15){if(apLocked)apLocked.style.display='none';if(apOk)apOk.style.display='block';renderAutoPlantSlots();}else{if(apLocked)apLocked.style.display='block';if(apOk)apOk.style.display='none';}}
+function getMineralDrop(){if(Math.random()<0.2){let basicSupplies=Object.values(BUILD_SUPPLIES).filter(s=>s.tier===1);let s=basicSupplies[Math.floor(Math.random()*basicSupplies.length)];addItem(s.n,1);return ` + ${s.e} ${s.n}!`;}return '';}
+function speedUpCrop(i){let p=G.plots[i];let allCrops={...CROPS,...TREES};let crop=allCrops[p.crop];if(!crop)return;let elapsed=(Date.now()-p.plantTime)/1000,cropTime=crop.time||120,rem=Math.max(0,cropTime-elapsed),cost=Math.max(5,Math.ceil(rem/600));if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎 to speed up!`);return;}G.gems-=cost;p.plantTime=Date.now()-cropTime*1000;p.state='ready';playSound('harvest');renderFarm();updateHUD();showToast(`⚡ ${crop.emoji} ${crop.name} is ready! (-${cost}💎)`);}
+function speedUpAllCrops(){let planted=G.plots.filter(p=>p.state==='planted'||p.state==='growing');if(!planted.length){showToast('❌ No crops growing!');return;}let totalCost=0,allCrops={...CROPS,...TREES};planted.forEach(p=>{let crop=allCrops[p.crop];if(!crop)return;let elapsed=(Date.now()-p.plantTime)/1000,rem=Math.max(0,(crop.time||120)-elapsed);totalCost+=Math.max(5,Math.ceil(rem/600));});if((G.gems||0)<totalCost){showToast(`❌ Need ${totalCost}💎 to speed up all!`);return;}if(!confirm(`Speed up all ${planted.length} crops for ${totalCost}💎?`))return;G.gems-=totalCost;G.plots.forEach(p=>{if(p.state==='planted'||p.state==='growing'){let crop=allCrops[p.crop];if(crop){p.plantTime=Date.now()-crop.time*1000;p.state='ready';}}});playSound('harvest');renderFarm();updateHUD();showToast(`⚡ All crops ready! (-${totalCost}💎)`);}
+function speedUpAnimal(i){let a=G.animals[i],d=ANIMALS_D[a.type];if(!d)return;let rem=Math.max(0,d.pTime-(a.produceTimer||0)),cost=Math.max(10,Math.ceil(rem/600));if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎!`);return;}G.gems-=cost;a.produceTimer=d.pTime;renderAnimals();updateHUD();showToast(`⚡ ${d.emoji} ${a.name} ready to collect! (-${cost}💎)`);}
+function harvestAll(){
+  let now=Date.now(),allC={...CROPS,...TREES};
+  G.plots.forEach(p=>{if((p.state==='planted'||p.state==='growing')&&p.crop){let crop=allC[p.crop];if(crop){let elapsed=(now-p.plantTime)/1000,ct=crop.time||120;if(elapsed>=ct)p.state='ready';}}});
+  let ready=G.plots.filter(p=>p.state==='ready');if(ready.length===0){showToast('❌ No crops ready to harvest!');return;}
+  let totalGold=0;let hasBld=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
+  G.plots.forEach((p,i)=>{if(p.state==='ready'){let crop=allC[p.crop];if(!crop){G.plots[i].state='tilled';G.plots[i].crop=null;return;}let price=crop.sell||10;if(hasBld('silo'))price=Math.floor(price*1.5);if(hasBld('market'))price=Math.floor(price*1.2);if(G.homeType==='farmhouse')price=Math.floor(price*1.1);let vipBonus=[0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0;price=Math.floor(price*(1+vipBonus/100));G.gold+=price;G.totalEarned+=price;G.totalHarvested++;totalGold+=price;addXP(crop.xp||10);addItem(crop.name||p.crop,1);G.plots[i]={state:'tilled',crop:null,plantTime:0,watered:false,building:null};}});
+  if(totalGold===0){showToast('❌ Nothing harvested!');return;}playSound('harvest');updateQuestProgress('harvest',G.totalHarvested);updateQuestProgress('gold',G.gold);if(G.totalHarvested>=1)checkAchievement('a_h1');if(G.totalHarvested>=25)checkAchievement('a_h25');if(G.totalHarvested>=50)checkAchievement('a_h50');if(G.totalHarvested>=100)checkAchievement('a_h100');renderFarm();updateHUD();showToast(`🌾 Harvested ${ready.length} crops! +${totalGold}💰!`);
 }
-
-function upgradeBldFull(k) {
-  let curLv = (G.buildingLevels && G.buildingLevels[k]) || 1;
-  let nextLv = curLv + 1;
-  if (nextLv > 10) { showToast('👑 Already at max level!'); return; }
-  let req = BLD_LV_REQ[nextLv];
-  if (!req) return;
-  if (G.gold < req.gold) { showToast(`❌ Need ${req.gold}g!`); return; }
-  for (let s of req.supplies) {
-    if ((G.inventory[s.n]||0) < s.q) {
-      showToast(`❌ Need ${s.q}x ${s.n}! Visit Upgrade Market.`);
-      return;
-    }
-  }
-  // Deduct gold and supplies
-  G.gold -= req.gold;
-  req.supplies.forEach(s => { G.inventory[s.n] -= s.q; });
-  if (!G.buildingLevels) G.buildingLevels = {};
-  G.buildingLevels[k] = nextLv;
-  // Apply level bonus
-  let b = BUILDINGS_D[k];
-  if (k === 'well') G.maxWater += 5;
-  if (k === 'barn') {} // handled in animal max calc
-  addXP(nextLv * 50);
-  playSound('build');
-  renderBuildings(); updateHUD();
-  showToast(`${b.emoji} ${b.name} upgraded to Level ${nextLv}! 🎉`);
-}
-
-// ===== AUTO-PLANT SYSTEM =====
-let autoPlantOn = false;
-let autoPlantTimer = null;
-// G.autoPlantList = array of crop keys, max 10
-
-function renderAutoPlantSlots() {
-  let slots = document.getElementById('ap-slots');
-  if (!slots) return;
-  let list = G.autoPlantList || [];
-  let html = list.map((key, i) => {
-    let crop = CROPS[key] || TREES[key];
-    return `<div style="background:#1a3a1a;border:1px solid #3a6a3a;border-radius:6px;padding:4px 6px;display:flex;align-items:center;gap:3px;cursor:pointer;font-size:11px;" onclick="removeAutoPlant(${i})" title="Tap to remove">
-      ${crop ? crop.emoji : '?'} <span style="font-size:9px;color:#aaa;">${crop ? crop.name : key}</span> <span style="font-size:9px;color:#ff7d7d;">✕</span>
-    </div>`;
-  }).join('');
-  if (!html) html = '<span style="font-size:9px;color:#555;">No crops added. Tap "+ Add Crop"</span>';
-  slots.innerHTML = html;
-  let btn = document.getElementById('ap-btn-text');
-  if (btn) btn.textContent = autoPlantOn ? 'ON 🟢' : 'OFF';
-}
-
-function addAutoPlant(cropKey) {
-  if (!G.autoPlantList) G.autoPlantList = [];
-  if (G.autoPlantList.length >= 10) { showToast('❌ Max 10 crops in Auto-Plant!'); return; }
-  if (G.autoPlantList.includes(cropKey)) { showToast('Already in list!'); return; }
-  G.autoPlantList.push(cropKey);
-  renderAutoPlantSlots();
-  let c = CROPS[cropKey] || TREES[cropKey];
-  showToast(`${c.emoji} ${c.name} added to Auto-Plant!`);
-}
-
-function removeAutoPlant(i) {
-  if (!G.autoPlantList || !G.autoPlantList[i]) {
-    // Empty slot - show crop picker
-    showAutoPlantPicker();
-    return;
-  }
-  G.autoPlantList.splice(i, 1);
-  renderAutoPlantSlots();
-  showToast('Removed from Auto-Plant list');
-}
-
-function showAutoPlantPicker() {
-  let body = '<div style="font-size:11px;color:#aaa;margin-bottom:8px;">Tap a crop to add to Auto-Plant:</div><div class="sg">';
-  let hasGH = Array.isArray(G.buildings) ? G.buildings.includes('greenhouse') : (G.buildings['greenhouse'] > 0);
-  Object.entries({...CROPS,...TREES}).forEach(([key,c]) => {
-    let canGrow = hasGH || !c.seasons || c.seasons.includes(G.season);
-    let meetsLv = G.level >= (c.reqLv || c.lv || 1);
-    let ok = canGrow && meetsLv;
-    body += `<div class="si ${ok?'':'lk'}" onclick="${ok?`addAutoPlant('${key}');closeModal()`:''}" >
-      <div class="sie">${c.emoji}</div>
-      <div class="sin">${c.name}</div>
-      <div class="sic" style="color:#ffd700;">${c.cost||c.c}g</div>
-    </div>`;
-  });
-  body += '</div>';
-  showModal('🌱 Add to Auto-Plant', body);
-}
-
-function clearAutoPlant() {
-  G.autoPlantList = [];
-  renderAutoPlantSlots();
-  showToast('Auto-Plant list cleared');
-}
-
-function toggleAutoPlant() {
-  if (G.level < 15) { showToast('❌ Auto-Plant unlocks at Level 15!'); return; }
-  if (!G.autoPlantList || !G.autoPlantList.length) { showToast('❌ Add crops to Auto-Plant list first!'); return; }
-  autoPlantOn = !autoPlantOn;
-  let btn = document.getElementById('ap-btn-text');
-  if (autoPlantOn) {
-    if (btn) btn.textContent = '🤖 Auto-Plant: ON 🟢';
-    autoPlantTimer = setInterval(doAutoPlant, 8000);
-    showToast('🤖 Auto-Plant ON! Crops will replant automatically!');
-  } else {
-    if (btn) btn.textContent = '🤖 Auto-Plant: OFF';
-    if (autoPlantTimer) { clearInterval(autoPlantTimer); autoPlantTimer = null; }
-    showToast('🤖 Auto-Plant OFF');
-  }
-}
-
-function doAutoPlant() {
-  if (!autoPlantOn || !G.autoPlantList || !G.autoPlantList.length) return;
-  let hasGH = Array.isArray(G.buildings) ? G.buildings.includes('greenhouse') : (G.buildings['greenhouse'] > 0);
-  let listIdx = 0;
-  G.plots.forEach((p, i) => {
-    if (p.state !== 'tilled') return;
-    if (listIdx >= G.autoPlantList.length) listIdx = 0;
-    let cropKey = G.autoPlantList[listIdx];
-    let crop = CROPS[cropKey] || TREES[cropKey];
-    if (!crop) { listIdx++; return; }
-    let canGrow = hasGH || !crop.seasons || crop.seasons.includes(G.season);
-    let cost = crop.cost || crop.c || 0;
-    if (!canGrow || G.gold < cost) { listIdx++; return; }
-    G.gold -= cost;
-    G.plots[i] = {state:'planted', crop:cropKey, plantTime:Date.now(), watered:false, building:null};
-    listIdx++;
-  });
-  renderFarm(); updateHUD();
-}
-
-function checkAutoPlantBtn() {
-  let btn = document.getElementById('auto-collect-btn');
-  if (btn && G.level >= 10) btn.style.display = 'block';
-  // Show auto-plant section on farm
-  let apLocked = document.getElementById('ap-farm-locked');
-  let apOk = document.getElementById('ap-farm-ok');
-  if (G.level >= 15) {
-    if (apLocked) apLocked.style.display = 'none';
-    if (apOk) apOk.style.display = 'block';
-    renderAutoPlantSlots();
-  } else {
-    if (apLocked) apLocked.style.display = 'block';
-    if (apOk) apOk.style.display = 'none';
-  }
-}
-
-// Also add supply drops from mining
-function getMineralDrop() {
-  // 20% chance to also find a supply item when mining
-  if (Math.random() < 0.2) {
-    let basicSupplies = Object.values(BUILD_SUPPLIES).filter(s => s.tier === 1);
-    let s = basicSupplies[Math.floor(Math.random() * basicSupplies.length)];
-    addItem(s.n, 1);
-    return ` + ${s.e} ${s.n}!`;
-  }
-  return '';
-}
-
-// ===== SPEED UP SYSTEM =====
-function speedUpCrop(i) {
-  let p = G.plots[i];
-  let allCrops = {...CROPS, ...TREES};
-  let crop = allCrops[p.crop];
-  if (!crop) return;
-  let elapsed = (Date.now() - p.plantTime) / 1000;
-  let cropTime = crop.time || crop.t || 120;
-  let rem = Math.max(0, cropTime - elapsed);
-  let cost = Math.max(5, Math.ceil(rem / 600));
-  if ((G.gems || 0) < cost) { showToast(`❌ Need ${cost}💎 to speed up!`); return; }
-  G.gems -= cost;
-  // Set plant time so crop is ready now
-  p.plantTime = Date.now() - cropTime * 1000;
-  p.state = 'ready';
-  playSound('harvest');
-  renderFarm(); updateHUD();
-  showToast(`⚡ ${crop.emoji} ${crop.name} is ready! (-${cost}💎)`);
-}
-
-function speedUpAllCrops() {
-  let planted = G.plots.filter(p => p.state === 'planted' || p.state === 'growing');
-  if (!planted.length) { showToast('❌ No crops growing!'); return; }
-  let totalCost = 0;
-  let allCrops = {...CROPS, ...TREES};
-  planted.forEach(p => {
-    let crop = allCrops[p.crop];
-    if (!crop) return;
-    let elapsed = (Date.now() - p.plantTime) / 1000;
-    let rem = Math.max(0, (crop.time || crop.t || 120) - elapsed);
-    totalCost += Math.max(5, Math.ceil(rem / 600));
-  });
-  if ((G.gems || 0) < totalCost) { showToast(`❌ Need ${totalCost}💎 to speed up all!`); return; }
-  if (!confirm(`Speed up all ${planted.length} crops for ${totalCost}💎?`)) return;
-  G.gems -= totalCost;
-  G.plots.forEach(p => {
-    if (p.state === 'planted' || p.state === 'growing') {
-      let crop = allCrops[p.crop];
-      if (crop) { p.plantTime = Date.now() - (crop.time || crop.t || 120) * 1000; p.state = 'ready'; }
-    }
-  });
-  playSound('harvest'); renderFarm(); updateHUD();
-  showToast(`⚡ All crops ready! (-${totalCost}💎)`);
-}
-
-function speedUpAnimal(i) {
-  let a = G.animals[i];
-  let d = ANIMALS_D[a.type];
-  if (!d) return;
-  let rem = Math.max(0, d.pTime - (a.produceTimer || 0));
-  let cost = Math.max(10, Math.ceil(rem / 600));
-  if ((G.gems || 0) < cost) { showToast(`❌ Need ${cost}💎!`); return; }
-  G.gems -= cost;
-  a.produceTimer = d.pTime;
-  renderAnimals(); updateHUD();
-  showToast(`⚡ ${d.emoji} ${a.name} ready to collect! (-${cost}💎)`);
-}
-
-function buildingSpeedUp(k) {
-  showToast('⚡ Building upgrades are instant — no timer needed!');
-}
-
-// ===== HARVEST ALL =====
-function harvestAll() {
-  let now=Date.now();
-  let allC={...CROPS,...TREES};
-  // First mark all ready plots
-  G.plots.forEach(p=>{
-    if((p.state==='planted'||p.state==='growing')&&p.crop){
-      let crop=allC[p.crop];
-      if(crop){let elapsed=(now-p.plantTime)/1000;let ct=crop.time||crop.t||120;if(elapsed>=ct)p.state='ready';}
-    }
-  });
-  let ready=G.plots.filter(p=>p.state==='ready');
-  if(ready.length===0){showToast('❌ No crops ready to harvest!');return;}
-  let totalGold=0;
-  let hasBld=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
-  G.plots.forEach((p,i)=>{
-    if(p.state==='ready'){
-      let crop=allC[p.crop];
-      if(!crop){G.plots[i].state='tilled';G.plots[i].crop=null;return;}
-      let price=crop.sell||crop.s||10;
-      if(hasBld('silo')) price=Math.floor(price*1.5);
-      if(hasBld('market')) price=Math.floor(price*1.2);
-      if(G.homeType==='farmhouse') price=Math.floor(price*1.1);
-      let vipBonus=[0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0;
-      price=Math.floor(price*(1+vipBonus/100));
-      G.gold+=price;G.totalEarned+=price;G.totalHarvested++;totalGold+=price;
-      addXP(crop.xp||10);addItem(crop.name||crop.n||p.crop,1);
-      G.plots[i]={state:'tilled',crop:null,plantTime:0,watered:false,building:null};
-    }
-  });
-  if(totalGold===0){showToast('❌ Nothing harvested!');return;}
-  playSound('harvest');
-  updateQuestProgress('harvest',G.totalHarvested);
-  updateQuestProgress('gold',G.gold);
-  if(G.totalHarvested>=1) checkAchievement('a_h1');
-  if(G.totalHarvested>=50) checkAchievement('a_h50');
-  renderFarm();updateHUD();
-  showToast(`🌾 Harvested ${ready.length} crops! +${totalGold}💰!`);
-}
-
-function waterAll() {
-  let planted = G.plots.filter(p => (p.state === 'planted' || p.state === 'growing') && !p.watered);
-  if (planted.length === 0) { showToast('✅ All crops already watered!'); return; }
-  let cost = planted.length;
-  if (G.water < cost) { showToast(`❌ Need ${cost}💧 to water all! Have ${G.water}.`); return; }
-  G.water -= cost;
-  G.plots.forEach(p => {
-    if ((p.state === 'planted' || p.state === 'growing') && !p.watered) {
-      let allC = {...CROPS, ...TREES};
-      let crop = allC[p.crop];
-      p.watered = true;
-      if (crop) p.plantTime -= (crop.time || crop.t || 60) * 200;
-    }
-  });
-  playSound('water'); renderFarm(); updateHUD();
-  showToast(`💧 Watered ${planted.length} crops! -${cost}💧`);
-}
-
-let autoCollectOn = false;
-let autoCollectTimer = null;
-
-function toggleAutoCollect() {
-  if (G.level < 10) { showToast('❌ Auto-collect unlocks at Level 10!'); return; }
-  autoCollectOn = !autoCollectOn;
-  let btn = document.getElementById('auto-collect-btn');
-  if (autoCollectOn) {
-    btn.textContent = '🤖 Auto ON';
-    btn.style.background = '#1a4a1a';
-    btn.style.borderColor = '#3a8a3a';
-    autoCollectTimer = setInterval(() => {
-      let ready = G.plots.some(p => p.state === 'ready');
-      if (ready) harvestAll();
-    }, 5000);
-    showToast('🤖 Auto-collect ON! Harvests every 5s!');
-  } else {
-    btn.textContent = '🤖 Auto OFF';
-    btn.style.background = '';
-    btn.style.borderColor = '';
-    if (autoCollectTimer) { clearInterval(autoCollectTimer); autoCollectTimer = null; }
-    showToast('🤖 Auto-collect OFF');
-  }
-}
-
-// Show auto-collect button at level 10+
-function checkAutoCollectBtn() {
-  let btn = document.getElementById('auto-collect-btn');
-  if (btn && G.level >= 10) btn.style.display = 'block';
-}
-
-// ===== HUD INTERACTIVE POPUPS =====
-function showHUDPop(type) {
-  let pop = document.getElementById('hpop');
-  let con = document.getElementById('hpop-content');
-  if (!pop || !con) return;
-  let content = '';
-  if (type === 'gold') {
-    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💰 Gold Info</div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gold</span><span style="color:#ffd700;font-weight:bold;">${G.gold}g</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Total Earned</span><span>${G.totalEarned}g</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Offline Rate</span><span>${G.vipLevel>=4?'20g/hr':'Need VIP 4'}</span></div>
-    <div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest crops & collect animal products for gold!</div>
-    <button class="btn bg bfu" onclick="showPanel('shop');closeHUDPop()" style="margin-top:8px;">Go to Store</button>`;
-  } else if (type === 'gems') {
-    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💎 Gems Info</div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gems</span><span style="color:#a8d8ff;font-weight:bold;">${G.gems||0}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>VIP Daily Gift</span><span>${G.vipLevel>=2?'Yes ✅':'No'}</span></div>
-    <div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Use gems to skip timers and get boosts!</div>
-    <button class="btn bfu" onclick="showPanel('iap');closeHUDPop()" style="margin-top:8px;background:#1a1a3a;border-color:#3a3a6a;color:#a8d8ff;">Buy Gems</button>`;
-  } else if (type === 'level') {
-    let needed = xpForLevel(G.level);
-    let pct = Math.floor((G.xp / needed) * 100);
-    const unlocks = {3:'🎣 Pond',5:'🌿 Greenhouse',10:'⛏️ Mining',15:'🏗️ Silo',20:'🏪 Market',25:'🦚 Exotic Animals',30:'🍄 Rare Crops'};
-    let nextUnlock = Object.entries(unlocks).find(([lv]) => parseInt(lv) > G.level);
-    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">⭐ Level Info</div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Level</span><span style="color:#7dff7d;font-weight:bold;">${G.level}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>XP Progress</span><span>${G.xp}/${needed} (${pct}%)</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Next Unlock</span><span style="color:#ffd700;">${nextUnlock?`Lv${nextUnlock[0]}: ${nextUnlock[1]}`:'Keep going!'}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>VIP Level</span><span>${G.vipLevel>0?'VIP '+G.vipLevel:'None - need Lv5'}</span></div>
-    <div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest, fish, and mine for fast XP!</div>`;
-  } else if (type === 'water') {
-    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💧 Water Info</div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#7db8ff;font-weight:bold;">${G.water}/${G.maxWater}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill per day</span><span>+4💧</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Home Bonus</span><span>${G.homeType==='cabin'?'♾️ Infinite!':'Standard'}</span></div>
-    <button class="btn bb bfu" onclick="spendGems(25,'water');closeHUDPop()" style="margin-top:8px;">💎 Instant Refill (5💎)</button>`;
-  } else if (type === 'season') {
-    let cropList = Object.values(CROPS_D||CROPS||{}).filter(c=>c.seasons?.includes(G.season)||c.sea?.includes(G.season)).map(c=>c.emoji||c.e).slice(0,6).join(' ');
-    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${SEASONS[G.season].emoji} Season Info</div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Season</span><span style="color:${SEASONS[G.season].color};font-weight:bold;">${SEASONS[G.season].name}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Day</span><span>${G.seasonDay}/28</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Weather</span><span>${WEATHER[G.weather].emoji} ${WEATHER[G.weather].name}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Days left</span><span>${28-G.seasonDay}</span></div>
-    <div style="font-size:9px;color:#aaa;margin-top:6px;">Best crops this season: ${cropList||'Check Store'}</div>`;
-  } else if (type === 'profile') {
-    let h = {cottage:'🏡 Cottage',ranch:'🏚️ Ranch',farmhouse:'🏠 Farmhouse',cabin:'🛖 Cabin',manor:'🏰 Manor',modern:'🏗️ Modern',van:'🚐 Van',camp:'⛺ Camp'};
-    content = `<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${AVATARS[G.avatar]||'🌱'} ${G.name}</div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Home</span><span>${h[G.homeType]||'Farmhouse'}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>State</span><span>${G.state}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Acreage</span><span>${(G.acreage||0.5).toFixed(1)} acres</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>VIP</span><span>${G.vipLevel>0?'VIP '+G.vipLevel:'None yet'}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Harvests</span><span>${G.totalHarvested}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Critters Def.</span><span>${G.crittersDef||0}</span></div>`;
-  }
-  con.innerHTML = content;
-  pop.classList.add('show');
-}
-function closeHUDPop() { document.getElementById('hpop')?.classList.remove('show'); }
-
-// ===== CRITTER SYSTEM =====
-const CRITTERS_DATA = [
-  {n:'Aphids',e:'🐛',dmg:'slow your crops',sea:[0],oh:2},
-  {n:'Rabbits',e:'🐇',dmg:'eat your crops',sea:[0,2],oh:3},
-  {n:'Fox',e:'🦊',dmg:'steal animal produce',sea:[0,1,2,3],oh:4},
-  {n:'Raccoon',e:'🦝',dmg:'destroy corn/pumpkin',sea:[2],oh:3},
-  {n:'Locusts',e:'🦗',dmg:'destroy 2 crops',sea:[1],oh:6},
-  {n:'Rats',e:'🐀',dmg:'steal 5% of your gold',sea:[0,1,2,3],oh:5},
-  {n:'Deer',e:'🦌',dmg:'eat your vegetables',sea:[0,1,2],oh:4},
-  {n:'Bear',e:'🐻',dmg:'steal your honey',sea:[1,2],oh:8},
-  {n:'Wolf',e:'🐺',dmg:'scare your animals',sea:[3],oh:6},
-];
-
-function triggerCritter(hoursAway) {
-  let possible = CRITTERS_DATA.filter(c => c.sea.includes(G.season) && hoursAway >= c.oh);
-  if (!possible.length) return;
-  let critter = possible[Math.floor(Math.random() * possible.length)];
-  G.activeCritter = critter;
-  document.getElementById('crit-title').textContent = `${critter.e} ${critter.n} Attack!`;
-  document.getElementById('crit-text').textContent = `A ${critter.n} is attacking your homestead! They will ${critter.dmg}!`;
-  document.getElementById('critalert').classList.add('show');
-  document.getElementById('crit-btn').style.display = 'block';
-  playSound('critter');
-  showToast(`🐛 ${critter.n} attacking! Check the alert!`);
-}
-
-function showCritAlert() {
-  if (G.activeCritter) document.getElementById('critalert').classList.add('show');
-}
-
-function fightCritter() {
-  if (!G.activeCritter) return;
-  G.crittersDef = (G.crittersDef || 0) + 1;
-  G.gold += 30; G.totalEarned += 30;
-  addXP(50);
-  G.activeCritter = null;
-  document.getElementById('critalert').classList.remove('show');
-  document.getElementById('crit-btn').style.display = 'none';
-  checkAchievement('a_def1');
-  updateQuestProgress('defend', G.crittersDef);
-  updateHUD(); playSound('harvest');
-  showToast('⚔️ Critter defeated! +30💰 +50XP!');
-}
-
-function bribeCritter() {
-  if (!G.activeCritter) return;
-  if (G.gold < 50) { showToast('❌ Need 50g to bribe!'); return; }
-  G.gold -= 50; G.activeCritter = null;
-  document.getElementById('critalert').classList.remove('show');
-  document.getElementById('crit-btn').style.display = 'none';
-  updateHUD(); showToast('💰 Bribed critter away! -50g');
-}
-
-function ignoreCritter() {
-  if (G.activeCritter) {
-    let c = G.activeCritter;
-    if (c.n === 'Rats') {
-      let stolen = Math.floor(G.gold * 0.05);
-      G.gold -= stolen;
-      showToast(`🐀 Rats stole ${stolen}💰!`);
-    } else {
-      let planted = G.plots.filter(p => p.state === 'planted' || p.state === 'ready');
-      if (planted.length > 0) { planted[0].state = 'tilled'; planted[0].crop = null; }
-      showToast(`${c.e} ${c.n} damaged your farm!`);
-    }
-    G.activeCritter = null;
-    document.getElementById('crit-btn').style.display = 'none';
-    renderFarm(); updateHUD();
-  }
-  document.getElementById('critalert').classList.remove('show');
-}
-
-function checkOfflineEarnings() {
-  let now = Date.now();
-  let hoursAway = Math.floor((now - (G.lastOnline || now)) / 3600000);
-  G.lastOnline = now;
-  if (hoursAway < 0.1) return;
-  if (G.vipLevel >= 4) {
-    let mult = G.vipLevel >= 17 ? 3 : G.vipLevel >= 14 ? 2 : G.vipLevel >= 11 ? 1.5 : 1;
-    let earned = Math.floor(hoursAway * 20 * mult);
-    G.gold += earned; G.totalEarned += earned;
-    G.totalOfflineGold = (G.totalOfflineGold || 0) + earned;
-    showToast(`💤 Away ${hoursAway}h — earned ${earned}💰!`);
-  }
-  if (hoursAway >= 2) triggerCritter(hoursAway);
-}
-
-// ===== ANIMAL STAGE LEVELING =====
-const ANIMAL_STAGES = [
-  {name:'Baby',    emoji:'🥚', mult:0,    feedsNeeded:0,   cls:'stg0'},
-  {name:'Juvenile',emoji:'🐣', mult:0.5,  feedsNeeded:10,  cls:'stg1'},
-  {name:'Young',   emoji:'🌱', mult:0.75, feedsNeeded:25,  cls:'stg2'},
-  {name:'Adult',   emoji:'💪', mult:1.0,  feedsNeeded:50,  cls:'stg3'},
-  {name:'Prime',   emoji:'👑', mult:1.5,  feedsNeeded:100, cls:'stg4'},
-];
-
-function getAnimalStage(animal) {
-  let feeds = animal.feeds || 0;
-  let stage = 0;
-  for (let i = ANIMAL_STAGES.length - 1; i >= 0; i--) {
-    if (feeds >= ANIMAL_STAGES[i].feedsNeeded) { stage = i; break; }
-  }
-  return { ...ANIMAL_STAGES[stage], idx: stage };
-}
-
-// ===== BUILDING UPGRADES =====
-const BUILDING_TIERS = {
-  well:       [{n:'Basic Well',b:'+10💧',c:0},{n:'Deep Well',b:'+20💧',c:400},{n:'Rain Collector',b:'+30💧+auto',c:800}],
-  barn:       [{n:'Small Barn',b:'+4 animals',c:0},{n:'Big Barn',b:'+8 animals',c:800},{n:'Mega Barn',b:'+16 animals',c:2000}],
-  greenhouse: [{n:'Small GH',b:'All seasons',c:0},{n:'Full GH',b:'+25% speed',c:1000},{n:'Solar GH',b:'+50% speed',c:2500}],
-  silo:       [{n:'Basic Silo',b:'+50% sell',c:0},{n:'Big Silo',b:'+75% sell',c:1000},{n:'Mega Silo',b:'+100% sell',c:2500}],
-  windmill:   [{n:'Windmill',b:'Auto-water 2',c:0},{n:'Big Windmill',b:'Auto-water 4',c:1200},{n:'Power Mill',b:'Auto-water 8',c:3000}],
-  market:     [{n:'Farm Stand',b:'+20% sell',c:0},{n:'Farm Market',b:'+35% sell',c:1600},{n:'Mega Market',b:'+50% sell',c:4000}],
-};
-
-// ===== MINING SYSTEM =====
-const MINERALS = [
-  {n:'Stone',  e:'🪨', v:5,   r:0.35},
-  {n:'Clay',   e:'🟤', v:8,   r:0.25},
-  {n:'Coal',   e:'⚫', v:15,  r:0.18},
-  {n:'Iron',   e:'🔩', v:25,  r:0.10},
-  {n:'Silver', e:'🥈', v:60,  r:0.06},
-  {n:'Gold Ore',e:'🥇',v:100, r:0.04},
-  {n:'Diamond',e:'💎', v:300, r:0.015},
-  {n:'Crystal',e:'🔮', v:500, r:0.005},
-];
-
-function renderMining() {
-  let hasMine = G.hasMine || G.plots.some(p => p.state === 'mine');
-  let lk = document.getElementById('mine-lock');
-  let ok = document.getElementById('mine-ok');
-  if (!lk || !ok) return;
-  if (!hasMine || G.level < 10) {
-    lk.style.display = 'block'; ok.style.display = 'none';
-    let t = document.querySelector('#mine-lock div:last-child');
-    if (t) t.textContent = G.level < 10 ? 'Mining unlocks at Level 10!' : 'Buy a Mine Plot from Store first!';
-  } else {
-    lk.style.display = 'none'; ok.style.display = 'block';
-    let cnt = document.getElementById('mine-count');
-    if (cnt) cnt.textContent = G.mineralsMined || 0;
-    let mlog = document.getElementById('mine-log');
-    if (mlog) mlog.innerHTML = (G.mineLog || []).slice(-6).reverse().map(m => `<div>${m}</div>`).join('');
-  }
-}
-
-function doMine() {
-  let hasMine = G.hasMine || G.plots.some(p => p.state === 'mine');
-  if (!hasMine) { showToast('❌ Buy a Mine Plot from Store first!'); return; }
-  if (G.level < 10) { showToast('❌ Mining unlocks at Level 10!'); return; }
-  if (G.water < 10) { showToast('❌ Need 10💧 to mine!'); return; }
-  G.water -= 10;
-  let campBonus = G.homeType === 'camp' ? 2 : 1;
-  let found = [];
-  for (let r = 0; r < campBonus; r++) {
-    let roll = Math.random(), cum = 0;
-    for (let m of MINERALS) { cum += m.r; if (roll <= cum) { found.push(m); break; } }
-  }
-  if (!found.length) found.push(MINERALS[0]);
-  found.forEach(m => {
-    G.gold += m.v; G.totalEarned += m.v; G.mineralsMined = (G.mineralsMined || 0) + 1;
-    addItem(m.n, 1);
-    if (!G.mineLog) G.mineLog = [];
-    G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);
-  });
-  // 20% chance to find a building supply!
-  let supDrop = getMineralDrop();
-  updateQuestProgress('minerals', G.mineralsMined || 0);
-  if ((G.mineralsMined || 0) >= 5) checkAchievement('a_mine5');
-  renderMining(); updateHUD(); playSound('build');
-  showToast(`⛏️ Found: ${found.map(m => m.e + m.n).join(', ')}${supDrop}`);
-}
-
-function spendMineGems() {
-  if ((G.gems || 0) < 75) { showToast('❌ Need 75💎!'); return; }
-  G.gems -= 20; updateHUD();
-  let rare = MINERALS.slice(4);
-  let m = rare[Math.floor(Math.random() * rare.length)];
-  G.gold += m.v; G.totalEarned += m.v; G.mineralsMined = (G.mineralsMined || 0) + 1;
-  addItem(m.n, 1);
-  if (!G.mineLog) G.mineLog = [];
-  G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);
-  renderMining(); updateHUD();
-  showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);
-}
-
-function buyMinePlot() {
-  if (G.level < 10) { showToast('❌ Mining unlocks at Level 10!'); return; }
-  if (G.gold < 300) { showToast('❌ Need 300g!'); return; }
-  if (G.hasMine) { showToast('✅ Mine already built!'); return; }
-  G.gold -= 300;
-  G.hasMine = true; // Mine is its own zone, not a farm plot
-  updateHUD(); renderMining(); renderShop();
-  showToast('⛏️ Mine built! Go to Mine tab to start digging!');
-}
-
-function migrateData(data) {
-  // Fix buildings: convert array to object
-  if (Array.isArray(data.buildings)) {
-    let bd = {};
-    data.buildings.forEach(k => { bd[k] = 1; });
-    data.buildings = bd;
-  }
-  if (!data.buildings) data.buildings = {};
-  if (!data.buildingLevels) data.buildingLevels = {};
-
-  // FREE UP farm plots taken by buildings/mines — they now have their own zones!
-  if (data.plots) {
-    data.plots.forEach(p => {
-      if (!p.state) p.state = 'empty';
-      if (p.state === 'building' && p.building) {
-        if (!data.buildings[p.building]) data.buildings[p.building] = 1;
-        if (!data.buildingLevels[p.building]) data.buildingLevels[p.building] = 1;
-        // Free the plot back for farming!
-        p.state = 'tilled';
-        p.building = null;
-      }
-      if (p.state === 'mine') {
-        data.hasMine = true;
-        p.state = 'empty'; // Free mine plots back for farming
-      }
-    });
-  }
-
-  // Fix animals - ensure feeds field exists
-  if (data.animals) {
-    data.animals.forEach(a => {
-      if (!a.feeds) a.feeds = 0;
-      if (!a.produceTimer) a.produceTimer = 0;
-    });
-  }
-
-  // Fix quests
-  if (!data.quests) data.quests = {};
-
-  // Fix inventory
-  if (!data.inventory) data.inventory = {};
-
-  // Fix autoPlantList
-  if (!data.autoPlantList) data.autoPlantList = [];
-
-  // Fix mineLog
-  if (!data.mineLog) data.mineLog = [];
-  if (!data.fishLog) data.fishLog = [];
-
-  // Fix VIP
-  if (!data.vipLevel) data.vipLevel = 0;
-  if (!data.acreage) data.acreage = 0.5;
-
-  // Fix homeType
-  if (!data.homeType) data.homeType = 'farmhouse';
-
-  // Recalculate max water based on well level
-  if (data.buildings['well']) {
-    let wellLv = data.buildingLevels['well'] || 1;
-    data.maxWater = Math.max(data.maxWater || 10, 10 + wellLv * 5);
-  }
-
-  return data;
-}
-
-function saveGame(){try{G.lastOnline=Date.now();localStorage.setItem('th_v3',JSON.stringify(G));}catch(e){}}
-function loadGame(){
-  try {
-    let s = localStorage.getItem('th_v3') || localStorage.getItem('th_v2');
-    if (s) {
-      let data = JSON.parse(s);
-      data = migrateData(data);
-      Object.assign(G, data);
-      return true;
-    }
-  } catch(e) { console.log('Load error:', e); }
-  return false;
-}
-function resetGame(){if(confirm('Reset ALL progress?')){localStorage.removeItem('th_v3');localStorage.removeItem('th_v2');location.reload();}}
+function waterAll(){let planted=G.plots.filter(p=>(p.state==='planted'||p.state==='growing')&&!p.watered);if(planted.length===0){showToast('✅ All crops already watered!');return;}let cost=planted.length;if(G.water<cost){showToast(`❌ Need ${cost}💧 to water all! Have ${G.water}.`);return;}G.water-=cost;G.plots.forEach(p=>{if((p.state==='planted'||p.state==='growing')&&!p.watered){let allC={...CROPS,...TREES},crop=allC[p.crop];p.watered=true;if(crop)p.plantTime-=(crop.time||60)*200;}});playSound('water');renderFarm();updateHUD();showToast(`💧 Watered ${planted.length} crops! -${cost}💧`);}
+let autoCollectOn=false,autoCollectTimer=null;
+function toggleAutoCollect(){if(G.level<10){showToast('❌ Auto-collect unlocks at Level 10!');return;}autoCollectOn=!autoCollectOn;let btn=document.getElementById('auto-collect-btn');if(autoCollectOn){btn.textContent='🤖 Auto ON';btn.style.background='#1a4a1a';btn.style.borderColor='#3a8a3a';autoCollectTimer=setInterval(()=>{let now=Date.now(),allC={...CROPS,...TREES};G.plots.forEach(p=>{if((p.state==='planted'||p.state==='growing')&&p.crop){let crop=allC[p.crop];if(crop&&(now-p.plantTime)/1000>=crop.time)p.state='ready';}});if(G.plots.some(p=>p.state==='ready'))harvestAll();},5000);showToast('🤖 Auto-collect ON! Harvests every 5s!');}else{btn.textContent='🤖 Auto OFF';btn.style.background='';btn.style.borderColor='';if(autoCollectTimer){clearInterval(autoCollectTimer);autoCollectTimer=null;}showToast('🤖 Auto-collect OFF');}}
+function checkAutoCollectBtn(){let btn=document.getElementById('auto-collect-btn');if(btn&&G.level>=10)btn.style.display='block';}
+function renderMining(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine'),lk=document.getElementById('mine-lock'),ok=document.getElementById('mine-ok');if(!lk||!ok)return;if(!hasMine||G.level<10){lk.style.display='block';ok.style.display='none';}else{lk.style.display='none';ok.style.display='block';let cnt=document.getElementById('mine-count');if(cnt)cnt.textContent=G.mineralsMined||0;let mlog=document.getElementById('mine-log');if(mlog)mlog.innerHTML=(G.mineLog||[]).slice(-6).reverse().map(m=>`<div>${m}</div>`).join('');}}
+function doMine(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');if(!hasMine){showToast('❌ Buy a Mine Plot from Store first!');return;}if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.water<10){showToast('❌ Need 10💧 to mine!');return;}G.water-=10;let campBonus=G.homeType==='camp'?2:1,found=[];for(let r=0;r<campBonus;r++){let roll=Math.random(),cum=0;for(let m of MINERALS){cum+=m.r;if(roll<=cum){found.push(m);break;}}}if(!found.length)found.push(MINERALS[0]);found.forEach(m=>{G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);});let supDrop=getMineralDrop();renderMining();updateHUD();playSound('build');showToast(`⛏️ Found: ${found.map(m=>m.e+m.n).join(', ')}${supDrop}`);}
+function spendMineGems(){if((G.gems||0)<75){showToast('❌ Need 75💎!');return;}G.gems-=75;updateHUD();let rare=MINERALS.slice(4),m=rare[Math.floor(Math.random()*rare.length)];G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);renderMining();updateHUD();showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);}
+function buyMinePlot(){if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.gold<300){showToast('❌ Need 300g!');return;}if(G.hasMine){showToast('✅ Mine already built!');return;}G.gold-=300;G.hasMine=true;updateHUD();renderMining();renderShop();showToast('⛏️ Mine built! Go to Mine tab to start digging!');}
+function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+function saveGame(){try{G.lastOnline=Date.now();localStorage.setItem('th_v4',JSON.stringify(G));}catch(e){}}
+function loadGame(){try{let s=localStorage.getItem('th_v4')||localStorage.getItem('th_v3')||localStorage.getItem('th_v2');if(s){let data=JSON.parse(s);data=migrateData(data);Object.assign(G,data);return true;}}catch(e){console.log('Load error:',e);}return false;}
+function resetGame(){if(confirm('Reset ALL progress?')){localStorage.removeItem('th_v4');localStorage.removeItem('th_v3');localStorage.removeItem('th_v2');location.reload();}}
 setInterval(saveGame,30000);
-
-// ============ START ============
-if(loadGame()&&G.name){
-  document.getElementById('avs')?.classList.add('hidden');
-  document.getElementById('avatar-screen')?.classList.add('hidden');
-  document.getElementById('hud').style.display='block';
-  document.getElementById('gc').style.display='block';
-  document.getElementById('bn').style.display='flex';
-  renderAll();startCycles();
-  updateHUD();
-  checkOfflineEarnings();
-  checkAutoCollectBtn();
-  showToast(`📂 Welcome back ${G.name}!`);
-} // else avatar screen shows
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'){
-    let ci=document.getElementById('ci');let ai=document.getElementById('aii');
-    if(document.activeElement===ci)sendChat();
-    if(document.activeElement===ai)askAI();
-  }
-});
+if(loadGame()&&G.name){document.getElementById('avatar-screen')?.classList.add('hidden');document.getElementById('hud').style.display='block';document.getElementById('gc').style.display='block';document.getElementById('bn').style.display='flex';renderAll();startCycles();updateHUD();checkOfflineEarnings();checkAutoCollectBtn();showToast(`📂 Welcome back ${G.name}!`);}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){let ci=document.getElementById('ci');let ai=document.getElementById('aii');if(document.activeElement===ci)sendChat();if(document.activeElement===ai)askAI();}});
 </script>
 </body>
 </html>
