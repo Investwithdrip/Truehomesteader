@@ -327,41 +327,13 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
   <!-- QUESTS -->
   <!-- BUILDINGS UPGRADE -->
-  <!-- BUILDINGS ZONE -->
   <div id="panel-buildings" class="panel">
-    <div class="ptitle">🏠 Building Zone</div>
-    <div class="card" style="margin-bottom:8px;background:#0a1a2a;border-color:#2a4a6a;">
-      <div class="ct">🤖 Auto-Plant <span style="font-size:9px;color:#aaa;" id="ap-lv-note">(Unlocks Lv15)</span></div>
-      <div id="ap-locked" style="font-size:10px;color:#aaa;">Reach Level 15 to unlock!</div>
-      <div id="ap-ok" style="display:none;">
-        <div style="font-size:10px;color:#aaa;margin-bottom:6px;">Select up to 10 crops to auto-plant:</div>
-        <div id="ap-slots" style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:8px;"></div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn bsm bb" style="flex:1;" onclick="toggleAutoPlant()"><span id="ap-btn-text">🤖 Auto-Plant: OFF</span></button>
-          <button class="btn bsm" style="flex:1;" onclick="clearAutoPlant()">Clear</button>
-        </div>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:8px;background:#1a1a0a;border-color:#4a4a1a;">
-      <div class="ct">🔨 Building Supplies</div>
-      <div id="supply-inv" style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:6px;"></div>
-      <button class="btn bsm bfu" onclick="showPanel('upmarket')" style="background:#2a2a0a;border-color:#5a5a1a;color:#ffd700;">🏪 Upgrade Market</button>
-    </div>
-    <div class="sh">🏠 Your Buildings (Lv 1-10)</div>
+    <div class="ptitle">🏠 Buildings</div>
     <div id="bupgrade-list"></div>
     <div id="no-bld" class="card" style="text-align:center;color:#888;">
       <div style="font-size:36px;">🏗️</div>
       <div style="font-size:11px;margin-top:6px;">No buildings yet! Buy from Store.</div>
     </div>
-  </div>
-
-  <!-- UPGRADE MARKET -->
-  <div id="panel-upmarket" class="panel">
-    <div class="ptitle">🏪 Upgrade Market</div>
-    <div class="sh">🪵 Basic (Lv 1-3)</div><div class="sg" id="sup-basic"></div>
-    <div class="sh">⚙️ Advanced (Lv 4-6)</div><div class="sg" id="sup-mid"></div>
-    <div class="sh">💎 Premium (Lv 7-10)</div><div class="sg" id="sup-prem"></div>
-    <div class="sh">💎 Buy with Gems</div><div class="sg" id="sup-gems"></div>
   </div>
 
   <!-- MINING -->
@@ -486,7 +458,6 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <button class="nb" onclick="showPanel('shop')" id="nav-shop"><span class="ni">🏪</span>Store</button>
   <button class="nb" onclick="showPanel('animals')" id="nav-animals"><span class="ni">🐄</span>Animals</button>
   <button class="nb" onclick="showPanel('buildings')" id="nav-buildings"><span class="ni">🏠</span>Builds</button>
-  <button class="nb" onclick="showPanel('upmarket')" id="nav-upmarket"><span class="ni">🏪</span>Market</button>
   <button class="nb" onclick="showPanel('mining')" id="nav-mining"><span class="ni">⛏️</span>Mine</button>
   <button class="nb" onclick="showPanel('pond')" id="nav-pond"><span class="ni">🎣</span>Pond</button>
   <button class="nb" onclick="showPanel('vip')" id="nav-vip"><span class="ni">👑</span>VIP</button>
@@ -1603,8 +1574,7 @@ function showPanel(name){
   if(name==='shop')renderShop();
   if(name==='pond')renderPond();
   if(name==='vip')renderVIP();
-  if(name==='buildings'){renderBuildings();}
-  if(name==='upmarket'){renderUpgradeMarket();}
+  if(name==='buildings')renderBuildings();
   if(name==='mining')renderMining();
   if(name==='chat')renderChat();
   if(name==='ai')renderAIMessages();
@@ -1620,347 +1590,6 @@ function showToast(msg){let t=document.getElementById('toast');t.textContent=msg
 function showProfile(){showToast(`${AVATARS[G.avatar]||'🌱'} ${G.name} | Level ${G.level} | ${G.state} | ${G.acreage?.toFixed(1)||0.5} acres`);}
 
 // ============ SAVE/LOAD ============
-// ===== BUILDING SUPPLIES =====
-const BUILD_SUPPLIES = {
-  // Basic (Lv 1-3)
-  wood:     {n:'Wood',      e:'🪵', c:30,  gem:5,  tier:1, desc:'Basic building material'},
-  nails:    {n:'Nails',     e:'🔩', c:25,  gem:4,  tier:1, desc:'Holds it all together'},
-  paint:    {n:'Paint',     e:'🎨', c:40,  gem:6,  tier:1, desc:'Finish and protect'},
-  screws:   {n:'Screws',    e:'⚙️', c:35,  gem:5,  tier:1, desc:'Heavy-duty fasteners'},
-  // Advanced (Lv 4-6)
-  lumber:   {n:'Lumber',    e:'🏗️', c:80,  gem:12, tier:2, desc:'Structural wood'},
-  concrete: {n:'Concrete',  e:'🪨', c:100, gem:15, tier:2, desc:'Foundation material'},
-  wire:     {n:'Wire',      e:'🔌', c:90,  gem:13, tier:2, desc:'Electrical wiring'},
-  pipes:    {n:'Pipes',     e:'🔧', c:75,  gem:11, tier:2, desc:'Plumbing pipes'},
-  // Premium (Lv 7-10)
-  steel:    {n:'Steel',     e:'⚡', c:200, gem:25, tier:3, desc:'Heavy-duty metal'},
-  glass:    {n:'Glass',     e:'🪟', c:180, gem:22, tier:3, desc:'Windows & panels'},
-  solar:    {n:'Solar Panel',e:'☀️', c:300, gem:35, tier:3, desc:'Energy upgrade'},
-  smart:    {n:'Smart Tech', e:'🤖', c:400, gem:45, tier:3, desc:'Automated systems'},
-};
-
-// What each building level requires
-const BLD_LV_REQ = {
-  1:  {gold:0,   supplies:[]},
-  2:  {gold:200, supplies:[{n:'Wood',q:2},{n:'Nails',q:3}]},
-  3:  {gold:400, supplies:[{n:'Wood',q:3},{n:'Screws',q:2},{n:'Paint',q:1}]},
-  4:  {gold:700, supplies:[{n:'Lumber',q:2},{n:'Concrete',q:1},{n:'Nails',q:4}]},
-  5:  {gold:1000,supplies:[{n:'Lumber',q:3},{n:'Wire',q:2},{n:'Pipes',q:1}]},
-  6:  {gold:1500,supplies:[{n:'Lumber',q:4},{n:'Concrete',q:2},{n:'Wire',q:2}]},
-  7:  {gold:2000,supplies:[{n:'Steel',q:1},{n:'Concrete',q:3},{n:'Glass',q:1}]},
-  8:  {gold:3000,supplies:[{n:'Steel',q:2},{n:'Glass',q:2},{n:'Wire',q:3}]},
-  9:  {gold:4500,supplies:[{n:'Steel',q:3},{n:'Solar Panel',q:1},{n:'Smart Tech',q:1}]},
-  10: {gold:7000,supplies:[{n:'Steel',q:4},{n:'Solar Panel',q:2},{n:'Smart Tech',q:2}]},
-};
-
-// Building max level bonuses
-const BLD_LV_BONUS = {
-  well:       (lv)=>`+${lv*5}💧 max water`,
-  barn:       (lv)=>`+${lv*2} animal slots`,
-  greenhouse: (lv)=>`+${lv*10}% crop speed`,
-  silo:       (lv)=>`+${lv*10}% sell price`,
-  windmill:   (lv)=>`Auto-water ${lv*2} plots`,
-  market:     (lv)=>`+${lv*5}% sell price`,
-  chicken_coop:(lv)=>`+${lv} animal slots`,
-};
-
-function renderUpgradeMarket() {
-  const tiers = [{id:'sup-basic',tier:1},{id:'sup-mid',tier:2},{id:'sup-prem',tier:3}];
-  tiers.forEach(t => {
-    let el = document.getElementById(t.id);
-    if (!el) return;
-    el.innerHTML = Object.entries(BUILD_SUPPLIES)
-      .filter(([,s]) => s.tier === t.tier)
-      .map(([k,s]) => {
-        let owned = G.inventory[s.n] || 0;
-        return `<div class="si" onclick="buySupplyItem('${k}')">
-          <div class="sie">${s.e}</div>
-          <div class="sin">${s.n}</div>
-          <div style="font-size:9px;color:#ffd700;">${s.c}g each</div>
-          <div style="font-size:9px;color:#aaa;">Have: ${owned}</div>
-        </div>`;
-      }).join('');
-  });
-  // Gem supplies
-  let gemEl = document.getElementById('sup-gems');
-  if (gemEl) {
-    gemEl.innerHTML = Object.entries(BUILD_SUPPLIES).map(([k,s]) => `
-      <div class="si" onclick="buySupplyGems('${k}')">
-        <div class="sie">${s.e}</div>
-        <div class="sin">${s.n}</div>
-        <div style="font-size:9px;color:#a8d8ff;">${s.gem}💎 each</div>
-        <div style="font-size:9px;color:#888;">${s.desc}</div>
-      </div>`).join('');
-  }
-}
-
-function buySupplyItem(k) {
-  let s = BUILD_SUPPLIES[k];
-  if (G.gold < s.c) { showToast(`❌ Need ${s.c}g for ${s.n}!`); return; }
-  G.gold -= s.c;
-  addItem(s.n, 1);
-  updateHUD(); renderSupplyInv(); renderUpgradeMarket();
-  showToast(`${s.e} Bought ${s.n}!`);
-}
-
-function buySupplyGems(k) {
-  let s = BUILD_SUPPLIES[k];
-  if ((G.gems||0) < s.gem) { showToast(`❌ Need ${s.gem}💎 for ${s.n}!`); return; }
-  G.gems -= s.gem;
-  addItem(s.n, 1);
-  updateHUD(); renderSupplyInv(); renderUpgradeMarket();
-  showToast(`${s.e} Bought ${s.n} with gems!`);
-}
-
-function renderSupplyInv() {
-  let inv = document.getElementById('supply-inv');
-  if (!inv) return;
-  let supplyItems = Object.values(BUILD_SUPPLIES).map(s => s.n);
-  let owned = Object.entries(G.inventory)
-    .filter(([n,q]) => supplyItems.includes(n) && q > 0);
-  if (owned.length === 0) {
-    inv.innerHTML = '<div style="color:#555;font-size:9px;grid-column:1/-1;text-align:center;padding:6px;">No supplies yet. Visit Upgrade Market!</div>';
-    return;
-  }
-  inv.innerHTML = owned.map(([n,q]) => {
-    let s = Object.values(BUILD_SUPPLIES).find(x => x.n === n);
-    return `<div style="background:#1a1a0a;border:1px solid #4a4a1a;border-radius:6px;padding:5px;text-align:center;font-size:9px;">
-      <div style="font-size:18px;">${s?.e||'📦'}</div>${n}<br>
-      <span style="color:#ffd700;font-weight:bold;">x${q}</span>
-    </div>`;
-  }).join('');
-}
-
-// ===== UPDATED renderBuildings with Lv 1-10 =====
-function renderBuildings() {
-  let list = document.getElementById('bupgrade-list');
-  let noBld = document.getElementById('no-bld');
-  if (!list) return;
-  renderSupplyInv();
-
-  // Auto-plant UI
-  let apLv = document.getElementById('ap-lv-note');
-  let apLocked = document.getElementById('ap-locked');
-  let apOk = document.getElementById('ap-ok');
-  if (G.level >= 15) {
-    if (apLv) apLv.textContent = '✅ Unlocked!';
-    if (apLocked) apLocked.style.display = 'none';
-    if (apOk) apOk.style.display = 'block';
-    renderAutoPlantSlots();
-  }
-
-  let bldKeys = typeof G.buildings === 'object' && !Array.isArray(G.buildings)
-    ? Object.keys(G.buildings).filter(k => G.buildings[k] > 0)
-    : (G.buildings || []);
-
-  if (!bldKeys.length) { noBld.style.display = 'block'; list.innerHTML = ''; return; }
-  noBld.style.display = 'none';
-
-  list.innerHTML = bldKeys.map(k => {
-    let b = BUILDINGS_D[k]; if (!b) return '';
-    let curLv = (G.buildingLevels && G.buildingLevels[k]) || 1;
-    let nextLv = curLv + 1;
-    let req = BLD_LV_REQ[nextLv];
-    let bonusFn = BLD_LV_BONUS[k];
-    let curBonus = bonusFn ? bonusFn(curLv) : '';
-    let nextBonus = bonusFn && nextLv <= 10 ? bonusFn(nextLv) : '';
-
-    // Check if can upgrade
-    let canUpgrade = nextLv <= 10 && req;
-    let hasGold = canUpgrade && G.gold >= req.gold;
-    let hasSupplies = canUpgrade && req.supplies.every(s => (G.inventory[s.n]||0) >= s.q);
-    let canDo = hasGold && hasSupplies;
-
-    let suppliesNeeded = canUpgrade ? req.supplies.map(s => {
-      let have = G.inventory[s.n]||0;
-      let ok = have >= s.q;
-      return `<span style="color:${ok?'#7dff7d':'#ff7d7d'}">${s.q}x ${s.n}(${have})</span>`;
-    }).join(', ') : '';
-
-    return `<div class="bu-card">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-        <div style="font-size:26px;">${b.emoji}</div>
-        <div style="flex:1;">
-          <div style="font-size:12px;color:#7dff7d;font-weight:bold;">${b.name}</div>
-          <div style="font-size:9px;color:#ffd700;">Level ${curLv}/10 — ${curBonus}</div>
-        </div>
-        ${curLv >= 10 ? '<span style="font-size:11px;color:#ffd700;">👑 MAX</span>' : ''}
-      </div>
-      ${canUpgrade && nextLv <= 10 ? `
-      <div style="background:#0a1a0a;border-radius:6px;padding:8px;margin-bottom:6px;">
-        <div style="font-size:9px;color:#aaa;margin-bottom:4px;">Upgrade to Lv${nextLv} → ${nextBonus}</div>
-        <div style="font-size:9px;margin-bottom:4px;">
-          <span style="color:${hasGold?'#7dff7d':'#ff7d7d'}">💰 ${req.gold}g</span>
-          ${suppliesNeeded ? ` + ${suppliesNeeded}` : ''}
-        </div>
-        <button class="btn bsm ${canDo?'bg':'br'}" onclick="upgradeBldFull('${k}')" style="width:100%;">
-          ${canDo ? `⬆️ Upgrade to Lv${nextLv}` : '❌ Missing resources'}
-        </button>
-      </div>` : ''}
-      <div style="display:flex;gap:3px;flex-wrap:wrap;">
-        ${Array.from({length:10},(_,idx)=>`<div style="width:20px;height:8px;border-radius:2px;background:${idx<curLv?'#5aaa3a':'#1a2a1a'};border:1px solid ${idx<curLv?'#7dff7d':'#2a4a2a'};"></div>`).join('')}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function upgradeBldFull(k) {
-  let curLv = (G.buildingLevels && G.buildingLevels[k]) || 1;
-  let nextLv = curLv + 1;
-  if (nextLv > 10) { showToast('👑 Already at max level!'); return; }
-  let req = BLD_LV_REQ[nextLv];
-  if (!req) return;
-  if (G.gold < req.gold) { showToast(`❌ Need ${req.gold}g!`); return; }
-  for (let s of req.supplies) {
-    if ((G.inventory[s.n]||0) < s.q) {
-      showToast(`❌ Need ${s.q}x ${s.n}! Visit Upgrade Market.`);
-      return;
-    }
-  }
-  // Deduct gold and supplies
-  G.gold -= req.gold;
-  req.supplies.forEach(s => { G.inventory[s.n] -= s.q; });
-  if (!G.buildingLevels) G.buildingLevels = {};
-  G.buildingLevels[k] = nextLv;
-  // Apply level bonus
-  let b = BUILDINGS_D[k];
-  if (k === 'well') G.maxWater += 5;
-  if (k === 'barn') {} // handled in animal max calc
-  addXP(nextLv * 50);
-  playSound('build');
-  renderBuildings(); updateHUD();
-  showToast(`${b.emoji} ${b.name} upgraded to Level ${nextLv}! 🎉`);
-}
-
-// ===== AUTO-PLANT SYSTEM =====
-let autoPlantOn = false;
-let autoPlantTimer = null;
-// G.autoPlantList = array of crop keys, max 10
-
-function renderAutoPlantSlots() {
-  let slots = document.getElementById('ap-slots');
-  if (!slots) return;
-  let list = G.autoPlantList || [];
-  let html = '';
-  // Show 10 slots
-  for (let i = 0; i < 10; i++) {
-    let crop = list[i] ? CROPS[list[i]] || TREES[list[i]] : null;
-    html += `<div style="background:${crop?'#1a3a1a':'#0a1a0a'};border:1px solid ${crop?'#3a6a3a':'#2a2a2a'};border-radius:6px;padding:4px;text-align:center;cursor:pointer;font-size:18px;min-height:40px;display:flex;align-items:center;justify-content:center;" onclick="removeAutoPlant(${i})">
-      ${crop ? crop.emoji : '<span style="font-size:12px;color:#333;">+</span>'}
-    </div>`;
-  }
-  slots.innerHTML = html;
-  // Show crop picker below
-  let btn = document.getElementById('ap-btn-text');
-  if (btn) btn.textContent = `🤖 Auto-Plant: ${autoPlantOn ? 'ON 🟢' : 'OFF'}`;
-}
-
-function addAutoPlant(cropKey) {
-  if (!G.autoPlantList) G.autoPlantList = [];
-  if (G.autoPlantList.length >= 10) { showToast('❌ Max 10 crops in Auto-Plant!'); return; }
-  if (G.autoPlantList.includes(cropKey)) { showToast('Already in list!'); return; }
-  G.autoPlantList.push(cropKey);
-  renderAutoPlantSlots();
-  let c = CROPS[cropKey] || TREES[cropKey];
-  showToast(`${c.emoji} ${c.name} added to Auto-Plant!`);
-}
-
-function removeAutoPlant(i) {
-  if (!G.autoPlantList || !G.autoPlantList[i]) {
-    // Empty slot - show crop picker
-    showAutoPlantPicker();
-    return;
-  }
-  G.autoPlantList.splice(i, 1);
-  renderAutoPlantSlots();
-  showToast('Removed from Auto-Plant list');
-}
-
-function showAutoPlantPicker() {
-  let body = '<div style="font-size:11px;color:#aaa;margin-bottom:8px;">Tap a crop to add to Auto-Plant:</div><div class="sg">';
-  let hasGH = Array.isArray(G.buildings) ? G.buildings.includes('greenhouse') : (G.buildings['greenhouse'] > 0);
-  Object.entries({...CROPS,...TREES}).forEach(([key,c]) => {
-    let canGrow = hasGH || !c.seasons || c.seasons.includes(G.season);
-    let meetsLv = G.level >= (c.reqLv || c.lv || 1);
-    let ok = canGrow && meetsLv;
-    body += `<div class="si ${ok?'':'lk'}" onclick="${ok?`addAutoPlant('${key}');closeModal()`:''}" >
-      <div class="sie">${c.emoji}</div>
-      <div class="sin">${c.name}</div>
-      <div class="sic" style="color:#ffd700;">${c.cost||c.c}g</div>
-    </div>`;
-  });
-  body += '</div>';
-  showModal('🌱 Add to Auto-Plant', body);
-}
-
-function clearAutoPlant() {
-  G.autoPlantList = [];
-  renderAutoPlantSlots();
-  showToast('Auto-Plant list cleared');
-}
-
-function toggleAutoPlant() {
-  if (G.level < 15) { showToast('❌ Auto-Plant unlocks at Level 15!'); return; }
-  if (!G.autoPlantList || !G.autoPlantList.length) { showToast('❌ Add crops to Auto-Plant list first!'); return; }
-  autoPlantOn = !autoPlantOn;
-  let btn = document.getElementById('ap-btn-text');
-  if (autoPlantOn) {
-    if (btn) btn.textContent = '🤖 Auto-Plant: ON 🟢';
-    autoPlantTimer = setInterval(doAutoPlant, 8000);
-    showToast('🤖 Auto-Plant ON! Crops will replant automatically!');
-  } else {
-    if (btn) btn.textContent = '🤖 Auto-Plant: OFF';
-    if (autoPlantTimer) { clearInterval(autoPlantTimer); autoPlantTimer = null; }
-    showToast('🤖 Auto-Plant OFF');
-  }
-}
-
-function doAutoPlant() {
-  if (!autoPlantOn || !G.autoPlantList || !G.autoPlantList.length) return;
-  let hasGH = Array.isArray(G.buildings) ? G.buildings.includes('greenhouse') : (G.buildings['greenhouse'] > 0);
-  let listIdx = 0;
-  G.plots.forEach((p, i) => {
-    if (p.state !== 'tilled') return;
-    if (listIdx >= G.autoPlantList.length) listIdx = 0;
-    let cropKey = G.autoPlantList[listIdx];
-    let crop = CROPS[cropKey] || TREES[cropKey];
-    if (!crop) { listIdx++; return; }
-    let canGrow = hasGH || !crop.seasons || crop.seasons.includes(G.season);
-    let cost = crop.cost || crop.c || 0;
-    if (!canGrow || G.gold < cost) { listIdx++; return; }
-    G.gold -= cost;
-    G.plots[i] = {state:'planted', crop:cropKey, plantTime:Date.now(), watered:false, building:null};
-    listIdx++;
-  });
-  renderFarm(); updateHUD();
-}
-
-function checkAutoPlantBtn() {
-  let btn = document.getElementById('auto-collect-btn');
-  if (btn && G.level >= 10) btn.style.display = 'block';
-  // Also show auto-plant if level 15+
-  if (G.level >= 15) {
-    let apLocked = document.getElementById('ap-locked');
-    let apOk = document.getElementById('ap-ok');
-    let apLv = document.getElementById('ap-lv-note');
-    if (apLocked) apLocked.style.display = 'none';
-    if (apOk) apOk.style.display = 'block';
-    if (apLv) apLv.textContent = '✅ Unlocked!';
-  }
-}
-
-// Also add supply drops from mining
-function getMineralDrop() {
-  // 20% chance to also find a supply item when mining
-  if (Math.random() < 0.2) {
-    let basicSupplies = Object.values(BUILD_SUPPLIES).filter(s => s.tier === 1);
-    let s = basicSupplies[Math.floor(Math.random() * basicSupplies.length)];
-    addItem(s.n, 1);
-    return ` + ${s.e} ${s.n}!`;
-  }
-  return '';
-}
-
 // ===== HARVEST ALL =====
 function harvestAll() {
   let now=Date.now();
@@ -2321,12 +1950,10 @@ function doMine() {
     if (!G.mineLog) G.mineLog = [];
     G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);
   });
-  // 20% chance to find a building supply!
-  let supDrop = getMineralDrop();
   updateQuestProgress('minerals', G.mineralsMined || 0);
   if ((G.mineralsMined || 0) >= 5) checkAchievement('a_mine5');
   renderMining(); updateHUD(); playSound('build');
-  showToast(`⛏️ Found: ${found.map(m => m.e + m.n).join(', ')}${supDrop}`);
+  showToast(`⛏️ Found: ${found.map(m => m.e + m.n).join(', ')}!`);
 }
 
 function doMineGems() {
@@ -2381,3 +2008,4 @@ document.addEventListener('keydown',e=>{
 </script>
 </body>
 </html>
+
