@@ -870,6 +870,7 @@ function dayTick(){
   let _hb=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);if(_hb('solar')) G.water=Math.min(G.water+5,G.maxWater);
   if(G.seasonDay>28){G.seasonDay=1;G.season=(G.season+1)%4;showToast(`${SEASONS[G.season].emoji} New season: ${SEASONS[G.season].name}!`);}
   changeWeather();
+  applyHomeDailyBonus(); // Daily home type bonus
   updateQuestProgress('gold',G.gold);
   // VIP daily gem gift
   let vip=VIP_LEVELS.find(v=>v.lv===G.vipLevel);
@@ -916,7 +917,7 @@ function renderFarm(){
     else if(p.state==='mine') el.innerHTML=`<div class="pe">⛏️</div><div class="pl">Mine</div>`;
     else if(p.state==='damaged') el.innerHTML=`<div class="pe">💀</div><div class="pl">Damaged!</div><div style="font-size:8px;color:#ff7d7d;">Tap repair</div>`;
     else{
-      let allCrops={...CROPS,...TREES};
+      let allCrops={...CROPS,...TREES,...HOME_CROPS};
       let crop=allCrops[p.crop];if(!crop)return;
       let elapsed=(now-p.plantTime)/1000;
       let cropTime=crop.time||crop.t||120;
@@ -941,7 +942,7 @@ function plotClick(i){
   let p=G.plots[i];
   // Check if planted crop is actually ready by time
   if(p.state==='planted'||p.state==='growing'){
-    let allC={...CROPS,...TREES};
+    let allC={...CROPS,...TREES,...HOME_CROPS};
     let crop=allC[p.crop];
     if(crop){
       let elapsed=(Date.now()-p.plantTime)/1000;
@@ -949,7 +950,7 @@ function plotClick(i){
       if(elapsed>=cropTime){p.state='ready';}
     }
   }
-  if(p.state==='home'){showToast(`🏡 ${G.name}'s home! Level up to upgrade it!`);return;}
+  if(p.state==='home'){showHomeBonusModal();return;}
   if(p.state==='damaged'){if(G.gold>=10){G.gold-=10;p.state='tilled';p.crop=null;renderFarm();updateHUD();showToast('🔧 Plot repaired!');}else{showToast('❌ Need 10g to repair!');}return;}
   if(p.state==='empty'){p.state='tilled';renderFarm();playSound('till');showToast('🪱 Soil tilled!');}
   else if(p.state==='tilled') showPlantModal(i);
@@ -962,7 +963,7 @@ function plotClick(i){
 
 function showPlantModal(idx){
   let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);
-  let allCrops={...CROPS,...TREES};
+  let allCrops={...CROPS,...TREES,...HOME_CROPS};
   let body='<div class="sg">';
   Object.entries(allCrops).forEach(([key,c])=>{
     let canGrow=hasGH||!c.seasons||c.seasons.includes(G.season);
@@ -979,7 +980,7 @@ function showPlantModal(idx){
 
 function showWaterModal(i){
   let p=G.plots[i];
-  let allCrops={...CROPS,...TREES};
+  let allCrops={...CROPS,...TREES,...HOME_CROPS};
   let crop=allCrops[p.crop];
   if(!crop){showToast('❌ Unknown crop!');return;}
   let elapsed=(Date.now()-p.plantTime)/1000;
@@ -1001,7 +1002,7 @@ function showWaterModal(i){
 }
 
 function plantCrop(i,key){
-  let allCrops={...CROPS,...TREES};
+  let allCrops={...CROPS,...TREES,...HOME_CROPS};
   let crop=allCrops[key];
   if(G.gold<crop.cost){showToast('❌ Not enough gold!');return;}
   G.gold-=crop.cost;
@@ -1013,7 +1014,7 @@ function plantCrop(i,key){
 function waterPlot(i){
   if(G.water<=0){showToast('❌ No water!');return;}
   let p=G.plots[i];
-  let allCrops={...CROPS,...TREES};
+  let allCrops={...CROPS,...TREES,...HOME_CROPS};
   let crop=allCrops[p.crop];
   p.watered=true;p.plantTime-=crop.time*200;
   G.water--;playSound('water');renderFarm();updateHUD();
@@ -1024,7 +1025,7 @@ function removeCrop(i){G.plots[i]={state:'tilled',crop:null,plantTime:0,watered:
 
 function harvestPlot(i){
   let p=G.plots[i];
-  let allCrops={...CROPS,...TREES};
+  let allCrops={...CROPS,...TREES,...HOME_CROPS};
   let crop=allCrops[p.crop];
   if(!crop){p.state='tilled';p.crop=null;renderFarm();return;}
   // Handle both old format (sell/name/xp) and new format (s/n/xp)
@@ -1059,9 +1060,12 @@ function harvestPlot(i){
 function renderShop(){
   let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);
   // Seeds
-  document.getElementById('seed-shop').innerHTML=Object.entries(CROPS).map(([k,c])=>{
+  let homeCropsAvail = getHomeCrops();
+  let allSeedCrops = {...CROPS, ...homeCropsAvail};
+  document.getElementById('seed-shop').innerHTML=Object.entries(allSeedCrops).map(([k,c])=>{
     let lk=G.level<c.reqLv;
-    return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buySeed('${k}')`}"><div class="sie">${c.emoji}</div><div class="sin">${c.name}</div><div class="sic">${lk?`🔒Lv${c.reqLv}`:c.cost+'g'}</div><div class="sid">→${c.sell}g</div></div>`;
+    let homeTag=c.homeOnly?`<div style="font-size:8px;color:#ffd700;">⭐ Exclusive</div>`:'';
+    return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buySeed('${k}')`}"><div class="sie">${c.emoji}</div><div class="sin">${c.name}</div><div class="sic">${lk?`🔒Lv${c.reqLv}`:c.cost+'g'}</div><div class="sid">→${c.sell}g</div>${homeTag}</div>`;
   }).join('');
   // Trees
   document.getElementById('tree-shop').innerHTML=Object.entries(TREES).map(([k,c])=>{
@@ -1075,11 +1079,14 @@ function renderShop(){
     `<div class="si" onclick="buyTool('${k}','${t.n}',${t.c},'${t.e}')"><div class="sie">${t.e}</div><div class="sin">${t.n}</div><div class="sic">${t.c}g</div><div class="sid">${t.d}</div></div>`
   ).join('');
   // Buildings
-  document.getElementById('building-shop').innerHTML=Object.entries(BUILDINGS_DATA).map(([k,b])=>{
+  let allBldShop={...BUILDINGS_DATA,...HOME_BUILDINGS};
+  document.getElementById('building-shop').innerHTML=Object.entries(allBldShop).map(([k,b])=>{
+    if(b.homeOnly&&b.homeOnly!==G.homeType)return '';
     let owned=Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
     let lk=G.level<b.reqLv;
-    return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyBuilding('${k}')`:''}" ><div class="sie">${b.emoji}</div><div class="sin">${b.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${b.reqLv}`:b.cost+'g'}</div><div class="sid">${b.desc}</div></div>`;
-  }).join('');
+    let homeTag=b.homeOnly?`<div style="font-size:8px;color:#ffd700;">⭐ Exclusive</div>`:'';
+    return `<div class="si ${lk||owned?'lk':''}" onclick="${!lk&&!owned?`buyBuilding('${k}')`:''}" ><div class="sie">${b.emoji}</div><div class="sin">${b.name}</div><div class="sic">${owned?'✅':lk?`🔒Lv${b.reqLv}`:b.cost+'g'}</div><div class="sid">${b.desc}</div>${homeTag}</div>`;
+  }).filter(Boolean).join('');
   // Mine
   let mineEl=document.getElementById('mine-store');
   if(mineEl){
@@ -1106,16 +1113,22 @@ function renderShop(){
     }).join('');
   }
   // Animals
-  document.getElementById('animal-shop').innerHTML=Object.entries(ANIMALS_D).map(([k,a])=>{
+  let allAnimals={...ANIMALS_D,...getHomeAnimals()};
+  document.getElementById('animal-shop').innerHTML=Object.entries(allAnimals).map(([k,a])=>{
     let lk=G.level<a.reqLv;
-    return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buyAnimal('${k}')`}"><div class="sie">${a.emoji}</div><div class="sin">${a.name}</div><div class="sic">${lk?`🔒Lv${a.reqLv}`:a.cost+'g'}</div><div class="sid">Makes ${a.produces}</div></div>`;
+    let homeTag=a.homeOnly?`<div style="font-size:8px;color:#ffd700;">⭐ Exclusive</div>`:'';
+    return `<div class="si ${lk?'lk':''}" onclick="${lk?'':` buyAnimal('${k}')`}"><div class="sie">${a.emoji}</div><div class="sin">${a.name}</div><div class="sic">${lk?`🔒Lv${a.reqLv}`:a.cost+'g'}</div><div class="sid">Makes ${a.produces}</div>${homeTag}</div>`;
   }).join('');
 }
 
 function buySeed(k){
-  let c=CROPS[k];if(G.gold<c.cost){showToast('❌ Not enough gold!');return;}
+  let allC={...CROPS,...HOME_CROPS};
+  let c=allC[k];if(!c){showToast('❌ Unknown crop!');return;}
+  if(c.homeOnly&&c.homeOnly!==G.homeType){showToast(`❌ Only for ${HOME_DATA[c.homeOnly]?.name||c.homeOnly}!`);return;}
+  if(G.gold<c.cost){showToast('❌ Not enough gold!');return;}
   let hasGH=Array.isArray(G.buildings)?G.buildings.includes('greenhouse'):(G.buildings['greenhouse']>0);
-  if(!hasGH&&!c.seasons.includes(G.season)){showToast(`❌ ${c.name} needs ${SEASONS[G.season].name} or Greenhouse!`);return;}
+  let seasons=c.seasons||c.sea||[0,1,2,3];
+  if(!hasGH&&!seasons.includes(G.season)){showToast(`❌ ${c.name} needs ${SEASONS[G.season].name} or Greenhouse!`);return;}
   let t=G.plots.findIndex(p=>p.state==='tilled');
   if(t===-1){showToast('❌ Till a plot first!');return;}
   plantCrop(t,k);
@@ -1429,7 +1442,7 @@ function renderInventory(){
   let items=Object.entries(G.inventory).filter(([,q])=>q>0);
   let ig=document.getElementById('igrid');
   if(ig) ig.innerHTML=items.length?items.map(([name,qty])=>{
-    let allC={...CROPS,...TREES};let crop=Object.values(allC).find(c=>c.name===name);
+    let allC={...CROPS,...TREES,...HOME_CROPS};let crop=Object.values(allC).find(c=>c.name===name);
     return `<div style="background:#1a2e1a;border:1px solid #2a4a2a;border-radius:6px;padding:5px;text-align:center;font-size:9px;"><div style="font-size:18px;">${crop?crop.emoji:'📦'}</div>${name}<br><span style="color:#7dff7d;font-weight:bold;">x${qty}</span></div>`;
   }).join(''):'<div style="color:#555;font-size:10px;grid-column:1/-1;text-align:center;padding:10px;">No items yet</div>';
   let bl=document.getElementById('blist');
@@ -1627,14 +1640,16 @@ async function askGG(){
       role:m.role,
       content:m.content
     }));
-    let res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    let res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'Authorization':'Bearer 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'
+        'Authorization':'Bearer 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',
+        'HTTP-Referer':'https://investwithdrip.github.io',
+        'X-Title':'True Homesteader'
       },
       body:JSON.stringify({
-        model:'llama3-8b-8192',
+        model:'meta-llama/llama-3.1-8b-instruct:free',
         max_tokens:200,
         messages:[
           {role:'system',content:GG_SYSTEM+`\n\nUser's state: ${G.state||'Georgia'}. Season: ${SEASONS[G.season]?.name||'Spring'}.`},
@@ -2096,7 +2111,7 @@ function removeAutoPlant(i) {
 function showAutoPlantPicker() {
   let body = '<div style="font-size:11px;color:#aaa;margin-bottom:8px;">Tap a crop to add to Auto-Plant:</div><div class="sg">';
   let hasGH = Array.isArray(G.buildings) ? G.buildings.includes('greenhouse') : (G.buildings['greenhouse'] > 0);
-  Object.entries({...CROPS,...TREES}).forEach(([key,c]) => {
+  Object.entries({...CROPS,...TREES,...HOME_CROPS}).forEach(([key,c]) => {
     let canGrow = hasGH || !c.seasons || c.seasons.includes(G.season);
     let meetsLv = G.level >= (c.reqLv || c.lv || 1);
     let ok = canGrow && meetsLv;
@@ -2242,10 +2257,181 @@ function buildingSpeedUp(k) {
   showToast('⚡ Building upgrades are instant — no timer needed!');
 }
 
+// ===== HOME TYPE SYSTEM =====
+const HOME_DATA = {
+  cottage: {
+    name:'Cottage', emoji:'🏡',
+    bonus:'+20% crop speed',
+    exclusiveCrops:['basil','thyme','rosemary','chamomile'],
+    exclusiveBuilding:'herb_garden',
+    passiveDesc:'Herb crops grow 40% faster than normal crops',
+    dailyBonus:()=>{ addItem('Herbal Bundle',1); },
+    dailyBonusDesc:'Daily free Herbal Bundle (+80g)',
+    color:'#3a8a3a'
+  },
+  ranch: {
+    name:'Ranch House', emoji:'🏚️',
+    bonus:'+2 animal slots',
+    exclusiveAnimals:['longhorn','buffalo'],
+    exclusiveBuilding:'corral',
+    passiveDesc:'Animals produce 25% more. Rodeo events weekly.',
+    dailyBonus:()=>{ G.gold+=50; G.totalEarned+=50; showToast('🤠 Ranch bonus: +50💰!'); },
+    dailyBonusDesc:'Daily +50g ranch income',
+    color:'#8a4a1a'
+  },
+  farmhouse: {
+    name:'Farmhouse', emoji:'🏠',
+    bonus:'+10% all earnings',
+    exclusiveBuilding:'farm_kitchen',
+    passiveDesc:'All gold earnings +10%. Family recipes unlock at Lv10.',
+    dailyBonus:()=>{ let bonus=Math.floor(G.totalEarned*0.001); G.gold+=bonus; G.totalEarned+=bonus; showToast(`🏠 Farmhouse bonus: +${bonus}💰!`); },
+    dailyBonusDesc:'Daily 0.1% of total earnings',
+    color:'#6a4a2a'
+  },
+  cabin: {
+    name:'Cabin', emoji:'🛖',
+    bonus:'Unlimited water',
+    exclusiveCrops:['wild_mushroom','wild_berry','pine_nut'],
+    exclusiveBuilding:'smokehouse_cabin',
+    passiveDesc:'Water never depletes. Forage wild items daily.',
+    dailyBonus:()=>{ let items=['Wild Mushroom','Wild Berry','Pine Nut']; let item=items[Math.floor(Math.random()*items.length)]; addItem(item,2); showToast(`🛖 Foraged 2x ${item}!`); },
+    dailyBonusDesc:'Daily wild forage items',
+    color:'#5a3a1a'
+  },
+  manor: {
+    name:'Manor', emoji:'🏰',
+    bonus:'Start with 1 extra acre',
+    exclusiveBuilding:'manor_hall',
+    passiveDesc:'Hire workers for passive income. Estate upgrades available.',
+    dailyBonus:()=>{ let workers=G.workers||0; if(workers>0){let earned=workers*30;G.gold+=earned;G.totalEarned+=earned;showToast(`🏰 Workers earned ${earned}💰!`);}else showToast('🏰 Hire workers in Builds tab for passive income!'); },
+    dailyBonusDesc:'Workers earn 30g/day each',
+    color:'#4a3a6a'
+  },
+  modern: {
+    name:'Modern Farm', emoji:'🏗️',
+    bonus:'Auto-water 2 plots',
+    exclusiveBuilding:'smart_greenhouse',
+    passiveDesc:'Tech upgrades available. Drone delivery at Lv20.',
+    dailyBonus:()=>{ G.plots.forEach(p=>{if(p.state==='planted')p.watered=true;}); showToast('🏗️ Smart system watered all crops!'); },
+    dailyBonusDesc:'Daily auto-water ALL crops',
+    color:'#2a4a6a'
+  },
+  van: {
+    name:'Homestead Van', emoji:'🚐',
+    bonus:'3x early XP',
+    exclusiveBuilding:'mobile_workshop',
+    passiveDesc:'Travel to trade routes for rare items. 3x XP until Level 20.',
+    dailyBonus:()=>{ let routes=['Mountain Goods','Coastal Catch','Desert Spices','Forest Herbs']; let r=routes[Math.floor(Math.random()*routes.length)]; addItem(r,1); showToast(`🚐 Trade route find: ${r}!`); },
+    dailyBonusDesc:'Daily trade route item',
+    color:'#3a3a5a'
+  },
+  camp: {
+    name:'Camp', emoji:'⛺',
+    bonus:'2x minerals found',
+    exclusiveCrops:['survival_root','cattail','acorn'],
+    exclusiveBuilding:'campfire_circle',
+    passiveDesc:'Survival events give bonus XP. 2x minerals always.',
+    dailyBonus:()=>{ addXP(100); G.gold+=20; G.totalEarned+=20; showToast('⛺ Campfire survival bonus: +100XP +20💰!'); },
+    dailyBonusDesc:'Daily +100XP +20g survival bonus',
+    color:'#4a2a0a'
+  }
+};
+
+// Exclusive crops per home type
+const HOME_CROPS = {
+  // Cottage herbs
+  basil:       {name:'Basil',      emoji:'🌿',cost:15,time:600,  sell:45, xp:30,seasons:[0,1,2,3],reqLv:1,  homeOnly:'cottage'},
+  thyme:       {name:'Thyme',      emoji:'🌱',cost:18,time:900,  sell:55, xp:35,seasons:[0,1,2,3],reqLv:3,  homeOnly:'cottage'},
+  rosemary:    {name:'Rosemary',   emoji:'💚',cost:22,time:1800, sell:80, xp:45,seasons:[0,1,2,3],reqLv:5,  homeOnly:'cottage'},
+  chamomile:   {name:'Chamomile',  emoji:'🌼',cost:30,time:3600, sell:120,xp:60,seasons:[0,1,2,3],reqLv:8,  homeOnly:'cottage'},
+  // Cabin wildcrafts
+  wild_mushroom:{name:'Wild Mushroom',emoji:'🍄',cost:20,time:1200,sell:60,xp:40,seasons:[0,1,2,3],reqLv:1,homeOnly:'cabin'},
+  wild_berry:  {name:'Wild Berry', emoji:'🫐',cost:15,time:900,  sell:40, xp:30,seasons:[0,1,2,3],reqLv:1,  homeOnly:'cabin'},
+  pine_nut:    {name:'Pine Nut',   emoji:'🌰',cost:25,time:2400, sell:90, xp:50,seasons:[2,3],    reqLv:5,  homeOnly:'cabin'},
+  // Camp survival
+  survival_root:{name:'Survival Root',emoji:'🥕',cost:10,time:480,sell:35,xp:25,seasons:[0,1,2,3],reqLv:1,homeOnly:'camp'},
+  cattail:     {name:'Cattail',    emoji:'🌾',cost:12,time:720,  sell:40, xp:28,seasons:[0,1,2,3],reqLv:2,  homeOnly:'camp'},
+  acorn:       {name:'Acorn',      emoji:'🌰',cost:20,time:1800, sell:70, xp:40,seasons:[2,3],    reqLv:4,  homeOnly:'camp'},
+};
+
+// Exclusive animals per home type
+const HOME_ANIMALS = {
+  longhorn: {name:'Longhorn',emoji:'🐂',cost:800,produces:'🥩',pName:'Prime Beef',pVal:200,pTime:86400,xp:150,feed:30,reqLv:20,homeOnly:'ranch'},
+  buffalo:  {name:'Buffalo', emoji:'🦬',cost:1200,produces:'🧈',pName:'Buffalo Butter',pVal:300,pTime:172800,xp:200,feed:40,reqLv:30,homeOnly:'ranch'},
+};
+
+// Exclusive buildings per home type
+const HOME_BUILDINGS = {
+  herb_garden:      {name:'Herb Garden',    emoji:'🌿',cost:300,desc:'Herbs grow 2x faster',reqLv:3, homeOnly:'cottage',effect:()=>{}},
+  corral:           {name:'Ranch Corral',   emoji:'🤠',cost:500,desc:'+6 animal slots',    reqLv:5, homeOnly:'ranch',  effect:()=>{}},
+  farm_kitchen:     {name:'Farm Kitchen',   emoji:'🍳',cost:400,desc:'Cook recipes for 2x value',reqLv:5,homeOnly:'farmhouse',effect:()=>{}},
+  smokehouse_cabin: {name:'Cabin Smokehouse',emoji:'🏕️',cost:350,desc:'Preserve wild food 3x',reqLv:4,homeOnly:'cabin',effect:()=>{}},
+  manor_hall:       {name:'Manor Hall',     emoji:'🏛️',cost:800,desc:'Hire workers',       reqLv:8, homeOnly:'manor',  effect:()=>{if(!G.workers)G.workers=0;}},
+  smart_greenhouse: {name:'Smart Greenhouse',emoji:'🤖',cost:700,desc:'Auto-plant+harvest',reqLv:8, homeOnly:'modern', effect:()=>{}},
+  mobile_workshop:  {name:'Mobile Workshop',emoji:'🔧',cost:400,desc:'Craft rare items',   reqLv:5, homeOnly:'van',    effect:()=>{}},
+  campfire_circle:  {name:'Campfire Circle',emoji:'🔥',cost:250,desc:'+2x survival XP',   reqLv:3, homeOnly:'camp',   effect:()=>{}},
+};
+
+function getHomeCrops() {
+  // Returns crops available to current home type
+  let available = {};
+  Object.entries(HOME_CROPS).forEach(([k,c]) => {
+    if(!c.homeOnly || c.homeOnly === G.homeType) available[k] = c;
+  });
+  return available;
+}
+
+function getHomeAnimals() {
+  let available = {};
+  Object.entries(HOME_ANIMALS).forEach(([k,a]) => {
+    if(!a.homeOnly || a.homeOnly === G.homeType) available[k] = a;
+  });
+  return available;
+}
+
+function applyHomeDailyBonus() {
+  let home = HOME_DATA[G.homeType];
+  if (home && home.dailyBonus) home.dailyBonus();
+}
+
+function renderHomePanel() {
+  let home = HOME_DATA[G.homeType];
+  if (!home) return;
+  // Update home plot display
+  let homeEl = document.querySelector('.plot.home');
+  if (homeEl) {
+    homeEl.innerHTML = `<div class="pe">${home.emoji}</div><div class="pl" style="color:#ffd700;">${home.name}</div><div style="font-size:8px;color:#aaa;">${home.bonus}</div>`;
+  }
+}
+
+// Show home bonus popup when tapping home plot
+function showHomeBonusModal() {
+  let home = HOME_DATA[G.homeType];
+  if (!home) return;
+  let exclusiveCrops = home.exclusiveCrops ? home.exclusiveCrops.map(k => HOME_CROPS[k]).filter(Boolean) : [];
+  let exclusiveAnimals = home.exclusiveAnimals ? home.exclusiveAnimals.map(k => HOME_ANIMALS[k]).filter(Boolean) : [];
+  let exclusiveBld = HOME_BUILDINGS[home.exclusiveBuilding];
+  showModal(`${home.emoji} ${home.name}`,`
+    <div style="text-align:center;margin-bottom:10px;">
+      <div style="font-size:48px;">${home.emoji}</div>
+      <div style="font-size:13px;color:#ffd700;font-weight:bold;">${home.name}</div>
+      <div style="font-size:10px;color:#7dff7d;margin-top:4px;">${home.bonus}</div>
+    </div>
+    <div style="font-size:10px;color:#aaa;margin-bottom:8px;">${home.passiveDesc}</div>
+    <div style="background:#0a1a0a;border-radius:6px;padding:8px;margin-bottom:6px;">
+      <div style="font-size:10px;color:#ffd700;font-weight:bold;margin-bottom:4px;">🎁 Daily Bonus</div>
+      <div style="font-size:10px;color:#e8f5e8;">${home.dailyBonusDesc}</div>
+    </div>
+    ${exclusiveCrops.length ? `<div style="font-size:10px;color:#7dff7d;font-weight:bold;margin-bottom:4px;">🌱 Exclusive Crops</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${exclusiveCrops.map(c=>`<div style="background:#1a2e1a;border:1px solid #3a6a3a;border-radius:6px;padding:4px 8px;font-size:10px;">${c.emoji} ${c.name} → ${c.sell}g</div>`).join('')}</div>` : ''}
+    ${exclusiveAnimals.length ? `<div style="font-size:10px;color:#7dff7d;font-weight:bold;margin-bottom:4px;">🐄 Exclusive Animals</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${exclusiveAnimals.map(a=>`<div style="background:#1a2e1a;border:1px solid #3a6a3a;border-radius:6px;padding:4px 8px;font-size:10px;">${a.emoji} ${a.name}</div>`).join('')}</div>` : ''}
+    ${exclusiveBld ? `<div style="font-size:10px;color:#7dff7d;font-weight:bold;margin-bottom:4px;">🏗️ Exclusive Building</div><div style="background:#1a1a0a;border:1px solid #4a4a1a;border-radius:6px;padding:6px;font-size:10px;">${exclusiveBld.emoji} ${exclusiveBld.name} — ${exclusiveBld.desc}</div>` : ''}
+  `);
+}
+
 // ===== HARVEST ALL =====
 function harvestAll() {
   let now=Date.now();
-  let allC={...CROPS,...TREES};
+  let allC={...CROPS,...TREES,...HOME_CROPS};
   // First mark all ready plots
   G.plots.forEach(p=>{
     if((p.state==='planted'||p.state==='growing')&&p.crop){
