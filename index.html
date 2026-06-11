@@ -459,34 +459,30 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
   <!-- AI -->
   <div id="panel-ai" class="panel">
-    <div class="ptitle">🌿 GG — Homestead Advisor</div>
+    <div class="ptitle">👩🏾‍🌾 Gigi</div>
     <div class="card" style="margin-bottom:6px;background:#0a1a0a;border-color:#3a6a2a;">
       <div style="display:flex;align-items:center;gap:8px;">
         <div style="font-size:32px;">👩🏾‍🌾</div>
         <div>
-          <div style="font-size:11px;color:#7dff7d;font-weight:bold;">GG — Real Homestead Knowledge</div>
-          <div style="font-size:9px;color:#aaa;margin-top:2px;">Ask me anything about farming, animals, land, food preservation & off-grid living. I don't help with the game — that's what Chat is for!</div>
+          <div style="font-size:11px;color:#7dff7d;font-weight:bold;">Gigi — Homestead Knowledge</div>
+          <div style="font-size:9px;color:#aaa;margin-top:2px;">Ask real questions about farming, animals, land, food preservation & off-grid living. For game tips use Chat!</div>
         </div>
       </div>
     </div>
-    <div class="card" style="padding:8px;">
-      <div id="aim" style="height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
+    <div class="card">
+      <div id="aim"></div>
       <div class="cir">
-        <input id="aii" type="text" placeholder="Ask GG a homesteading question..." maxlength="300">
-        <button class="btn bsm" onclick="askGG()">Ask</button>
+        <input id="aii" type="text" placeholder="Ask Gigi a homesteading question..." maxlength="200">
+        <button class="btn bsm" onclick="askAI()">Ask</button>
       </div>
     </div>
     <div class="card"><div class="ct">💡 Quick Questions</div>
-      <button class="btn bsm bfu" onclick="quickAsk('What crops grow best in '+G.state+' right now in '+SEASONS[G.season].name+'?')">🌱 Best crops for my state?</button>
-      <button class="btn bsm bfu" onclick="quickAsk('How do I start raising chickens as a beginner homesteader?')">🐔 Raising chickens?</button>
+      <button class="btn bsm bfu" onclick="quickAsk('What crops grow best in '+G.state+' during '+SEASONS[G.season].name+'?')">🌱 Best crops for my state?</button>
+      <button class="btn bsm bfu" onclick="quickAsk('How do I start raising chickens for the first time?')">🐔 Raising chickens?</button>
       <button class="btn bsm bfu" onclick="quickAsk('What are the best ways to preserve food without electricity?')">🥫 Food preservation?</button>
-      <button class="btn bsm bfu" onclick="quickAsk('How do I improve my soil quality naturally on a small homestead?')">🪱 Improve soil?</button>
-      <button class="btn bsm bfu" onclick="quickAsk('What are the best ways to make money from under 1 acre of land?')">💰 Make money homesteading?</button>
-      <button class="btn bsm bfu" onclick="quickAsk('How do I set up a rainwater collection system?')">💧 Rainwater collection?</button>
-    </div>
-  </div>
+      <button class="btn bsm bfu" onclick="quickAsk('How do I improve soil quality naturally?')">🪱 Improve soil?</button>
       <button class="btn bsm bfu" onclick="quickAsk('How can I make money from a small homestead under 1 acre?')">💰 Make money homesteading?</button>
-      <button class="btn bsm bfu" onclick="quickAsk('What should a beginner homesteader do first?')">🏠 Beginner homestead tips?</button>
+      <button class="btn bsm bfu" onclick="quickAsk('What should a beginner homesteader do first?')">🏠 Beginner tips?</button>
     </div>
   </div>
 
@@ -535,7 +531,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <button class="nb" onclick="showPanel('vip')" id="nav-vip"><span class="ni">👑</span>VIP</button>
   <button class="nb" onclick="showPanel('quests')" id="nav-quests"><span class="ni">📜</span>Quests</button>
   <button class="nb" onclick="showPanel('chat')" id="nav-chat"><span class="ni">💬</span>Chat</button>
-  <button class="nb" onclick="showPanel('ai')" id="nav-ai"><span class="ni">👩🏾‍🌾</span>GG</button>
+  <button class="nb" onclick="showPanel('ai')" id="nav-ai"><span class="ni">👩🏾‍🌾</span>Gigi</button>
   <button class="nb" onclick="showPanel('inventory')" id="nav-inventory"><span class="ni">🎒</span>Inv</button>
   <button class="nb" onclick="showPanel('iap')" id="nav-iap"><span class="ni">💎</span>Gems</button>
 </div>
@@ -1573,110 +1569,55 @@ function sendChat(){
   setTimeout(()=>{chatMsgs.push({user:fakeUsers[Math.floor(Math.random()*fakeUsers.length)],msg:chatReplies[Math.floor(Math.random()*chatReplies.length)],time:t});renderChat();},1500+Math.random()*2000);
 }
 
-// ============ GG — HOMESTEAD ADVISOR ============
-// Conversation history persists through session
-let ggHistory = [];
-let ggInitialized = false;
-
-const GG_SYSTEM = `You are GG, a no-nonsense veteran homesteader and farming expert. You have 30+ years of experience with crops, animals, land, food preservation, water systems, and off-grid living.
-
-YOUR RULES:
-- Answer ONLY real-world homesteading questions
-- If asked about the game, say firmly: "I don't help with games. Ask in the Chat tab."
-- Keep answers under 120 words — practical and direct
-- Be warm but straight to the point, like a wise neighbor
-- Remember what was discussed earlier in this conversation
-- When relevant, give advice specific to the user's state/region
-- Never repeat the same generic answer — be specific based on context
-
-TOPICS YOU HELP WITH:
-- Crop growing, planting schedules, soil health, composting
-- Raising chickens, goats, cows, bees, pigs
-- Food preservation (canning, fermenting, dehydrating, freezing)
-- Water systems, rainwater collection, irrigation
-- Land management, fencing, drainage
-- Off-grid living, solar, wood heat
-- Making money from small acreage
-- Pest and disease control (organic methods preferred)
-- Homestead planning and budgeting`;
+// ============ GIGI — HOMESTEAD ADVISOR ============
+let aiMsgs=[{role:'bot',text:"👩🏾‍🌾 Hi! I'm Gigi. Ask me real questions about farming, animals, crops, land, food preservation, and off-grid living. For game tips, use Chat!"}];
 
 function renderAIMessages(){
   let box=document.getElementById('aim');if(!box)return;
-  if(!ggInitialized){
-    ggInitialized=true;
-    box.innerHTML=`<div class="abb"><div>👩🏾‍🌾 Hey, I'm GG. I've been homesteading for over 30 years. Ask me anything real about farming, animals, land, food preservation, or off-grid living. I don't do game tips — that's what Chat is for. What's on your mind?</div></div>`;
-    return;
-  }
-  box.innerHTML=ggHistory.map(m=>`
-    <div class="${m.role==='user'?'abu':'abb'}">
-      <div>${m.role==='assistant'?'👩🏾‍🌾 ':''}${m.content}</div>
-    </div>`).join('');
+  box.innerHTML=aiMsgs.map(m=>`<div class="${m.role==='user'?'abu':'abb'}"><div>${m.role==='bot'?'👩🏾‍🌾 ':''}${m.text}</div></div>`).join('');
   box.scrollTop=box.scrollHeight;
 }
 
-function quickAsk(q){
-  let inp=document.getElementById('aii');
-  if(inp)inp.value=q;
-  askGG();
-}
+function quickAsk(q){document.getElementById('aii').value=q;askAI();}
 
-// Keep old function name working too
-function askAI(){askGG();}
-
-async function askGG(){
-  let inp=document.getElementById('aii');
-  let q=inp?.value?.trim();
-  if(!q)return;
+async function askAI(){
+  let inp=document.getElementById('aii');let q=inp.value.trim();if(!q)return;
   inp.value='';
-  // Add to history
-  ggHistory.push({role:'user',content:q});
-  // Show thinking
-  ggHistory.push({role:'assistant',content:'⏳ Thinking...'});
-  ggInitialized=true;
+  aiMsgs.push({role:'user',text:q});
+  aiMsgs.push({role:'bot',text:'⏳ Thinking...'});
   renderAIMessages();
+  // Keep last 20 messages
+  if(aiMsgs.length>20)aiMsgs=aiMsgs.slice(-20);
   try{
-    // Build messages array from history (exclude the thinking message)
-    let messages=ggHistory.slice(0,-1).map(m=>({
-      role:m.role,
-      content:m.content
-    }));
-    let res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+    let res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer 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',
-        'HTTP-Referer':'https://investwithdrip.github.io',
-        'X-Title':'True Homesteader'
-      },
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'meta-llama/llama-3.1-8b-instruct:free',
+        model:'claude-sonnet-4-20250514',
         max_tokens:200,
-        messages:[
-          {role:'system',content:GG_SYSTEM+`\n\nUser's state: ${G.state||'Georgia'}. Season: ${SEASONS[G.season]?.name||'Spring'}.`},
-          ...messages
-        ]
+        system:`You are Gigi, a veteran homesteading expert. Answer ONLY real homesteading questions about farming, crops, animals, land, food preservation, and off-grid living. Keep answers under 100 words. Be practical and direct. User is in ${G.state||'Georgia'}, season is ${SEASONS[G.season]?.name||'Spring'}. If asked about the game, say "I only answer real homesteading questions — try Chat for game tips!"`,
+        messages:aiMsgs.slice(1,-1).filter(m=>m.role!='bot'||!m.text.includes('Thinking')).map(m=>({role:m.role==='bot'?'assistant':'user',content:m.text})).concat([{role:'user',content:q}])
       })
     });
     let data=await res.json();
-    let reply=data.choices?.[0]?.message?.content;
-    if(!reply&&data.error){reply='Having trouble connecting. Try again in a moment.';}
-    ggHistory[ggHistory.length-1]={role:'assistant',content:reply||'Try again!'};
+    let reply=data.content?.[0]?.text;
+    aiMsgs[aiMsgs.length-1]={role:'bot',text:reply||'Try again!'};
   }catch(e){
-    // Fallback responses that are actually helpful
-    const fallbacks=[
-      `In ${G.state||'Georgia'}, ${SEASONS[G.season]?.name||'this season'} is great for cover crops like crimson clover to fix nitrogen. What specific crop are you asking about?`,
-      `Rule #1 on any homestead: know your soil. Get a $15 test kit from the co-op. Most problems trace back to pH being off. What are you trying to grow?`,
-      `Start with what you can manage. One raised bed, five chickens, or one goat — master that before expanding. What's your current setup?`,
-    ];
-    ggHistory[ggHistory.length-1]={role:'assistant',content:fallbacks[Math.floor(Math.random()*fallbacks.length)]};
+    // Helpful fallbacks based on keywords
+    let qLow=q.toLowerCase();
+    let reply='';
+    if(qLow.includes('chicken')||qLow.includes('hen'))reply='Start with 3-5 hens — Rhode Island Reds are best for beginners. They need a secure coop, laying boxes, feed, and fresh water daily. Expect eggs in 5-6 months. Predator-proof your coop!';
+    else if(qLow.includes('soil')||qLow.includes('compost'))reply='Test your soil pH first — aim for 6.0-7.0. Add compost every season. In Georgia, red clay soil benefits from gypsum and organic matter. Raised beds are great for beginners!';
+    else if(qLow.includes('preserve')||qLow.includes('can'))reply='Pressure canning is safest for low-acid foods (meat, beans, vegetables). Water bath canning works for high-acid foods (tomatoes, pickles, jam). Dehydrating is easiest for beginners. Always follow tested recipes!';
+    else if(qLow.includes('plant')||qLow.includes('crop')||qLow.includes('grow'))reply=`In ${G.state||'Georgia'} during ${SEASONS[G.season]?.name||'Fall'}: collards, kale, turnips, and sweet potatoes all do well. Focus on what your family eats. Start small — one raised bed mastered beats ten neglected!`;
+    else if(qLow.includes('money')||qLow.includes('income')||qLow.includes('sell'))reply='Under 1 acre: eggs, honey, herbs, and microgreens make the most per square foot. Farmers markets pay premium. Specialty crops like lavender or saffron can earn $100s per pound. Start with what you know!';
+    else if(qLow.includes('water')||qLow.includes('rain'))reply='A 1000 sq ft roof yields about 600 gallons per inch of rain. Use food-grade 55-gallon barrels or IBC totes. First-flush diverters keep debris out. Check your local laws — some states restrict rainwater collection.';
+    else reply=`Great question! In ${G.state||'Georgia'}, start with soil health — compost is your best investment. Test your pH, aim for 6.0-7.0. Build raised beds if your soil is heavy clay. What specifically are you trying to grow?`;
+    aiMsgs[aiMsgs.length-1]={role:'bot',text:reply};
   }
   renderAIMessages();
-  // Keep history manageable — last 20 messages
-  if(ggHistory.length>20)ggHistory=ggHistory.slice(-20);
 }
 
-
-// ============ GEMS/IAP ============
 function buyGems(amount,price){
   showModal('💎 Get Gems',`<div style="text-align:center;"><div style="font-size:40px;margin-bottom:8px;">💎</div><div style="font-size:13px;color:#a8d8ff;margin-bottom:6px;">${amount} Gems — ${price}</div><div style="font-size:10px;color:#aaa;margin-bottom:12px;">App Store purchases coming soon! Free demo gems for now.</div><button class="btn bg bfu" onclick="confirmGems(${amount});closeModal()">✅ Get ${amount} Gems (Demo)</button></div>`);
 }
