@@ -964,7 +964,21 @@ function renderFarm(){
   grid.innerHTML='';let now=Date.now();
   G.plots.forEach((p,i)=>{
     let el=document.createElement('div');el.className='plot '+p.state;el.onclick=()=>plotClick(i);
-    if(p.state==='home'){let h=homeTypes[G.homeType]||'🏡 Home';el.innerHTML=`<div class="pe">${h.split(' ')[0]}</div><div class="pl">${G.name}'s Home</div>`;}
+    if(p.state==='home'){
+      let h=homeTypes[G.homeType]||'🏡 Home';
+      let homeLv=G.homeLv||1;
+      let lvColor=homeLv>=16?'#ff4400':homeLv>=11?'#a855f7':homeLv>=6?'#3b82f6':homeLv>=3?'#22c55e':'#ffd700';
+      let lvGlow=homeLv>=16?'#ff440088':homeLv>=11?'#a855f788':homeLv>=6?'#3b82f688':homeLv>=3?'#22c55e88':'#ffd70088';
+      let crown=homeLv>=20?'👑':homeLv>=15?'💎':homeLv>=10?'⭐':homeLv>=5?'🔥':'';
+      el.style.border=`2px solid ${lvColor}`;
+      el.style.boxShadow=`0 0 12px ${lvGlow}, inset 0 0 8px ${lvGlow}`;
+      el.innerHTML=`
+        <div class="pe">${h.split(' ')[0]}</div>
+        <div style="font-size:8px;color:#aaa;margin-bottom:2px;">${G.name}'s Home</div>
+        <div style="background:${lvColor};color:#000;font-size:9px;font-weight:900;padding:2px 6px;border-radius:8px;letter-spacing:1px;box-shadow:0 0 8px ${lvColor};">
+          ${crown} LV ${homeLv}
+        </div>`;
+    }
     else if(p.state==='empty') el.innerHTML=`<div class="pe">🟫</div><div class="pl">Till</div>`;
     else if(p.state==='tilled') el.innerHTML=`<div class="pe">🪱</div><div class="pl">Plant</div>`;
     else if(p.state==='building'){let b=BUILDINGS_DATA[p.building]||{emoji:'🏠',name:p.building};let lv=(G.buildingLevels&&G.buildingLevels[p.building])||1;el.innerHTML=`<div class="pe">${b.emoji||b.e||'🏠'}</div><div class="pl">${b.name||b.n||p.building}</div><div class="plv">Lv${lv}</div>`;}
@@ -2381,6 +2395,7 @@ function doHomeUpgrade() {
   playSound('levelup');
   addXP(500);
   updateHUD();
+  renderFarm(); // Update home plot level badge
   saveGame();
   renderHomeUpgrade();
   renderLeaderboard();
