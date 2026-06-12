@@ -486,6 +486,63 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     </div>
   </div>
 
+  <!-- HOME UPGRADES -->
+  <div id="panel-home" class="panel">
+    <div class="ptitle">🏠 Home Upgrades</div>
+    <div id="home-upgrade-card" class="card" style="background:#0a1a0a;border-color:#4a4a2a;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="font-size:40px;" id="home-emoji-display">🏠</div>
+        <div>
+          <div style="font-size:13px;color:#ffd700;font-weight:bold;" id="home-name-display">Farmhouse</div>
+          <div style="font-size:11px;color:#7dff7d;">Level <span id="home-lv-display">1</span>/20</div>
+          <div style="font-size:9px;color:#aaa;" id="home-bonus-display"></div>
+        </div>
+        <div style="margin-left:auto;text-align:center;">
+          <div style="font-size:22px;" id="home-rank-display">🏅</div>
+          <div style="font-size:9px;color:#aaa;">Rank</div>
+        </div>
+      </div>
+      <div style="height:10px;background:#0a1a0a;border-radius:5px;overflow:hidden;margin-bottom:6px;border:1px solid #2a2a2a;">
+        <div id="home-lv-bar" style="height:100%;background:linear-gradient(90deg,#ffd700,#ff8c00);border-radius:5px;transition:width 0.5s;width:5%;"></div>
+      </div>
+      <div style="font-size:9px;color:#aaa;text-align:center;" id="home-lv-pct">Level 1 of 20</div>
+    </div>
+
+    <div id="home-upgrade-req" class="card" style="margin-bottom:8px;"></div>
+    <div id="home-perks" class="card" style="margin-bottom:8px;">
+      <div class="ct">🎁 Current Perks</div>
+      <div id="home-perks-list" style="font-size:10px;color:#aaa;"></div>
+    </div>
+    <div id="home-all-levels" class="card">
+      <div class="ct">📋 All 20 Levels</div>
+      <div id="home-levels-list" style="max-height:200px;overflow-y:auto;"></div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="panel-leaderboard" class="panel">
+    <div class="ptitle">🏆 Leaderboard</div>
+    <div class="card" style="background:#0a0a1a;border-color:#3a3a6a;margin-bottom:8px;">
+      <div style="text-align:center;">
+        <div style="font-size:28px;">🏆</div>
+        <div style="font-size:12px;color:#ffd700;font-weight:bold;">Top 10 Home Levels</div>
+        <div style="font-size:9px;color:#555;margin-top:3px;">Weekly reset — Top 10 win prizes!</div>
+      </div>
+    </div>
+    <div class="sh" style="color:#ffd700;">🎁 Weekly Prizes</div>
+    <div class="card" style="margin-bottom:8px;">
+      <div style="font-size:10px;margin-bottom:4px;">🥇 Rank 1: <span style="color:#ffd700;">500💎 + 5000💰 + Exclusive Title</span></div>
+      <div style="font-size:10px;margin-bottom:4px;">🥈 Rank 2-3: <span style="color:#aaa;">300💎 + 3000💰</span></div>
+      <div style="font-size:10px;margin-bottom:4px;">🥉 Rank 4-10: <span style="color:#cd7f32;">100💎 + 1000💰</span></div>
+    </div>
+    <div class="sh">👑 This Week's Top 10</div>
+    <div id="leaderboard-list"></div>
+    <div class="card" style="margin-top:8px;text-align:center;">
+      <div style="font-size:11px;color:#7dff7d;font-weight:bold;">Your Rank: <span id="your-rank">—</span></div>
+      <div style="font-size:10px;color:#aaa;margin-top:3px;">Home Level <span id="your-home-lv">1</span> | <span id="your-home-type">Farmhouse</span></div>
+    </div>
+  </div>
+
   <!-- GEMS -->
   <div id="panel-iap" class="panel">
     <div class="ptitle">💎 Gem Store</div>
@@ -533,6 +590,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <button class="nb" onclick="showPanel('chat')" id="nav-chat"><span class="ni">💬</span>Chat</button>
   <button class="nb" onclick="showPanel('ai')" id="nav-ai"><span class="ni">👩🏾‍🌾</span>Gigi</button>
   <button class="nb" onclick="showPanel('inventory')" id="nav-inventory"><span class="ni">🎒</span>Inv</button>
+  <button class="nb" onclick="showPanel('home')" id="nav-home"><span class="ni">🏠</span>Home</button>
+  <button class="nb" onclick="showPanel('leaderboard')" id="nav-leaderboard"><span class="ni">🏆</span>Ranks</button>
   <button class="nb" onclick="showPanel('iap')" id="nav-iap"><span class="ni">💎</span>Gems</button>
 </div>
 
@@ -549,7 +608,7 @@ let G = {
   achievements:{},quests:{},fishLog:[],
   lastSpin:0,spinCount:0,vip:false,vipLevel:0,
   name:'',avatar:'',state:'',
-  seenTutorials:{},acreage:0.5
+  seenTutorials:{},acreage:0.5,homeLv:1
 };
 
 const SEASONS=[{name:'Spring',emoji:'🌸',color:'#ff9acd'},{name:'Summer',emoji:'☀️',color:'#ffd700'},{name:'Fall',emoji:'🍂',color:'#ff7a2a'},{name:'Winter',emoji:'❄️',color:'#a8d8ff'}];
@@ -1036,7 +1095,7 @@ function harvestPlot(i){
   if(hasBld('root_cellar')) price=Math.floor(price*1.25);
   if(hasBld('market')) price=Math.floor(price*1.2);
   if(G.homeType==='farmhouse') price=Math.floor(price*1.1);
-  let vipBonus=[0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0;
+  let vipBonus=([0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0)+(G.homeLv>=15?20:G.homeLv>=11?15:G.homeLv>=6?10:G.homeLv>=5?5:0);
   price=Math.floor(price*(1+vipBonus/100));
   G.gold+=price;G.totalEarned+=price;G.totalHarvested++;
   addXP(cropXP);addItem(cropName,1);
@@ -1761,6 +1820,8 @@ function showPanel(name){
   if(name==='shop')renderShop();
   if(name==='pond')renderPond();
   if(name==='vip')renderVIP();
+  if(name==='home'){renderHomeUpgrade();}
+  if(name==='leaderboard'){renderLeaderboard();}
   if(name==='buildings'){renderBuildings();}
   if(name==='upmarket'){renderUpgradeMarket();}
   if(name==='mining')renderMining();
@@ -2198,7 +2259,193 @@ function buildingSpeedUp(k) {
   showToast('⚡ Building upgrades are instant — no timer needed!');
 }
 
-// ===== HOME TYPE SYSTEM =====
+// ===== HOME UPGRADE SYSTEM =====
+const HOME_LEVELS = [
+  {lv:1,  gems:0,   gold:0,    gameLevel:1,  animals:0, buildings:0, harvests:0,   perk:'Basic home bonus active'},
+  {lv:2,  gems:50,  gold:200,  gameLevel:3,  animals:1, buildings:1, harvests:10,  perk:'Home bonus +5% stronger'},
+  {lv:3,  gems:50,  gold:400,  gameLevel:5,  animals:2, buildings:1, harvests:25,  perk:'Exclusive crop unlock'},
+  {lv:4,  gems:50,  gold:600,  gameLevel:7,  animals:3, buildings:2, harvests:50,  perk:'Daily bonus increased'},
+  {lv:5,  gems:50,  gold:800,  gameLevel:10, animals:4, buildings:2, harvests:75,  perk:'Home passive income starts'},
+  {lv:6,  gems:100, gold:1200, gameLevel:12, animals:5, buildings:3, harvests:100, perk:'+10% all earnings'},
+  {lv:7,  gems:100, gold:1500, gameLevel:15, animals:6, buildings:3, harvests:150, perk:'Exclusive building upgrade'},
+  {lv:8,  gems:100, gold:2000, gameLevel:18, animals:7, buildings:4, harvests:200, perk:'Double daily bonus'},
+  {lv:9,  gems:100, gold:2500, gameLevel:20, animals:8, buildings:4, harvests:300, perk:'VIP auto-water bonus'},
+  {lv:10, gems:100, gold:3000, gameLevel:25, animals:9, buildings:5, harvests:400, perk:'Animal breeding unlocked!'},
+  {lv:11, gems:200, gold:3500, gameLevel:28, animals:10,buildings:5, harvests:500, perk:'+15% all earnings'},
+  {lv:12, gems:200, gold:4000, gameLevel:30, animals:11,buildings:6, harvests:600, perk:'Rare crop exclusive'},
+  {lv:13, gems:200, gold:5000, gameLevel:33, animals:12,buildings:6, harvests:750, perk:'Triple daily bonus'},
+  {lv:14, gems:200, gold:6000, gameLevel:36, animals:13,buildings:7, harvests:900, perk:'Rare animal traits unlock'},
+  {lv:15, gems:200, gold:7000, gameLevel:40, animals:14,buildings:7, harvests:1000,'perk':'+20% all earnings'},
+  {lv:16, gems:350, gold:8000, gameLevel:45, animals:15,buildings:8, harvests:1200,perk:'Leaderboard exclusive title'},
+  {lv:17, gems:350, gold:9000, gameLevel:50, animals:16,buildings:8, harvests:1500,perk:'Passive gold 2x'},
+  {lv:18, gems:350, gold:10000,gameLevel:55, animals:17,buildings:9, harvests:1800,perk:'Exclusive Lv18 animal'},
+  {lv:19, gems:350, gold:12000,gameLevel:60, animals:18,buildings:9, harvests:2000,perk:'+25% all earnings'},
+  {lv:20, gems:350, gold:15000,gameLevel:70, animals:20,buildings:10,harvests:2500,perk:'👑 TRUE HOMESTEADER — MAX PRESTIGE'},
+];
+
+function getHomeLv() { return G.homeLv || 1; }
+function getHomeEmoji() { return HOME_DATA[G.homeType]?.emoji || '🏠'; }
+function getHomeName() { return HOME_DATA[G.homeType]?.name || 'Farmhouse'; }
+
+function renderHomeUpgrade() {
+  let lv = getHomeLv();
+  let pct = Math.floor((lv/20)*100);
+  let home = HOME_DATA[G.homeType] || {emoji:'🏠',name:'Farmhouse',bonus:'Standard'};
+
+  // Update header
+  let ed = document.getElementById('home-emoji-display');
+  let nd = document.getElementById('home-name-display');
+  let ld = document.getElementById('home-lv-display');
+  let bd = document.getElementById('home-bonus-display');
+  let bar = document.getElementById('home-lv-bar');
+  let pctEl = document.getElementById('home-lv-pct');
+  if(ed) ed.textContent = home.emoji;
+  if(nd) nd.textContent = home.name;
+  if(ld) ld.textContent = lv;
+  if(bd) bd.textContent = home.bonus;
+  if(bar) bar.style.width = pct + '%';
+  if(pctEl) pctEl.textContent = `Level ${lv} of 20 — ${pct}% to max`;
+
+  // Current perks
+  let perksEl = document.getElementById('home-perks-list');
+  if(perksEl) {
+    let earned = HOME_LEVELS.filter(l => l.lv <= lv);
+    perksEl.innerHTML = earned.map(l => `<div style="margin-bottom:3px;">✅ Lv${l.lv}: ${l.perk}</div>`).join('');
+  }
+
+  // Next upgrade requirements
+  let nextLv = HOME_LEVELS.find(l => l.lv === lv + 1);
+  let reqEl = document.getElementById('home-upgrade-req');
+  if(reqEl) {
+    if(!nextLv || lv >= 20) {
+      reqEl.innerHTML = `<div style="text-align:center;padding:10px;"><div style="font-size:28px;">👑</div><div style="font-size:13px;color:#ffd700;font-weight:bold;">MAX LEVEL REACHED!</div><div style="font-size:10px;color:#aaa;margin-top:4px;">You are a True Homesteader!</div></div>`;
+      return;
+    }
+    // Check requirements
+    let hasGems = (G.gems||0) >= nextLv.gems;
+    let hasGold = G.gold >= nextLv.gold;
+    let hasLevel = G.level >= nextLv.gameLevel;
+    let hasAnimals = G.animals.length >= nextLv.animals;
+    let bldCount = typeof G.buildings === 'object' && !Array.isArray(G.buildings) ? Object.keys(G.buildings).filter(k=>G.buildings[k]>0).length : (G.buildings||[]).length;
+    let hasBuildings = bldCount >= nextLv.buildings;
+    let hasHarvests = G.totalHarvested >= nextLv.harvests;
+    let canUpgrade = hasGems && hasGold && hasLevel && hasAnimals && hasBuildings && hasHarvests;
+
+    reqEl.innerHTML = `
+      <div class="ct">⬆️ Upgrade to Level ${nextLv.lv}</div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:10px;color:${hasGems?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasGems?'✅':'❌'} ${nextLv.gems}💎 gems (have ${G.gems||0})</div>
+        <div style="font-size:10px;color:${hasGold?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasGold?'✅':'❌'} ${nextLv.gold}💰 gold (have ${G.gold})</div>
+        <div style="font-size:10px;color:${hasLevel?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasLevel?'✅':'❌'} Game Level ${nextLv.gameLevel}+ (you are ${G.level})</div>
+        <div style="font-size:10px;color:${hasAnimals?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasAnimals?'✅':'❌'} ${nextLv.animals}+ animals (have ${G.animals.length})</div>
+        <div style="font-size:10px;color:${hasBuildings?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasBuildings?'✅':'❌'} ${nextLv.buildings}+ buildings (have ${bldCount})</div>
+        <div style="font-size:10px;color:${hasHarvests?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasHarvests?'✅':'❌'} ${nextLv.harvests}+ harvests (have ${G.totalHarvested})</div>
+        <div style="font-size:10px;color:#ffd700;margin-top:6px;">🎁 Unlock: ${nextLv.perk}</div>
+      </div>
+      <button class="btn ${canUpgrade?'bg':'br'} bfu" onclick="doHomeUpgrade()" ${canUpgrade?'':'disabled'}>
+        ${canUpgrade ? `⬆️ Upgrade to Lv${nextLv.lv}!` : '❌ Requirements not met yet'}
+      </button>`;
+  }
+
+  // All levels list
+  let allEl = document.getElementById('home-levels-list');
+  if(allEl) {
+    allEl.innerHTML = HOME_LEVELS.map(l => {
+      let done = lv >= l.lv;
+      let cur = lv + 1 === l.lv;
+      return `<div style="display:flex;align-items:center;gap:6px;padding:5px;border-radius:6px;margin-bottom:3px;background:${done?'#1a2a0a':cur?'#1a1a0a':'#0a0a0a'};border:1px solid ${done?'#3a6a3a':cur?'#4a4a1a':'#1a1a1a'};">
+        <div style="font-size:14px;">${done?'✅':cur?'⬆️':'🔒'}</div>
+        <div style="flex:1;"><div style="font-size:10px;color:${done?'#7dff7d':cur?'#ffd700':'#555'};font-weight:bold;">Lv${l.lv}</div><div style="font-size:9px;color:#aaa;">${l.perk}</div></div>
+        <div style="font-size:9px;color:#a8d8ff;text-align:right;">${l.gems>0?l.gems+'💎':''}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function doHomeUpgrade() {
+  let lv = getHomeLv();
+  let nextLv = HOME_LEVELS.find(l => l.lv === lv + 1);
+  if(!nextLv){showToast('👑 Already at max level!');return;}
+  if((G.gems||0) < nextLv.gems){showToast(`❌ Need ${nextLv.gems}💎!`);return;}
+  if(G.gold < nextLv.gold){showToast(`❌ Need ${nextLv.gold}g!`);return;}
+  if(G.level < nextLv.gameLevel){showToast(`❌ Need Game Level ${nextLv.gameLevel}!`);return;}
+  if(G.animals.length < nextLv.animals){showToast(`❌ Need ${nextLv.animals} animals!`);return;}
+  let bldCount = typeof G.buildings==='object'&&!Array.isArray(G.buildings)?Object.keys(G.buildings).filter(k=>G.buildings[k]>0).length:(G.buildings||[]).length;
+  if(bldCount < nextLv.buildings){showToast(`❌ Need ${nextLv.buildings} buildings!`);return;}
+  if(G.totalHarvested < nextLv.harvests){showToast(`❌ Need ${nextLv.harvests} harvests!`);return;}
+  // Deduct costs
+  G.gems -= nextLv.gems;
+  G.gold -= nextLv.gold;
+  G.homeLv = (G.homeLv||1) + 1;
+  // Apply earnings bonus
+  playSound('levelup');
+  addXP(500);
+  updateHUD();
+  saveGame();
+  renderHomeUpgrade();
+  renderLeaderboard();
+  showToast(`🏠 Home upgraded to Level ${G.homeLv}! 🎉 ${nextLv.perk}`);
+  // Level up animation
+  let lub = document.getElementById('lub');
+  let lubt = document.getElementById('lub-text');
+  let lubu = document.getElementById('lub-unlock');
+  if(lubt) lubt.textContent = `🏠 Home Level ${G.homeLv}!`;
+  if(lubu) lubu.textContent = nextLv.perk;
+  if(lub){lub.classList.add('show');setTimeout(()=>lub.classList.remove('show'),4000);}
+}
+
+// ===== LEADERBOARD =====
+// Simulated leaderboard with fake players + real player
+const FAKE_PLAYERS = [
+  {name:'RuralKing',    home:'manor',   lv:18, avatar:'👨🏾'},
+  {name:'FarmQueen',    home:'cottage', lv:16, avatar:'👩🏽'},
+  {name:'WildEdge',     home:'cabin',   lv:15, avatar:'👨🏻'},
+  {name:'RanchMaster',  home:'ranch',   lv:14, avatar:'👨🏾'},
+  {name:'GreenThumb',   home:'farmhouse',lv:13,avatar:'👩🏾'},
+  {name:'OffGridGal',   home:'van',     lv:12, avatar:'👩🏻'},
+  {name:'SunflowerSam', home:'modern',  lv:11, avatar:'👨🏽'},
+  {name:'CropKing99',   home:'camp',    lv:10, avatar:'👨🏾'},
+  {name:'HomesteadPro', home:'cottage', lv:9,  avatar:'👩🏽'},
+  {name:'TrueGrower',   home:'ranch',   lv:8,  avatar:'👨🏻'},
+];
+
+function renderLeaderboard() {
+  let myLv = getHomeLv();
+  let myName = G.name || 'You';
+  let myHome = G.homeType || 'farmhouse';
+
+  // Build combined list
+  let allPlayers = [...FAKE_PLAYERS, {name:myName, home:myHome, lv:myLv, avatar:AVATARS[G.avatar]||'🌱', isMe:true}];
+  allPlayers.sort((a,b) => b.lv - a.lv);
+  let top10 = allPlayers.slice(0,10);
+  let myRank = allPlayers.findIndex(p=>p.isMe) + 1;
+
+  let list = document.getElementById('leaderboard-list');
+  if(list) {
+    list.innerHTML = top10.map((p,i) => {
+      let rankEmoji = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+      let homeEmoji = HOME_DATA[p.home]?.emoji || '🏠';
+      let prize = i===0?'500💎+5000g':i<3?'300💎+3000g':i<10?'100💎+1000g':'';
+      return `<div style="background:${p.isMe?'#1a3a1a':'#1a1a2a'};border:1px solid ${p.isMe?'#5aaa3a':'#2a2a4a'};border-radius:8px;padding:8px;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+        <div style="font-size:18px;min-width:28px;text-align:center;">${rankEmoji}</div>
+        <div style="font-size:22px;">${p.avatar}</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:${p.isMe?'#7dff7d':'#e8f5e8'};font-weight:bold;">${p.name}${p.isMe?' (You)':''}</div>
+          <div style="font-size:9px;color:#aaa;">${homeEmoji} ${HOME_DATA[p.home]?.name||p.home} — Home Lv${p.lv}</div>
+        </div>
+        <div style="text-align:right;font-size:9px;color:#ffd700;">${prize}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Update your rank
+  let yr = document.getElementById('your-rank');
+  let yhl = document.getElementById('your-home-lv');
+  let yht = document.getElementById('your-home-type');
+  if(yr) yr.textContent = `#${myRank} of ${allPlayers.length}`;
+  if(yhl) yhl.textContent = myLv;
+  if(yht) yht.textContent = HOME_DATA[myHome]?.name || myHome;
+}
 const HOME_DATA = {
   cottage: {
     name:'Cottage', emoji:'🏡',
@@ -2392,7 +2639,7 @@ function harvestAll() {
       if(hasBld('silo')) price=Math.floor(price*1.5);
       if(hasBld('market')) price=Math.floor(price*1.2);
       if(G.homeType==='farmhouse') price=Math.floor(price*1.1);
-      let vipBonus=[0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0;
+      let vipBonus=([0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0)+(G.homeLv>=15?20:G.homeLv>=11?15:G.homeLv>=6?10:G.homeLv>=5?5:0);
       price=Math.floor(price*(1+vipBonus/100));
       G.gold+=price;G.totalEarned+=price;G.totalHarvested++;totalGold+=price;
       addXP(crop.xp||10);addItem(crop.name||crop.n||p.crop,1);
