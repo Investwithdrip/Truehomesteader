@@ -91,7 +91,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 .home-card-3d.sel .hc-secret{color:#7dff7d;background:#1a3a1a;}
 
 /* LOCKED HOME CARDS */
-.home-card-locked{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:12px;padding:10px 6px;text-align:center;}
+.hc-expand{display:none;text-align:left;font-size:9px;}
+.home-card-3d.sel .hc-expand{display:block;}
 .hc-emoji{font-size:36px;display:block;margin-bottom:3px;}
 
 /* START BUTTON */
@@ -370,45 +371,50 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     <!-- 5 ACTIVE HOMES -->
     <div class="homes-label">⚡ ACTIVE HOMES</div>
     <div class="homes-grid">
-      <div class="home-card-3d" onclick="selHomeType('cottage',this)" data-home="cottage">
+      <div class="home-card-3d" onclick="selHomeType('cottage',this);expandHome('cottage')" data-home="cottage">
         <div class="hc-shine"></div>
         <div class="hc-emoji">🏡</div>
         <div class="hc-name">Cottage</div>
         <div class="hc-tag speed">⚡ SPEED</div>
         <div class="hc-desc">80% faster crops at max level</div>
-        <div class="hc-secret">🌿 Vitamin Trading</div>
+        <div class="hc-secret">🌿 Vitamin Trading at Lv10</div>
+        <div class="hc-expand" id="expand-cottage"></div>
       </div>
-      <div class="home-card-3d" onclick="selHomeType('cabin',this)" data-home="cabin">
+      <div class="home-card-3d" onclick="selHomeType('cabin',this);expandHome('cabin')" data-home="cabin">
         <div class="hc-shine"></div>
         <div class="hc-emoji">🛖</div>
         <div class="hc-name">Cabin</div>
         <div class="hc-tag water">💧 RESOURCE</div>
         <div class="hc-desc">10x all rewards at max level</div>
-        <div class="hc-secret">🐟 Fish Trading</div>
+        <div class="hc-secret">🐟 Fish Trading at Lv10</div>
+        <div class="hc-expand" id="expand-cabin"></div>
       </div>
-      <div class="home-card-3d" onclick="selHomeType('van',this)" data-home="van">
+      <div class="home-card-3d" onclick="selHomeType('van',this);expandHome('van')" data-home="van">
         <div class="hc-shine"></div>
         <div class="hc-emoji">🚐</div>
         <div class="hc-name">Van → RV</div>
         <div class="hc-tag xp">⭐ XP KING</div>
-        <div class="hc-desc">7x XP multiplier at max level</div>
-        <div class="hc-secret">⛽ Oil Trading</div>
+        <div class="hc-desc">7x XP + RV at max level</div>
+        <div class="hc-secret">⛽ Oil Trading at Lv10</div>
+        <div class="hc-expand" id="expand-van"></div>
       </div>
-      <div class="home-card-3d" onclick="selHomeType('ranch',this)" data-home="ranch">
+      <div class="home-card-3d" onclick="selHomeType('ranch',this);expandHome('ranch')" data-home="ranch">
         <div class="hc-shine"></div>
         <div class="hc-emoji">🏚️</div>
         <div class="hc-name">Ranch</div>
         <div class="hc-tag animal">🐄 ANIMALS</div>
         <div class="hc-desc">Ostrich empire + gem drops</div>
-        <div class="hc-secret">🥚 Egg Trading</div>
+        <div class="hc-secret">🥚 Egg Trading at Lv20</div>
+        <div class="hc-expand" id="expand-ranch"></div>
       </div>
-      <div class="home-card-3d" onclick="selHomeType('modern',this)" data-home="modern">
+      <div class="home-card-3d" onclick="selHomeType('modern',this);expandHome('modern')" data-home="modern">
         <div class="hc-shine"></div>
         <div class="hc-emoji">🏗️</div>
         <div class="hc-name">Modern</div>
         <div class="hc-tag tech">🤖 TECH</div>
         <div class="hc-desc">25 free spins daily at max</div>
-        <div class="hc-secret">🚜 Vehicle Trading</div>
+        <div class="hc-secret">🚜 Vehicle Trading at Lv1</div>
+        <div class="hc-expand" id="expand-modern"></div>
       </div>
     </div>
 
@@ -674,6 +680,16 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </div>
 
   <!-- GEMS -->
+  <!-- HOME GUIDE -->
+  <div id="panel-guide" class="panel">
+    <div class="ptitle">📖 Home Guide</div>
+    <div class="card" style="background:#0a1a0a;border-color:#3a6a2a;margin-bottom:8px;text-align:center;">
+      <div style="font-size:11px;color:#7dff7d;font-weight:bold;">All 5 Active Homes — Full Perk Paths</div>
+      <div style="font-size:9px;color:#aaa;margin-top:3px;">Tap any home to see all 20 levels</div>
+    </div>
+    <div id="guide-list"></div>
+  </div>
+
   <!-- HOME UPGRADES -->
   <div id="panel-home" class="panel">
     <div class="ptitle">🏠 Home Upgrades</div>
@@ -763,6 +779,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <button class="nb" onclick="showPanel('chat')" id="nav-chat"><span class="ni">💬</span>Chat</button>
   <button class="nb" onclick="showPanel('ai')" id="nav-ai"><span class="ni">🤖</span>AI</button>
   <button class="nb" onclick="showPanel('inventory')" id="nav-inventory"><span class="ni">🎒</span>Inv</button>
+  <button class="nb" onclick="showPanel('guide')" id="nav-guide"><span class="ni">📖</span>Guide</button>
   <button class="nb" onclick="showPanel('home')" id="nav-home"><span class="ni">🏠</span>Home</button>
   <button class="nb" onclick="showPanel('leaderboard')" id="nav-leaderboard"><span class="ni">🏆</span>Ranks</button>
   <button class="nb" onclick="showPanel('iap')" id="nav-iap"><span class="ni">💎</span>Gems</button>
@@ -813,7 +830,164 @@ const CRITTERS_DATA=[{n:'Aphids',e:'🐛',dmg:'slow your crops',sea:[0],oh:2},{n
 function xpForLevel(lv){return Math.floor(100*Math.pow(lv,1.4));}
 let selectedAvatar='f1',selectedHomeType='cottage';
 
-// ===== LOGIN SCREEN SYSTEM =====
+// ===== HOME GUIDE SYSTEM =====
+const HOME_GUIDE = {
+  cottage:{
+    emoji:'🏡', name:'Cottage', tag:'⚡ SPEED', tagClass:'speed',
+    description:'The fastest farmer in the game. Herbs grow faster than anything else. At max level crops are nearly instant.',
+    trade:'💊 Vitamin Trading (Lv10) — visitors get 1-5💎 gem drops',
+    secret:'🤫 Secret: Stack Cottage with Greenhouse for INSANE speed',
+    milestones:[
+      {lv:1,  text:'20% faster crop growth'},
+      {lv:2,  text:'22% faster + herb seeds available'},
+      {lv:5,  text:'25% faster crops + sell vitamins'},
+      {lv:10, text:'🌿 MAJOR: Vitamin market opens! Visitors get gem drops'},
+      {lv:15, text:'🚜 MAJOR: Herb Tractor auto-collects + extra yield'},
+      {lv:20, text:'👑 ULTIMATE: 80% faster crops — fastest farm possible'},
+    ]
+  },
+  cabin:{
+    emoji:'🛖', name:'Cabin', tag:'💧 RESOURCE', tagClass:'water',
+    description:'Never run out of resources. Water pulses but never empties. At max level everything you do gives 10x rewards.',
+    trade:'🐟 Fish Trading (Lv10) — buyers get 1-5💎 gem drops',
+    secret:'🤫 Secret: Cabin + fishing = infinite gold loop at Lv15',
+    milestones:[
+      {lv:1,  text:'Water never drops below 5💧'},
+      {lv:3,  text:'Water refills 20% faster'},
+      {lv:5,  text:'Fishing costs 1💧 less'},
+      {lv:10, text:'🐟 MAJOR: Fish market opens! Harvests give free gems'},
+      {lv:15, text:'🎣 MAJOR: 5x fishing bonus on every cast!'},
+      {lv:20, text:'👑 ULTIMATE: 10x ALL rewards — crops, fish, animals, mining'},
+    ]
+  },
+  van:{
+    emoji:'🚐', name:'Van → RV', tag:'⭐ XP KING', tagClass:'xp',
+    description:'Levels up faster than any other home. The catch: timers are 2x slower. At Lv20 the Van transforms into an RV and timers normalize.',
+    trade:'⛽ Oil Trading (Lv10) — buyers get 1-5💎 gem drops',
+    secret:'🤫 Secret: Van players hit Lv20 before anyone else',
+    milestones:[
+      {lv:1,  text:'3x XP on everything (timers 2x slower)'},
+      {lv:5,  text:'4x XP multiplier'},
+      {lv:10, text:'⛽ MAJOR: Oil production! Visitors buy oil for gem drops'},
+      {lv:15, text:'🚜 MAJOR: Free Tractor + never needs gas'},
+      {lv:19, text:'7x XP + timers start normalizing'},
+      {lv:20, text:'👑 ULTIMATE: 🚐→🚌 RV! 7x XP + normal timers!'},
+    ]
+  },
+  ranch:{
+    emoji:'🏚️', name:'Ranch House', tag:'🐄 ANIMALS', tagClass:'animal',
+    description:'The animal empire. Animals cost up to 45% less. Exclusive Ostrich produces rare eggs. At Lv20 players visit your ranch to buy premium eggs.',
+    trade:'🥚 Ostrich Egg Trading (Lv20) — buyers get 1-5💎 gem drops',
+    secret:'🤫 Secret: Ranch players control the meat supply for all players',
+    milestones:[
+      {lv:1,  text:'+2 free animal slots + 10% animal cost discount'},
+      {lv:5,  text:'+4 slots + 18% discount + meat production starts'},
+      {lv:8,  text:'+5 slots + 25% animal discount'},
+      {lv:10, text:'🦤 MAJOR: Exclusive Ostrich unlocked!'},
+      {lv:15, text:'💎 MAJOR: Ostrich eggs drop 1-5 diamonds!'},
+      {lv:20, text:'👑 ULTIMATE: Premium Egg Commerce — players visit for gem drops'},
+    ]
+  },
+  modern:{
+    emoji:'🏗️', name:'Modern Farm', tag:'🤖 TECH', tagClass:'tech',
+    description:'The tech manufacturer. Produces all tractors and vehicles. Auto-waters up to all 50 plots. At Lv20 gets 25 free spins every single day.',
+    trade:'🚜 Vehicle Trading (Lv1) — buyers get 1-5💎 gem drops',
+    secret:'🤫 Secret: Modern Lv20 = 25 spins × 7 days = 175 chances per week',
+    milestones:[
+      {lv:1,  text:'Auto-water 2 plots + produce tractors/vehicles'},
+      {lv:3,  text:'Auto-water 4 plots + equipment 10% cheaper'},
+      {lv:5,  text:'Auto-water 6 plots + equipment 15% cheaper'},
+      {lv:10, text:'🚁 MAJOR: Drone unlocked! Auto-delivers supplies'},
+      {lv:15, text:'☀️ MAJOR: Solar Wind Turbine — free energy forever'},
+      {lv:17, text:'Auto-water ALL 50 plots automatically'},
+      {lv:20, text:'👑 ULTIMATE: 25 Free Spins every single day!'},
+    ]
+  }
+};
+
+let expandedHome = null;
+
+function expandHome(homeId) {
+  // On login screen — expand the selected card to show milestones
+  let el = document.getElementById('expand-' + homeId);
+  if(!el) return;
+  let data = HOME_GUIDE[homeId];
+  if(!data) return;
+  // Collapse all others
+  ['cottage','cabin','van','ranch','modern'].forEach(h => {
+    let other = document.getElementById('expand-' + h);
+    if(other && h !== homeId) other.innerHTML = '';
+    if(other && h !== homeId) other.style.display = 'none';
+  });
+  if(expandedHome === homeId) {
+    el.innerHTML = '';
+    expandedHome = null;
+    return;
+  }
+  expandedHome = homeId;
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div style="margin-top:8px;border-top:1px solid #2a4a2a;padding-top:8px;text-align:left;">
+      <div style="font-size:9px;color:#aaa;margin-bottom:6px;">${data.description}</div>
+      ${data.milestones.map(m => `
+        <div style="display:flex;gap:6px;margin-bottom:4px;align-items:center;">
+          <div style="font-size:8px;background:${m.lv>=20?'#3a1a0a':m.lv>=15?'#1a1a3a':m.lv>=10?'#0a1a3a':'#1a2e1a'};color:${m.lv>=20?'#ffd700':m.lv>=10?'#7db8ff':'#7dff7d'};padding:1px 5px;border-radius:4px;min-width:28px;text-align:center;font-weight:bold;">Lv${m.lv}</div>
+          <div style="font-size:9px;color:#aaa;">${m.text}</div>
+        </div>`).join('')}
+      <div style="font-size:8px;color:#5aaa3a;margin-top:6px;padding:4px;background:#0a1a0a;border-radius:4px;">${data.secret}</div>
+      <div style="font-size:8px;color:#7db8ff;margin-top:4px;">💎 ${data.trade}</div>
+    </div>`;
+}
+
+function renderGuide() {
+  let list = document.getElementById('guide-list');
+  if(!list) return;
+  list.innerHTML = Object.entries(HOME_GUIDE).map(([id, h]) => `
+    <div class="card" style="margin-bottom:10px;cursor:pointer;" onclick="toggleGuideHome('${id}')">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:32px;">${h.emoji}</div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+            <div style="font-size:12px;color:#e8f5e8;font-weight:bold;">${h.name}</div>
+            <div class="hc-tag ${h.tagClass}" style="font-size:7px;">${h.tag}</div>
+            ${id===G.homeType?'<span style="font-size:8px;background:#2a5a0a;color:#7dff7d;padding:1px 5px;border-radius:8px;">YOUR HOME</span>':''}
+          </div>
+          <div style="font-size:9px;color:#5a8a5a;">${h.description.substring(0,60)}...</div>
+        </div>
+        <div style="font-size:12px;color:#3a6a3a;" id="guide-arrow-${id}">▼</div>
+      </div>
+      <div id="guide-detail-${id}" style="display:none;margin-top:10px;border-top:1px solid #1a3a1a;padding-top:10px;">
+        <div style="font-size:10px;color:#aaa;margin-bottom:8px;">${h.description}</div>
+        <div style="font-size:10px;color:#7db8ff;margin-bottom:8px;">💎 ${h.trade}</div>
+        <div style="font-size:10px;color:#ffd700;font-weight:bold;margin-bottom:6px;">📋 Key Milestones:</div>
+        ${h.milestones.map(m=>`
+          <div style="display:flex;gap:8px;margin-bottom:5px;align-items:flex-start;">
+            <div style="font-size:9px;background:${m.lv>=20?'#3a1a0a':m.lv>=15?'#1a1a3a':m.lv>=10?'#0a2a4a':'#1a2e1a'};color:${m.lv>=20?'#ffd700':m.lv>=10?'#7db8ff':'#7dff7d'};padding:2px 6px;border-radius:4px;min-width:32px;text-align:center;font-weight:bold;white-space:nowrap;">Lv${m.lv}</div>
+            <div style="font-size:10px;color:#e8f5e8;line-height:1.4;">${m.text}</div>
+          </div>`).join('')}
+        <div style="font-size:10px;color:#5aaa3a;margin-top:8px;padding:6px;background:#0a1a0a;border-radius:6px;">${h.secret}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleGuideHome(id) {
+  let detail = document.getElementById('guide-detail-' + id);
+  let arrow = document.getElementById('guide-arrow-' + id);
+  if(!detail) return;
+  let isOpen = detail.style.display !== 'none';
+  // Close all
+  Object.keys(HOME_GUIDE).forEach(h => {
+    let d = document.getElementById('guide-detail-' + h);
+    let a = document.getElementById('guide-arrow-' + h);
+    if(d) d.style.display = 'none';
+    if(a) a.textContent = '▼';
+  });
+  // Open this one if it was closed
+  if(!isOpen) {
+    detail.style.display = 'block';
+    if(arrow) arrow.textContent = '▲';
+  }
+}
 function goStep(n){
   document.querySelectorAll('.step-screen').forEach(s=>s.style.display='none');
   let steps={1:'step-splash',2:'step-info',3:'step-avatar',4:'step-home'};
@@ -1358,7 +1532,7 @@ let audioCtx=null;
 function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 function playTone(freq,dur,type='square',vol=0.1){try{let ctx=getAudio();let osc=ctx.createOscillator();let gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type=type;osc.frequency.value=freq;gain.gain.value=vol;gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);osc.start();osc.stop(ctx.currentTime+dur);}catch(e){}}
 function playSound(type){if(type==='till')playTone(120,0.2,'sawtooth',0.08);else if(type==='plant')playTone(440,0.15,'sine',0.1);else if(type==='water'){playTone(880,0.1,'sine',0.08);playTone(660,0.15,'sine',0.08);}else if(type==='harvest'){playTone(523,0.1,'square',0.1);setTimeout(()=>playTone(659,0.1,'square',0.1),100);setTimeout(()=>playTone(784,0.2,'square',0.1),200);}else if(type==='levelup'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.2,'sine',0.12),i*100));}else if(type==='animal')playTone(300,0.3,'sine',0.08);else if(type==='fish'){playTone(440,0.1,'sine',0.1);setTimeout(()=>playTone(550,0.2,'sine',0.1),150);}else if(type==='build'){[200,250,300].forEach((f,i)=>setTimeout(()=>playTone(f,0.15,'square',0.1),i*80));}else if(type==='critter'){playTone(200,0.1,'sawtooth',0.1);setTimeout(()=>playTone(150,0.2,'sawtooth',0.1),100);}}
-function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();if(name==='home')renderHomeUpgrade();if(name==='leaderboard')renderLeaderboard();}
+function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();if(name==='home')renderHomeUpgrade();if(name==='leaderboard')renderLeaderboard();if(name==='guide')renderGuide();}
 function showModal(title,body){document.getElementById('mt').textContent=title;document.getElementById('mb').innerHTML=body;document.getElementById('modal').classList.add('show');}
 function closeModal(){document.getElementById('modal').classList.remove('show');}
 let toastTO;
