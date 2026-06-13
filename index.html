@@ -739,7 +739,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
       <div class="si" onclick="spendGems(75,'gold')"><div class="sie">💰</div><div class="sin">Gold Boost</div><div class="sic" style="color:#a8d8ff;">75💎</div><div class="sid">+500 gold now</div></div>
       <div class="si" onclick="spendGems(150,'seed')"><div class="sie">🌟</div><div class="sin">Golden Seed</div><div class="sic" style="color:#a8d8ff;">150💎</div><div class="sid">Worth 1000g!</div></div>
       <div class="si" onclick="spendGems(60,'feed')"><div class="sie">🌾</div><div class="sin">Animal Feast</div><div class="sic" style="color:#a8d8ff;">60💎</div><div class="sid">Feed all animals</div></div>
-      <div class="si" onclick="spendGems(300,'plots')"><div class="sie">🗺️</div><div class="sin">Expand Farm</div><div class="sic" style="color:#a8d8ff;">300💎</div><div class="sid">+8 new plots</div></div>
+      <div class="si" onclick="showLandInfo()"><div class="sie">🌾</div><div class="sin">Land Info</div><div class="sic" style="color:#7dff7d;">Free</div><div class="sid">How to get more plots</div></div>
       <div class="si" onclick="spendGems(100,'spin')"><div class="sie">🎰</div><div class="sin">Extra Spin</div><div class="sic" style="color:#a8d8ff;">100💎</div><div class="sid">Spin again now</div></div>
       <div class="si" onclick="spendGems(500,'vip')"><div class="sie">👑</div><div class="sin">VIP Boost</div><div class="sic" style="color:#a8d8ff;">500💎</div><div class="sid">Skip to next VIP</div></div>
       <div class="si" onclick="buyGemsWithGold(500)"><div class="sie">💰➡️💎</div><div class="sin">Buy 5💎</div><div class="sic" style="color:#ffd700;">500g</div><div class="sid">Convert gold</div></div>
@@ -789,7 +789,20 @@ const ACH_D=[{id:'a_h1',name:'Green Thumb',emoji:'🌱',desc:'Harvest 1 crop'},{
 const VIP_LEVELS=[{lv:1,reqGameLv:5,name:'🌱 Seedling',acres:0.1,autoWater:1,autoFeed:false,autoGather:false,bonus:'5% gold bonus'},{lv:2,reqGameLv:10,name:'🌿 Sprout',acres:0.2,autoWater:1,autoFeed:true,autoGather:false,bonus:'Daily 5💎 gift'},{lv:3,reqGameLv:15,name:'🌾 Grower',acres:0.3,autoWater:2,autoFeed:true,autoGather:false,bonus:'10% gold bonus'},{lv:4,reqGameLv:20,name:'🚜 Farmer',acres:0.5,autoWater:2,autoFeed:true,autoGather:true,bonus:'Exclusive crop unlock'},{lv:5,reqGameLv:25,name:'🐄 Rancher',acres:0.5,autoWater:3,autoFeed:true,autoGather:true,bonus:'Auto-feed all animals'},{lv:6,reqGameLv:30,name:'🏚️ Settler',acres:1.0,autoWater:4,autoFeed:true,autoGather:true,bonus:'15% gold bonus'},{lv:7,reqGameLv:35,name:'🌻 Cultivator',acres:1.0,autoWater:4,autoFeed:true,autoGather:true,bonus:'Daily 15💎 gift'},{lv:8,reqGameLv:40,name:'🍯 Keeper',acres:1.0,autoWater:5,autoFeed:true,autoGather:true,bonus:'Exclusive building'},{lv:9,reqGameLv:45,name:'🏡 Homesteader',acres:2.0,autoWater:6,autoFeed:true,autoGather:true,bonus:'20% gold bonus'},{lv:10,reqGameLv:50,name:'🌲 Landowner',acres:2.0,autoWater:6,autoFeed:true,autoGather:true,bonus:'Full auto-farm'},{lv:11,reqGameLv:60,name:'🦚 Rancher Pro',acres:2.0,autoWater:8,autoFeed:true,autoGather:true,bonus:'Exotic animals unlock'},{lv:12,reqGameLv:70,name:'🏆 Harvest King',acres:3.0,autoWater:8,autoFeed:true,autoGather:true,bonus:'Daily 25💎 gift'},{lv:13,reqGameLv:80,name:'💎 Gem Lord',acres:3.0,autoWater:10,autoFeed:true,autoGather:true,bonus:'25% gold bonus'},{lv:14,reqGameLv:90,name:'🌍 Land Baron',acres:5.0,autoWater:10,autoFeed:true,autoGather:true,bonus:'Auto-build upgrades'},{lv:15,reqGameLv:100,name:'👑 Estate Owner',acres:5.0,autoWater:12,autoFeed:true,autoGather:true,bonus:'Full passive income'},{lv:16,reqGameLv:120,name:'🔱 Patriarch',acres:10,autoWater:16,autoFeed:true,autoGather:true,bonus:'Offline earnings 2x'},{lv:17,reqGameLv:150,name:'⚜️ Dynasty',acres:10,autoWater:20,autoFeed:true,autoGather:true,bonus:'Triple passive gold'},{lv:18,reqGameLv:175,name:'🌟 Legend',acres:15,autoWater:24,autoFeed:true,autoGather:true,bonus:'Double all earnings'},{lv:19,reqGameLv:200,name:'💫 Mythic',acres:20,autoWater:30,autoFeed:true,autoGather:true,bonus:'Custom farm name'},{lv:20,reqGameLv:250,name:'🏅 True Homesteader',acres:50,autoWater:99,autoFeed:true,autoGather:true,bonus:'Ultimate — all unlocked!'}];
 const LEVEL_UNLOCKS=[{lv:1,emoji:'🌱',name:'Basic Farm',desc:'Start your journey!'},{lv:2,emoji:'🪣',name:'Well',desc:'Buy the Well in Store'},{lv:3,emoji:'🎣',name:'Pond',desc:'Fish for gold!'},{lv:4,emoji:'🐔',name:'Chickens',desc:'First animal unlocked'},{lv:5,emoji:'🌿',name:'Greenhouse',desc:'Grow any season'},{lv:7,emoji:'🌻',name:'Sunflower',desc:'New crop'},{lv:8,emoji:'🍑',name:'Peach Tree',desc:'Fruit trees!'},{lv:9,emoji:'🫐',name:'Blueberry',desc:'Premium crop'},{lv:10,emoji:'🌀',name:'Windmill',desc:'Auto-water plots'},{lv:12,emoji:'💜',name:'Lavender',desc:'High value crop'},{lv:15,emoji:'🏗️',name:'Silo',desc:'+50% crop prices'},{lv:20,emoji:'🏪',name:'Farm Market',desc:'Premium prices'},{lv:25,emoji:'🦚',name:'Exotic Animals',desc:'Peacock & Alpaca'},{lv:30,emoji:'🍄',name:'Rare Crops',desc:'Truffle & Saffron'},{lv:35,emoji:'🔨',name:'Workshop',desc:'Craft premium items'},{lv:50,emoji:'🏆',name:'Farm Legend',desc:'Master status!'},{lv:100,emoji:'👑',name:'Estate Owner',desc:'True empire!'}];
 const TUTORIALS={pond:{title:'🎣 Pond Unlocked!',text:'Your pond is ready! Go to the Pond tab to fish. It costs 5💧 per cast. Better bait means better fish. Premium casts use gems for rare catches!'},greenhouse:{title:'🌿 Greenhouse Unlocked!',text:'Amazing! Your Greenhouse lets you grow ANY crop in ANY season. No more waiting for the right weather. Plant anything year round!'},first_harvest:{title:'🌾 First Harvest!',text:'Great job! Every harvest earns gold and XP. The more valuable the crop the longer it takes to grow. Use gems to speed things up!'},first_animal:{title:'🐄 First Animal!',text:'Welcome your new friend! Feed them daily to keep hunger up. Happy animals produce faster. Collect their products for gold!'},level5:{title:'⭐ Level 5!',text:'You unlocked the Greenhouse and VIP Level 1! Check the VIP tab to see your new auto-water perk and land expansion. Keep leveling!'},level10:{title:'⭐ Level 10!',text:'Windmill unlocked! It auto-waters 2 of your plots every minute. Also check your VIP progress — you are getting more land! Auto-Collect is now available on your farm!'},spin:{title:'🎰 Spin Wheel!',text:'You get a FREE spin every 24 hours! Win gold, gems, seeds, water refills and more. Extra spins cost 30💎. Tap SPIN in the top bar anytime!'},vip1:{title:'👑 VIP Level 1!',text:'You are now a VIP Seedling! Your farm auto-waters 1 plot. You earn 5% more gold on everything. Check the VIP tab to see your land growing!'}};
-const WHEEL_PRIZES=[{label:'50💰',color:'#2a5a2a',reward:()=>{G.gold+=50;G.totalEarned+=50;updateHUD();showToast('🎰 Won 50 gold!');}},{label:'10💎',color:'#1a1a4a',reward:()=>{G.gems+=10;updateHUD();showToast('🎰 Won 10 gems!');}},{label:'💧Full',color:'#0a2a4a',reward:()=>{G.water=G.maxWater;updateHUD();showToast('🎰 Water refilled!');}},{label:'200💰',color:'#3a6a2a',reward:()=>{G.gold+=200;G.totalEarned+=200;updateHUD();showToast('🎰 Won 200 gold!');}},{label:'25💎',color:'#2a1a4a',reward:()=>{G.gems+=25;updateHUD();showToast('🎰 Won 25 gems!');}},{label:'30💰',color:'#1a4a1a',reward:()=>{G.gold+=30;G.totalEarned+=30;updateHUD();showToast('🎰 Won 30 gold!');}},{label:'Seeds',color:'#1a3a1a',reward:()=>{addItem('Wheat',3);showToast('🎰 Won 3 Wheat!');}},{label:'100💎',color:'#0a0a3a',reward:()=>{G.gems+=100;updateHUD();showToast('🎰 JACKPOT! 100 gems!');}},{label:'500XP',color:'#2a2a0a',reward:()=>{addXP(500);showToast('🎰 Won 500 XP!');}},{label:'100💰',color:'#2a5a1a',reward:()=>{G.gold+=100;G.totalEarned+=100;updateHUD();showToast('🎰 Won 100 gold!');}},{label:'❌ Miss',color:'#3a1a1a',reward:()=>{showToast('🎰 Better luck next time!');}},{label:'75💰',color:'#1a4a2a',reward:()=>{G.gold+=75;G.totalEarned+=75;updateHUD();showToast('🎰 Won 75 gold!');}}];
+const WHEEL_PRIZES=[
+  {label:'50💰', color:'#2a5a2a',reward:()=>{G.gold+=50;G.totalEarned+=50;updateHUD();showToast('🎰 Won 50 gold!');}},
+  {label:'10💎', color:'#1a1a4a',reward:()=>{G.gems+=10;updateHUD();showToast('🎰 Won 10 gems!');}},
+  {label:'💧Full',color:'#0a2a4a',reward:()=>{G.water=G.maxWater;updateHUD();showToast('🎰 Water refilled!');}},
+  {label:'200💰',color:'#3a6a2a',reward:()=>{G.gold+=200;G.totalEarned+=200;updateHUD();showToast('🎰 Won 200 gold!');}},
+  {label:'25💎', color:'#2a1a4a',reward:()=>{G.gems+=25;updateHUD();showToast('🎰 Won 25 gems!');}},
+  {label:'30💰', color:'#1a4a1a',reward:()=>{G.gold+=30;G.totalEarned+=30;updateHUD();showToast('🎰 Won 30 gold!');}},
+  {label:'🌾+Plot',color:'#0a3a0a',reward:()=>{awardSpinPlot();showToast('🎰 🌾 RARE! New Plot unlocked!');}},
+  {label:'100💎',color:'#0a0a3a',reward:()=>{G.gems+=100;updateHUD();showToast('🎰 JACKPOT! 100 gems!');}},
+  {label:'500XP',color:'#2a2a0a',reward:()=>{addXP(500);showToast('🎰 Won 500 XP!');}},
+  {label:'100💰',color:'#2a5a1a',reward:()=>{G.gold+=100;G.totalEarned+=100;updateHUD();showToast('🎰 Won 100 gold!');}},
+  {label:'❌ Miss',color:'#3a1a1a',reward:()=>{showToast('🎰 Better luck next time!');}},
+  {label:'75💰', color:'#1a4a2a',reward:()=>{G.gold+=75;G.totalEarned+=75;updateHUD();showToast('🎰 Won 75 gold!');}}
+];
 const ANIMAL_STAGES=[{name:'Baby',emoji:'🥚',mult:0,feedsNeeded:0,cls:'stg0'},{name:'Juvenile',emoji:'🐣',mult:0.5,feedsNeeded:10,cls:'stg1'},{name:'Young',emoji:'🌱',mult:0.75,feedsNeeded:25,cls:'stg2'},{name:'Adult',emoji:'💪',mult:1.0,feedsNeeded:50,cls:'stg3'},{name:'Prime',emoji:'👑',mult:1.5,feedsNeeded:100,cls:'stg4'}];
 const BUILD_SUPPLIES={wood:{n:'Wood',e:'🪵',c:50,gem:30,tier:1,desc:'Basic building material'},nails:{n:'Nails',e:'🔩',c:40,gem:25,tier:1,desc:'Holds it all together'},paint:{n:'Paint',e:'🎨',c:60,gem:35,tier:1,desc:'Finish and protect'},screws:{n:'Screws',e:'⚙️',c:55,gem:30,tier:1,desc:'Heavy-duty fasteners'},lumber:{n:'Lumber',e:'🏗️',c:150,gem:75,tier:2,desc:'Structural wood'},concrete:{n:'Concrete',e:'🪨',c:180,gem:90,tier:2,desc:'Foundation material'},wire:{n:'Wire',e:'🔌',c:160,gem:80,tier:2,desc:'Electrical wiring'},pipes:{n:'Pipes',e:'🔧',c:140,gem:70,tier:2,desc:'Plumbing pipes'},steel:{n:'Steel',e:'⚡',c:400,gem:150,tier:3,desc:'Heavy-duty metal'},glass:{n:'Glass',e:'🪟',c:350,gem:130,tier:3,desc:'Windows & panels'},solar:{n:'Solar Panel',e:'☀️',c:600,gem:200,tier:3,desc:'Energy upgrade'},smart:{n:'Smart Tech',e:'🤖',c:800,gem:250,tier:3,desc:'Automated systems'}};
 const BLD_LV_REQ={1:{gold:0,supplies:[]},2:{gold:200,supplies:[{n:'Wood',q:2},{n:'Nails',q:3}]},3:{gold:400,supplies:[{n:'Wood',q:3},{n:'Screws',q:2},{n:'Paint',q:1}]},4:{gold:700,supplies:[{n:'Lumber',q:2},{n:'Concrete',q:1},{n:'Nails',q:4}]},5:{gold:1000,supplies:[{n:'Lumber',q:3},{n:'Wire',q:2},{n:'Pipes',q:1}]},6:{gold:1500,supplies:[{n:'Lumber',q:4},{n:'Concrete',q:2},{n:'Wire',q:2}]},7:{gold:2000,supplies:[{n:'Steel',q:1},{n:'Concrete',q:3},{n:'Glass',q:1}]},8:{gold:3000,supplies:[{n:'Steel',q:2},{n:'Glass',q:2},{n:'Wire',q:3}]},9:{gold:4500,supplies:[{n:'Steel',q:3},{n:'Solar Panel',q:1},{n:'Smart Tech',q:1}]},10:{gold:7000,supplies:[{n:'Steel',q:4},{n:'Solar Panel',q:2},{n:'Smart Tech',q:2}]}};
@@ -855,15 +868,98 @@ async function fetchRealWeather(){
     updateHUD();updateWeatherFX();showToast(`🌤️ Real weather loaded for ${G.state}!`);
   }catch(e){}
 }
+// ===== LAND SYSTEM =====
+const MAX_PLOTS = 50;
+
+// Starting plots by home type
+const HOME_START_PLOTS = {
+  cottage:5, cabin:6, van:5, ranch:7, modern:6,
+  manor:10, farmhouse:5, camp:5
+};
+
+// VIP plot unlocks (cumulative total plots)
+const VIP_PLOT_UNLOCKS = {
+  1:7, 2:9, 3:11, 4:13, 5:15, 6:17, 7:19, 8:21,
+  9:23, 10:25, 11:27, 12:30, 13:32, 14:35, 15:38,
+  16:40, 17:43, 18:45, 19:47, 20:50
+};
+
+// Achievement plot rewards
+const ACH_PLOT_REWARDS = {
+  'a_h25':1,    // 25 harvests = +1 plot
+  'a_h100':1,   // 100 harvests = +1 plot
+  'a_ani3':1,   // 3 animals = +1 plot
+  'a_fish5':1,  // 5 fish = +1 plot
+  'a_bld1':1,   // 1 building = +1 plot
+  'a_lv10':1,   // Level 10 = +1 plot
+  'a_lv25':1,   // Level 25 = +1 plot
+  'a_spin5':1,  // 5 spins = +1 plot
+};
+
+function getMaxUnlockedPlots() {
+  // Start with home bonus
+  let base = HOME_START_PLOTS[G.homeType] || 5;
+  // VIP bonus
+  let vipPlots = VIP_PLOT_UNLOCKS[G.vipLevel] || 0;
+  let total = Math.max(base, vipPlots);
+  // Achievement bonuses
+  let achBonus = G.achPlotBonus || 0;
+  total += achBonus;
+  // Spin wheel bonus
+  let spinBonus = G.spinPlotBonus || 0;
+  total += spinBonus;
+  // Home level bonuses
+  let homeLv = G.homeLv || 1;
+  if(homeLv >= 10) total += 2;
+  if(homeLv >= 15) total += 3;
+  if(homeLv >= 20) total += 5;
+  return Math.min(total, MAX_PLOTS);
+}
+
+function syncPlots() {
+  let maxPlots = getMaxUnlockedPlots();
+  let currentPlots = G.plots.length;
+  if(maxPlots > currentPlots) {
+    let toAdd = maxPlots - currentPlots;
+    for(let i = 0; i < toAdd; i++) {
+      G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});
+    }
+    if(toAdd > 0) showToast(`🌾 Land expanded! +${toAdd} plot${toAdd>1?'s':''}!`);
+  }
+  renderFarm();
+}
+
+function awardAchievementPlot(achId) {
+  let reward = ACH_PLOT_REWARDS[achId];
+  if(!reward) return;
+  if(!G.achPlotsAwarded) G.achPlotsAwarded = {};
+  if(G.achPlotsAwarded[achId]) return; // Already awarded
+  G.achPlotsAwarded[achId] = true;
+  G.achPlotBonus = (G.achPlotBonus||0) + reward;
+  syncPlots();
+  showToast(`🏆 Achievement bonus: +${reward} plot unlocked!`);
+}
+
+function awardSpinPlot() {
+  G.spinPlotBonus = (G.spinPlotBonus||0) + 1;
+  syncPlots();
+  showToast(`🎰 LUCKY! +1 Plot unlocked!`);
+}
+
 function initGame(){
-  for(let i=0;i<25;i++)G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});
+  // Start with home-specific plot count
+  let startPlots = HOME_START_PLOTS[G.homeType] || 5;
+  for(let i=0;i<startPlots;i++) G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});
   G.plots[0].state='home';
+  G.achPlotBonus = 0;
+  G.spinPlotBonus = 0;
+  G.achPlotsAwarded = {};
   QUESTS_D.forEach(q=>{G.quests[q.id]={progress:0,completed:false};});
   ACH_D.forEach(a=>{G.achievements[a.id]=false;});
   if(!G.buildingLevels)G.buildingLevels={};
   renderAll();startCycles();updateHUD();checkOfflineEarnings();checkAutoCollectBtn();
   setTimeout(()=>showTutorial('spin'),3000);
-  showToast(`🌱 Welcome ${G.name}! Your homestead awaits!`);
+  showToast(`🌱 Welcome ${G.name}! Your ${startPlots} plots await!`);
 }
 function renderAll(){renderFarm();renderShop();renderQuests();renderInventory();renderAnimals();renderPond();renderVIP();renderBuildings();renderMining();renderChat();renderAIMessages();updateHUD();updateWeatherFX();}
 function startCycles(){setInterval(gameTick,10000);setInterval(dayTick,120000);}
@@ -909,7 +1005,7 @@ function renderFarm(){
   let grid=document.getElementById('fg');if(!grid)return;
   let ft=document.getElementById('farm-title');
   let homeTypes={cottage:'🏡 Cottage',ranch:'🏚️ Ranch',farmhouse:'🏠 Farmhouse',cabin:'🛖 Cabin',manor:'🏰 Manor',modern:'🏗️ Modern',van:'🚐 Van',camp:'⛺ Camp'};
-  if(ft)ft.textContent=`${homeTypes[G.homeType]?.split(' ')[0]||'🌱'} ${G.name}'s Homestead`;
+  if(ft)ft.textContent=`${homeTypes[G.homeType]?.split(' ')[0]||'🌱'} ${G.name}'s Farm — ${G.plots.length}/${MAX_PLOTS} Plots`;
   grid.innerHTML='';let now=Date.now();
   G.plots.forEach((p,i)=>{
     let el=document.createElement('div');el.className='plot '+p.state;el.onclick=()=>plotClick(i);
@@ -1136,7 +1232,16 @@ function renderVIP(){
 }
 function checkVIPLevel(){
   let newVIP=0;VIP_LEVELS.forEach(v=>{if(G.level>=v.reqGameLv)newVIP=v.lv;});
-  if(newVIP>G.vipLevel){G.vipLevel=newVIP;let vip=VIP_LEVELS.find(v=>v.lv===newVIP);G.acreage=(G.acreage||0.5)+vip.acres;let hvip=document.getElementById('hvip');if(hvip){hvip.style.display='block';hvip.textContent=`👑 ${vip.name.split(' ')[0]}`;}checkAchievement('a_vip1');showTutorial('vip1');renderVIP();showToast(`👑 VIP Level ${newVIP} unlocked! +${vip.acres} acres!`);}
+  if(newVIP>G.vipLevel){
+    G.vipLevel=newVIP;
+    let vip=VIP_LEVELS.find(v=>v.lv===newVIP);
+    G.acreage=(G.acreage||0.5)+vip.acres;
+    let hvip=document.getElementById('hvip');
+    if(hvip){hvip.style.display='block';hvip.textContent=`👑 ${vip.name.split(' ')[0]}`;}
+    checkAchievement('a_vip1');showTutorial('vip1');renderVIP();
+    syncPlots();
+    showToast(`👑 VIP Level ${newVIP} unlocked! New land available!`);
+  }
 }
 function addItem(name,qty){G.inventory[name]=(G.inventory[name]||0)+qty;}
 function renderInventory(){
@@ -1162,7 +1267,16 @@ function renderQuests(){
   let ul=document.getElementById('ulist');
   if(ul)ul.innerHTML=LEVEL_UNLOCKS.map(u=>{let done=G.level>=u.lv;return `<div style="background:${done?'#1a2a0a':'#111'};border:1px solid ${done?'#5aaa3a':'#333'};border-radius:8px;padding:8px;margin-bottom:6px;display:flex;align-items:center;gap:8px;opacity:${done?1:0.5};"><div style="font-size:22px;">${u.emoji}</div><div style="flex:1;"><div style="font-size:11px;color:#7dff7d;font-weight:bold;">${u.name}</div><div style="font-size:9px;color:#aaa;">${u.desc}</div></div><div style="font-size:9px;font-weight:bold;color:${done?'#7dff7d':'#ff4444'};">Lv${u.lv}</div></div>`;}).join('');
 }
-function checkAchievement(id){if(!G.achievements[id]){G.achievements[id]=true;let a=ACH_D.find(x=>x.id===id);if(a)showToast(`✨ Achievement: ${a.name}!`);renderQuests();}}
+function checkAchievement(id){
+  if(!G.achievements[id]){
+    G.achievements[id]=true;
+    let a=ACH_D.find(x=>x.id===id);
+    if(a)showToast(`✨ Achievement: ${a.name}!`);
+    // Award plot if this achievement has a land reward
+    awardAchievementPlot(id);
+    renderQuests();
+  }
+}
 function addXP(amount){
   // Apply Van XP multiplier
   let mult = getXPMultiplier();
@@ -1321,7 +1435,7 @@ function renderMining(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine')
 function doMine(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');if(!hasMine){showToast('❌ Buy a Mine Plot from Store first!');return;}if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.water<10){showToast('❌ Need 10💧 to mine!');return;}G.water-=10;let campBonus=G.homeType==='camp'?2:1,found=[];for(let r=0;r<campBonus;r++){let roll=Math.random(),cum=0;for(let m of MINERALS){cum+=m.r;if(roll<=cum){found.push(m);break;}}}if(!found.length)found.push(MINERALS[0]);found.forEach(m=>{G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);});let supDrop=getMineralDrop();renderMining();updateHUD();playSound('build');showToast(`⛏️ Found: ${found.map(m=>m.e+m.n).join(', ')}${supDrop}`);}
 function spendMineGems(){if((G.gems||0)<75){showToast('❌ Need 75💎!');return;}G.gems-=75;updateHUD();let rare=MINERALS.slice(4),m=rare[Math.floor(Math.random()*rare.length)];G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);renderMining();updateHUD();showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);}
 function buyMinePlot(){if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.gold<300){showToast('❌ Need 300g!');return;}if(G.hasMine){showToast('✅ Mine already built!');return;}G.gold-=300;G.hasMine=true;updateHUD();renderMining();renderShop();showToast('⛏️ Mine built! Go to Mine tab to start digging!');}
-function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
 // ===== HOME UPGRADE SYSTEM =====
 // Cost multipliers per home type (how expensive to upgrade)
 const HOME_COST_MULT={
@@ -1935,6 +2049,28 @@ function renderHomePerkSummary() {
   if(el) el.innerHTML = perks.map(p => `<div style="margin-bottom:4px;font-size:10px;">✅ ${p}</div>`).join('') || '<div style="color:#555;font-size:10px;">Level up your home to unlock perks!</div>';
   let tradeEl = document.getElementById('home-trade-btn');
   if(tradeEl) tradeEl.innerHTML = showHomeTradeBtn();
+}
+
+function showLandInfo(){
+  let current=G.plots.length;
+  let max=getMaxUnlockedPlots();
+  let vipNext=VIP_PLOT_UNLOCKS[G.vipLevel+1]||max;
+  showModal('🌾 Your Land',`
+    <div style="text-align:center;margin-bottom:10px;">
+      <div style="font-size:36px;">🌾</div>
+      <div style="font-size:13px;color:#7dff7d;font-weight:bold;">${current} of ${MAX_PLOTS} Max Plots</div>
+      <div style="height:8px;background:#0a1a0a;border-radius:4px;overflow:hidden;margin:8px 0;">
+        <div style="width:${Math.floor(current/MAX_PLOTS*100)}%;height:100%;background:linear-gradient(90deg,#2a6a2a,#7dff7d);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:#aaa;margin-bottom:6px;font-weight:bold;color:#ffd700;">🔓 How to unlock more land:</div>
+    <div style="font-size:10px;color:#7dff7d;margin-bottom:3px;">👑 VIP Levels — Every VIP level adds plots</div>
+    <div style="font-size:10px;color:#aaa;margin-bottom:3px;">Next VIP unlock: ${vipNext} total plots</div>
+    <div style="font-size:10px;color:#7dff7d;margin-bottom:3px;">🏆 Achievements — Complete for bonus plots</div>
+    <div style="font-size:10px;color:#7dff7d;margin-bottom:3px;">🎰 Spin Wheel — Rare 🌾+Plot prize!</div>
+    <div style="font-size:10px;color:#7dff7d;margin-bottom:8px;">🏠 Home Level 10/15/20 — Bonus plots!</div>
+    <div style="font-size:10px;color:#ff7d7d;background:#1a0a0a;border-radius:6px;padding:6px;text-align:center;">❌ Land CANNOT be purchased with gems or gold</div>
+  `);
 }
 
 function showHomeTradeBtn() {
