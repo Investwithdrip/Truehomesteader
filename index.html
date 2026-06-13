@@ -484,6 +484,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     <div class="card">
       <div class="ct">🎁 Perks Unlocked</div>
       <div id="home-perks-list" style="font-size:10px;color:#aaa;"></div>
+      <div id="home-trade-btn"></div>
     </div>
   </div>
 
@@ -637,6 +638,12 @@ function gameTick(){
   let vip=VIP_LEVELS.find(v=>v.lv===G.vipLevel);let autoW=(vip?.autoWater||0);
   if(autoW>0){let w=0;G.plots.forEach(p=>{if(w<autoW&&(p.state==='planted'||p.state==='growing')&&!p.watered){p.watered=true;w++;}});}
   if(hasBld('windmill')||hasBld('windmill2')){let max=hasBld('windmill2')?6:2,w=0;G.plots.forEach(p=>{if(w<max&&p.state==='planted'&&!p.watered){p.watered=true;w++;}});}
+  // Apply home perks
+  applyCabinWater();
+  applyModernAutoWater();
+  checkModernDailySpins();
+  // Random trade visit every ~5 minutes
+  if(Math.random() < 0.03) generateTradeVisit();
   renderFarm();renderAnimals();
 }
 function dayTick(){
@@ -696,7 +703,7 @@ function renderFarm(){
       let allCrops={...CROPS,...TREES};let crop=allCrops[p.crop];if(!crop)return;
       let elapsed=(now-p.plantTime)/1000,cropTime=crop.time||120;
       let hasBld2=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
-      let speedMult=G.homeType==='cottage'?1.2:hasBld2('greenhouse')?1.25:1;
+      let speedMult=getCropSpeedMultiplier();
       let adjTime=cropTime/speedMult,pct=Math.min(elapsed/adjTime,1);
       if(pct>=1){p.state='ready';el.className='plot ready';el.innerHTML=`<div class="pe" style="font-size:30px;">${crop.emoji}</div><div class="pl">${crop.name}</div><div class="pt">READY! 🌟</div>`;}
       else{
@@ -863,7 +870,7 @@ function updateFishTimer(){
 function showFishReady(){let f=fishState.pendingFish;let tw=document.getElementById('fish-timer-wrap'),rw=document.getElementById('fish-ready-wrap'),cp=document.getElementById('fish-catch-preview');if(tw)tw.style.display='none';if(rw)rw.style.display='block';if(cp)cp.textContent=`${f.emoji} ${f.name} is on the line!`;playSound('fish');showToast(`🎣 Something biting! Go to Pond!`);}
 function collectFish(){
   let f=fishState.pendingFish;if(!f){showToast('❌ Nothing to collect!');return;}
-  G.gold+=f.value;G.totalEarned+=f.value;G.fishCaught++;addXP(Math.floor(f.value/2));addItem(f.name,1);
+  let fishMult=getRewardMultiplier();let fishVal=Math.floor(f.value*fishMult);G.gold+=fishVal;G.totalEarned+=fishVal;G.fishCaught++;addXP(Math.floor(fishVal/2));addItem(f.name,1);
   if(!G.fishLog)G.fishLog=[];G.fishLog.push(`${f.emoji} ${f.name} +${f.value}💰`);
   fishState.pendingFish=null;
   let rw=document.getElementById('fish-ready-wrap'),cw=document.getElementById('fish-cast-wrap'),st=document.getElementById('fish-status');
@@ -919,6 +926,9 @@ function renderQuests(){
 }
 function checkAchievement(id){if(!G.achievements[id]){G.achievements[id]=true;let a=ACH_D.find(x=>x.id===id);if(a)showToast(`✨ Achievement: ${a.name}!`);renderQuests();}}
 function addXP(amount){
+  // Apply Van XP multiplier
+  let mult = getXPMultiplier();
+  amount = Math.floor(amount * mult);
   G.xp+=amount;let needed=xpForLevel(G.level);
   while(G.xp>=needed&&G.level<9999){
     G.xp-=needed;G.level++;G.maxWater+=2;G.water=Math.min(G.water+2,G.maxWater);
@@ -1063,7 +1073,7 @@ function harvestAll(){
   let ready=G.plots.filter(p=>p.state==='ready');if(ready.length===0){showToast('❌ No crops ready to harvest!');return;}
   let totalGold=0;let hasBld=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
   G.plots.forEach((p,i)=>{if(p.state==='ready'){let crop=allC[p.crop];if(!crop){G.plots[i].state='tilled';G.plots[i].crop=null;return;}let price=crop.sell||10;if(hasBld('silo'))price=Math.floor(price*1.5);if(hasBld('market'))price=Math.floor(price*1.2);if(G.homeType==='farmhouse')price=Math.floor(price*1.1);let vipBonus=[0,5,10,15,20,25,30,35,40,50,60,65,70,75,80,90,100,100,100,100][Math.max(0,G.vipLevel-1)]||0;price=Math.floor(price*(1+vipBonus/100));G.gold+=price;G.totalEarned+=price;G.totalHarvested++;totalGold+=price;addXP(crop.xp||10);addItem(crop.name||p.crop,1);G.plots[i]={state:'tilled',crop:null,plantTime:0,watered:false,building:null};}});
-  if(totalGold===0){showToast('❌ Nothing harvested!');return;}playSound('harvest');updateQuestProgress('harvest',G.totalHarvested);updateQuestProgress('gold',G.gold);if(G.totalHarvested>=1)checkAchievement('a_h1');if(G.totalHarvested>=25)checkAchievement('a_h25');if(G.totalHarvested>=50)checkAchievement('a_h50');if(G.totalHarvested>=100)checkAchievement('a_h100');renderFarm();updateHUD();showToast(`🌾 Harvested ${ready.length} crops! +${totalGold}💰!`);
+  if(totalGold===0){showToast('❌ Nothing harvested!');return;}playSound('harvest');checkCabinGemDrop();updateQuestProgress('harvest',G.totalHarvested);updateQuestProgress('gold',G.gold);if(G.totalHarvested>=1)checkAchievement('a_h1');if(G.totalHarvested>=25)checkAchievement('a_h25');if(G.totalHarvested>=50)checkAchievement('a_h50');if(G.totalHarvested>=100)checkAchievement('a_h100');renderFarm();updateHUD();showToast(`🌾 Harvested ${ready.length} crops! +${totalGold}💰!`);
 }
 function waterAll(){let planted=G.plots.filter(p=>(p.state==='planted'||p.state==='growing')&&!p.watered);if(planted.length===0){showToast('✅ All crops already watered!');return;}let cost=planted.length;if(G.water<cost){showToast(`❌ Need ${cost}💧 to water all! Have ${G.water}.`);return;}G.water-=cost;G.plots.forEach(p=>{if((p.state==='planted'||p.state==='growing')&&!p.watered){let allC={...CROPS,...TREES},crop=allC[p.crop];p.watered=true;if(crop)p.plantTime-=(crop.time||60)*200;}});playSound('water');renderFarm();updateHUD();showToast(`💧 Watered ${planted.length} crops! -${cost}💧`);}
 let autoCollectOn=false,autoCollectTimer=null;
@@ -1073,7 +1083,7 @@ function renderMining(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine')
 function doMine(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');if(!hasMine){showToast('❌ Buy a Mine Plot from Store first!');return;}if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.water<10){showToast('❌ Need 10💧 to mine!');return;}G.water-=10;let campBonus=G.homeType==='camp'?2:1,found=[];for(let r=0;r<campBonus;r++){let roll=Math.random(),cum=0;for(let m of MINERALS){cum+=m.r;if(roll<=cum){found.push(m);break;}}}if(!found.length)found.push(MINERALS[0]);found.forEach(m=>{G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);});let supDrop=getMineralDrop();renderMining();updateHUD();playSound('build');showToast(`⛏️ Found: ${found.map(m=>m.e+m.n).join(', ')}${supDrop}`);}
 function spendMineGems(){if((G.gems||0)<75){showToast('❌ Need 75💎!');return;}G.gems-=75;updateHUD();let rare=MINERALS.slice(4),m=rare[Math.floor(Math.random()*rare.length)];G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);renderMining();updateHUD();showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);}
 function buyMinePlot(){if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.gold<300){showToast('❌ Need 300g!');return;}if(G.hasMine){showToast('✅ Mine already built!');return;}G.gold-=300;G.hasMine=true;updateHUD();renderMining();renderShop();showToast('⛏️ Mine built! Go to Mine tab to start digging!');}
-function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
 // ===== HOME UPGRADE SYSTEM =====
 // Cost multipliers per home type (how expensive to upgrade)
 const HOME_COST_MULT={
@@ -1254,6 +1264,451 @@ function applyHomeLevelBonus(lv){
 }
 
 // ===== END HOME UPGRADE SYSTEM =====
+// ===== COMPLETE HOME TYPE SYSTEM =====
+
+// Home level progression for all 5 active homes
+const HOME_PROGRESSION = {
+  cottage: [
+    {lv:1,  perk:'20% faster crop growth'},
+    {lv:2,  perk:'22% faster crop growth + herb seeds available'},
+    {lv:3,  perk:'24% faster crop growth'},
+    {lv:4,  perk:'25% building material discount unlocked!'},
+    {lv:5,  perk:'25% faster crops + sell vitamins to visitors'},
+    {lv:6,  perk:'28% faster crop growth'},
+    {lv:7,  perk:'30% faster crops + vitamin production boost'},
+    {lv:8,  perk:'33% faster crop growth'},
+    {lv:9,  perk:'35% faster crops + double vitamin output'},
+    {lv:10, perk:'🌿 MAJOR: Visitors can buy Vitamins! (1-5x gem drops)'},
+    {lv:11, perk:'40% faster crop growth'},
+    {lv:12, perk:'45% faster crops + vitamin quality boost'},
+    {lv:13, perk:'50% faster crop growth'},
+    {lv:14, perk:'55% faster crops + 25% building discount again'},
+    {lv:15, perk:'🚜 MAJOR: Herb Tractor unlocked! Auto-collects herbs + extra yield'},
+    {lv:16, perk:'60% faster crop growth'},
+    {lv:17, perk:'65% faster crops + tractor double yield'},
+    {lv:18, perk:'70% faster crop growth'},
+    {lv:19, perk:'75% faster crops + vitamin empire bonus'},
+    {lv:20, perk:'👑 ULTIMATE: 80% faster crop growth — Speed Farming God!'},
+  ],
+  cabin: [
+    {lv:1,  perk:'Water never drops below 5💧'},
+    {lv:2,  perk:'Water refills 10% faster'},
+    {lv:3,  perk:'Water refills 20% faster'},
+    {lv:4,  perk:'25% building material discount unlocked!'},
+    {lv:5,  perk:'Water refills 30% faster + fishing costs 1💧 less'},
+    {lv:6,  perk:'Water refills 40% faster'},
+    {lv:7,  perk:'Water refills 50% faster + double fish catch chance'},
+    {lv:8,  perk:'Water refills 60% faster'},
+    {lv:9,  perk:'Water refills 70% faster + triple fish catch chance'},
+    {lv:10, perk:'🐟 MAJOR: Visitors buy Fish! (1-5x gem drops) + crop harvests give free gems'},
+    {lv:11, perk:'Water refills 80% faster'},
+    {lv:12, perk:'Water refills 90% faster + 2x fish value'},
+    {lv:13, perk:'Water refills at max speed'},
+    {lv:14, perk:'3x fish value + 25% building discount again'},
+    {lv:15, perk:'🎣 MAJOR: 5x fishing bonus — every cast worth 5x!'},
+    {lv:16, perk:'6x fishing bonus'},
+    {lv:17, perk:'7x fishing bonus + water never needs refill'},
+    {lv:18, perk:'8x fishing bonus'},
+    {lv:19, perk:'9x fishing bonus + gem drops on every harvest'},
+    {lv:20, perk:'👑 ULTIMATE: 10x ALL rewards — everything multiplied!'},
+  ],
+  van: [
+    {lv:1,  perk:'3x XP on everything (timers 2x slower)'},
+    {lv:2,  perk:'3.2x XP + slightly faster timers'},
+    {lv:3,  perk:'3.5x XP on everything'},
+    {lv:4,  perk:'3.7x XP + 25% building material discount!'},
+    {lv:5,  perk:'4x XP on everything'},
+    {lv:6,  perk:'4.2x XP + oil production starts'},
+    {lv:7,  perk:'4.5x XP on everything'},
+    {lv:8,  perk:'4.7x XP + double oil production'},
+    {lv:9,  perk:'5x XP on everything'},
+    {lv:10, perk:'⛽ MAJOR: Oil unlocked! Visitors buy oil (1-5x gem drops)'},
+    {lv:11, perk:'5.2x XP + oil prices increase'},
+    {lv:12, perk:'5.5x XP + triple oil production'},
+    {lv:13, perk:'5.7x XP on everything'},
+    {lv:14, perk:'6x XP + 25% building discount again'},
+    {lv:15, perk:'🚜 MAJOR: Free Tractor + infinite gas (never needs refueling)'},
+    {lv:16, perk:'6.2x XP + tractor auto-harvest 2 plots'},
+    {lv:17, perk:'6.5x XP + tractor auto-harvest 4 plots'},
+    {lv:18, perk:'6.7x XP + tractor auto-harvest 6 plots'},
+    {lv:19, perk:'7x XP + timers begin normalizing'},
+    {lv:20, perk:'👑 ULTIMATE: Van becomes RV! 7x XP + timers back to normal!'},
+  ],
+  ranch: [
+    {lv:1,  perk:'+2 free animal slots + 10% animal cost discount'},
+    {lv:2,  perk:'+2 animal slots + 12% animal discount'},
+    {lv:3,  perk:'+3 animal slots + 15% animal discount'},
+    {lv:4,  perk:'+3 slots + 15% discount + 25% building material discount!'},
+    {lv:5,  perk:'+4 animal slots + 18% animal discount + meat production'},
+    {lv:6,  perk:'+4 slots + 20% animal discount'},
+    {lv:7,  perk:'+5 animal slots + 22% animal discount + double meat'},
+    {lv:8,  perk:'+5 slots + 25% animal discount'},
+    {lv:9,  perk:'+6 animal slots + 28% animal discount'},
+    {lv:10, perk:'🦤 MAJOR: Ostrich unlocked! Exclusive animal for Ranch players'},
+    {lv:11, perk:'+6 slots + 30% animal discount + ostrich XP boost'},
+    {lv:12, perk:'+7 animal slots + 32% animal discount'},
+    {lv:13, perk:'+7 slots + 35% animal discount + triple meat'},
+    {lv:14, perk:'+8 animal slots + 25% building discount again'},
+    {lv:15, perk:'💎 MAJOR: Ostrich eggs drop 1-5 diamonds when collected!'},
+    {lv:16, perk:'+8 slots + 38% animal discount + double egg drops'},
+    {lv:17, perk:'+9 animal slots + 40% animal discount'},
+    {lv:18, perk:'+9 slots + 42% discount + triple egg gem drops'},
+    {lv:19, perk:'+10 animal slots + 45% animal discount'},
+    {lv:20, perk:'👑 ULTIMATE: Visitors buy Premium Ostrich Eggs (1-5x gem drops)!'},
+  ],
+  modern: [
+    {lv:1,  perk:'Auto-water 2 plots + produce tractors & vehicles'},
+    {lv:2,  perk:'Auto-water 3 plots + vehicle production +10%'},
+    {lv:3,  perk:'Auto-water 4 plots + all equipment 10% cheaper'},
+    {lv:4,  perk:'Auto-water 5 plots + 25% building material discount!'},
+    {lv:5,  perk:'Auto-water 6 plots + equipment 15% cheaper'},
+    {lv:6,  perk:'Auto-water 7 plots + advanced vehicles unlock'},
+    {lv:7,  perk:'Auto-water 8 plots + equipment 20% cheaper'},
+    {lv:8,  perk:'Auto-water 9 plots + sell vehicles to visitors'},
+    {lv:9,  perk:'Auto-water 10 plots + equipment 25% cheaper'},
+    {lv:10, perk:'🚁 MAJOR: Drone unlocked! Auto-scouts and delivers supplies'},
+    {lv:11, perk:'Auto-water 12 plots + drone double delivery'},
+    {lv:12, perk:'Auto-water 14 plots + equipment 30% cheaper'},
+    {lv:13, perk:'Auto-water 16 plots + drone triple delivery'},
+    {lv:14, perk:'Auto-water 18 plots + 25% building discount again'},
+    {lv:15, perk:'☀️ MAJOR: Solar Wind Turbine! Free energy — no more fuel costs'},
+    {lv:16, perk:'Auto-water 20 plots + solar doubles production'},
+    {lv:17, perk:'Auto-water all plots + equipment 40% cheaper'},
+    {lv:18, perk:'All automation doubled + solar triple power'},
+    {lv:19, perk:'All equipment 50% cheaper + drone auto-harvest'},
+    {lv:20, perk:'👑 ULTIMATE: 25 Free Spins Daily on spin wheel!'},
+  ],
+};
+
+// Player trading/visitation system
+const TRADE_RESOURCES = {
+  cottage: {name:'Vitamins',    emoji:'💊', price:200, gemDrop:'1-5💎', desc:'Boost crop growth for 1 hour'},
+  cabin:   {name:'Fish',        emoji:'🐟', price:150, gemDrop:'1-5💎', desc:'Premium fresh catch'},
+  van:     {name:'Oil',         emoji:'⛽', price:180, gemDrop:'1-5💎', desc:'Fuel for all farm equipment'},
+  ranch:   {name:'Ostrich Egg', emoji:'🥚', price:300, gemDrop:'1-5💎', desc:'Rare egg with gem potential'},
+  modern:  {name:'Tractor',     emoji:'🚜', price:500, gemDrop:'1-5💎', desc:'Premium farm equipment'},
+};
+
+// Discount levels (25% off building materials)
+const DISCOUNT_LEVELS = [4, 14]; // Home levels that give 25% discount
+
+function getHomeBuildingDiscount() {
+  let lv = G.homeLv || 1;
+  if(lv >= DISCOUNT_LEVELS[1]) return 0.50; // 50% off at Lv14+
+  if(lv >= DISCOUNT_LEVELS[0]) return 0.25; // 25% off at Lv4+
+  return 0;
+}
+
+function getHomeProgression() {
+  return HOME_PROGRESSION[G.homeType] || HOME_PROGRESSION.farmhouse || [];
+}
+
+function getCurrentHomePerk() {
+  let prog = getHomeProgression();
+  let lv = G.homeLv || 1;
+  return prog.find(p => p.lv === lv) || prog[0];
+}
+
+function getXPMultiplier() {
+  if(G.homeType !== 'van') return 1;
+  let lv = G.homeLv || 1;
+  if(lv >= 19) return 7;
+  if(lv >= 17) return 6.5;
+  if(lv >= 16) return 6.2;
+  if(lv >= 15) return 6;
+  if(lv >= 14) return 6;
+  if(lv >= 13) return 5.7;
+  if(lv >= 12) return 5.5;
+  if(lv >= 11) return 5.2;
+  if(lv >= 10) return 5;
+  if(lv >= 9) return 5;
+  if(lv >= 7) return 4.5;
+  if(lv >= 5) return 4;
+  if(lv >= 3) return 3.5;
+  return 3;
+}
+
+function getTimerMultiplier() {
+  if(G.homeType !== 'van') return 1;
+  let lv = G.homeLv || 1;
+  if(lv >= 20) return 1;   // RV — timers normalize!
+  if(lv >= 19) return 1.2; // Almost normal
+  return 2;                  // 2x slower for Van
+}
+
+function getCropSpeedMultiplier() {
+  let base = 1;
+  let lv = G.homeLv || 1;
+  let hasBld = (k) => Array.isArray(G.buildings) ? G.buildings.includes(k) : (G.buildings[k] > 0);
+  if(G.homeType === 'cottage') {
+    if(lv >= 20) base = 1.80;
+    else if(lv >= 19) base = 1.75;
+    else if(lv >= 18) base = 1.70;
+    else if(lv >= 17) base = 1.65;
+    else if(lv >= 16) base = 1.60;
+    else if(lv >= 15) base = 1.55;
+    else if(lv >= 13) base = 1.50;
+    else if(lv >= 11) base = 1.40;
+    else if(lv >= 10) base = 1.35;
+    else if(lv >= 9) base = 1.35;
+    else if(lv >= 8) base = 1.33;
+    else if(lv >= 7) base = 1.30;
+    else if(lv >= 6) base = 1.28;
+    else if(lv >= 5) base = 1.25;
+    else if(lv >= 4) base = 1.25;
+    else if(lv >= 3) base = 1.24;
+    else if(lv >= 2) base = 1.22;
+    else base = 1.20;
+  } else if(hasBld('greenhouse')) {
+    base = 1.25;
+  }
+  return base;
+}
+
+function getRewardMultiplier() {
+  if(G.homeType !== 'cabin') return 1;
+  let lv = G.homeLv || 1;
+  if(lv >= 20) return 10;
+  if(lv >= 19) return 9;
+  if(lv >= 18) return 8;
+  if(lv >= 17) return 7;
+  if(lv >= 16) return 6;
+  if(lv >= 15) return 5;
+  if(lv >= 12) return 2;
+  return 1;
+}
+
+function getAnimalDiscount() {
+  if(G.homeType !== 'ranch') return 0;
+  let lv = G.homeLv || 1;
+  if(lv >= 19) return 0.45;
+  if(lv >= 17) return 0.40;
+  if(lv >= 15) return 0.38;
+  if(lv >= 13) return 0.35;
+  if(lv >= 11) return 0.30;
+  if(lv >= 9) return 0.28;
+  if(lv >= 8) return 0.25;
+  if(lv >= 7) return 0.22;
+  if(lv >= 6) return 0.20;
+  if(lv >= 5) return 0.18;
+  if(lv >= 3) return 0.15;
+  if(lv >= 2) return 0.12;
+  return 0.10;
+}
+
+function getExtraAnimalSlots() {
+  if(G.homeType !== 'ranch') return 0;
+  let lv = G.homeLv || 1;
+  if(lv >= 19) return 10;
+  if(lv >= 17) return 9;
+  if(lv >= 15) return 8;
+  if(lv >= 13) return 7;
+  if(lv >= 11) return 6;
+  if(lv >= 9) return 6;
+  if(lv >= 7) return 5;
+  if(lv >= 5) return 4;
+  if(lv >= 3) return 3;
+  if(lv >= 2) return 2;
+  return 2;
+}
+
+function getAutoWaterPlots() {
+  if(G.homeType !== 'modern') return 0;
+  let lv = G.homeLv || 1;
+  if(lv >= 17) return 999; // All plots
+  if(lv >= 16) return 20;
+  if(lv >= 14) return 18;
+  if(lv >= 13) return 16;
+  if(lv >= 12) return 14;
+  if(lv >= 11) return 12;
+  if(lv >= 9) return 10;
+  if(lv >= 8) return 9;
+  if(lv >= 7) return 8;
+  if(lv >= 6) return 7;
+  if(lv >= 5) return 6;
+  if(lv >= 4) return 5;
+  if(lv >= 3) return 4;
+  if(lv >= 2) return 3;
+  return 2;
+}
+
+// Cabin water mechanic — never below 5
+function applyCabinWater() {
+  if(G.homeType !== 'cabin') return;
+  let lv = G.homeLv || 1;
+  // Water never drops below 5
+  if(G.water < 5) G.water = 5;
+  // Slowly refill based on level
+  let refillRate = Math.min(1 + (lv * 0.1), 3);
+  G.water = Math.min(G.water + refillRate, G.maxWater);
+}
+
+// Van RV transformation check
+function getVanEmoji() {
+  if(G.homeType !== 'van') return '🚐';
+  return (G.homeLv || 1) >= 20 ? '🚌' : '🚐';
+}
+
+// Show trade modal for home trading
+function showTradeModal() {
+  let res = TRADE_RESOURCES[G.homeType];
+  if(!res) { showToast('❌ Your home type does not trade resources!'); return; }
+  let lv = G.homeLv || 1;
+  if(lv < 10) { showToast(`❌ Unlock trading at Home Level 10! (You are Lv${lv})`); return; }
+  let discount = getHomeBuildingDiscount();
+  showModal(`${res.emoji} ${res.name} Market`, `
+    <div style="text-align:center;margin-bottom:10px;">
+      <div style="font-size:40px;">${res.emoji}</div>
+      <div style="font-size:13px;color:#7dff7d;font-weight:bold;">${res.name} Trading Post</div>
+      <div style="font-size:10px;color:#aaa;margin-top:4px;">${res.desc}</div>
+    </div>
+    <div style="background:#0a1a0a;border-radius:8px;padding:8px;margin-bottom:8px;">
+      <div style="font-size:10px;color:#ffd700;font-weight:bold;margin-bottom:4px;">💎 Gem Drop System</div>
+      <div style="font-size:10px;color:#aaa;">Every visitor who buys ${res.name} has a chance to receive ${res.gemDrop}!</div>
+    </div>
+    <div style="background:#1a1a0a;border-radius:8px;padding:8px;margin-bottom:8px;">
+      <div style="font-size:10px;color:#aaa;margin-bottom:4px;">📬 Recent Visitors</div>
+      <div id="trade-inbox" style="font-size:9px;color:#7dff7d;">${getTradeInbox()}</div>
+    </div>
+    ${discount>0?`<div style="font-size:10px;color:#7dff7d;margin-bottom:8px;">🏗️ Building Discount: ${Math.floor(discount*100)}% OFF materials!</div>`:''}
+    <button class="btn bg bfu" onclick="collectTradeIncome();closeModal()">💰 Collect Trade Income</button>
+  `);
+}
+
+function getTradeInbox() {
+  let names = ['Tim Farmer','Sarah Fields','Jake Ranch','Maria Green','Bob Harvest','Lisa Crop'];
+  let res = TRADE_RESOURCES[G.homeType];
+  if(!res) return 'No trades yet';
+  if(!G.tradeInbox || G.tradeInbox.length === 0) {
+    // Generate some simulated visits
+    G.tradeInbox = [];
+    for(let i = 0; i < 3; i++) {
+      let name = names[Math.floor(Math.random() * names.length)];
+      let qty = Math.floor(Math.random() * 5) + 1;
+      let gems = Math.floor(Math.random() * 5) + 1;
+      G.tradeInbox.push({name, qty, gems, resource: res.name});
+    }
+  }
+  return G.tradeInbox.slice(-5).map(t =>
+    `<div style="margin-bottom:3px;">📬 ${t.name} bought ${t.qty}x ${t.resource} → you earned ${t.qty * (TRADE_RESOURCES[G.homeType]?.price||100)}💰 + ${t.gems}💎</div>`
+  ).join('');
+}
+
+function collectTradeIncome() {
+  if(!G.tradeInbox || G.tradeInbox.length === 0) { showToast('📬 No trade income yet!'); return; }
+  let res = TRADE_RESOURCES[G.homeType];
+  let totalGold = 0, totalGems = 0;
+  G.tradeInbox.forEach(t => {
+    totalGold += t.qty * (res?.price || 100);
+    totalGems += t.gems;
+  });
+  G.gold += totalGold;
+  G.gems = (G.gems||0) + totalGems;
+  G.totalEarned += totalGold;
+  G.tradeInbox = [];
+  updateHUD(); saveGame();
+  showToast(`💰 Collected ${totalGold}g + ${totalGems}💎 from trade!`);
+}
+
+// Generate new trade visits periodically
+function generateTradeVisit() {
+  let res = TRADE_RESOURCES[G.homeType];
+  if(!res || (G.homeLv||1) < 10) return;
+  if(!G.tradeInbox) G.tradeInbox = [];
+  if(G.tradeInbox.length >= 10) return; // Max 10 pending
+  let names = ['Tim Farmer','Sarah Fields','Jake Ranch','Maria Green','Bob Harvest','Lisa Crop','Sam Field','Kay Garden'];
+  let name = names[Math.floor(Math.random() * names.length)];
+  let qty = Math.floor(Math.random() * 5) + 1;
+  let gems = Math.floor(Math.random() * 5) + 1;
+  G.tradeInbox.push({name, qty, gems, resource: res.name});
+  // Show inbox notification
+  let hud2 = document.getElementById('hud-r2');
+  showToast(`📬 ${name} bought ${qty}x ${res.name}! Collect in Home tab!`);
+}
+
+// Modern auto-water system
+function applyModernAutoWater() {
+  if(G.homeType !== 'modern') return;
+  let plots = getAutoWaterPlots();
+  let watered = 0;
+  G.plots.forEach(p => {
+    if(watered >= plots) return;
+    if((p.state === 'planted' || p.state === 'growing') && !p.watered) {
+      p.watered = true;
+      watered++;
+    }
+  });
+}
+
+// Ranch Ostrich egg gem drop
+function checkOstrichEggDrop(animalType) {
+  if(G.homeType !== 'ranch' || animalType !== 'ostrich') return 0;
+  let lv = G.homeLv || 1;
+  if(lv < 15) return 0;
+  let gems = Math.floor(Math.random() * 5) + 1;
+  G.gems = (G.gems||0) + gems;
+  showToast(`🥚 Ostrich Egg! +${gems}💎 gem drop!`);
+  return gems;
+}
+
+// Cabin harvest gem drop
+function checkCabinGemDrop() {
+  if(G.homeType !== 'cabin') return;
+  let lv = G.homeLv || 1;
+  if(lv < 10) return;
+  if(Math.random() < 0.3) { // 30% chance
+    let gems = Math.floor(Math.random() * 3) + 1;
+    G.gems = (G.gems||0) + gems;
+    showToast(`💎 Cabin bonus: +${gems}💎 from harvest!`);
+  }
+}
+
+// Modern free daily spins
+function checkModernDailySpins() {
+  if(G.homeType !== 'modern') return;
+  let lv = G.homeLv || 1;
+  if(lv < 20) return;
+  let today = new Date().toDateString();
+  if(G.lastModernSpins === today) return;
+  G.lastModernSpins = today;
+  // Give 25 free spins by resetting spin timer and adding spin count
+  G.modernFreeSpins = (G.modernFreeSpins||0) + 25;
+  showToast('🎰 Modern Lv20: 25 FREE spins added!');
+}
+
+// Apply home perks display in home panel
+function getHomePerkSummary() {
+  let lv = G.homeLv || 1;
+  let home = G.homeType;
+  let perks = [];
+  if(home === 'cottage') { perks.push(`🌱 ${Math.floor(getCropSpeedMultiplier()*100-100)}% faster crops`); if(lv>=10) perks.push('💊 Vitamin trading active'); if(lv>=15) perks.push('🚜 Herb Tractor active'); }
+  if(home === 'cabin') { perks.push('💧 Water never below 5'); if(lv>=10) perks.push('🐟 Fish trading active'); if(lv>=15) perks.push(`🎣 ${getRewardMultiplier()}x fishing bonus`); if(lv>=20) perks.push('👑 10x ALL rewards!'); }
+  if(home === 'van') { perks.push(`⭐ ${getXPMultiplier()}x XP multiplier`); perks.push(`⏱️ ${getTimerMultiplier()}x timer speed`); if(lv>=10) perks.push('⛽ Oil trading active'); if(lv>=15) perks.push('🚜 Free Tractor!'); if(lv>=20) perks.push('🚌 RV unlocked!'); }
+  if(home === 'ranch') { perks.push(`🐄 +${getExtraAnimalSlots()} animal slots`); perks.push(`💰 ${Math.floor(getAnimalDiscount()*100)}% animal discount`); if(lv>=10) perks.push('🦤 Ostrich unlocked!'); if(lv>=15) perks.push('💎 Egg gem drops!'); if(lv>=20) perks.push('👑 Premium egg commerce!'); }
+  if(home === 'modern') { perks.push(`💧 Auto-water ${getAutoWaterPlots()} plots`); if(lv>=10) perks.push('🚁 Drone active'); if(lv>=15) perks.push('☀️ Solar Wind Turbine'); if(lv>=20) perks.push('🎰 25 free spins/day!'); }
+  let discount = getHomeBuildingDiscount();
+  if(discount > 0) perks.push(`🏗️ ${Math.floor(discount*100)}% building discount!`);
+  return perks;
+}
+
+function renderHomePerkSummary() {
+  let perks = getHomePerkSummary();
+  let el = document.getElementById('home-perks-list');
+  if(el) el.innerHTML = perks.map(p => `<div style="margin-bottom:4px;font-size:10px;">✅ ${p}</div>`).join('') || '<div style="color:#555;font-size:10px;">Level up your home to unlock perks!</div>';
+  let tradeEl = document.getElementById('home-trade-btn');
+  if(tradeEl) tradeEl.innerHTML = showHomeTradeBtn();
+}
+
+function showHomeTradeBtn() {
+  let res = TRADE_RESOURCES[G.homeType];
+  let lv = G.homeLv || 1;
+  if(!res || lv < 10) return '';
+  let pending = (G.tradeInbox||[]).length;
+  return `<button class="btn bg bfu" onclick="showTradeModal()" style="margin-top:6px;">
+    ${res.emoji} Trade ${res.name}s ${pending>0?`<span style="background:#ff4444;border-radius:8px;padding:1px 5px;font-size:9px;margin-left:4px;">${pending}</span>`:''}
+  </button>`;
+}
+
 function saveGame(){try{G.lastOnline=Date.now();localStorage.setItem('th_v4',JSON.stringify(G));}catch(e){}}
 function loadGame(){try{let s=localStorage.getItem('th_v4')||localStorage.getItem('th_v3')||localStorage.getItem('th_v2');if(s){let data=JSON.parse(s);data=migrateData(data);Object.assign(G,data);return true;}}catch(e){console.log('Load error:',e);}return false;}
 function resetGame(){if(confirm('Reset ALL progress?')){localStorage.removeItem('th_v4');localStorage.removeItem('th_v3');localStorage.removeItem('th_v2');location.reload();}}
@@ -1287,10 +1742,12 @@ const HOME_NAMES={cottage:'Cottage',ranch:'Ranch House',farmhouse:'Farmhouse',ca
 function renderHomeUpgrade(){
   let lv=G.homeLv||1;
   let pct=Math.floor((lv/20)*100);
-  let emoji=HOME_EMOJIS[G.homeType]||'🏠';
+  let vanEmoji=getVanEmoji();
+  let emoji=G.homeType==='van'?vanEmoji:(HOME_EMOJIS[G.homeType]||'🏠');
   let name=HOME_NAMES[G.homeType]||'Farmhouse';
   let e=id=>document.getElementById(id);
   if(e('home-emoji-big'))e('home-emoji-big').textContent=emoji;
+  renderHomePerkSummary();
   if(e('home-name-big'))e('home-name-big').textContent=name;
   if(e('home-lv-big'))e('home-lv-big').textContent=lv;
   if(e('home-lv-bar'))e('home-lv-bar').style.width=pct+'%';
