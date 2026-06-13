@@ -1756,6 +1756,10 @@ function renderHomeUpgrade(){
   renderHomePerkSummary();
   // Next upgrade
   let next=HOME_LEVELS.find(l=>l.lv===lv+1);
+  // Get home-specific perk for next level
+  let prog=getHomeProgression();
+  let nextProg=prog.find(p=>p.lv===lv+1);
+  let nextPerkText=nextProg?nextProg.perk:(next?.perk||'');
   let rc=e('home-req-card');
   if(rc){
     if(!next||lv>=20){rc.innerHTML=`<div style="text-align:center;padding:10px;"><div style="font-size:28px;">👑</div><div style="font-size:13px;color:#ffd700;font-weight:bold;">MAX LEVEL! True Homesteader!</div></div>`;return;}
@@ -1775,7 +1779,7 @@ function renderHomeUpgrade(){
       <div style="font-size:10px;color:${hasAni?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasAni?'✅':'❌'} ${next.animals}+ animals (have ${G.animals.length})</div>
       <div style="font-size:10px;color:${hasBlds?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasBlds?'✅':'❌'} ${next.blds}+ buildings (have ${bldCount})</div>
       <div style="font-size:10px;color:${hasHarv?'#7dff7d':'#ff7d7d'};margin-bottom:8px;">${hasHarv?'✅':'❌'} ${next.harvests}+ harvests (have ${G.totalHarvested})</div>
-      <div style="font-size:10px;color:#ffd700;margin-bottom:8px;">🎁 Unlock: ${next.perk}</div>
+      <div style="font-size:10px;color:#ffd700;margin-bottom:8px;">🎁 Unlock: ${nextPerkText}</div>
       <button class="btn ${canDo?'bg':'br'} bfu" onclick="doHomeUpgrade()">${canDo?`⬆️ Upgrade to Lv${next.lv}!`:'❌ Requirements not met yet'}</button>`;
   }
 }
