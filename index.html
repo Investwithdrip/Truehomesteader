@@ -947,7 +947,7 @@ function addXP(amount){
 function showLevelUp(){let lub=document.getElementById('lub'),txt=document.getElementById('lub-text'),unl=document.getElementById('lub-unlock'),unlock=LEVEL_UNLOCKS.find(u=>u.lv===G.level);if(txt)txt.textContent=`Level ${G.level}! 🎉`;if(unl)unl.textContent=unlock?`✨ Unlocked: ${unlock.emoji} ${unlock.name}`:'Keep farming!';if(lub){lub.classList.add('show');setTimeout(()=>lub.classList.remove('show'),4000);}let luf=document.getElementById('luf');if(luf){luf.style.opacity='1';setTimeout(()=>luf.style.opacity='0',600);}}
 function updateHUD(){
   let e=id=>document.getElementById(id);
-  if(e('hg'))e('hg').textContent=G.gold;if(e('hgem'))e('hgem').textContent=G.gems||0;if(e('hlv'))e('hlv').textContent=G.level;if(e('hw'))e('hw').textContent=`${G.water}/${G.maxWater}`;if(e('hud-av'))e('hud-av').textContent=AVATARS[G.avatar]||'🌱';
+  if(e('hg'))e('hg').textContent=G.gold;if(e('hgem'))e('hgem').textContent=G.gems||0;if(e('hlv'))e('hlv').textContent=G.level;if(e('hw'))e('hw').textContent=`${Math.floor(G.water)}/${G.maxWater}`;if(e('hud-av'))e('hud-av').textContent=AVATARS[G.avatar]||'🌱';
   let s=SEASONS[G.season],sb=e('sb');if(sb){sb.textContent=`${s.emoji} ${s.name} D${G.seasonDay}`;sb.style.cssText=`font-size:10px;padding:2px 7px;border-radius:4px;font-weight:bold;background:${s.color}22;color:${s.color};border:1px solid ${s.color}55;`;}
   if(e('wbadge'))e('wbadge').textContent=WEATHER[G.weather].emoji+' '+WEATHER[G.weather].name;
   if(e('gdisp'))e('gdisp').textContent=G.gems||0;
@@ -1540,7 +1540,7 @@ function applyCabinWater() {
   if(G.water < 5) G.water = 5;
   // Slowly refill based on level
   let refillRate = Math.min(1 + (lv * 0.1), 3);
-  G.water = Math.min(G.water + refillRate, G.maxWater);
+  G.water = Math.floor(Math.min(G.water + refillRate, G.maxWater));
 }
 
 // Van RV transformation check
@@ -1752,9 +1752,8 @@ function renderHomeUpgrade(){
   if(e('home-lv-big'))e('home-lv-big').textContent=lv;
   if(e('home-lv-bar'))e('home-lv-bar').style.width=pct+'%';
   if(e('home-lv-pct'))e('home-lv-pct').textContent=`Level ${lv} of 20 — ${pct}% to max`;
-  // Perks
-  let pl=e('home-perks-list');
-  if(pl)pl.innerHTML=HOME_LEVELS.filter(l=>l.lv<=lv).map(l=>`<div style="margin-bottom:3px;">✅ Lv${l.lv}: ${l.perk}</div>`).join('');
+  // Perks - use home-specific progression
+  renderHomePerkSummary();
   // Next upgrade
   let next=HOME_LEVELS.find(l=>l.lv===lv+1);
   let rc=e('home-req-card');
