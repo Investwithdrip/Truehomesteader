@@ -591,6 +591,77 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </div>
 
   <!-- MINING -->
+  <!-- HUNTING -->
+  <div id="panel-hunt" class="panel">
+    <div class="ptitle">🦌 Hunting</div>
+
+    <!-- LICENSE LOCKED -->
+    <div id="hunt-locked" class="card" style="text-align:center;display:none;">
+      <div style="font-size:48px;">🎫</div>
+      <div style="font-size:13px;color:#ffd700;font-weight:bold;margin-top:8px;">Hunting License Required</div>
+      <div style="font-size:10px;color:#aaa;margin:8px 0;">Purchase a license to start hunting!</div>
+      <button class="btn bg bfu" onclick="buyHuntingLicense()">🎫 Buy License (500💎)</button>
+    </div>
+
+    <!-- HUNTING ACTIVE -->
+    <div id="hunt-ok" style="display:none;">
+
+      <!-- HUNTER STATS -->
+      <div class="card" style="background:#1a1a0a;border-color:#4a3a1a;margin-bottom:8px;">
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div style="font-size:32px;">🦌</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;color:#ffd700;font-weight:bold;">Hunter Level <span id="hunt-lv">1</span>/50</div>
+            <div style="font-size:9px;color:#aaa;">Marksmanship: <span id="mark-lv">1</span>/50</div>
+            <div style="height:6px;background:#0a1a0a;border-radius:3px;overflow:hidden;margin-top:4px;">
+              <div id="hunt-xp-bar" style="height:100%;background:linear-gradient(90deg,#4a3a0a,#ffd700);border-radius:3px;width:0%;transition:width 0.5s;"></div>
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:10px;color:#ffd700;" id="hunt-accuracy">40%</div>
+            <div style="font-size:8px;color:#aaa;">Accuracy</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CURRENT WEAPON -->
+      <div class="card" style="margin-bottom:8px;">
+        <div class="ct">🔫 Current Weapon</div>
+        <div id="current-weapon" style="text-align:center;padding:8px;">
+          <div style="font-size:36px;" id="weapon-emoji">🪃</div>
+          <div style="font-size:12px;color:#ffd700;" id="weapon-name">Slingshot</div>
+          <div style="font-size:10px;color:#aaa;" id="weapon-acc">40% accuracy</div>
+        </div>
+        <button class="btn bsm bfu" onclick="showWeaponModal()" style="background:#1a1a2a;border-color:#3a3a6a;color:#a8d8ff;">🔫 Change Weapon</button>
+      </div>
+
+      <!-- HUNT ACTIONS -->
+      <div class="card" style="margin-bottom:8px;">
+        <div class="ct">🎯 Hunt</div>
+        <div id="hunt-animals-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+      </div>
+
+      <!-- ACTIVE TRAPS -->
+      <div class="card" style="margin-bottom:8px;">
+        <div class="ct">🪤 Active Traps</div>
+        <div id="trap-list"></div>
+        <button class="btn bsm bfu" onclick="setTrap()" style="margin-top:6px;background:#1a2a0a;border-color:#3a5a1a;">🪤 Set Trap (10⚡)</button>
+      </div>
+
+      <!-- RESEARCH -->
+      <div class="card" style="margin-bottom:8px;">
+        <div class="ct">🔬 Hunter Research</div>
+        <div id="hunt-research"></div>
+      </div>
+
+      <!-- HUNT LOG -->
+      <div class="card">
+        <div class="ct">📋 Hunt Log — <span id="hunt-total">0</span> total</div>
+        <div id="hunt-log" style="font-size:9px;color:#aaa;max-height:100px;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="panel-mining" class="panel">
     <div class="ptitle">⛏️ Mining</div>
     <div id="mine-lock" class="card" style="text-align:center;"><div style="font-size:36px;">🔒</div><div style="font-size:12px;color:#ff7d7d;margin-top:6px;">Buy a Mine Plot from Store! (Level 10+)</div></div>
@@ -773,6 +844,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <button class="nb" onclick="showPanel('animals')" id="nav-animals"><span class="ni">🐄</span>Animals</button>
   <button class="nb" onclick="showPanel('buildings')" id="nav-buildings"><span class="ni">🏠</span>Builds</button>
   <button class="nb" onclick="showPanel('upmarket')" id="nav-upmarket"><span class="ni">🏪</span>Market</button>
+  <button class="nb" onclick="showPanel('hunt')" id="nav-hunt"><span class="ni">🦌</span>Hunt</button>
   <button class="nb" onclick="showPanel('mining')" id="nav-mining"><span class="ni">⛏️</span>Mine</button>
   <button class="nb" onclick="showPanel('pond')" id="nav-pond"><span class="ni">🎣</span>Pond</button>
   <button class="nb" onclick="showPanel('vip')" id="nav-vip"><span class="ni">👑</span>VIP</button>
@@ -935,6 +1007,320 @@ function getZoneEmoji() {
 
 // Tick stamina every 30 seconds
 setInterval(tickStamina, 30000);
+
+// ===== HUNTING SYSTEM =====
+const WEAPONS = [
+  {id:'slingshot', name:'Slingshot',   emoji:'🪃', accuracy:0.40, cost:50,    costType:'gold', reqHuntLv:1,  desc:'Basic starter weapon'},
+  {id:'bow',       name:'Bow & Arrow', emoji:'🏹', accuracy:0.55, cost:200,   costType:'gold', reqHuntLv:5,  desc:'Uncommon drops unlocked'},
+  {id:'rifle',     name:'Rifle',       emoji:'🔫', accuracy:0.70, cost:500,   costType:'gold', reqHuntLv:10, desc:'Rare drops possible'},
+  {id:'sniper',    name:'Sniper Rifle',emoji:'🎯', accuracy:0.85, cost:1500,  costType:'gold', reqHuntLv:20, desc:'Legendary drops possible'},
+  {id:'gold_rifle',name:'Gold Rifle',  emoji:'💎', accuracy:0.95, cost:5000,  costType:'gold', reqHuntLv:35, desc:'Near perfect accuracy'},
+  {id:'gator_gun', name:'Gator Gun',   emoji:'🐊', accuracy:1.00, cost:10000, costType:'gems', reqHuntLv:50, desc:'EXCLUSIVE boss drops only'},
+];
+
+const HUNT_ANIMALS = [
+  {id:'rabbit',      name:'Rabbit',      emoji:'🐇', reqLv:1,  meat:1, fur:1, special:null,           xp:20,  gold:30,  stamCost:15},
+  {id:'duck',        name:'Duck',        emoji:'🦆', reqLv:1,  meat:1, fur:0, special:'🪶 Feather',   xp:25,  gold:35,  stamCost:15},
+  {id:'turkey',      name:'Turkey',      emoji:'🦃', reqLv:2,  meat:2, fur:0, special:'🪶 Feather',   xp:30,  gold:45,  stamCost:15},
+  {id:'deer',        name:'Deer',        emoji:'🦌', reqLv:5,  meat:3, fur:1, special:'🦌 Antlers',   xp:60,  gold:100, stamCost:15},
+  {id:'boar',        name:'Boar',        emoji:'🐗', reqLv:8,  meat:3, fur:1, special:'🐗 Tusk',      xp:70,  gold:120, stamCost:15},
+  {id:'fox',         name:'Fox',         emoji:'🦊', reqLv:12, meat:1, fur:2, special:'🦊 Fox Fur',   xp:100, gold:180, stamCost:15},
+  {id:'bear',        name:'Bear',        emoji:'🐻', reqLv:20, meat:5, fur:2, special:'🐾 Bear Claw', xp:200, gold:350, stamCost:15},
+  {id:'gator',       name:'Gator',       emoji:'🐊', reqLv:35, meat:6, fur:0, special:'👜 Gator Skin',xp:500, gold:800, stamCost:15},
+  {id:'mountain_lion',name:'Mountain Lion',emoji:'🦁',reqLv:45,meat:4, fur:3, special:'💎 Gem Drop',  xp:1000,gold:1500,stamCost:15},
+];
+
+const HUNT_LEVELS = [
+  {lv:1, need:5,   animal:'rabbit', time:1800,   perk:'Basic hunting unlocked'},
+  {lv:2, need:10,  animal:'duck',   time:3600,   perk:'Duck hunting unlocked'},
+  {lv:3, need:15,  animal:'turkey', time:5400,   perk:'+5% accuracy bonus'},
+  {lv:4, need:20,  animal:'turkey', time:7200,   perk:'Better meat drops'},
+  {lv:5, need:25,  animal:'deer',   time:10800,  perk:'Deer hunting + Bow unlocked'},
+  {lv:6, need:35,  animal:'deer',   time:14400,  perk:'+10% accuracy bonus'},
+  {lv:7, need:45,  animal:'deer',   time:18000,  perk:'Double fur drops'},
+  {lv:8, need:60,  animal:'boar',   time:21600,  perk:'Boar hunting unlocked'},
+  {lv:9, need:75,  animal:'boar',   time:25200,  perk:'+15% accuracy bonus'},
+  {lv:10,need:100, animal:'fox',    time:43200,  perk:'Fox hunting + Rifle unlocked'},
+  {lv:11,need:120, animal:'fox',    time:50400,  perk:'Better trophy drops'},
+  {lv:12,need:150, animal:'fox',    time:57600,  perk:'+20% accuracy bonus'},
+  {lv:13,need:180, animal:'fox',    time:64800,  perk:'2x gold from hunts'},
+  {lv:14,need:220, animal:'fox',    time:72000,  perk:'Rare drop +5% chance'},
+  {lv:15,need:250, animal:'bear',   time:86400,  perk:'Bear hunting unlocked'},
+  {lv:16,need:290, animal:'bear',   time:93600,  perk:'+25% accuracy bonus'},
+  {lv:17,need:330, animal:'bear',   time:100800, perk:'3x meat drops'},
+  {lv:18,need:380, animal:'bear',   time:108000, perk:'Rare drop +10% chance'},
+  {lv:19,need:430, animal:'bear',   time:115200, perk:'2x XP from hunts'},
+  {lv:20,need:500, animal:'gator',  time:172800, perk:'GATOR hunting + Sniper unlocked!'},
+  {lv:25,need:850, animal:'gator',  time:216000, perk:'2x gold + 2x XP'},
+  {lv:30,need:1400,animal:'gator',  time:288000, perk:'Master Gator Hunter'},
+  {lv:35,need:2200,animal:'mountain_lion',time:432000,perk:'Mountain Lion + Gold Rifle!'},
+  {lv:40,need:3200,animal:'mountain_lion',time:504000,perk:'4x gold from all hunts'},
+  {lv:45,need:4500,animal:'mountain_lion',time:576000,perk:'Elite Hunter status'},
+  {lv:50,need:6000,animal:'mountain_lion',time:648000,perk:'👑 MASTER HUNTER + Gator Gun!'},
+];
+
+function initHunting(){
+  if(!G.hunting)G.hunting={licensed:false,level:1,xp:0,totalKills:0,kills:{},currentWeapon:'slingshot',ownedWeapons:[],marksmanship:1,markXp:0,traps:[],researchActive:false,researchStart:0,researchDuration:0,log:[]};
+}
+
+function getHuntAccuracy(){
+  let w=WEAPONS.find(x=>x.id===(G.hunting?.currentWeapon||'slingshot'));
+  let base=w?.accuracy||0.40;
+  let markBonus=(G.hunting?.marksmanship||1)*0.005;
+  let lv=G.hunting?.level||1;
+  let lvBonus=lv>=46?0.50:lv>=41?0.48:lv>=36?0.45:lv>=31?0.40:lv>=26?0.35:lv>=21?0.30:lv>=16?0.25:lv>=12?0.20:lv>=9?0.15:lv>=6?0.10:lv>=3?0.05:0;
+  let homeBonus=G.homeType==='ranch'?0.25:0;
+  return Math.min(base+markBonus+lvBonus+homeBonus,1.00);
+}
+
+function buyHuntingLicense(){
+  if((G.gems||0)<500){showToast('❌ Need 500💎 for hunting license!');return;}
+  G.gems-=500;initHunting();G.hunting.licensed=true;G.hunting.ownedWeapons=['slingshot'];
+  updateHUD();renderHunting();saveGame();
+  showToast('🎫 Hunting license acquired! Welcome to the hunt! 🦌');
+}
+
+function doHunt(animalId){
+  initHunting();
+  if(!G.hunting.licensed){showToast('❌ Need a hunting license first!');return;}
+  let animal=HUNT_ANIMALS.find(a=>a.id===animalId);if(!animal)return;
+  if((G.hunting.level||1)<animal.reqLv){showToast(`❌ Need Hunter Level ${animal.reqLv}!`);return;}
+  if(!useStamina('hunt'))return;
+  let acc=getHuntAccuracy();
+  let hit=Math.random()<acc;
+  if(!hit){showToast(`💨 Missed! ${animal.emoji} got away! (${Math.floor(acc*100)}% acc)`);addHuntXP(5);return;}
+  let rewardMult=getRewardMultiplier();
+  let gold=Math.floor(animal.gold*rewardMult);
+  let meat=G.homeType==='ranch'?animal.meat*2:animal.meat;
+  let gemDrop=0;
+  if(animal.id==='mountain_lion'&&Math.random()<0.3){gemDrop=Math.floor(Math.random()*5)+1;G.gems=(G.gems||0)+gemDrop;}
+  let specialDrop='';
+  if(animal.special&&Math.random()<0.4){addItem(animal.special,1);specialDrop=` + ${animal.special}`;}
+  G.gold+=gold;G.totalEarned+=gold;addItem('Meat',meat);
+  addHuntXP(animal.xp);addMarkXP(10);
+  G.hunting.kills[animalId]=(G.hunting.kills[animalId]||0)+1;
+  G.hunting.totalKills++;
+  if(!G.hunting.log)G.hunting.log=[];
+  G.hunting.log.push(`${animal.emoji} ${animal.name} +${gold}💰 +${meat}🍖${specialDrop}${gemDrop>0?` +${gemDrop}💎`:''}`);
+  playSound('harvest');renderHunting();updateHUD();saveGame();
+  showToast(`🎯 HIT! ${animal.emoji} ${animal.name} +${gold}💰 +${meat}🍖${gemDrop>0?` +${gemDrop}💎`:''}${specialDrop}`);
+  checkHuntResearch();
+}
+
+function addHuntXP(amount){
+  if(!G.hunting)return;
+  G.hunting.xp=(G.hunting.xp||0)+amount;
+  let needed=getHuntXPNeeded();
+  while(G.hunting.xp>=needed&&(G.hunting.level||1)<50){
+    G.hunting.xp-=needed;G.hunting.level=(G.hunting.level||1)+1;
+    let ld=HUNT_LEVELS.find(l=>l.lv===G.hunting.level);
+    showToast(`🦌 Hunter Level ${G.hunting.level}! ${ld?.perk||''}`);
+    needed=getHuntXPNeeded();
+  }
+}
+
+function getHuntXPNeeded(){return Math.floor(100*Math.pow(G.hunting?.level||1,1.5));}
+
+function addMarkXP(amount){
+  if(!G.hunting)return;
+  G.hunting.markXp=(G.hunting.markXp||0)+amount;
+  let needed=Math.floor(200*Math.pow(G.hunting.marksmanship||1,1.3));
+  if(G.hunting.markXp>=needed&&(G.hunting.marksmanship||1)<50){
+    G.hunting.markXp-=needed;G.hunting.marksmanship=(G.hunting.marksmanship||1)+1;
+    showToast(`🎯 Marksmanship Level ${G.hunting.marksmanship}!`);
+  }
+}
+
+function setTrap(){
+  initHunting();
+  if(!G.hunting.licensed){showToast('❌ Need a hunting license!');return;}
+  if(!useStamina('trap'))return;
+  let maxTraps=G.homeType==='cabin'?3:1;
+  if((G.hunting.traps||[]).length>=maxTraps){showToast(`❌ Max ${maxTraps} trap${maxTraps>1?'s':''} active!`);return;}
+  let trapTime=G.homeType==='cabin'?900000:1800000;
+  let available=HUNT_ANIMALS.filter(a=>a.reqLv<=(G.hunting.level||1));
+  let animal=available[Math.floor(Math.random()*available.length)];
+  if(!G.hunting.traps)G.hunting.traps=[];
+  G.hunting.traps.push({id:Date.now(),setAt:Date.now(),duration:trapTime,animal});
+  renderHunting();saveGame();
+  showToast(`🪤 Trap set! Check back in ${G.homeType==='cabin'?'15':'30'} min!`);
+}
+
+function collectTrap(trapId){
+  if(!G.hunting?.traps)return;
+  let trap=G.hunting.traps.find(t=>t.id===trapId);if(!trap)return;
+  let elapsed=Date.now()-trap.setAt;
+  if(elapsed<trap.duration){showToast('⏱️ Trap not ready yet!');return;}
+  let animal=trap.animal;
+  if(animal){
+    let gold=Math.floor(animal.gold*0.7);
+    G.gold+=gold;G.totalEarned+=gold;addItem('Meat',animal.meat);
+    addHuntXP(Math.floor(animal.xp*0.5));
+    G.hunting.totalKills++;G.hunting.kills[animal.id]=(G.hunting.kills[animal.id]||0)+1;
+    if(!G.hunting.log)G.hunting.log=[];
+    G.hunting.log.push(`🪤 Trap: ${animal.emoji} ${animal.name} +${gold}💰`);
+    showToast(`🪤 Caught ${animal.emoji} ${animal.name}! +${gold}💰`);
+  }
+  G.hunting.traps=G.hunting.traps.filter(t=>t.id!==trapId);
+  checkHuntResearch();renderHunting();updateHUD();saveGame();
+}
+
+function checkHuntResearch(){
+  if(!G.hunting||G.hunting.researchActive)return;
+  let lv=G.hunting.level||1;if(lv>=50)return;
+  let req=HUNT_LEVELS.find(l=>l.lv===lv);if(!req)return;
+  let kills=G.hunting.kills[req.animal]||0;
+  if(kills>=req.need){
+    G.hunting.researchActive=true;G.hunting.researchStart=Date.now();G.hunting.researchDuration=req.time;
+    showToast(`🔬 Research started for Hunter Lv${lv+1}!`);
+  }
+}
+
+function checkResearchComplete(){
+  if(!G.hunting?.researchActive)return;
+  let elapsed=Date.now()-G.hunting.researchStart;
+  if(elapsed>=G.hunting.researchDuration){
+    G.hunting.researchActive=false;G.hunting.level=(G.hunting.level||1)+1;
+    let ld=HUNT_LEVELS.find(l=>l.lv===G.hunting.level);
+    showToast(`🦌 Hunter Level ${G.hunting.level} unlocked! ${ld?.perk||''}`);
+    renderHunting();saveGame();
+  }
+}
+
+function skipResearch(){
+  if(!G.hunting?.researchActive)return;
+  let elapsed=Date.now()-G.hunting.researchStart;
+  let dur=G.hunting.researchDuration||3600000;
+  let remH=Math.ceil((dur-elapsed)/3600000);
+  let cost=Math.max(100,remH*100);
+  if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎!`);return;}
+  G.gems-=cost;G.hunting.researchStart=Date.now()-dur;
+  checkResearchComplete();updateHUD();showToast(`⚡ Research complete! (-${cost}💎)`);
+}
+
+function showWeaponModal(){
+  initHunting();
+  let body='';
+  WEAPONS.forEach(w=>{
+    let owned=(G.hunting?.ownedWeapons||[]).includes(w.id);
+    let equipped=G.hunting?.currentWeapon===w.id;
+    let canAfford=w.costType==='gold'?G.gold>=w.cost:(G.gems||0)>=w.cost;
+    let meetsLv=(G.hunting?.level||1)>=w.reqHuntLv;
+    body+=`<div style="background:${equipped?'#1a3a0a':'#1a1a0a'};border:1px solid ${equipped?'#5aaa3a':'#2a2a2a'};border-radius:8px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+      <div style="font-size:28px;">${w.emoji}</div>
+      <div style="flex:1;"><div style="font-size:11px;color:${equipped?'#7dff7d':'#e8f5e8'};font-weight:bold;">${w.name}</div>
+      <div style="font-size:9px;color:#aaa;">${Math.floor(w.accuracy*100)}% acc | ${w.desc}</div>
+      <div style="font-size:9px;color:#ffd700;">Req: Hunter Lv${w.reqHuntLv}</div></div>
+      ${owned?`<button class="btn bsm ${equipped?'':'bg'}" onclick="equipWeapon('${w.id}');closeModal()">${equipped?'✅':'Equip'}</button>`:meetsLv?`<button class="btn bsm ${canAfford?'bg':'br'}" onclick="buyWeapon('${w.id}');closeModal()">${w.cost}${w.costType==='gold'?'g':'💎'}</button>`:`<div style="font-size:9px;color:#ff7d7d;">🔒Lv${w.reqHuntLv}</div>`}
+    </div>`;
+  });
+  showModal('🔫 Weapons',body);
+}
+
+function buyWeapon(weaponId){
+  initHunting();let w=WEAPONS.find(x=>x.id===weaponId);if(!w)return;
+  if(w.costType==='gold'){if(G.gold<w.cost){showToast(`❌ Need ${w.cost}g!`);return;}G.gold-=w.cost;}
+  else{if((G.gems||0)<w.cost){showToast(`❌ Need ${w.cost}💎!`);return;}G.gems-=w.cost;}
+  if(!G.hunting.ownedWeapons)G.hunting.ownedWeapons=[];
+  G.hunting.ownedWeapons.push(weaponId);G.hunting.currentWeapon=weaponId;
+  updateHUD();renderHunting();saveGame();
+  showToast(`${w.emoji} ${w.name} purchased and equipped!`);
+}
+
+function equipWeapon(weaponId){
+  initHunting();G.hunting.currentWeapon=weaponId;renderHunting();saveGame();
+  let w=WEAPONS.find(x=>x.id===weaponId);showToast(`${w?.emoji} ${w?.name} equipped!`);
+}
+
+function renderHunting(){
+  initHunting();
+  let locked=document.getElementById('hunt-locked');
+  let ok=document.getElementById('hunt-ok');
+  if(!locked||!ok)return;
+  if(!G.hunting.licensed){locked.style.display='block';ok.style.display='none';return;}
+  locked.style.display='none';ok.style.display='block';
+  let hlv=document.getElementById('hunt-lv');
+  let mlv=document.getElementById('mark-lv');
+  let accEl=document.getElementById('hunt-accuracy');
+  let bar=document.getElementById('hunt-xp-bar');
+  if(hlv)hlv.textContent=G.hunting.level||1;
+  if(mlv)mlv.textContent=G.hunting.marksmanship||1;
+  let accuracy=getHuntAccuracy();
+  if(accEl)accEl.textContent=Math.floor(accuracy*100)+'%';
+  let xpPct=Math.floor(((G.hunting.xp||0)/getHuntXPNeeded())*100);
+  if(bar)bar.style.width=xpPct+'%';
+  let w=WEAPONS.find(x=>x.id===(G.hunting.currentWeapon||'slingshot'));
+  let we=document.getElementById('weapon-emoji');let wn=document.getElementById('weapon-name');let wa=document.getElementById('weapon-acc');
+  if(we)we.textContent=w?.emoji||'🪃';if(wn)wn.textContent=w?.name||'Slingshot';if(wa)wa.textContent=Math.floor((w?.accuracy||0.4)*100)+'% base accuracy';
+  let grid=document.getElementById('hunt-animals-grid');
+  if(grid){
+    let huntLv=G.hunting.level||1;
+    grid.innerHTML=HUNT_ANIMALS.map(a=>{
+      let unlocked=huntLv>=a.reqLv;let kills=G.hunting.kills[a.id]||0;
+      return `<div style="background:${unlocked?'#1a2e1a':'#0a0a0a'};border:1px solid ${unlocked?'#2a4a2a':'#1a1a1a'};border-radius:8px;padding:8px;text-align:center;${unlocked?'cursor:pointer;':'opacity:0.4;'}" onclick="${unlocked?`doHunt('${a.id}')`:''}" >
+        <div style="font-size:28px;">${a.emoji}</div>
+        <div style="font-size:10px;color:${unlocked?'#e8f5e8':'#555'};font-weight:bold;">${a.name}</div>
+        <div style="font-size:8px;color:#aaa;">${unlocked?kills+' killed':'🔒 Lv'+a.reqLv}</div>
+        <div style="font-size:8px;color:#ffd700;">${unlocked?'+'+a.gold+'g +'+a.meat+'🍖':'Hunter Lv'+a.reqLv}</div>
+        ${unlocked?'<div style="font-size:8px;color:#a8d8ff;">15⚡</div>':''}
+      </div>`;
+    }).join('');
+  }
+  let trapList=document.getElementById('trap-list');
+  if(trapList){
+    let traps=G.hunting.traps||[];
+    if(!traps.length){trapList.innerHTML='<div style="font-size:10px;color:#555;text-align:center;padding:8px;">No active traps</div>';}
+    else{trapList.innerHTML=traps.map(t=>{
+      let elapsed=Date.now()-t.setAt;let pct=Math.min(elapsed/t.duration*100,100);
+      let ready=elapsed>=t.duration;let rem=ready?0:Math.ceil((t.duration-elapsed)/60000);
+      return `<div style="background:#1a1a0a;border:1px solid #3a3a1a;border-radius:6px;padding:8px;margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+        <div style="font-size:20px;">${t.animal?.emoji||'🪤'}</div>
+        <div style="flex:1;"><div style="font-size:10px;color:#ffd700;">${t.animal?.name||'Unknown'}</div>
+        <div style="height:5px;background:#0a0a0a;border-radius:3px;overflow:hidden;margin-top:3px;">
+          <div style="width:${pct}%;height:100%;background:${ready?'#7dff7d':'#ffd700'};border-radius:3px;"></div></div></div>
+        ${ready?`<button class="btn bsm bg" onclick="collectTrap(${t.id})">Collect!</button>`:`<div style="font-size:9px;color:#aaa;">${rem}m</div>`}
+      </div>`;
+    }).join('');}
+  }
+  let resEl=document.getElementById('hunt-research');
+  if(resEl){
+    let lv=G.hunting.level||1;
+    if(lv>=50){resEl.innerHTML='<div style="text-align:center;font-size:12px;color:#ffd700;">👑 MAX HUNTER LEVEL!</div>';}
+    else{
+      let req=HUNT_LEVELS.find(l=>l.lv===lv)||HUNT_LEVELS[0];
+      let nextReq=HUNT_LEVELS.find(l=>l.lv===lv+1)||HUNT_LEVELS[Math.min(lv,HUNT_LEVELS.length-1)];
+      let kills=G.hunting.kills[req?.animal||'rabbit']||0;
+      let needed=req?.need||5;let killPct=Math.min(kills/needed*100,100);
+      if(G.hunting.researchActive){
+        checkResearchComplete();
+        let elapsed=Date.now()-G.hunting.researchStart;
+        let dur=G.hunting.researchDuration||3600000;
+        let resPct=Math.min(elapsed/dur*100,100);
+        let remH=Math.ceil((dur-elapsed)/3600000);
+        let cost=Math.max(100,remH*100);
+        resEl.innerHTML=`<div style="font-size:10px;color:#7dff7d;margin-bottom:4px;">🔬 Researching Hunter Lv${lv+1}...</div>
+          <div style="height:8px;background:#0a1a0a;border-radius:4px;overflow:hidden;margin-bottom:4px;">
+            <div style="width:${resPct}%;height:100%;background:linear-gradient(90deg,#1a4a8a,#7db8ff);border-radius:4px;"></div></div>
+          <div style="font-size:9px;color:#aaa;">${resPct>=100?'Ready!':remH+'h remaining'}</div>
+          <div style="font-size:9px;color:#7db8ff;margin-top:4px;">💡 Visitors speed this up!</div>
+          <button class="btn bsm bfu" onclick="skipResearch()" style="margin-top:6px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Skip (${cost}💎)</button>`;
+      }else{
+        let targetAnimal=HUNT_ANIMALS.find(a=>a.id===req?.animal);
+        resEl.innerHTML=`<div style="font-size:10px;color:#ffd700;margin-bottom:6px;">To unlock Lv${lv+1}: ${nextReq?.perk||''}</div>
+          <div style="font-size:10px;color:#aaa;margin-bottom:4px;">Hunt ${needed}x ${targetAnimal?.emoji||'🐇'} ${targetAnimal?.name||'animals'} (${kills}/${needed})</div>
+          <div style="height:8px;background:#0a1a0a;border-radius:4px;overflow:hidden;">
+            <div style="width:${killPct}%;height:100%;background:linear-gradient(90deg,#2a6a2a,#7dff7d);border-radius:4px;"></div></div>
+          ${kills>=needed?'<div style="font-size:9px;color:#7dff7d;margin-top:4px;">✅ Requirements met! Research starting...</div>':''}`;
+        if(kills>=needed)checkHuntResearch();
+      }
+    }
+  }
+  let tot=document.getElementById('hunt-total');if(tot)tot.textContent=G.hunting.totalKills||0;
+  let log=document.getElementById('hunt-log');if(log)log.innerHTML=(G.hunting.log||[]).slice(-10).reverse().map(l=>`<div>${l}</div>`).join('');
+}
+
+setInterval(()=>{if(G.hunting?.traps?.length>0)renderHunting();checkResearchComplete();},60000);
+
 const HOME_GUIDE = {
   cottage:{
     emoji:'🏡', name:'Cottage', tag:'⚡ SPEED', tagClass:'speed',
@@ -1641,7 +2027,7 @@ let audioCtx=null;
 function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 function playTone(freq,dur,type='square',vol=0.1){try{let ctx=getAudio();let osc=ctx.createOscillator();let gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type=type;osc.frequency.value=freq;gain.gain.value=vol;gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);osc.start();osc.stop(ctx.currentTime+dur);}catch(e){}}
 function playSound(type){if(type==='till')playTone(120,0.2,'sawtooth',0.08);else if(type==='plant')playTone(440,0.15,'sine',0.1);else if(type==='water'){playTone(880,0.1,'sine',0.08);playTone(660,0.15,'sine',0.08);}else if(type==='harvest'){playTone(523,0.1,'square',0.1);setTimeout(()=>playTone(659,0.1,'square',0.1),100);setTimeout(()=>playTone(784,0.2,'square',0.1),200);}else if(type==='levelup'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.2,'sine',0.12),i*100));}else if(type==='animal')playTone(300,0.3,'sine',0.08);else if(type==='fish'){playTone(440,0.1,'sine',0.1);setTimeout(()=>playTone(550,0.2,'sine',0.1),150);}else if(type==='build'){[200,250,300].forEach((f,i)=>setTimeout(()=>playTone(f,0.15,'square',0.1),i*80));}else if(type==='critter'){playTone(200,0.1,'sawtooth',0.1);setTimeout(()=>playTone(150,0.2,'sawtooth',0.1),100);}}
-function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();if(name==='home')renderHomeUpgrade();if(name==='leaderboard')renderLeaderboard();if(name==='guide')renderGuide();}
+function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();if(name==='home')renderHomeUpgrade();if(name==='leaderboard')renderLeaderboard();if(name==='guide')renderGuide();if(name==='hunt')renderHunting();}
 function showModal(title,body){document.getElementById('mt').textContent=title;document.getElementById('mb').innerHTML=body;document.getElementById('modal').classList.add('show');}
 function closeModal(){document.getElementById('modal').classList.remove('show');}
 let toastTO;
@@ -1727,7 +2113,7 @@ function renderMining(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine')
 function doMine(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');if(!hasMine){showToast('❌ Buy a Mine Plot from Store first!');return;}if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.water<10){showToast('❌ Need 10💧 to mine!');return;}G.water-=10;let campBonus=G.homeType==='camp'?2:1,found=[];for(let r=0;r<campBonus;r++){let roll=Math.random(),cum=0;for(let m of MINERALS){cum+=m.r;if(roll<=cum){found.push(m);break;}}}if(!found.length)found.push(MINERALS[0]);found.forEach(m=>{G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);});let supDrop=getMineralDrop();renderMining();updateHUD();playSound('build');showToast(`⛏️ Found: ${found.map(m=>m.e+m.n).join(', ')}${supDrop}`);}
 function spendMineGems(){if((G.gems||0)<75){showToast('❌ Need 75💎!');return;}G.gems-=75;updateHUD();let rare=MINERALS.slice(4),m=rare[Math.floor(Math.random()*rare.length)];G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);renderMining();updateHUD();showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);}
 function buyMinePlot(){if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.gold<300){showToast('❌ Need 300g!');return;}if(G.hasMine){showToast('✅ Mine already built!');return;}G.gold-=300;G.hasMine=true;updateHUD();renderMining();renderShop();showToast('⛏️ Mine built! Go to Mine tab to start digging!');}
-function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(!data.stamina)data.stamina=100;if(!data.maxStamina)data.maxStamina=100;if(!data.lastStaminaRefill)data.lastStaminaRefill=Date.now();if(!data.zone)data.zone=0;if(!data.zoneAssigned)data.zoneAssigned=false;if(!data.workers)data.workers=0;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(!data.stamina)data.stamina=100;if(!data.maxStamina)data.maxStamina=100;if(!data.lastStaminaRefill)data.lastStaminaRefill=Date.now();if(!data.zone)data.zone=0;if(!data.zoneAssigned)data.zoneAssigned=false;if(!data.workers)data.workers=0;if(!data.hunting)data.hunting=null;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
 // ===== HOME UPGRADE SYSTEM =====
 // Cost multipliers per home type (how expensive to upgrade)
 const HOME_COST_MULT={
