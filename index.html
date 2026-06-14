@@ -879,13 +879,20 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
   <!-- HOME UPGRADES -->
   <div id="panel-home" class="panel">
-    <div class="ptitle">🏠 Home Upgrades</div>
+    <div class="ptitle">🏠 My Home</div>
+
+    <!-- HOME IDENTITY CARD -->
     <div class="card" style="background:#0a1a0a;border-color:#4a4a2a;margin-bottom:8px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-        <div style="font-size:40px;" id="home-emoji-big">🏠</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="font-size:48px;" id="home-emoji-big">🏠</div>
         <div style="flex:1;">
-          <div style="font-size:13px;color:#ffd700;font-weight:bold;" id="home-name-big">Farmhouse</div>
+          <div style="font-size:14px;color:#ffd700;font-weight:bold;" id="home-name-big">Your Home</div>
           <div style="font-size:11px;color:#7dff7d;">Level <span id="home-lv-big">1</span>/20</div>
+          <div style="font-size:9px;color:#aaa;" id="home-tagline">Loading...</div>
+        </div>
+        <div style="text-align:center;background:#1a1a0a;border-radius:8px;padding:6px 10px;">
+          <div style="font-size:18px;color:#ffd700;font-weight:bold;" id="home-lv-num">1</div>
+          <div style="font-size:8px;color:#aaa;">Home Lv</div>
         </div>
       </div>
       <div style="height:10px;background:#0a1a0a;border-radius:5px;overflow:hidden;margin-bottom:4px;border:1px solid #2a2a2a;">
@@ -893,9 +900,41 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
       </div>
       <div style="font-size:9px;color:#aaa;text-align:center;" id="home-lv-pct">Level 1 of 20</div>
     </div>
+
+    <!-- MAJOR BENEFIT -->
+    <div class="card" style="background:#1a0a1a;border-color:#5a1a5a;margin-bottom:8px;">
+      <div class="ct" style="color:#d8a8ff;">⭐ Your Major Benefit</div>
+      <div id="home-major-benefit" style="font-size:11px;color:#e8d8ff;text-align:center;padding:8px;"></div>
+    </div>
+
+    <!-- WHAT YOU PRODUCE -->
+    <div class="card" style="background:#0a1a0a;border-color:#2a5a2a;margin-bottom:8px;">
+      <div class="ct" style="color:#7dff7d;">🏭 What You Produce</div>
+      <div id="home-produces" style="font-size:11px;color:#e8f5e8;"></div>
+    </div>
+
+    <!-- HUNTING ADVANTAGE -->
+    <div class="card" style="background:#1a1a0a;border-color:#4a3a0a;margin-bottom:8px;">
+      <div class="ct" style="color:#ffd700;">🦌 Your Hunting Advantage</div>
+      <div id="home-hunt-bonus" style="font-size:11px;color:#fff3d8;"></div>
+    </div>
+
+    <!-- STAMINA BONUS -->
+    <div class="card" style="background:#0a0a1a;border-color:#1a1a5a;margin-bottom:8px;">
+      <div class="ct" style="color:#a8d8ff;">⚡ Your Stamina Bonus</div>
+      <div id="home-stam-bonus" style="font-size:11px;color:#d8eeff;"></div>
+    </div>
+
+    <!-- LEVEL MILESTONES -->
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct">📋 Level Milestones</div>
+      <div id="home-milestones"></div>
+    </div>
+
+    <!-- UPGRADE -->
     <div id="home-req-card" class="card" style="margin-bottom:8px;"></div>
     <div class="card">
-      <div class="ct">🎁 Perks Unlocked</div>
+      <div class="ct">🎁 Perks Unlocked So Far</div>
       <div id="home-perks-list" style="font-size:10px;color:#aaa;"></div>
       <div id="home-trade-btn"></div>
     </div>
@@ -3866,24 +3905,32 @@ function renderHomeUpgrade(){
   let vanEmoji=getVanEmoji();
   let emoji=G.homeType==='van'?vanEmoji:(HOME_EMOJIS[G.homeType]||'🏠');
   let name=HOME_NAMES[G.homeType]||'Farmhouse';
+  let info=HOME_INFO[G.homeType]||HOME_INFO.cottage;
   let e=id=>document.getElementById(id);
   if(e('home-emoji-big'))e('home-emoji-big').textContent=emoji;
-  renderHomePerkSummary();
   if(e('home-name-big'))e('home-name-big').textContent=name;
   if(e('home-lv-big'))e('home-lv-big').textContent=lv;
+  if(e('home-lv-num'))e('home-lv-num').textContent=lv;
   if(e('home-lv-bar'))e('home-lv-bar').style.width=pct+'%';
-  if(e('home-lv-pct'))e('home-lv-pct').textContent=`Level ${lv} of 20 — ${pct}% to max`;
-  // Perks - use home-specific progression
+  if(e('home-lv-pct'))e('home-lv-pct').textContent='Level '+lv+' of 20 — '+pct+'% to max';
+  if(e('home-tagline'))e('home-tagline').textContent=info.tagline;
+  if(e('home-major-benefit'))e('home-major-benefit').textContent=info.majorBenefit;
+  if(e('home-produces'))e('home-produces').innerHTML=info.produces.split('\n').map(l=>'<div style="margin-bottom:5px;padding:4px 6px;background:#0d2a0d;border-radius:5px;">'+l+'</div>').join('');
+  if(e('home-hunt-bonus'))e('home-hunt-bonus').innerHTML=info.huntBonus.split('\n').map(l=>'<div style="margin-bottom:5px;padding:4px 6px;background:#1a1a0a;border-radius:5px;">'+l+'</div>').join('');
+  if(e('home-stam-bonus'))e('home-stam-bonus').innerHTML=info.stamBonus.split('\n').map(l=>'<div style="margin-bottom:5px;padding:4px 6px;background:#0a0a1a;border-radius:5px;">'+l+'</div>').join('');
+  let msEl=e('home-milestones');
+  if(msEl){msEl.innerHTML=info.milestones.map(m=>{
+    let done=lv>=m.lv;let current=lv===m.lv;
+    return '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;"><div style="font-size:9px;background:'+(done?'#1a3a0a':current?'#1a1a3a':'#0a0a0a')+';color:'+(done?'#7dff7d':current?'#ffd700':'#555')+';padding:2px 6px;border-radius:4px;min-width:32px;text-align:center;font-weight:bold;white-space:nowrap;">Lv'+m.lv+'</div><div style="font-size:10px;color:'+(done?'#7dff7d':current?'#ffd700':'#aaa')+';line-height:1.4;">'+(done?'✅ ':current?'🔥 ':'🔒 ')+m.text+'</div></div>';
+  }).join('');}
   renderHomePerkSummary();
-  // Next upgrade
   let next=HOME_LEVELS.find(l=>l.lv===lv+1);
-  // Get home-specific perk for next level
   let prog=getHomeProgression();
   let nextProg=prog.find(p=>p.lv===lv+1);
   let nextPerkText=nextProg?nextProg.perk:(next?.perk||'');
   let rc=e('home-req-card');
   if(rc){
-    if(!next||lv>=20){rc.innerHTML=`<div style="text-align:center;padding:10px;"><div style="font-size:28px;">👑</div><div style="font-size:13px;color:#ffd700;font-weight:bold;">MAX LEVEL! True Homesteader!</div></div>`;return;}
+    if(!next||lv>=20){rc.innerHTML='<div style="text-align:center;padding:10px;"><div style="font-size:28px;">👑</div><div style="font-size:13px;color:#ffd700;font-weight:bold;">MAX LEVEL! True Homesteader!</div></div>';return;}
     let hasGems=(G.gems||0)>=next.gems;
     let hasGold=G.gold>=next.gold;
     let hasLv=G.level>=next.gl;
@@ -3892,16 +3939,15 @@ function renderHomeUpgrade(){
     let hasBlds=bldCount>=next.blds;
     let hasHarv=G.totalHarvested>=next.harvests;
     let canDo=hasGems&&hasGold&&hasLv&&hasAni&&hasBlds&&hasHarv;
-    rc.innerHTML=`
-      <div class="ct">⬆️ Upgrade to Level ${next.lv}</div>
-      <div style="font-size:10px;color:${hasGems?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasGems?'✅':'❌'} ${next.gems}💎 (have ${G.gems||0})</div>
-      <div style="font-size:10px;color:${hasGold?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasGold?'✅':'❌'} ${next.gold}💰 (have ${G.gold})</div>
-      <div style="font-size:10px;color:${hasLv?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasLv?'✅':'❌'} Game Level ${next.gl}+ (you are ${G.level})</div>
-      <div style="font-size:10px;color:${hasAni?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasAni?'✅':'❌'} ${next.animals}+ animals (have ${G.animals.length})</div>
-      <div style="font-size:10px;color:${hasBlds?'#7dff7d':'#ff7d7d'};margin-bottom:3px;">${hasBlds?'✅':'❌'} ${next.blds}+ buildings (have ${bldCount})</div>
-      <div style="font-size:10px;color:${hasHarv?'#7dff7d':'#ff7d7d'};margin-bottom:8px;">${hasHarv?'✅':'❌'} ${next.harvests}+ harvests (have ${G.totalHarvested})</div>
-      <div style="font-size:10px;color:#ffd700;margin-bottom:8px;">🎁 Unlock: ${nextPerkText}</div>
-      <button class="btn ${canDo?'bg':'br'} bfu" onclick="doHomeUpgrade()">${canDo?`⬆️ Upgrade to Lv${next.lv}!`:'❌ Requirements not met yet'}</button>`;
+    rc.innerHTML='<div class="ct">⬆️ Upgrade to Level '+next.lv+'</div>'
+      +'<div style="font-size:10px;color:'+(hasGems?'#7dff7d':'#ff7d7d')+';margin-bottom:3px;">'+(hasGems?'✅':'❌')+' '+next.gems+'💎 (have '+(G.gems||0)+')</div>'
+      +'<div style="font-size:10px;color:'+(hasGold?'#7dff7d':'#ff7d7d')+';margin-bottom:3px;">'+(hasGold?'✅':'❌')+' '+next.gold+'💰 (have '+G.gold+')</div>'
+      +'<div style="font-size:10px;color:'+(hasLv?'#7dff7d':'#ff7d7d')+';margin-bottom:3px;">'+(hasLv?'✅':'❌')+' Game Level '+next.gl+'+ (you are '+G.level+')</div>'
+      +'<div style="font-size:10px;color:'+(hasAni?'#7dff7d':'#ff7d7d')+';margin-bottom:3px;">'+(hasAni?'✅':'❌')+' '+next.animals+'+ animals (have '+G.animals.length+')</div>'
+      +'<div style="font-size:10px;color:'+(hasBlds?'#7dff7d':'#ff7d7d')+';margin-bottom:3px;">'+(hasBlds?'✅':'❌')+' '+next.blds+'+ buildings (have '+bldCount+')</div>'
+      +'<div style="font-size:10px;color:'+(hasHarv?'#7dff7d':'#ff7d7d')+';margin-bottom:8px;">'+(hasHarv?'✅':'❌')+' '+next.harvests+'+ harvests (have '+G.totalHarvested+')</div>'
+      +'<div style="font-size:10px;color:#ffd700;margin-bottom:8px;">🎁 Unlock: '+nextPerkText+'</div>'
+      +'<button class="btn '+(canDo?'bg':'br')+' bfu" onclick="doHomeUpgrade()">'+(canDo?'⬆️ Upgrade to Lv'+next.lv+'!':'❌ Requirements not met yet')+'</button>';
   }
 }
 
