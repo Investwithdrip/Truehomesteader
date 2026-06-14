@@ -1835,16 +1835,26 @@ function initGame(){
 }
 // ===== VISITING SYSTEM =====
 const FAKE_FARM_PLAYERS = [
-  {name:'FarmQueen',   home:'cottage', homeLv:16, lv:160, zone:1, av:'👩🏽', stock:25, online:true,  friends:false},
-  {name:'WildEdge',    home:'cabin',   homeLv:15, lv:150, zone:1, av:'👨🏻', stock:40, online:true,  friends:false},
-  {name:'RanchMaster', home:'ranch',   homeLv:14, lv:140, zone:1, av:'👨🏾', stock:18, online:false, friends:false},
-  {name:'SunflowerSam',home:'modern',  homeLv:11, lv:110, zone:1, av:'👨🏽', stock:30, online:true,  friends:true},
-  {name:'GreenThumb',  home:'cottage', homeLv:13, lv:130, zone:1, av:'👩🏾', stock:15, online:false, friends:false},
-  {name:'OffGridGal',  home:'van',     homeLv:12, lv:120, zone:1, av:'👩🏻', stock:50, online:true,  friends:true},
-  {name:'CropKing99',  home:'cabin',   homeLv:10, lv:100, zone:2, av:'👨🏾', stock:35, online:true,  friends:false},
-  {name:'ValleyFarm',  home:'ranch',   homeLv:7,  lv:70,  zone:2, av:'👩🏾', stock:22, online:false, friends:false},
-  {name:'SeedMaster',  home:'modern',  homeLv:6,  lv:60,  zone:2, av:'👨🏽', stock:28, online:true,  friends:false},
-  {name:'HarvestKing', home:'van',     homeLv:5,  lv:50,  zone:2, av:'👩🏻', stock:45, online:true,  friends:true},
+  // Zone 1 players
+  {name:'FarmQueen',    home:'cottage', homeLv:16, lv:160, zone:1, av:'👩🏽', stock:25, online:true,  friends:false},
+  {name:'RanchMaster',  home:'ranch',   homeLv:14, lv:140, zone:1, av:'👨🏾', stock:18, online:false, friends:false},
+  {name:'OffGridGal',   home:'van',     homeLv:12, lv:120, zone:1, av:'👩🏻', stock:50, online:true,  friends:true},
+  {name:'ValleyFarm',   home:'ranch',   homeLv:7,  lv:70,  zone:1, av:'👩🏾', stock:22, online:false, friends:false},
+  {name:'HarvestKing',  home:'van',     homeLv:5,  lv:50,  zone:1, av:'👩🏻', stock:45, online:true,  friends:true},
+  {name:'DirtRoads',    home:'cottage', homeLv:8,  lv:85,  zone:1, av:'👨🏾', stock:20, online:true,  friends:false},
+  {name:'BackwoodsKing',home:'ranch',   homeLv:11, lv:115, zone:1, av:'👨🏻', stock:12, online:false, friends:false},
+  {name:'IronFarm',     home:'modern',  homeLv:13, lv:135, zone:1, av:'👨🏽', stock:32, online:true,  friends:false},
+  // Zone 2 players
+  {name:'WildEdge',     home:'cabin',   homeLv:15, lv:150, zone:2, av:'👨🏻', stock:40, online:true,  friends:false},
+  {name:'SunflowerSam', home:'modern',  homeLv:11, lv:110, zone:2, av:'👨🏽', stock:30, online:true,  friends:true},
+  {name:'GreenThumb',   home:'cottage', homeLv:13, lv:130, zone:2, av:'👩🏾', stock:15, online:true,  friends:false},
+  {name:'CropKing99',   home:'cabin',   homeLv:10, lv:100, zone:2, av:'👨🏾', stock:35, online:true,  friends:false},
+  {name:'SeedMaster',   home:'modern',  homeLv:6,  lv:60,  zone:2, av:'👨🏽', stock:28, online:true,  friends:false},
+  {name:'SunriseAcres', home:'cabin',   homeLv:9,  lv:95,  zone:2, av:'👩🏽', stock:38, online:true,  friends:false},
+  {name:'GridFree',     home:'van',     homeLv:10, lv:105, zone:2, av:'👩🏾', stock:55, online:true,  friends:false},
+  {name:'PrairieRose',  home:'cottage', homeLv:9,  lv:85,  zone:2, av:'👩🏽', stock:20, online:true,  friends:false},
+  {name:'WoodSmoke',    home:'ranch',   homeLv:8,  lv:75,  zone:2, av:'👨🏾', stock:16, online:true,  friends:false},
+  {name:'BackRoad',     home:'modern',  homeLv:3,  lv:30,  zone:2, av:'👨🏽', stock:25, online:true,  friends:false},
 ];
 
 let visitFilter = 'all';
@@ -1868,21 +1878,47 @@ function renderVisitList() {
   let list = document.getElementById('player-visit-list');
   if(!list) return;
 
-  // Combine fake players + filter
+  // Filter + sort — same zone first!
   let players = FAKE_FARM_PLAYERS.filter(p => {
     if(visitFilter !== 'all' && p.home !== visitFilter) return false;
     return true;
+  }).sort((a,b) => {
+    // Same zone first
+    let aZone = a.zone === G.zone ? 1 : 0;
+    let bZone = b.zone === G.zone ? 1 : 0;
+    return bZone - aZone;
   });
 
-  // Add player's own zone indicator
-  list.innerHTML = players.map(p => {
+  // Sort: same zone first, then online, then by level
+  players.sort((a,b) => {
+    let aZone = a.zone === G.zone ? 1 : 0;
+    let bZone = b.zone === G.zone ? 1 : 0;
+    if(aZone !== bZone) return bZone - aZone;
+    if(a.online !== b.online) return b.online - a.online;
+    return b.lv - a.lv;
+  });
+
+  // Add zone headers
+  let zoneHeaderAdded = false;
+  let otherZoneHeaderAdded = false;
+  list.innerHTML = players.map((p, idx) => {
     let homeEmoji = HOME_EMOJIS[p.home] || '🏠';
     let res = TRADE_RESOURCES[p.home];
     let sameZone = p.zone === G.zone;
     let alreadyVisited = visitedToday[p.name];
     let isFriend = p.friends;
+    let header = '';
 
-    return `<div style="background:#1a1a0a;border:1px solid ${sameZone?'#2a4a2a':'#1a1a2a'};border-radius:10px;padding:10px;margin-bottom:8px;">
+    if(sameZone && !zoneHeaderAdded) {
+      zoneHeaderAdded = true;
+      header = `<div style="font-size:10px;color:#7dff7d;font-weight:bold;margin-bottom:6px;padding:4px 8px;background:#0a1a0a;border-radius:6px;">✅ Your Zone — Can Buy Here!</div>`;
+    }
+    if(!sameZone && !otherZoneHeaderAdded) {
+      otherZoneHeaderAdded = true;
+      header = `<div style="font-size:10px;color:#ff7d7d;font-weight:bold;margin-bottom:6px;padding:4px 8px;background:#1a0a0a;border-radius:6px;">❌ Other Zone — Add Friends Only</div>`;
+    }
+
+    return header + `<div style="background:#1a1a0a;border:1px solid ${sameZone?'#2a4a2a':'#1a1a2a'};border-radius:10px;padding:10px;margin-bottom:8px;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
         <div style="font-size:24px;">${p.av}</div>
         <div style="flex:1;">
