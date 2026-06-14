@@ -452,6 +452,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
     <div class="hs" onclick="showHUDPop('gold')" style="cursor:pointer;">💰<span id="hg">50</span>g</div>
     <div class="hs hg" onclick="showHUDPop('gems')" style="cursor:pointer;">💎<span id="hgem">0</span></div>
     <div class="hs" onclick="showHUDPop('level')" style="cursor:pointer;">⭐Lv<span id="hlv">1</span></div>
+    <div class="hs" onclick="showHUDPop('stamina')" style="cursor:pointer;background:#1a1a0a;border-color:#4a3a0a;">⚡<span id="hstam" style="color:#ffd700;">100</span></div>
     <div class="hs" onclick="showHUDPop('water')" style="cursor:pointer;">💧<span id="hw">10/10</span></div>
     <div id="sb" onclick="showHUDPop('season')" style="cursor:pointer;">🌸 Spring D1</div>
   </div>
@@ -788,7 +789,7 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 <!-- MODAL -->
 <div id="modal"><div id="mc"><div id="mt"></div><div id="mb"></div><button class="btn bfu" onclick="closeModal()" style="margin-top:10px;">Close</button></div></div>
 <script>
-let G={gold:50,gems:0,xp:0,level:1,water:10,maxWater:10,day:1,seasonDay:1,season:0,weather:0,totalHarvested:0,totalEarned:50,fishCaught:0,plots:[],inventory:{},animals:[],buildings:[],achievements:{},quests:{},fishLog:[],lastSpin:0,spinCount:0,vip:false,vipLevel:0,name:'',avatar:'',state:'',seenTutorials:{},acreage:0.5,homeLv:1};
+let G={gold:50,gems:0,xp:0,level:1,water:10,maxWater:10,day:1,seasonDay:1,season:0,weather:0,totalHarvested:0,totalEarned:50,fishCaught:0,plots:[],inventory:{},animals:[],buildings:[],achievements:{},quests:{},fishLog:[],lastSpin:0,spinCount:0,vip:false,vipLevel:0,name:'',avatar:'',state:'',seenTutorials:{},acreage:0.5,homeLv:1,stamina:100,maxStamina:100,lastStaminaRefill:Date.now(),zone:0,zoneAssigned:false,tradeInbox:[],achPlotBonus:0,spinPlotBonus:0,achPlotsAwarded:{},modernFreeSpins:0,workers:0,hasMine:false};
 const SEASONS=[{name:'Spring',emoji:'🌸',color:'#ff9acd'},{name:'Summer',emoji:'☀️',color:'#ffd700'},{name:'Fall',emoji:'🍂',color:'#ff7a2a'},{name:'Winter',emoji:'❄️',color:'#a8d8ff'}];
 const WEATHER=[{name:'Sunny',emoji:'☀️'},{name:'Cloudy',emoji:'☁️'},{name:'Rainy',emoji:'🌧️'},{name:'Stormy',emoji:'⛈️'},{name:'Snowy',emoji:'🌨️'}];
 const AVATARS={f1:'👩🏽',f2:'👩🏾',f3:'👩🏻',m1:'👨🏽',m2:'👨🏾',m3:'👨🏻'};
@@ -830,7 +831,110 @@ const CRITTERS_DATA=[{n:'Aphids',e:'🐛',dmg:'slow your crops',sea:[0],oh:2},{n
 function xpForLevel(lv){return Math.floor(100*Math.pow(lv,1.4));}
 let selectedAvatar='f1',selectedHomeType='cottage';
 
-// ===== HOME GUIDE SYSTEM =====
+// ===== STAMINA SYSTEM =====
+const STAMINA_COSTS = {
+  till: 1, water: 1, harvest: 2, fish: 5,
+  mine: 8, trap: 10, hunt: 15, boss: 20,
+  feedAnimal: 3, tractor: 10
+};
+
+function getMaxStamina() {
+  let base = 100;
+  if(G.homeType === 'ranch') base += 20;
+  return base;
+}
+
+function getStaminaRefillRate() {
+  // Returns ms per 1 stamina point
+  let base = 600000; // 10 minutes per point
+  if(G.homeType === 'cabin') base = 420000; // 7 min (2x faster)
+  if(G.homeType === 'modern') base = 480000; // 8 min
+  if(G.vipLevel >= 20) base = 240000; // 4 min VIP 20
+  else if(G.vipLevel >= 10) base = 360000; // 6 min VIP 10
+  else if(G.vipLevel >= 5) base = 480000; // 8 min VIP 5
+  return base;
+}
+
+function tickStamina() {
+  let now = Date.now();
+  let elapsed = now - (G.lastStaminaRefill || now);
+  let rate = getStaminaRefillRate();
+  let gained = Math.floor(elapsed / rate);
+  if(gained > 0) {
+    G.stamina = Math.min((G.stamina || 0) + gained, getMaxStamina());
+    G.lastStaminaRefill = now - (elapsed % rate);
+    updateStaminaHUD();
+  }
+}
+
+function updateStaminaHUD() {
+  let el = document.getElementById('hstam');
+  if(el) el.textContent = Math.floor(G.stamina || 0);
+}
+
+function useStamina(action) {
+  let cost = STAMINA_COSTS[action] || 1;
+  // Van discount
+  if(G.homeType === 'van') cost = Math.ceil(cost * 0.75);
+  // Cottage harvest free
+  if(G.homeType === 'cottage' && action === 'harvest') cost = 0;
+  if((G.stamina || 0) < cost) {
+    showToast(`❌ Need ${cost}⚡ stamina! Refills over time or use gems!`);
+    return false;
+  }
+  G.stamina -= cost;
+  G.lastStaminaRefill = G.lastStaminaRefill || Date.now();
+  updateStaminaHUD();
+  return true;
+}
+
+function refillStamina(amount) {
+  G.stamina = Math.min((G.stamina || 0) + amount, getMaxStamina());
+  updateStaminaHUD();
+  saveGame();
+}
+
+function buyStaminaRefill(type) {
+  let options = {
+    small: {amount: 25, cost: 50, label: '+25⚡'},
+    medium: {amount: 50, cost: 90, label: '+50⚡'},
+    full: {amount: 100, cost: 150, label: 'Full refill'},
+    double: {amount: 200, cost: 500, label: '2x max stamina 24h'},
+  };
+  let opt = options[type];
+  if(!opt) return;
+  if((G.gems||0) < opt.cost) { showToast(`❌ Need ${opt.cost}💎!`); return; }
+  G.gems -= opt.cost;
+  refillStamina(opt.amount);
+  updateHUD();
+  showToast(`⚡ ${opt.label} stamina refilled! (-${opt.cost}💎)`);
+}
+
+// ===== ZONE SYSTEM =====
+const ZONES = {
+  1: {name:'The Frontier', emoji:'⚔️', color:'#8a2a2a'},
+  2: {name:'The Heartland', emoji:'🛡️', color:'#2a4a8a'}
+};
+
+function assignZone() {
+  if(G.zoneAssigned) return;
+  G.zone = Math.random() < 0.5 ? 1 : 2;
+  G.zoneAssigned = true;
+  let z = ZONES[G.zone];
+  showToast(`${z.emoji} You've been assigned to ${z.name}!`);
+  saveGame();
+}
+
+function getZoneName() {
+  return ZONES[G.zone]?.name || 'Unassigned';
+}
+
+function getZoneEmoji() {
+  return ZONES[G.zone]?.emoji || '🌍';
+}
+
+// Tick stamina every 30 seconds
+setInterval(tickStamina, 30000);
 const HOME_GUIDE = {
   cottage:{
     emoji:'🏡', name:'Cottage', tag:'⚡ SPEED', tagClass:'speed',
@@ -1030,7 +1134,11 @@ function startGame(){
   document.getElementById('hud').style.display='block';
   document.getElementById('gc').style.display='block';
   document.getElementById('bn').style.display='flex';
+  G.stamina = 100;
+  G.maxStamina = 100;
+  G.lastStaminaRefill = Date.now();
   initGame();fetchRealWeather();
+  setTimeout(()=>assignZone(), 2000);
 }
 async function fetchRealWeather(){
   const STATE_COORDS={GA:[32.7,-83.5],FL:[27.8,-81.8],TX:[31.0,-100.0],CA:[36.8,-119.4],NY:[42.9,-75.5],OH:[40.4,-82.7],NC:[35.5,-79.0],TN:[35.8,-86.3],AL:[32.8,-86.8],SC:[33.8,-80.9]};
@@ -1474,6 +1582,7 @@ function showLevelUp(){let lub=document.getElementById('lub'),txt=document.getEl
 function updateHUD(){
   let e=id=>document.getElementById(id);
   if(e('hg'))e('hg').textContent=G.gold;if(e('hgem'))e('hgem').textContent=G.gems||0;if(e('hlv'))e('hlv').textContent=G.level;if(e('hw'))e('hw').textContent=`${Math.floor(G.water)}/${G.maxWater}`;if(e('hud-av'))e('hud-av').textContent=AVATARS[G.avatar]||'🌱';
+  if(e('hstam'))e('hstam').textContent=Math.floor(G.stamina||0);
   let s=SEASONS[G.season],sb=e('sb');if(sb){sb.textContent=`${s.emoji} ${s.name} D${G.seasonDay}`;sb.style.cssText=`font-size:10px;padding:2px 7px;border-radius:4px;font-weight:bold;background:${s.color}22;color:${s.color};border:1px solid ${s.color}55;`;}
   if(e('wbadge'))e('wbadge').textContent=WEATHER[G.weather].emoji+' '+WEATHER[G.weather].name;
   if(e('gdisp'))e('gdisp').textContent=G.gems||0;
@@ -1543,7 +1652,16 @@ function showHUDPop(type){
   if(type==='gold')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💰 Gold Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gold</span><span style="color:#ffd700;font-weight:bold;">${G.gold}g</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Total Earned</span><span>${G.totalEarned}g</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest crops & collect animal products for gold!</div><button class="btn bg bfu" onclick="showPanel('shop');closeHUDPop()" style="margin-top:8px;">Go to Store</button>`;
   else if(type==='gems')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💎 Gems Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gems</span><span style="color:#a8d8ff;font-weight:bold;">${G.gems||0}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Use gems to skip timers and get boosts!</div><button class="btn bfu" onclick="showPanel('iap');closeHUDPop()" style="margin-top:8px;background:#1a1a3a;border-color:#3a3a6a;color:#a8d8ff;">Buy Gems</button>`;
   else if(type==='level'){let needed=xpForLevel(G.level),pct=Math.floor((G.xp/needed)*100);const unlocks={3:'🎣 Pond',5:'🌿 Greenhouse',10:'⛏️ Mining',15:'🏗️ Silo',20:'🏪 Market',25:'🦚 Exotic Animals',30:'🍄 Rare Crops'};let nextUnlock=Object.entries(unlocks).find(([lv])=>parseInt(lv)>G.level);content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">⭐ Level Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Level</span><span style="color:#7dff7d;font-weight:bold;">${G.level}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>XP Progress</span><span>${G.xp}/${needed} (${pct}%)</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Next Unlock</span><span style="color:#ffd700;">${nextUnlock?`Lv${nextUnlock[0]}: ${nextUnlock[1]}`:'Keep going!'}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest, fish, and mine for fast XP!</div>`;}
-  else if(type==='water')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💧 Water Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#7db8ff;font-weight:bold;">${G.water}/${G.maxWater}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill per day</span><span>+3💧</span></div><button class="btn bb bfu" onclick="spendGems(25,'water');closeHUDPop()" style="margin-top:8px;">💎 Instant Refill (25💎)</button>`;
+  else if(type==='water')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💧 Water Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#7db8ff;font-weight:bold;">${Math.floor(G.water)}/${G.maxWater}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill per day</span><span>+3💧</span></div><button class="btn bb bfu" onclick="spendGems(25,'water');closeHUDPop()" style="margin-top:8px;">💎 Instant Refill (25💎)</button>`;
+  else if(type==='stamina'){
+    let rate = Math.floor(getStaminaRefillRate()/60000);
+    content=`<div style="font-size:11px;color:#ffd700;font-weight:bold;margin-bottom:8px;">⚡ Stamina</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#ffd700;font-weight:bold;">${Math.floor(G.stamina||0)}/${getMaxStamina()}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill rate</span><span>+1⚡ every ${rate} min</span></div>
+    <div style="font-size:9px;color:#aaa;margin-bottom:8px;">Used for every action. Manage wisely!</div>
+    <button class="btn bfu" onclick="buyStaminaRefill('small');closeHUDPop()" style="background:#2a2a0a;border-color:#5a5a1a;color:#ffd700;margin-bottom:4px;">+25⚡ (50💎)</button>
+    <button class="btn bfu" onclick="buyStaminaRefill('medium');closeHUDPop()" style="background:#2a2a0a;border-color:#5a5a1a;color:#ffd700;margin-bottom:4px;">+50⚡ (90💎)</button>
+    <button class="btn bfu" onclick="buyStaminaRefill('full');closeHUDPop()" style="background:#2a2a0a;border-color:#5a5a1a;color:#ffd700;">Full Refill (150💎)</button>`}
   else if(type==='season'){let cropList=Object.values(CROPS).filter(c=>c.seasons?.includes(G.season)).map(c=>c.emoji).slice(0,6).join(' ');content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${SEASONS[G.season].emoji} Season Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Season</span><span style="color:${SEASONS[G.season].color};font-weight:bold;">${SEASONS[G.season].name}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Day</span><span>${G.seasonDay}/28</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Days left</span><span>${28-G.seasonDay}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">Best crops: ${cropList||'Check Store'}</div>`;}
   else if(type==='profile'){let h={cottage:'🏡 Cottage',ranch:'🏚️ Ranch',farmhouse:'🏠 Farmhouse',cabin:'🛖 Cabin',manor:'🏰 Manor',modern:'🏗️ Modern',van:'🚐 Van',camp:'⛺ Camp'};content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${AVATARS[G.avatar]||'🌱'} ${G.name}</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Home</span><span>${h[G.homeType]||'Farmhouse'}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>State</span><span>${G.state}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Acreage</span><span>${(G.acreage||0.5).toFixed(1)} acres</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>VIP</span><span>${G.vipLevel>0?'VIP '+G.vipLevel:'None yet'}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Harvests</span><span>${G.totalHarvested}</span></div>`;}
   con.innerHTML=content;pop.classList.add('show');
@@ -1609,7 +1727,7 @@ function renderMining(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine')
 function doMine(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');if(!hasMine){showToast('❌ Buy a Mine Plot from Store first!');return;}if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.water<10){showToast('❌ Need 10💧 to mine!');return;}G.water-=10;let campBonus=G.homeType==='camp'?2:1,found=[];for(let r=0;r<campBonus;r++){let roll=Math.random(),cum=0;for(let m of MINERALS){cum+=m.r;if(roll<=cum){found.push(m);break;}}}if(!found.length)found.push(MINERALS[0]);found.forEach(m=>{G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);});let supDrop=getMineralDrop();renderMining();updateHUD();playSound('build');showToast(`⛏️ Found: ${found.map(m=>m.e+m.n).join(', ')}${supDrop}`);}
 function spendMineGems(){if((G.gems||0)<75){showToast('❌ Need 75💎!');return;}G.gems-=75;updateHUD();let rare=MINERALS.slice(4),m=rare[Math.floor(Math.random()*rare.length)];G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);renderMining();updateHUD();showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);}
 function buyMinePlot(){if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.gold<300){showToast('❌ Need 300g!');return;}if(G.hasMine){showToast('✅ Mine already built!');return;}G.gold-=300;G.hasMine=true;updateHUD();renderMining();renderShop();showToast('⛏️ Mine built! Go to Mine tab to start digging!');}
-function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(!data.stamina)data.stamina=100;if(!data.maxStamina)data.maxStamina=100;if(!data.lastStaminaRefill)data.lastStaminaRefill=Date.now();if(!data.zone)data.zone=0;if(!data.zoneAssigned)data.zoneAssigned=false;if(!data.workers)data.workers=0;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
 // ===== HOME UPGRADE SYSTEM =====
 // Cost multipliers per home type (how expensive to upgrade)
 const HOME_COST_MULT={
