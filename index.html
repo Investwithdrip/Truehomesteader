@@ -91,7 +91,9 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 .home-card-3d.sel .hc-secret{color:#7dff7d;background:#1a3a1a;}
 
 /* LOCKED HOME CARDS */
-.hc-expand{display:none;text-align:left;font-size:9px;}
+.sub-menu{display:flex;gap:4px;padding:4px 8px;background:#0a0a0a;border-bottom:1px solid #1a2a1a;flex-wrap:wrap;position:sticky;top:52px;z-index:99;}
+.smb{background:#1a2a1a;border:1px solid #2a4a2a;color:#7dff7d;border-radius:6px;padding:5px 10px;font-size:10px;cursor:pointer;font-family:inherit;}
+.smb:active{background:#2a4a2a;}
 .home-card-3d.sel .hc-expand{display:block;}
 .hc-emoji{font-size:36px;display:block;margin-bottom:3px;}
 
@@ -535,6 +537,10 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <!-- ANIMALS -->
   <div id="panel-animals" class="panel">
     <div class="ptitle">🐄 Animals</div>
+    <div style="text-align:center;font-size:10px;color:#aaa;margin-bottom:6px;">
+      Slots: <span id="ani-slots-used">0</span>/<span id="ani-slots-max">2</span> 
+      <span style="color:#7dff7d;font-size:9px;">| Build Barn or upgrade Home for more!</span>
+    </div>
     <div id="alist"></div>
     <div id="noani" class="card" style="text-align:center;color:#888;"><div style="font-size:36px;margin-bottom:6px;">🐣</div><div style="font-size:11px;">No animals yet! Buy from Store.</div></div>
   </div>
@@ -867,7 +873,31 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </div>
 
   <!-- GEMS -->
-  <!-- HOME GUIDE -->
+  <!-- SUB MENUS -->
+  <div id="store-menu" class="sub-menu" style="display:none;">
+    <button class="smb" onclick="showPanel('shop');closeSubMenus()">🏪 Store</button>
+    <button class="smb" onclick="showPanel('animals');closeSubMenus()">🐄 Animals</button>
+    <button class="smb" onclick="showPanel('buildings');closeSubMenus()">🏗️ Builds</button>
+    <button class="smb" onclick="showPanel('upmarket');closeSubMenus()">📈 Upgrade</button>
+    <button class="smb" onclick="showPanel('market2');closeSubMenus()">🐄 Market</button>
+  </div>
+  <div id="work-menu" class="sub-menu" style="display:none;">
+    <button class="smb" onclick="showPanel('hunt');closeSubMenus()">🦌 Hunt</button>
+    <button class="smb" onclick="showPanel('mining');closeSubMenus()">⛏️ Mine</button>
+    <button class="smb" onclick="showPanel('pond');closeSubMenus()">🎣 Pond</button>
+    <button class="smb" onclick="showPanel('boss');closeSubMenus()">👹 Boss</button>
+  </div>
+  <div id="social-menu" class="sub-menu" style="display:none;">
+    <button class="smb" onclick="showPanel('chat');closeSubMenus()">💬 Chat</button>
+    <button class="smb" onclick="showPanel('leaderboard');closeSubMenus()">🏆 Ranks</button>
+    <button class="smb" onclick="showPanel('profile');closeSubMenus()">👤 Profile</button>
+  </div>
+  <div id="progress-menu" class="sub-menu" style="display:none;">
+    <button class="smb" onclick="showPanel('vip');closeSubMenus()">👑 VIP</button>
+    <button class="smb" onclick="showPanel('quests');closeSubMenus()">📜 Quests</button>
+    <button class="smb" onclick="showPanel('daily');closeSubMenus()">📅 Daily</button>
+    <button class="smb" onclick="showPanel('guide');closeSubMenus()">📖 Guide</button>
+  </div>
   <div id="panel-guide" class="panel">
     <div class="ptitle">📖 Home Guide</div>
     <div class="card" style="background:#0a1a0a;border-color:#3a6a2a;margin-bottom:8px;text-align:center;">
@@ -1079,25 +1109,13 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 <!-- NAV -->
 <div id="bn" style="display:none;">
   <button class="nb active" onclick="showPanel('farm')" id="nav-farm"><span class="ni">🌱</span>Farm</button>
-  <button class="nb" onclick="showPanel('shop')" id="nav-shop"><span class="ni">🏪</span>Store</button>
-  <button class="nb" onclick="showPanel('animals')" id="nav-animals"><span class="ni">🐄</span>Animals</button>
-  <button class="nb" onclick="showPanel('buildings')" id="nav-buildings"><span class="ni">🏠</span>Builds</button>
-  <button class="nb" onclick="showPanel('upmarket')" id="nav-upmarket"><span class="ni">🏪</span>Market</button>
-  <button class="nb" onclick="showPanel('hunt')" id="nav-hunt"><span class="ni">🦌</span>Hunt</button>
-  <button class="nb" onclick="showPanel('mining')" id="nav-mining"><span class="ni">⛏️</span>Mine</button>
-  <button class="nb" onclick="showPanel('pond')" id="nav-pond"><span class="ni">🎣</span>Pond</button>
-  <button class="nb" onclick="showPanel('market2')" id="nav-market2"><span class="ni">🐄</span>Market</button>
-  <button class="nb" onclick="showPanel('boss')" id="nav-boss"><span class="ni">👹</span>Boss</button>
-  <button class="nb" onclick="showPanel('vip')" id="nav-vip"><span class="ni">👑</span>VIP</button>
-  <button class="nb" onclick="showPanel('quests')" id="nav-quests"><span class="ni">📜</span>Quests</button>
-  <button class="nb" onclick="showPanel('chat')" id="nav-chat"><span class="ni">💬</span>Chat</button>
-  <button class="nb" onclick="showPanel('ai')" id="nav-ai"><span class="ni">🤖</span>AI</button>
-  <button class="nb" onclick="showPanel('inventory')" id="nav-inventory"><span class="ni">🎒</span>Inv</button>
-  <button class="nb" onclick="showPanel('guide')" id="nav-guide"><span class="ni">📖</span>Guide</button>
+  <button class="nb" onclick="toggleSubMenu('store-menu')" id="nav-shop"><span class="ni">🏪</span>Store</button>
+  <button class="nb" onclick="toggleSubMenu('work-menu')" id="nav-work"><span class="ni">⚒️</span>Work</button>
+  <button class="nb" onclick="toggleSubMenu('social-menu')" id="nav-social"><span class="ni">💬</span>Social</button>
+  <button class="nb" onclick="toggleSubMenu('progress-menu')" id="nav-progress"><span class="ni">👑</span>Progress</button>
   <button class="nb" onclick="showPanel('home')" id="nav-home"><span class="ni">🏠</span>Home</button>
-  <button class="nb" onclick="showPanel('daily')" id="nav-daily"><span class="ni">📅</span>Daily</button>
-  <button class="nb" onclick="showPanel('profile')" id="nav-profile"><span class="ni">👤</span>Profile</button>
-  <button class="nb" onclick="showPanel('leaderboard')" id="nav-leaderboard"><span class="ni">🏆</span>Ranks</button>
+  <button class="nb" onclick="showPanel('ai')" id="nav-ai"><span class="ni">🤖</span>Gigi</button>
+  <button class="nb" onclick="showPanel('inventory')" id="nav-inventory"><span class="ni">🎒</span>Inv</button>
   <button class="nb" onclick="showPanel('iap')" id="nav-iap"><span class="ni">💎</span>Gems</button>
 </div>
 
@@ -1146,7 +1164,26 @@ const CRITTERS_DATA=[{n:'Aphids',e:'🐛',dmg:'slow your crops',sea:[0],oh:2},{n
 function xpForLevel(lv){return Math.floor(100*Math.pow(lv,1.4));}
 let selectedAvatar='f1',selectedHomeType='cottage';
 
-// ===== STAMINA SYSTEM =====
+// ===== SUB MENU SYSTEM =====
+function toggleSubMenu(menuId) {
+  let menus = ['store-menu','work-menu','social-menu','progress-menu'];
+  menus.forEach(id => {
+    let el = document.getElementById(id);
+    if(!el) return;
+    if(id === menuId) {
+      el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+    } else {
+      el.style.display = 'none';
+    }
+  });
+}
+
+function closeSubMenus() {
+  ['store-menu','work-menu','social-menu','progress-menu'].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+}
 const STAMINA_COSTS = {
   till: 1, water: 1, harvest: 2, fish: 5,
   mine: 8, trap: 10, hunt: 15, boss: 20,
@@ -2886,21 +2923,40 @@ function buyBuilding(k){let b=BUILDINGS_DATA[k];if(!b)return;let owned=Array.isA
 function buyDefense(k,name,cost,emoji){if(G.gold<cost){showToast('❌ Not enough gold!');return;}G.gold-=cost;addItem(name,1);updateHUD();renderShop();showToast(`${emoji} Got ${name}! You're protected!`);}
 function buyDeepMine(){if(G.level<20){showToast('❌ Need Level 20!');return;}if(G.gold<800){showToast('❌ Need 800g!');return;}G.gold-=800;addItem('Deep Mine Kit',1);updateHUD();showToast('⛏️ Deep Mine Kit acquired!');}
 function buySupply(k){let s=SUPPLIES[k];if(G.gold<s.cost){showToast('❌ Not enough gold!');return;}G.gold-=s.cost;addItem(s.name,1);updateHUD();renderShop();showToast(`${s.emoji} Bought ${s.name}!`);}
+function getMaxAnimals() {
+  let base = 2;
+  let hasCoop = Array.isArray(G.buildings)?G.buildings.includes('chicken_coop'):(G.buildings['chicken_coop']>0);
+  let hasBarn = Array.isArray(G.buildings)?G.buildings.includes('barn'):(G.buildings['barn']>0);
+  if(hasCoop) base = Math.max(base, 4);
+  if(hasBarn) base = Math.max(base, 8);
+  // Home level bonuses
+  let homeLv = G.homeLv || 1;
+  base += Math.floor(homeLv / 2); // +1 slot every 2 home levels
+  // Ranch bonus
+  if(G.homeType === 'ranch') base += 10;
+  // VIP bonus
+  base += Math.floor((G.vipLevel||0) * 2);
+  return Math.min(base, 50); // cap at 50
+}
+
 function buyAnimal(k){
   let a=ANIMALS_D[k];
-  let hasBarn=Array.isArray(G.buildings)?G.buildings.includes('barn'):(G.buildings['barn']>0);
-  let hasCoop=Array.isArray(G.buildings)?G.buildings.includes('chicken_coop'):(G.buildings['chicken_coop']>0);
-  let max=hasBarn?8:hasCoop?4:2;
-  if(G.animals.length>=max){showToast('❌ Need Barn for more animals!');return;}
+  let max=getMaxAnimals();
+  if(G.animals.length>=max){showToast(`❌ Max ${max} animals! Upgrade Home or build Barn for more slots.`);return;}
   if(G.gold<a.cost){showToast('❌ Not enough gold!');return;}
   G.gold-=a.cost;G.animals.push({type:k,name:a.name,emoji:a.emoji,hunger:100,happiness:100,produceTimer:0,feeds:0});
   addXP(a.xp);playSound('animal');updateQuestProgress('animals',G.animals.length);
   if(G.animals.length===1)showTutorial('first_animal');if(G.animals.length>=3)checkAchievement('a_ani3');
-  renderAnimals();updateHUD();showToast(`${a.emoji} Got a ${a.name}!`);
+  renderAnimals();updateHUD();showToast(`${a.emoji} Got a ${a.name}! (${G.animals.length}/${max} slots used)`);
 }
 function getAnimalStage(animal){let feeds=animal.feeds||0,stage=0;for(let i=ANIMAL_STAGES.length-1;i>=0;i--){if(feeds>=ANIMAL_STAGES[i].feedsNeeded){stage=i;break;}}return{...ANIMAL_STAGES[stage],idx:stage};}
 function renderAnimals(){
   let list=document.getElementById('alist'),noA=document.getElementById('noani');if(!list)return;
+  let maxAni=getMaxAnimals();
+  let slotsUsed=document.getElementById('ani-slots-used');
+  let slotsMax=document.getElementById('ani-slots-max');
+  if(slotsUsed)slotsUsed.textContent=G.animals.length;
+  if(slotsMax)slotsMax.textContent=maxAni;
   if(G.animals.length===0){list.innerHTML='';noA.style.display='block';return;}
   noA.style.display='none';
   list.innerHTML=G.animals.map((a,i)=>{
