@@ -1052,31 +1052,104 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
   <div id="panel-iap" class="panel">
     <div class="ptitle">💎 Gem Store</div>
+
+    <!-- Gem balance -->
     <div class="card" style="text-align:center;background:#0a0a1a;border-color:#3a3a6a;margin-bottom:8px;">
-      <div style="font-size:36px;">💎</div>
-      <div style="font-size:14px;color:#a8d8ff;font-weight:bold;">Gems: <span id="gdisp">0</span></div>
-      <div style="font-size:9px;color:#555;margin-top:3px;">Spend gems to skip timers and get boosts</div>
+      <div style="font-size:40px;">💎</div>
+      <div style="font-size:18px;color:#a8d8ff;font-weight:bold;">You have <span id="gdisp">0</span> Gems</div>
+      <div style="font-size:9px;color:#aaa;margin-top:4px;">The ONLY place to buy gems. All purchases here.</div>
     </div>
-    <div class="sh">💎 Buy Gems</div>
-    <div class="sg">
-      <div class="gp" onclick="buyGems(50,'$0.99')"><div style="font-size:24px;">💎</div><div style="font-size:11px;color:#a8d8ff;font-weight:bold;">50 Gems</div><div style="font-size:12px;color:#7dff7d;">$0.99</div><div style="font-size:9px;color:#888;">Starter</div></div>
-      <div class="gp" onclick="buyGems(120,'$1.99')"><div style="font-size:24px;">💎💎</div><div style="font-size:11px;color:#a8d8ff;font-weight:bold;">120 Gems</div><div style="font-size:12px;color:#7dff7d;">$1.99</div><div style="font-size:9px;color:#ffd700;">Best Value!</div></div>
-      <div class="gp" onclick="buyGems(300,'$4.99')"><div style="font-size:24px;">💎💎💎</div><div style="font-size:11px;color:#a8d8ff;font-weight:bold;">300 Gems</div><div style="font-size:12px;color:#7dff7d;">$4.99</div><div style="font-size:9px;color:#ffd700;">Popular!</div></div>
-      <div class="gp" onclick="buyGems(700,'$9.99')"><div style="font-size:24px;">👑</div><div style="font-size:11px;color:#ffd700;font-weight:bold;">700 Gems</div><div style="font-size:12px;color:#7dff7d;">$9.99</div><div style="font-size:9px;color:#ffd700;">King Pack!</div></div>
+
+    <!-- Gem Packs -->
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct" style="color:#a8d8ff;">💎 Gem Packs</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+
+        <div onclick="buyGems(100,'$0.99')" style="display:flex;align-items:center;gap:10px;background:#0a0a1a;border:1px solid #2a2a4a;border-radius:10px;padding:10px;cursor:pointer;">
+          <div style="font-size:28px;">💎</div>
+          <div style="flex:1;"><div style="font-size:12px;color:#a8d8ff;font-weight:bold;">100 Gems</div><div style="font-size:9px;color:#555;">Starter pack</div></div>
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;">$0.99</div>
+        </div>
+
+        <div onclick="buyGems(250,'$1.99')" style="display:flex;align-items:center;gap:10px;background:#0a0a1a;border:1px solid #2a2a4a;border-radius:10px;padding:10px;cursor:pointer;">
+          <div style="font-size:28px;">💎💎</div>
+          <div style="flex:1;"><div style="font-size:12px;color:#a8d8ff;font-weight:bold;">250 Gems</div><div style="font-size:9px;color:#aaa;">Good value</div></div>
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;">$1.99</div>
+        </div>
+
+        <div onclick="buyGems(750,'$4.99')" style="display:flex;align-items:center;gap:10px;background:#0a1a0a;border:1px solid #2a4a2a;border-radius:10px;padding:10px;cursor:pointer;">
+          <div style="font-size:28px;">💎💎💎</div>
+          <div style="flex:1;"><div style="font-size:12px;color:#7dff7d;font-weight:bold;">750 Gems <span style="font-size:8px;background:#1a3a1a;padding:1px 4px;border-radius:3px;">+50 BONUS</span></div><div style="font-size:9px;color:#aaa;">Great value</div></div>
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;">$4.99</div>
+        </div>
+
+        <div onclick="buyGems(1700,'$9.99')" style="display:flex;align-items:center;gap:10px;background:#0a1a0a;border:2px solid #3a6a3a;border-radius:10px;padding:10px;cursor:pointer;position:relative;">
+          <div style="position:absolute;top:-8px;right:8px;background:#ffd700;color:#000;font-size:8px;font-weight:bold;padding:2px 6px;border-radius:4px;">POPULAR</div>
+          <div style="font-size:28px;">💎👑</div>
+          <div style="flex:1;"><div style="font-size:12px;color:#ffd700;font-weight:bold;">1,700 Gems <span style="font-size:8px;background:#1a3a0a;color:#7dff7d;padding:1px 4px;border-radius:3px;">+200 BONUS</span></div><div style="font-size:9px;color:#aaa;">Best daily value</div></div>
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;">$9.99</div>
+        </div>
+
+        <div onclick="buyGems(4000,'$19.99')" style="display:flex;align-items:center;gap:10px;background:#0a1a0a;border:1px solid #2a4a2a;border-radius:10px;padding:10px;cursor:pointer;">
+          <div style="font-size:28px;">💎💎💎💎</div>
+          <div style="flex:1;"><div style="font-size:12px;color:#7dff7d;font-weight:bold;">4,000 Gems <span style="font-size:8px;background:#1a3a1a;padding:1px 4px;border-radius:3px;">+500 BONUS</span></div><div style="font-size:9px;color:#aaa;">Power player</div></div>
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;">$19.99</div>
+        </div>
+
+        <div onclick="buyGems(12000,'$49.99')" style="display:flex;align-items:center;gap:10px;background:#1a0a1a;border:1px solid #4a2a4a;border-radius:10px;padding:10px;cursor:pointer;">
+          <div style="font-size:28px;">💜💎</div>
+          <div style="flex:1;"><div style="font-size:12px;color:#d8a8ff;font-weight:bold;">12,000 Gems <span style="font-size:8px;background:#2a1a3a;color:#d8a8ff;padding:1px 4px;border-radius:3px;">+2,000 BONUS</span></div><div style="font-size:9px;color:#aaa;">Elite pack</div></div>
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;">$49.99</div>
+        </div>
+
+        <div onclick="buyGems(30000,'$99.99')" style="display:flex;align-items:center;gap:10px;background:#1a0a0a;border:2px solid #6a2a2a;border-radius:10px;padding:10px;cursor:pointer;position:relative;">
+          <div style="position:absolute;top:-8px;right:8px;background:linear-gradient(90deg,#ffd700,#ff8c00);color:#000;font-size:8px;font-weight:bold;padding:2px 6px;border-radius:4px;">🐋 WHALE PACK</div>
+          <div style="font-size:28px;">🐋💎</div>
+          <div style="flex:1;"><div style="font-size:12px;color:#ffd700;font-weight:bold;">30,000 Gems <span style="font-size:8px;background:#2a1a0a;color:#ffd700;padding:1px 4px;border-radius:3px;">+5,000 BONUS</span></div><div style="font-size:9px;color:#aaa;">True whale status</div></div>
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;">$99.99</div>
+        </div>
+
+      </div>
     </div>
-    <div class="sh">⚡ Spend Gems</div>
-    <div class="sg">
-      <div class="si" onclick="spendGems(50,'grow')"><div class="sie">⚡</div><div class="sin">Instant Grow</div><div class="sic" style="color:#a8d8ff;">50💎</div><div class="sid">All crops ready</div></div>
-      <div class="si" onclick="spendGems(25,'water')"><div class="sie">💧</div><div class="sin">Water Refill</div><div class="sic" style="color:#a8d8ff;">25💎</div><div class="sid">Fill water max</div></div>
-      <div class="si" onclick="spendGems(75,'gold')"><div class="sie">💰</div><div class="sin">Gold Boost</div><div class="sic" style="color:#a8d8ff;">75💎</div><div class="sid">+500 gold now</div></div>
-      <div class="si" onclick="spendGems(150,'seed')"><div class="sie">🌟</div><div class="sin">Golden Seed</div><div class="sic" style="color:#a8d8ff;">150💎</div><div class="sid">Worth 1000g!</div></div>
-      <div class="si" onclick="spendGems(60,'feed')"><div class="sie">🌾</div><div class="sin">Animal Feast</div><div class="sic" style="color:#a8d8ff;">60💎</div><div class="sid">Feed all animals</div></div>
-      <div class="si" onclick="showLandInfo()"><div class="sie">🌾</div><div class="sin">Land Info</div><div class="sic" style="color:#7dff7d;">Free</div><div class="sid">How to get more plots</div></div>
-      <div class="si" onclick="spendGems(100,'spin')"><div class="sie">🎰</div><div class="sin">Extra Spin</div><div class="sic" style="color:#a8d8ff;">100💎</div><div class="sid">Spin again now</div></div>
-      <div class="si" onclick="spendGems(500,'vip')"><div class="sie">👑</div><div class="sin">VIP Boost</div><div class="sic" style="color:#a8d8ff;">500💎</div><div class="sid">Skip to next VIP</div></div>
-      <div class="si" onclick="buyGemsWithGold(500)"><div class="sie">💰➡️💎</div><div class="sin">Buy 5💎</div><div class="sic" style="color:#ffd700;">500g</div><div class="sid">Convert gold</div></div>
-      <div class="si" onclick="buyGemsWithGold(2000)"><div class="sie">💰➡️💎</div><div class="sin">Buy 25💎</div><div class="sic" style="color:#ffd700;">2000g</div><div class="sid">Convert gold</div></div>
+
+    <!-- Gold to Gems conversion -->
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct" style="color:#ffd700;">💰 Convert Gold to Gems (F2P)</div>
+      <div style="font-size:9px;color:#aaa;margin-bottom:8px;">Free to play path — convert your gold earnings!</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div onclick="buyGemsWithGold(500)" style="display:flex;align-items:center;gap:8px;background:#1a1a0a;border:1px solid #3a3a1a;border-radius:8px;padding:8px;cursor:pointer;">
+          <div style="font-size:20px;">💰</div>
+          <div style="flex:1;font-size:10px;color:#ffd700;">500g → 1💎</div>
+          <div style="font-size:9px;color:#aaa;">Basic rate</div>
+        </div>
+        <div onclick="buyGemsWithGold(10000)" style="display:flex;align-items:center;gap:8px;background:#1a1a0a;border:1px solid #3a3a1a;border-radius:8px;padding:8px;cursor:pointer;">
+          <div style="font-size:20px;">💰💰</div>
+          <div style="flex:1;font-size:10px;color:#ffd700;">10,000g → 35💎</div>
+          <div style="font-size:9px;color:#7dff7d;">Better value</div>
+        </div>
+        <div onclick="buyGemsWithGold(100000)" style="display:flex;align-items:center;gap:8px;background:#1a1a0a;border:1px solid #3a3a1a;border-radius:8px;padding:8px;cursor:pointer;">
+          <div style="font-size:20px;">💰💰💰</div>
+          <div style="flex:1;font-size:10px;color:#ffd700;">100,000g → 600💎</div>
+          <div style="font-size:9px;color:#7dff7d;">Best gold rate</div>
+        </div>
+      </div>
     </div>
+
+    <!-- Gem spends -->
+    <div class="card">
+      <div class="ct" style="color:#7dff7d;">⚡ Spend Gems</div>
+      <div class="sg">
+        <div class="si" onclick="spendGems(50,'grow')"><div class="sie">⚡</div><div class="sin">Speed All Crops</div><div class="sic" style="color:#a8d8ff;">50💎</div><div class="sid">All crops ready now</div></div>
+        <div class="si" onclick="spendGems(50,'stamina')"><div class="sie">⚡</div><div class="sin">+25 Stamina</div><div class="sic" style="color:#ffd700;">50💎</div><div class="sid">Restore energy</div></div>
+        <div class="si" onclick="spendGems(90,'stamina2')"><div class="sie">⚡⚡</div><div class="sin">+50 Stamina</div><div class="sic" style="color:#ffd700;">90💎</div><div class="sid">Better value</div></div>
+        <div class="si" onclick="spendGems(150,'stamina3')"><div class="sie">⚡⚡⚡</div><div class="sin">Full Stamina</div><div class="sic" style="color:#ffd700;">150💎</div><div class="sid">Refill 100⚡</div></div>
+        <div class="si" onclick="spendGems(75,'gold')"><div class="sie">💰</div><div class="sin">Gold Boost</div><div class="sic" style="color:#a8d8ff;">75💎</div><div class="sid">+500 gold now</div></div>
+        <div class="si" onclick="spendGems(25,'water')"><div class="sie">💧</div><div class="sin">Water Refill</div><div class="sic" style="color:#a8d8ff;">25💎</div><div class="sid">Fill water max</div></div>
+        <div class="si" onclick="spendGems(60,'feed')"><div class="sie">🌾</div><div class="sin">Animal Feast</div><div class="sic" style="color:#a8d8ff;">60💎</div><div class="sid">Feed all animals</div></div>
+        <div class="si" onclick="spendGems(100,'spin')"><div class="sie">🎰</div><div class="sin">Extra Spin</div><div class="sic" style="color:#a8d8ff;">100💎</div><div class="sid">Spin again now</div></div>
+      </div>
+    </div>
+
     <div style="font-size:9px;color:#333;text-align:center;margin-top:8px;padding:8px;">⚠️ App Store purchases coming soon. Demo mode active.</div>
   </div>
 </div>
@@ -1584,7 +1657,7 @@ function renderHunting(){
             <div style="width:${resPct}%;height:100%;background:linear-gradient(90deg,#1a4a8a,#7db8ff);border-radius:4px;"></div></div>
           <div style="font-size:9px;color:#aaa;">${resPct>=100?'Ready!':remH+'h remaining'}</div>
           <div style="font-size:9px;color:#7db8ff;margin-top:4px;">💡 Visitors speed this up!</div>
-          <button class="btn bsm bfu" onclick="skipResearch()" style="margin-top:6px;background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Skip (${cost}💎)</button>`;
+          <button class="btn bsm bfu" onclick="<div style="font-size:9px;color:#7db8ff;margin-top:4px;">💡 Visit 💎 Gems tab to skip!</div>`;
       }else{
         let targetAnimal=HUNT_ANIMALS.find(a=>a.id===req?.animal);
         resEl.innerHTML=`<div style="font-size:10px;color:#ffd700;margin-bottom:6px;">To unlock Lv${lv+1}: ${nextReq?.perk||''}</div>
@@ -3156,20 +3229,29 @@ async function askAI(){
   renderAIMessages();
 }
 function buyGems(amount,price){showModal('💎 Get Gems',`<div style="text-align:center;"><div style="font-size:40px;margin-bottom:8px;">💎</div><div style="font-size:13px;color:#a8d8ff;margin-bottom:6px;">${amount} Gems — ${price}</div><div style="font-size:10px;color:#aaa;margin-bottom:12px;">App Store purchases coming soon! Free demo gems for now.</div><button class="btn bg bfu" onclick="confirmGems(${amount});closeModal()">✅ Get ${amount} Gems (Demo)</button></div>`);}
-function buyGemsWithGold(cost){let gems=cost===500?5:cost===2000?25:cost===5000?75:cost===10000?200:0;if(!gems){showToast('❌ Invalid amount!');return;}if(G.gold<cost){showToast(`❌ Need ${cost}g!`);return;}G.gold-=cost;G.gems=(G.gems||0)+gems;updateHUD();saveGame();showToast(`💰➡️💎 Converted ${cost}g into ${gems} gems!`);}
+function buyGemsWithGold(cost){
+  let gems = cost===500?1:cost===10000?35:cost===100000?600:cost===2000?25:cost===5000?75:0;
+  if(!gems){showToast('❌ Invalid amount!');return;}
+  if(G.gold<cost){showToast(`❌ Need ${cost}g! You have ${G.gold}g`);return;}
+  G.gold-=cost;G.gems=(G.gems||0)+gems;
+  updateHUD();saveGame();
+  showToast(`💰➡️💎 Converted ${cost}g into ${gems}💎!`);
+}
 function confirmGems(n){G.gems=(G.gems||0)+n;updateHUD();saveGame();showToast(`💎 Got ${n} gems!`);}
 function spendGems(cost,type){
-  if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎!`);return;}G.gems-=cost;updateHUD();
+  if((G.gems||0)<cost){showToast(`❌ Need ${cost}💎! Go to 💎 Gems tab to get more.`);return;}G.gems-=cost;updateHUD();
   if(type==='grow'){G.plots.forEach(p=>{if(p.state==='planted'||p.state==='growing'){let crop=CROPS[p.crop]||TREES[p.crop];if(crop)p.plantTime=Date.now()-crop.time*1000;}});renderFarm();showToast('⚡ All crops ready!');}
   else if(type==='water'){G.water=G.maxWater;updateHUD();showToast('💧 Water full!');}
+  else if(type==='stamina'){refillStamina(25);showToast('⚡ +25 Stamina!');}
+  else if(type==='stamina2'){refillStamina(50);showToast('⚡ +50 Stamina!');}
+  else if(type==='stamina3'){refillStamina(100);showToast('⚡ Full Stamina restored!');}
   else if(type==='gold'){G.gold+=500;G.totalEarned+=500;updateHUD();showToast('💰 +500 gold!');}
   else if(type==='seed'){CROPS['goldenwheat']={name:'Golden Wheat',emoji:'✨',cost:0,time:30,sell:500,xp:100,seasons:[0,1,2,3],reqLv:1};let t=G.plots.findIndex(p=>p.state==='tilled');if(t!==-1)plantCrop(t,'goldenwheat');else{addItem('Golden Wheat Seed',1);showToast('🌟 Till a plot first!');}}
   else if(type==='feed'){G.animals.forEach(a=>{a.hunger=100;a.happiness=100;});renderAnimals();showToast('🌾 All animals fed!');}
-  else if(type==='plots'){for(let i=0;i<8;i++)G.plots.push({state:'empty',crop:null,plantTime:0,watered:false,building:null});renderFarm();showToast('🗺️ Farm expanded! +8 plots!');}
   else if(type==='spin'){G.lastSpin=0;openSpin();showToast('🎰 Extra spin ready!');}
-  else if(type==='vip'){if(G.level<5){showToast('❌ Need Level 5 first!');G.gems+=cost;updateHUD();return;}G.level=Math.max(G.level,VIP_LEVELS.find(v=>v.lv===G.vipLevel+1)?.reqGameLv||G.level);checkVIPLevel();renderVIP();showToast('👑 VIP boosted!');}
   saveGame();
 }
+
 let isSpinning=false,curAngle=0,spinUnlocked=false;
 function drawWheel(angle){let canvas=document.getElementById('wcan');if(!canvas)return;let ctx=canvas.getContext('2d'),cx=140,cy=140,r=135,slices=WHEEL_PRIZES.length,arc=(2*Math.PI)/slices;ctx.clearRect(0,0,280,280);for(let i=0;i<slices;i++){let start=angle+i*arc,end=start+arc;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.fillStyle=WHEEL_PRIZES[i].color;ctx.fill();ctx.strokeStyle='#0a1a0a';ctx.lineWidth=2;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(start+arc/2);ctx.textAlign='right';ctx.fillStyle='#e8f5e8';ctx.font='bold 10px Courier New';ctx.fillText(WHEEL_PRIZES[i].label,r-8,4);ctx.restore();}ctx.beginPath();ctx.arc(cx,cy,16,0,2*Math.PI);ctx.fillStyle='#0a1a0a';ctx.fill();ctx.strokeStyle='#ffd700';ctx.lineWidth=2;ctx.stroke();}
 function openSpin(){document.getElementById('so').classList.add('show');drawWheel(curAngle);updateSpinUI();}
@@ -3203,14 +3285,14 @@ function showHUDPop(type){
   if(type==='gold')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💰 Gold Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gold</span><span style="color:#ffd700;font-weight:bold;">${G.gold}g</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Total Earned</span><span>${G.totalEarned}g</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest crops & collect animal products for gold!</div><button class="btn bg bfu" onclick="showPanel('shop');closeHUDPop()" style="margin-top:8px;">Go to Store</button>`;
   else if(type==='gems')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💎 Gems Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current Gems</span><span style="color:#a8d8ff;font-weight:bold;">${G.gems||0}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Use gems to skip timers and get boosts!</div><button class="btn bfu" onclick="showPanel('iap');closeHUDPop()" style="margin-top:8px;background:#1a1a3a;border-color:#3a3a6a;color:#a8d8ff;">Buy Gems</button>`;
   else if(type==='level'){let needed=xpForLevel(G.level),pct=Math.floor((G.xp/needed)*100);const unlocks={3:'🎣 Pond',5:'🌿 Greenhouse',10:'⛏️ Mining',15:'🏗️ Silo',20:'🏪 Market',25:'🦚 Exotic Animals',30:'🍄 Rare Crops'};let nextUnlock=Object.entries(unlocks).find(([lv])=>parseInt(lv)>G.level);content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">⭐ Level Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Level</span><span style="color:#7dff7d;font-weight:bold;">${G.level}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>XP Progress</span><span>${G.xp}/${needed} (${pct}%)</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Next Unlock</span><span style="color:#ffd700;">${nextUnlock?`Lv${nextUnlock[0]}: ${nextUnlock[1]}`:'Keep going!'}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">💡 Harvest, fish, and mine for fast XP!</div>`;}
-  else if(type==='water')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💧 Water Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#7db8ff;font-weight:bold;">${Math.floor(G.water)}/${G.maxWater}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill per day</span><span>+3💧</span></div><button class="btn bb bfu" onclick="spendGems(25,'water');closeHUDPop()" style="margin-top:8px;">💎 Instant Refill (25💎)</button>`;
+  else if(type==='water')content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">💧 Water Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#7db8ff;font-weight:bold;">${Math.floor(G.water)}/${G.maxWater}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill per day</span><span>+3💧</span></div><button class="btn bb bfu" >Visit 💎 Gems tab to refill!`;
   else if(type==='stamina'){
     let rate = Math.floor(getStaminaRefillRate()/60000);
     content=`<div style="font-size:11px;color:#ffd700;font-weight:bold;margin-bottom:8px;">⚡ Stamina</div>
     <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Current</span><span style="color:#ffd700;font-weight:bold;">${Math.floor(G.stamina||0)}/${getMaxStamina()}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Refill rate</span><span>+1⚡ every ${rate} min</span></div>
     <div style="font-size:9px;color:#aaa;margin-bottom:8px;">Used for every action. Manage wisely!</div>
-    <button class="btn bfu" onclick="buyStaminaRefill('small');closeHUDPop()" style="background:#2a2a0a;border-color:#5a5a1a;color:#ffd700;margin-bottom:4px;">+25⚡ (50💎)</button>
+    <button class="btn bfu" onclick="buyStaminaRefill('small');closeHUDPop()" style="background:#2a2a0a;border-color:#5a5a1a;color:#ffd700;margin-bottom:4px;">Visit 💎 Gems tab for stamina refills!
     <button class="btn bfu" onclick="buyStaminaRefill('medium');closeHUDPop()" style="background:#2a2a0a;border-color:#5a5a1a;color:#ffd700;margin-bottom:4px;">+50⚡ (90💎)</button>
     <button class="btn bfu" onclick="buyStaminaRefill('full');closeHUDPop()" style="background:#2a2a0a;border-color:#5a5a1a;color:#ffd700;">Full Refill (150💎)</button>`}
   else if(type==='season'){let cropList=Object.values(CROPS).filter(c=>c.seasons?.includes(G.season)).map(c=>c.emoji).slice(0,6).join(' ');content=`<div style="font-size:11px;color:#7dff7d;font-weight:bold;margin-bottom:8px;">${SEASONS[G.season].emoji} Season Info</div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Season</span><span style="color:${SEASONS[G.season].color};font-weight:bold;">${SEASONS[G.season].name}</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Day</span><span>${G.seasonDay}/28</span></div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span>Days left</span><span>${28-G.seasonDay}</span></div><div style="font-size:9px;color:#aaa;margin-top:6px;">Best crops: ${cropList||'Check Store'}</div>`;}
