@@ -711,6 +711,72 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   </div>
 
   <!-- VIP -->
+  <!-- ANIMAL MARKET -->
+  <div id="panel-market2" class="panel">
+    <div class="ptitle">🐄 Animal Market</div>
+    <div class="card" style="background:#0a1a0a;border-color:#3a6a2a;margin-bottom:8px;text-align:center;">
+      <div style="font-size:11px;color:#7dff7d;font-weight:bold;">Grow animals to Prime 👑 then sell!</div>
+      <div style="font-size:9px;color:#aaa;margin-top:3px;">Ranch players earn 3x market price</div>
+    </div>
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct">💊 Cottage Medicine Store</div>
+      <div id="medicine-store"></div>
+    </div>
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct">🌾 Hay Store (Ranch Exclusive)</div>
+      <div id="hay-store"></div>
+    </div>
+    <div class="card">
+      <div class="ct">📊 Market Prices</div>
+      <div id="market-prices"></div>
+    </div>
+  </div>
+
+  <!-- SATURDAY BOSS -->
+  <div id="panel-boss" class="panel">
+    <div class="ptitle">👹 Saturday Boss</div>
+    <div class="card" style="background:#1a0a0a;border-color:#6a1a1a;margin-bottom:8px;text-align:center;">
+      <div style="font-size:40px;" id="boss-emoji">👹</div>
+      <div style="font-size:13px;color:#ff7d7d;font-weight:bold;" id="boss-name">Awaiting Next Boss...</div>
+      <div style="font-size:10px;color:#aaa;margin-top:4px;" id="boss-status">Next boss spawns Saturday 12PM</div>
+      <div style="height:12px;background:#0a0a0a;border-radius:6px;overflow:hidden;margin:8px 0;border:1px solid #3a1a1a;">
+        <div id="boss-hp-bar" style="height:100%;background:linear-gradient(90deg,#8a1a1a,#ff4444);border-radius:6px;width:100%;transition:width 0.5s;"></div>
+      </div>
+      <div style="font-size:10px;color:#ff7d7d;" id="boss-hp-text">HP: Full</div>
+    </div>
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct">⚔️ Your Zone</div>
+      <div id="zone-display" style="text-align:center;padding:8px;">
+        <div style="font-size:24px;" id="zone-emoji">⚔️</div>
+        <div style="font-size:12px;color:#ffd700;font-weight:bold;" id="zone-name">Loading...</div>
+        <div style="font-size:10px;color:#aaa;margin-top:4px;" id="zone-damage">Total damage: 0</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct">🔫 Attack Boss</div>
+      <div style="text-align:center;margin-bottom:8px;">
+        <div style="font-size:10px;color:#aaa;">Using: <span id="boss-weapon">🪃 Slingshot</span></div>
+        <div style="font-size:9px;color:#ffd700;">Each attack costs 20⚡</div>
+      </div>
+      <button class="btn br bfu" onclick="attackBoss()" style="background:#3a0a0a;border-color:#8a2a2a;color:#ff7d7d;font-size:13px;padding:12px;">⚔️ ATTACK! (20⚡)</button>
+    </div>
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct">💥 Recent Drops</div>
+      <div id="boss-drops" style="font-size:9px;color:#aaa;max-height:120px;overflow-y:auto;"></div>
+    </div>
+    <div class="card">
+      <div class="ct">🏆 Zone Damage</div>
+      <div style="font-size:10px;margin-bottom:4px;">⚔️ Zone 1: <span id="zone1-dmg" style="color:#ff7d7d;">0</span></div>
+      <div style="height:8px;background:#0a0a0a;border-radius:4px;overflow:hidden;margin-bottom:8px;">
+        <div id="zone1-bar" style="height:100%;background:#8a2a2a;border-radius:4px;width:50%;"></div>
+      </div>
+      <div style="font-size:10px;margin-bottom:4px;">🛡️ Zone 2: <span id="zone2-dmg" style="color:#7db8ff;">0</span></div>
+      <div style="height:8px;background:#0a0a0a;border-radius:4px;overflow:hidden;">
+        <div id="zone2-bar" style="height:100%;background:#2a4a8a;border-radius:4px;width:50%;"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="panel-vip" class="panel">
     <div class="ptitle">👑 VIP Levels</div>
     <div class="card" style="text-align:center;background:#0a0a1a;border-color:#3a3a6a;">
@@ -847,6 +913,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <button class="nb" onclick="showPanel('hunt')" id="nav-hunt"><span class="ni">🦌</span>Hunt</button>
   <button class="nb" onclick="showPanel('mining')" id="nav-mining"><span class="ni">⛏️</span>Mine</button>
   <button class="nb" onclick="showPanel('pond')" id="nav-pond"><span class="ni">🎣</span>Pond</button>
+  <button class="nb" onclick="showPanel('market2')" id="nav-market2"><span class="ni">🐄</span>Market</button>
+  <button class="nb" onclick="showPanel('boss')" id="nav-boss"><span class="ni">👹</span>Boss</button>
   <button class="nb" onclick="showPanel('vip')" id="nav-vip"><span class="ni">👑</span>VIP</button>
   <button class="nb" onclick="showPanel('quests')" id="nav-quests"><span class="ni">📜</span>Quests</button>
   <button class="nb" onclick="showPanel('chat')" id="nav-chat"><span class="ni">💬</span>Chat</button>
@@ -1629,12 +1697,373 @@ function initGame(){
   setTimeout(()=>showTutorial('spin'),3000);
   showToast(`🌱 Welcome ${G.name}! Your ${startPlots} plots await!`);
 }
-function renderAll(){renderFarm();renderShop();renderQuests();renderInventory();renderAnimals();renderPond();renderVIP();renderBuildings();renderMining();renderChat();renderAIMessages();updateHUD();updateWeatherFX();}
+// ===== PHASE 3: ANIMAL MARKET + VET + BOSS =====
+
+// ===== ANIMAL MARKET =====
+const ANIMAL_MARKET_PRICES = {
+  chicken:{name:'Chicken',emoji:'🐔',price:100},
+  duck:   {name:'Duck',   emoji:'🦆',price:120},
+  goat:   {name:'Goat',   emoji:'🐐',price:200},
+  cow:    {name:'Cow',    emoji:'🐄',price:500},
+  sheep:  {name:'Sheep',  emoji:'🐑',price:300},
+  pig:    {name:'Pig',    emoji:'🐷',price:400},
+  turkey: {name:'Turkey', emoji:'🦃',price:350},
+  bee:    {name:'Bee',    emoji:'🐝',price:450},
+  rabbit: {name:'Rabbit', emoji:'🐰',price:250},
+  horse:  {name:'Horse',  emoji:'🐴',price:3000},
+  peacock:{name:'Peacock',emoji:'🦚',price:2500},
+  alpaca: {name:'Alpaca', emoji:'🦙',price:2000},
+};
+
+// ===== COTTAGE MEDICINE =====
+const MEDICINES = [
+  {id:'herb_mix',    name:'Basic Herb Mix',    emoji:'🌿', price:50,  cures:['chicken','duck'],              reqHomeLv:1},
+  {id:'vitamin_blend',name:'Vitamin Blend',    emoji:'💊', price:150, cures:['goat','sheep','pig'],          reqHomeLv:5},
+  {id:'premium',     name:'Premium Remedy',    emoji:'🧪', price:300, cures:['cow','turkey','bee'],          reqHomeLv:8},
+  {id:'advanced',    name:'Advanced Formula',  emoji:'💉', price:600, cures:['horse','alpaca','peacock'],    reqHomeLv:12},
+  {id:'master_cure', name:'Master Cure',       emoji:'👑', price:1000,cures:['ostrich'],                    reqHomeLv:15},
+];
+
+// HAY PRICES
+const HAY_PRICES = [
+  {amount:5,  price:100,  label:'5x Hay'},
+  {amount:10, price:180,  label:'10x Hay'},
+  {amount:25, price:400,  label:'25x Hay'},
+  {amount:50, price:700,  label:'50x Hay'},
+];
+
+function sellAnimalToMarket(animalIdx) {
+  let a = G.animals[animalIdx];
+  if(!a) return;
+  let stage = getAnimalStage(a);
+  if(stage.name !== 'Prime') { showToast('❌ Animal must be Prime 👑 to sell!'); return; }
+  let market = ANIMAL_MARKET_PRICES[a.type];
+  if(!market) { showToast('❌ Cannot sell this animal!'); return; }
+  let price = market.price;
+  if(G.homeType === 'ranch') price *= 3; // Ranch 3x
+  G.gold += price;
+  G.totalEarned += price;
+  addXP(100);
+  G.animals.splice(animalIdx, 1);
+  renderAnimals();
+  updateHUD();
+  saveGame();
+  showToast(`${market.emoji} ${market.name} sold for ${price}💰! ${G.homeType==='ranch'?'(3x Ranch bonus!)':''}`);
+}
+
+function buyMedicine(medicineId) {
+  let med = MEDICINES.find(m => m.id === medicineId);
+  if(!med) return;
+  if(G.gold < med.price) { showToast(`❌ Need ${med.price}g!`); return; }
+  G.gold -= med.price;
+  addItem(med.name, 1);
+  updateHUD();
+  renderMarket();
+  showToast(`${med.emoji} ${med.name} purchased! Use on sick animals.`);
+}
+
+function buyHay(amount, price) {
+  if(G.gold < price) { showToast(`❌ Need ${price}g!`); return; }
+  G.gold -= price;
+  addItem('Hay', amount);
+  updateHUD();
+  showToast(`🌾 Bought ${amount}x Hay for ${price}g!`);
+}
+
+function useMedicine(animalIdx) {
+  let a = G.animals[animalIdx];
+  if(!a) return;
+  let animalType = a.type;
+  let med = MEDICINES.find(m => m.cures.includes(animalType));
+  if(!med) { showToast('❌ No medicine available for this animal!'); return; }
+  let owned = G.inventory[med.name] || 0;
+  if(owned < 1) { showToast(`❌ Need ${med.name}! Buy from Cottage farms.`); return; }
+  G.inventory[med.name]--;
+  a.sick = false;
+  a.hunger = Math.min(100, (a.hunger||0) + 30);
+  renderAnimals();
+  saveGame();
+  showToast(`${med.emoji} ${a.name} cured with ${med.name}!`);
+}
+
+function feedAnimalWithHay(i) {
+  let a = G.animals[i];
+  let d = ANIMALS_D[a.type];
+  if(!d) return;
+  let hayOwned = G.inventory['Hay'] || 0;
+  if(G.gold < d.feed) { showToast(`❌ Need ${d.feed}g!`); return; }
+  if(hayOwned < 1) { showToast('❌ Need Hay! Buy from Market or Ranch players.'); return; }
+  G.gold -= d.feed;
+  G.inventory['Hay'] = Math.max(0, hayOwned - 1);
+  a.hunger = Math.min(100, (a.hunger||0) + 30);
+  a.feeds = (a.feeds||0) + 1;
+  let stage = getAnimalStage(a);
+  playSound('animal');
+  renderAnimals();
+  updateHUD();
+  showToast(`${a.emoji} Fed with Hay! Stage: ${stage.name}`);
+}
+
+function renderMarket() {
+  // Medicine store
+  let medEl = document.getElementById('medicine-store');
+  if(medEl) {
+    if(G.homeType === 'cottage') {
+      let homeLv = G.homeLv || 1;
+      medEl.innerHTML = MEDICINES.map(m => {
+        let unlocked = homeLv >= m.reqHomeLv;
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:6px;background:#0a1a0a;border-radius:6px;">
+          <div style="font-size:20px;">${m.emoji}</div>
+          <div style="flex:1;"><div style="font-size:10px;color:#7dff7d;">${m.name}</div>
+          <div style="font-size:8px;color:#aaa;">Cures: ${m.cures.join(', ')}</div></div>
+          ${unlocked ? `<button class="btn bsm bg" onclick="buyMedicine('${m.id}')">${m.price}g</button>` : `<div style="font-size:9px;color:#ff7d7d;">Home Lv${m.reqHomeLv}</div>`}
+        </div>`;
+      }).join('');
+    } else {
+      medEl.innerHTML = `<div style="font-size:10px;color:#aaa;text-align:center;padding:8px;">
+        🏡 Only Cottage players can sell medicine!<br>Visit a Cottage farm in your zone to buy.
+      </div>`;
+    }
+  }
+
+  // Hay store
+  let hayEl = document.getElementById('hay-store');
+  if(hayEl) {
+    if(G.homeType === 'ranch') {
+      hayEl.innerHTML = HAY_PRICES.map(h => `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:6px;background:#1a1a0a;border-radius:6px;">
+          <div style="font-size:20px;">🌾</div>
+          <div style="flex:1;"><div style="font-size:10px;color:#ffd700;">${h.label}</div>
+          <div style="font-size:8px;color:#aaa;">Feed your animals daily</div></div>
+          <button class="btn bsm bg" onclick="buyHay(${h.amount},${h.price})">${h.price}g</button>
+        </div>`).join('');
+    } else {
+      hayEl.innerHTML = `<div style="font-size:10px;color:#aaa;text-align:center;padding:8px;">
+        🏚️ Only Ranch players sell Hay!<br>Visit a Ranch farm in your zone to buy.<br><br>
+        <div style="font-size:9px;color:#ffd700;">You have: ${G.inventory['Hay']||0}x Hay</div>
+      </div>`;
+    }
+  }
+
+  // Market prices
+  let pricesEl = document.getElementById('market-prices');
+  if(pricesEl) {
+    pricesEl.innerHTML = Object.entries(ANIMAL_MARKET_PRICES).map(([type, m]) => {
+      let ranchPrice = m.price * 3;
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+        <div style="font-size:14px;">${m.emoji}</div>
+        <div style="flex:1;font-size:10px;color:#e8f5e8;">${m.name}</div>
+        <div style="font-size:9px;color:#ffd700;">${m.price}g</div>
+        <div style="font-size:9px;color:#ff9a4a;">🏚️${ranchPrice}g</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ===== SATURDAY BOSS BATTLE =====
+const BOSS_ROSTER = [
+  {name:'Giant Rat King',   emoji:'🐀', maxHp:50000,  week:1, difficulty:'Easy'},
+  {name:'Mega Raccoon',     emoji:'🦝', maxHp:100000, week:2, difficulty:'Medium'},
+  {name:'Demon Boar',       emoji:'🐗', maxHp:200000, week:3, difficulty:'Hard'},
+  {name:'Ancient Gator',    emoji:'🐊', maxHp:500000, week:4, difficulty:'Legendary'},
+];
+
+const BOSS_DROPS_TABLE = {
+  slingshot:  [{item:'💰 Gold',   amount:()=>Math.floor(Math.random()*50)+50,   chance:0.60},
+               {item:'🌾 Seeds',  amount:()=>3,                                  chance:0.25},
+               {item:'💎 Gems',   amount:()=>Math.floor(Math.random()*10)+1,     chance:0.10},
+               {item:'⚡ Stamina',amount:()=>5,                                  chance:0.05}],
+  bow:        [{item:'💰 Gold',   amount:()=>Math.floor(Math.random()*150)+100,  chance:0.50},
+               {item:'💎 Gems',   amount:()=>Math.floor(Math.random()*25)+5,     chance:0.25},
+               {item:'🍖 Meat',   amount:()=>3,                                  chance:0.15},
+               {item:'⚡ Stamina',amount:()=>10,                                 chance:0.10}],
+  rifle:      [{item:'💰 Gold',   amount:()=>Math.floor(Math.random()*300)+200,  chance:0.40},
+               {item:'💎 Gems',   amount:()=>Math.floor(Math.random()*50)+10,    chance:0.30},
+               {item:'🐣 Animal', amount:()=>1,                                  chance:0.15},
+               {item:'⚡ Stamina',amount:()=>20,                                 chance:0.15}],
+  sniper:     [{item:'💰 Gold',   amount:()=>Math.floor(Math.random()*500)+500,  chance:0.35},
+               {item:'💎 Gems',   amount:()=>Math.floor(Math.random()*100)+50,   chance:0.30},
+               {item:'🌟 Rare',   amount:()=>1,                                  chance:0.20},
+               {item:'⚡ Stamina',amount:()=>35,                                 chance:0.15}],
+  gold_rifle: [{item:'💰 Gold',   amount:()=>Math.floor(Math.random()*2000)+1000,chance:0.30},
+               {item:'💎 Gems',   amount:()=>Math.floor(Math.random()*200)+100,  chance:0.30},
+               {item:'👑 Exclusive',amount:()=>1,                                chance:0.20},
+               {item:'⚡ Stamina',amount:()=>50,                                 chance:0.20}],
+  gator_gun:  [{item:'💰 Gold',   amount:()=>Math.floor(Math.random()*5000)+5000,chance:0.25},
+               {item:'💎 Gems',   amount:()=>Math.floor(Math.random()*500)+200,  chance:0.25},
+               {item:'👑 Boss Animal',amount:()=>1,                              chance:0.25},
+               {item:'⚡ Stamina',amount:()=>100,                                chance:0.25}],
+};
+
+function getCurrentBoss() {
+  let weekNum = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000)) % 4;
+  return BOSS_ROSTER[weekNum];
+}
+
+function isSaturdayBoss() {
+  let now = new Date();
+  return now.getDay() === 6; // Saturday
+}
+
+function attackBoss() {
+  if(!isSaturdayBoss()) { showToast('👹 Boss only spawns on Saturdays!'); return; }
+  if(!useStamina('boss')) return;
+
+  let weapon = G.hunting?.currentWeapon || 'slingshot';
+  let drops = BOSS_DROPS_TABLE[weapon] || BOSS_DROPS_TABLE.slingshot;
+  let roll = Math.random();
+  let cum = 0;
+  let drop = drops[drops.length-1];
+  for(let d of drops) { cum += d.chance; if(roll <= cum) { drop = d; break; } }
+
+  let amount = drop.amount();
+  let dropText = '';
+
+  if(drop.item.includes('Gold')) {
+    G.gold += amount; G.totalEarned += amount;
+    dropText = `+${amount}💰`;
+  } else if(drop.item.includes('Gems')) {
+    G.gems = (G.gems||0) + amount;
+    dropText = `+${amount}💎`;
+  } else if(drop.item.includes('Stamina')) {
+    refillStamina(amount);
+    dropText = `+${amount}⚡`;
+  } else if(drop.item.includes('Seeds')) {
+    addItem('Wheat', amount);
+    dropText = `+${amount} Seeds`;
+  } else if(drop.item.includes('Meat')) {
+    addItem('Meat', amount);
+    dropText = `+${amount}🍖`;
+  } else {
+    G.gems = (G.gems||0) + 50;
+    dropText = '+50💎 (Special!)';
+  }
+
+  // Track zone damage
+  if(!G.bossDamage) G.bossDamage = {zone1:0, zone2:0, myDamage:0, drops:[]};
+  let dmg = Math.floor(Math.random()*100) + 50;
+  G.bossDamage.myDamage += dmg;
+  if(G.zone === 1) G.bossDamage.zone1 += dmg;
+  else G.bossDamage.zone2 += dmg;
+  G.bossDamage.drops.push(`⚔️ Hit for ${dmg} dmg → ${drop.item} ${dropText}`);
+
+  addXP(50);
+  updateHUD();
+  renderBoss();
+  saveGame();
+  playSound('harvest');
+  showToast(`⚔️ ATTACK! ${drop.item} ${dropText}`);
+}
+
+function renderBoss() {
+  let boss = getCurrentBoss();
+  let isSat = isSaturdayBoss();
+
+  let bossEmoji = document.getElementById('boss-emoji');
+  let bossName = document.getElementById('boss-name');
+  let bossStatus = document.getElementById('boss-status');
+  let bossHpBar = document.getElementById('boss-hp-bar');
+  let bossHpText = document.getElementById('boss-hp-text');
+
+  if(bossEmoji) bossEmoji.textContent = isSat ? boss.emoji : '💤';
+  if(bossName) bossName.textContent = isSat ? boss.name : 'Awaiting Next Boss...';
+  if(bossStatus) bossStatus.textContent = isSat ? `⚔️ ACTIVE NOW! ${boss.difficulty}` : 'Next boss spawns Saturday 12PM';
+
+  // Simulated HP based on total damage
+  let totalDmg = (G.bossDamage?.zone1||0) + (G.bossDamage?.zone2||0);
+  let hpPct = Math.max(0, 100 - (totalDmg/boss.maxHp*100));
+  if(bossHpBar) bossHpBar.style.width = hpPct + '%';
+  if(bossHpText) bossHpText.textContent = `HP: ${Math.floor(hpPct)}% | Your damage: ${G.bossDamage?.myDamage||0}`;
+
+  // Zone display
+  let zoneEmoji = document.getElementById('zone-emoji');
+  let zoneName = document.getElementById('zone-name');
+  let zoneDmg = document.getElementById('zone-damage');
+  let zone = ZONES[G.zone] || {name:'Unassigned', emoji:'🌍'};
+  if(zoneEmoji) zoneEmoji.textContent = zone.emoji;
+  if(zoneName) zoneName.textContent = zone.name;
+  if(zoneDmg) zoneDmg.textContent = `Your zone damage: ${G.zone===1?(G.bossDamage?.zone1||0):(G.bossDamage?.zone2||0)}`;
+
+  // Weapon
+  let bossWeapon = document.getElementById('boss-weapon');
+  let w = WEAPONS.find(x => x.id === (G.hunting?.currentWeapon||'slingshot'));
+  if(bossWeapon) bossWeapon.textContent = `${w?.emoji||'🪃'} ${w?.name||'Slingshot'}`;
+
+  // Zone bars
+  let z1dmg = document.getElementById('zone1-dmg');
+  let z2dmg = document.getElementById('zone2-dmg');
+  let z1bar = document.getElementById('zone1-bar');
+  let z2bar = document.getElementById('zone2-bar');
+  let z1 = G.bossDamage?.zone1||0;
+  let z2 = G.bossDamage?.zone2||0;
+  let total = z1 + z2 || 1;
+  if(z1dmg) z1dmg.textContent = z1;
+  if(z2dmg) z2dmg.textContent = z2;
+  if(z1bar) z1bar.style.width = Math.floor(z1/total*100)+'%';
+  if(z2bar) z2bar.style.width = Math.floor(z2/total*100)+'%';
+
+  // Drops log
+  let dropsEl = document.getElementById('boss-drops');
+  if(dropsEl) dropsEl.innerHTML = (G.bossDamage?.drops||[]).slice(-10).reverse().map(d=>`<div>${d}</div>`).join('') || '<div style="color:#555;">No attacks yet this week</div>';
+
+  // Check if boss defeated
+  if(hpPct <= 0 && isSat && !G.bossDefeatedThisWeek) {
+    G.bossDefeatedThisWeek = true;
+    let winZone = (G.bossDamage?.zone1||0) >= (G.bossDamage?.zone2||0) ? 1 : 2;
+    let playerWon = G.zone === winZone;
+    setTimeout(() => {
+      showModal('🏆 Boss Defeated!', `
+        <div style="text-align:center;">
+          <div style="font-size:48px;">${playerWon?'🏆':'🥈'}</div>
+          <div style="font-size:14px;color:${playerWon?'#ffd700':'#aaa'};font-weight:bold;margin-bottom:8px;">
+            ${playerWon?'YOUR ZONE WINS!':'YOUR ZONE FOUGHT HARD!'}
+          </div>
+          <div style="font-size:11px;color:#7dff7d;margin-bottom:12px;">
+            ${playerWon?'🥇 500💎 + 2x Research boost all week!':'🥈 200💎 + 25% all boosts this week!'}
+          </div>
+          <div style="font-size:10px;color:#aaa;background:#0a1a0a;border-radius:6px;padding:8px;margin-bottom:8px;">
+            ${playerWon?'💡 Tip: Use research boost on hunting levels first — unlock stronger weapons before next boss!':'💡 Tip: Use gold boost to upgrade buildings — stronger farm = more damage next Saturday!'}
+          </div>
+          <button class="btn bg bfu" onclick="claimBossReward(${playerWon});closeModal()">Claim Rewards!</button>
+        </div>`);
+    }, 500);
+  }
+}
+
+function claimBossReward(won) {
+  if(won) {
+    G.gems = (G.gems||0) + 500;
+    G.gold += 1000;
+    showToast('🏆 Zone Victory! +500💎 +1000g! Research boost active!');
+  } else {
+    G.gems = (G.gems||0) + 200;
+    G.gold += 500;
+    showToast('🥈 +200💎 +500g! +25% all boosts this week!');
+  }
+  updateHUD();
+  saveGame();
+}
+
+// ===== RENDER ALL PANELS =====
+function renderAll(){
+  renderFarm();renderShop();renderQuests();renderInventory();
+  renderAnimals();renderPond();renderVIP();renderBuildings();
+  renderMining();renderChat();renderAIMessages();renderMarket();
+  updateHUD();updateWeatherFX();
+}
 function startCycles(){setInterval(gameTick,10000);setInterval(dayTick,120000);}
 function gameTick(){
   let hasBld=(k)=>Array.isArray(G.buildings)?G.buildings.includes(k):(G.buildings[k]>0);
   G.animals.forEach(a=>{
     a.hunger=Math.max(0,(a.hunger||100)-0.5);
+    // Random sickness (Ranch immune)
+    if(G.homeType!=='ranch'&&!a.sick&&Math.random()<0.0005){
+      a.sick=true;
+      showToast(`🤒 ${a.name} is sick! Buy medicine from a Cottage farm!`);
+      renderAnimals();
+    }
+    // Sick animals produce slower
+    if(a.sick)a.hunger=Math.max(0,(a.hunger||100)-1);
     if((a.hunger||0)>20){a.produceTimer=(a.produceTimer||0)+10;let d=ANIMALS_D[a.type];if(d&&a.produceTimer>=d.pTime){a.produceTimer=0;addItem(d.pName||'Produce',1);showToast(`${d.emoji} ${a.name} produced!`);}}
   });
   let vip=VIP_LEVELS.find(v=>v.lv===G.vipLevel);let autoW=(vip?.autoWater||0);
@@ -1838,6 +2267,8 @@ function renderAnimals(){
         <button class="btn bsm" onclick="feedAnimal(${i})">Feed ${d.feed}g</button>
         <button class="btn bsm bg" onclick="collectAnimal(${i})">Collect</button>
         <button class="btn bsm" onclick="speedUpAnimal(${i})" style="background:#2a1a4a;border-color:#5a3a8a;color:#d8a8ff;">⚡ Speed</button>
+        ${stage.name==='Prime'?`<button class="btn bsm" onclick="sellAnimalToMarket(${i})" style="background:#2a4a0a;border-color:#5a8a1a;color:#7dff7d;">💰 Sell</button>`:''}
+        ${a.sick?`<button class="btn bsm br" onclick="useMedicine(${i})">💊 Cure</button>`:''}
       </div>
     </div>`;
   }).join('');
@@ -2027,7 +2458,7 @@ let audioCtx=null;
 function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 function playTone(freq,dur,type='square',vol=0.1){try{let ctx=getAudio();let osc=ctx.createOscillator();let gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type=type;osc.frequency.value=freq;gain.gain.value=vol;gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);osc.start();osc.stop(ctx.currentTime+dur);}catch(e){}}
 function playSound(type){if(type==='till')playTone(120,0.2,'sawtooth',0.08);else if(type==='plant')playTone(440,0.15,'sine',0.1);else if(type==='water'){playTone(880,0.1,'sine',0.08);playTone(660,0.15,'sine',0.08);}else if(type==='harvest'){playTone(523,0.1,'square',0.1);setTimeout(()=>playTone(659,0.1,'square',0.1),100);setTimeout(()=>playTone(784,0.2,'square',0.1),200);}else if(type==='levelup'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.2,'sine',0.12),i*100));}else if(type==='animal')playTone(300,0.3,'sine',0.08);else if(type==='fish'){playTone(440,0.1,'sine',0.1);setTimeout(()=>playTone(550,0.2,'sine',0.1),150);}else if(type==='build'){[200,250,300].forEach((f,i)=>setTimeout(()=>playTone(f,0.15,'square',0.1),i*80));}else if(type==='critter'){playTone(200,0.1,'sawtooth',0.1);setTimeout(()=>playTone(150,0.2,'sawtooth',0.1),100);}}
-function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();if(name==='home')renderHomeUpgrade();if(name==='leaderboard')renderLeaderboard();if(name==='guide')renderGuide();if(name==='hunt')renderHunting();}
+function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();if(name==='home')renderHomeUpgrade();if(name==='leaderboard')renderLeaderboard();if(name==='guide')renderGuide();if(name==='hunt')renderHunting();if(name==='market2')renderMarket();if(name==='boss')renderBoss();}
 function showModal(title,body){document.getElementById('mt').textContent=title;document.getElementById('mb').innerHTML=body;document.getElementById('modal').classList.add('show');}
 function closeModal(){document.getElementById('modal').classList.remove('show');}
 let toastTO;
@@ -2113,7 +2544,7 @@ function renderMining(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine')
 function doMine(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');if(!hasMine){showToast('❌ Buy a Mine Plot from Store first!');return;}if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.water<10){showToast('❌ Need 10💧 to mine!');return;}G.water-=10;let campBonus=G.homeType==='camp'?2:1,found=[];for(let r=0;r<campBonus;r++){let roll=Math.random(),cum=0;for(let m of MINERALS){cum+=m.r;if(roll<=cum){found.push(m);break;}}}if(!found.length)found.push(MINERALS[0]);found.forEach(m=>{G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);});let supDrop=getMineralDrop();renderMining();updateHUD();playSound('build');showToast(`⛏️ Found: ${found.map(m=>m.e+m.n).join(', ')}${supDrop}`);}
 function spendMineGems(){if((G.gems||0)<75){showToast('❌ Need 75💎!');return;}G.gems-=75;updateHUD();let rare=MINERALS.slice(4),m=rare[Math.floor(Math.random()*rare.length)];G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);renderMining();updateHUD();showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);}
 function buyMinePlot(){if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.gold<300){showToast('❌ Need 300g!');return;}if(G.hasMine){showToast('✅ Mine already built!');return;}G.gold-=300;G.hasMine=true;updateHUD();renderMining();renderShop();showToast('⛏️ Mine built! Go to Mine tab to start digging!');}
-function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(!data.stamina)data.stamina=100;if(!data.maxStamina)data.maxStamina=100;if(!data.lastStaminaRefill)data.lastStaminaRefill=Date.now();if(!data.zone)data.zone=0;if(!data.zoneAssigned)data.zoneAssigned=false;if(!data.workers)data.workers=0;if(!data.hunting)data.hunting=null;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(!data.stamina)data.stamina=100;if(!data.maxStamina)data.maxStamina=100;if(!data.lastStaminaRefill)data.lastStaminaRefill=Date.now();if(!data.zone)data.zone=0;if(!data.zoneAssigned)data.zoneAssigned=false;if(!data.workers)data.workers=0;if(!data.hunting)data.hunting=null;if(!data.bossDamage)data.bossDamage={zone1:0,zone2:0,myDamage:0,drops:[]};if(!data.bossDefeatedThisWeek)data.bossDefeatedThisWeek=false;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
 // ===== HOME UPGRADE SYSTEM =====
 // Cost multipliers per home type (how expensive to upgrade)
 const HOME_COST_MULT={
