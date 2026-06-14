@@ -789,11 +789,44 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
   <!-- CHAT -->
   <div id="panel-chat" class="panel">
-    <div class="ptitle">💬 World Chat</div>
-    <div class="card"><div id="cm"></div>
-      <div class="cir"><input id="ci" type="text" placeholder="Say something..." maxlength="100"><button class="btn bsm" onclick="sendChat()">Send</button></div>
+    <div class="ptitle">💬 Social</div>
+    <!-- Zone indicator -->
+    <div class="card" style="background:#0a0a1a;border-color:#2a2a4a;margin-bottom:6px;display:flex;align-items:center;gap:8px;padding:8px;">
+      <div style="font-size:20px;" id="chat-zone-emoji">⚔️</div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#ffd700;font-weight:bold;" id="chat-zone-name">Zone Loading...</div>
+        <div style="font-size:9px;color:#aaa;">Your zone — share resources here</div>
+      </div>
     </div>
-    <div class="card"><div class="ct">🌐 Online Now</div><div id="op" style="font-size:10px;"></div></div>
+    <!-- Chat tabs -->
+    <div style="display:flex;gap:4px;margin-bottom:8px;">
+      <button class="btn bsm" id="tab-world" onclick="switchChatTab('world')" style="flex:1;background:#1a3a1a;border-color:#3a6a3a;color:#7dff7d;">🌍 World</button>
+      <button class="btn bsm" id="tab-zone" onclick="switchChatTab('zone')" style="flex:1;">⚔️ Zone</button>
+      <button class="btn bsm" id="tab-friends" onclick="switchChatTab('friends')" style="flex:1;">👥 Friends</button>
+    </div>
+    <div class="card" style="margin-bottom:8px;">
+      <div id="cm" style="height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
+      <div class="cir" style="margin-top:6px;">
+        <input id="ci" type="text" placeholder="Say something..." maxlength="100">
+        <button class="btn bsm" onclick="sendChat()">Send</button>
+      </div>
+    </div>
+    <!-- Online players -->
+    <div class="card" style="margin-bottom:8px;">
+      <div class="ct">🌐 Online Now</div>
+      <div id="op" style="font-size:10px;"></div>
+    </div>
+    <!-- Zone resource sharing -->
+    <div class="card">
+      <div class="ct">🔄 Share Resources (Zone Only)</div>
+      <div style="font-size:9px;color:#aaa;margin-bottom:8px;">Share with zone members. Gold/gems cannot be shared.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <button class="btn bsm" onclick="shareResource('Water',10)" style="background:#0a1a3a;border-color:#1a3a6a;color:#7db8ff;">💧 Share 10 Water</button>
+        <button class="btn bsm" onclick="shareResource('Hay',5)" style="background:#1a1a0a;border-color:#3a3a1a;color:#ffd700;">🌾 Share 5 Hay</button>
+        <button class="btn bsm" onclick="shareResource('Meat',3)" style="background:#2a0a0a;border-color:#5a1a1a;color:#ff9a4a;">🍖 Share 3 Meat</button>
+        <button class="btn bsm" onclick="shareResource('Seeds',5)" style="background:#0a2a0a;border-color:#1a5a1a;color:#7dff7d;">🌱 Share 5 Seeds</button>
+      </div>
+    </div>
   </div>
 
   <!-- AI -->
@@ -854,21 +887,106 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
 
   <!-- LEADERBOARD -->
   <div id="panel-leaderboard" class="panel">
-    <div class="ptitle">🏆 Leaderboard</div>
-    <div class="card" style="background:#0a0a1a;border-color:#3a3a6a;margin-bottom:8px;text-align:center;">
-      <div style="font-size:28px;">🏆</div>
-      <div style="font-size:12px;color:#ffd700;font-weight:bold;">Top 10 Home Levels</div>
-      <div style="font-size:9px;color:#555;margin-top:3px;">Weekly reset — Top 10 win prizes!</div>
+    <div class="ptitle">🏆 Master Leaderboard</div>
+    <!-- Filter tabs -->
+    <div style="display:flex;gap:4px;margin-bottom:8px;">
+      <button class="btn bsm" id="lb-tab-all" onclick="switchLBTab('all')" style="flex:1;background:#1a3a1a;border-color:#3a6a3a;color:#7dff7d;">🌍 All</button>
+      <button class="btn bsm" id="lb-tab-zone" onclick="switchLBTab('zone')" style="flex:1;">⚔️ Zone</button>
+      <button class="btn bsm" id="lb-tab-friends" onclick="switchLBTab('friends')" style="flex:1;">👥 Friends</button>
+    </div>
+    <!-- Weekly prizes -->
+    <div class="card" style="background:#0a0a1a;border-color:#3a3a6a;margin-bottom:8px;">
+      <div class="ct" style="color:#ffd700;">🏆 Weekly Prizes (Top 25)</div>
+      <div style="font-size:10px;margin-bottom:3px;">🥇 Rank 1: <span style="color:#ffd700;">500💎</span></div>
+      <div style="font-size:10px;margin-bottom:3px;">🥈 Rank 2-3: <span style="color:#aaa;">300💎</span></div>
+      <div style="font-size:10px;margin-bottom:3px;">🥉 Rank 4-10: <span style="color:#cd7f32;">200💎</span></div>
+      <div style="font-size:10px;">🏅 Rank 11-25: <span style="color:#7dff7d;">100💎</span></div>
+    </div>
+    <!-- Leaderboard list -->
+    <div id="leaderboard-list"></div>
+    <!-- Your rank -->
+    <div class="card" style="margin-top:8px;text-align:center;background:#0a1a0a;border-color:#2a4a2a;">
+      <div style="font-size:11px;color:#7dff7d;font-weight:bold;">Your Rank: <span id="your-rank">—</span></div>
+      <div style="font-size:10px;color:#aaa;margin-top:3px;">
+        Lv<span id="lb-your-level">1</span> | 
+        Home Lv<span id="your-home-lv">1</span> | 
+        <span id="lb-your-zone">Zone ?</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAILY LOGIN REWARDS -->
+  <div id="panel-daily" class="panel">
+    <div class="ptitle">📅 Daily Rewards</div>
+    <div class="card" style="background:#0a1a2a;border-color:#1a4a6a;margin-bottom:8px;text-align:center;">
+      <div style="font-size:36px;">🎁</div>
+      <div style="font-size:13px;color:#7db8ff;font-weight:bold;">Day <span id="login-streak">1</span> Streak</div>
+      <div style="font-size:9px;color:#aaa;margin-top:4px;">Log in every day to keep your streak!</div>
+    </div>
+    <div id="daily-rewards-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;"></div>
+    <button class="btn bg bfu" id="claim-daily-btn" onclick="claimDailyReward()">🎁 Claim Today's Reward!</button>
+    <div class="card" style="margin-top:8px;">
+      <div class="ct">🔥 Streak Milestones</div>
+      <div style="font-size:10px;margin-bottom:3px;">Day 7: <span style="color:#ffd700;">Bonus Spin + 50💎</span></div>
+      <div style="font-size:10px;margin-bottom:3px;">Day 30: <span style="color:#ffd700;">500💎 + 3 daily spins forever</span></div>
+      <div style="font-size:10px;margin-bottom:3px;">Day 100: <span style="color:#ffd700;">1000💎 + Exclusive animal</span></div>
+      <div style="font-size:10px;">Day 365: <span style="color:#ffd700;">2000💎 + TRUE LEGEND title</span></div>
+    </div>
+  </div>
+
+  <!-- PLAYER PROFILE -->
+  <div id="panel-profile" class="panel">
+    <div class="ptitle">👤 Profile</div>
+    <div class="card" style="background:#0a1a0a;border-color:#3a6a2a;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="font-size:48px;" id="profile-avatar">🌱</div>
+        <div>
+          <div style="font-size:14px;color:#7dff7d;font-weight:bold;" id="profile-name">Farmer</div>
+          <div style="font-size:10px;color:#aaa;" id="profile-zone">Zone Loading...</div>
+          <div style="font-size:10px;color:#ffd700;" id="profile-title">Beginner Homesteader</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div style="background:#0a0a0a;border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-size:18px;">⭐</div>
+          <div style="font-size:12px;color:#ffd700;font-weight:bold;" id="profile-level">1</div>
+          <div style="font-size:8px;color:#aaa;">Game Level</div>
+        </div>
+        <div style="background:#0a0a0a;border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-size:18px;">👑</div>
+          <div style="font-size:12px;color:#d8a8ff;font-weight:bold;" id="profile-vip">0</div>
+          <div style="font-size:8px;color:#aaa;">VIP Level</div>
+        </div>
+        <div style="background:#0a0a0a;border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-size:18px;">🏠</div>
+          <div style="font-size:12px;color:#ffd700;font-weight:bold;" id="profile-homelv">1</div>
+          <div style="font-size:8px;color:#aaa;">Home Level</div>
+        </div>
+        <div style="background:#0a0a0a;border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-size:18px;">🌾</div>
+          <div style="font-size:12px;color:#7dff7d;font-weight:bold;" id="profile-acres">4</div>
+          <div style="font-size:8px;color:#aaa;">Acres</div>
+        </div>
+        <div style="background:#0a0a0a;border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-size:18px;">🦌</div>
+          <div style="font-size:12px;color:#ff9a4a;font-weight:bold;" id="profile-hunter">1</div>
+          <div style="font-size:8px;color:#aaa;">Hunter Lv</div>
+        </div>
+        <div style="background:#0a0a0a;border-radius:6px;padding:8px;text-align:center;">
+          <div style="font-size:18px;">🎯</div>
+          <div style="font-size:12px;color:#a8d8ff;font-weight:bold;" id="profile-mark">1</div>
+          <div style="font-size:8px;color:#aaa;">Marksmanship</div>
+        </div>
+      </div>
     </div>
     <div class="card" style="margin-bottom:8px;">
-      <div style="font-size:10px;margin-bottom:3px;">🥇 Rank 1: <span style="color:#ffd700;">500💎 + 5000💰</span></div>
-      <div style="font-size:10px;margin-bottom:3px;">🥈 Rank 2-3: <span style="color:#aaa;">300💎 + 3000💰</span></div>
-      <div style="font-size:10px;">🥉 Rank 4-10: <span style="color:#cd7f32;">100💎 + 1000💰</span></div>
-    </div>
-    <div id="leaderboard-list"></div>
-    <div class="card" style="margin-top:8px;text-align:center;">
-      <div style="font-size:11px;color:#7dff7d;font-weight:bold;">Your Rank: <span id="your-rank">—</span></div>
-      <div style="font-size:10px;color:#aaa;margin-top:3px;">Home Level <span id="your-home-lv">1</span></div>
+      <div class="ct">📊 Farm Stats</div>
+      <div class="cr"><span>Total Harvests</span><span id="profile-harv" style="color:#7dff7d;">0</span></div>
+      <div class="cr"><span>Total Hunts</span><span id="profile-hunts" style="color:#ff9a4a;">0</span></div>
+      <div class="cr"><span>Fish Caught</span><span id="profile-fish" style="color:#7db8ff;">0</span></div>
+      <div class="cr"><span>Gold Earned</span><span id="profile-gold" style="color:#ffd700;">0g</span></div>
+      <div class="cr"><span>Days Played</span><span id="profile-days" style="color:#aaa;">1</span></div>
+      <div class="cr"><span>Login Streak</span><span id="profile-streak" style="color:#ff9a4a;">1 days</span></div>
     </div>
   </div>
 
@@ -922,6 +1040,8 @@ body{background:#0a1a0a;color:#e8f5e8;font-family:'Courier New',monospace;overfl
   <button class="nb" onclick="showPanel('inventory')" id="nav-inventory"><span class="ni">🎒</span>Inv</button>
   <button class="nb" onclick="showPanel('guide')" id="nav-guide"><span class="ni">📖</span>Guide</button>
   <button class="nb" onclick="showPanel('home')" id="nav-home"><span class="ni">🏠</span>Home</button>
+  <button class="nb" onclick="showPanel('daily')" id="nav-daily"><span class="ni">📅</span>Daily</button>
+  <button class="nb" onclick="showPanel('profile')" id="nav-profile"><span class="ni">👤</span>Profile</button>
   <button class="nb" onclick="showPanel('leaderboard')" id="nav-leaderboard"><span class="ni">🏆</span>Ranks</button>
   <button class="nb" onclick="showPanel('iap')" id="nav-iap"><span class="ni">💎</span>Gems</button>
 </div>
@@ -1697,7 +1817,271 @@ function initGame(){
   setTimeout(()=>showTutorial('spin'),3000);
   showToast(`🌱 Welcome ${G.name}! Your ${startPlots} plots await!`);
 }
-// ===== PHASE 3: ANIMAL MARKET + VET + BOSS =====
+// ===== PHASE 4: LEADERBOARD + PROFILE + DAILY + ZONE CHAT =====
+
+// ===== MASTER LEADERBOARD =====
+const FAKE_PLAYERS_LB = [
+  {name:'RuralKing',    home:'manor',    lv:180, homeLv:18, vip:16, acres:44, huntLv:40, zone:1, av:'👨🏾'},
+  {name:'FarmQueen',    home:'cottage',  lv:160, homeLv:16, vip:14, acres:38, huntLv:35, zone:2, av:'👩🏽'},
+  {name:'WildEdge',     home:'cabin',    lv:150, homeLv:15, vip:13, acres:34, huntLv:30, zone:1, av:'👨🏻'},
+  {name:'RanchMaster',  home:'ranch',    lv:140, homeLv:14, vip:12, acres:30, huntLv:28, zone:2, av:'👨🏾'},
+  {name:'GreenThumb',   home:'farmhouse',lv:130, homeLv:13, vip:11, acres:26, huntLv:25, zone:1, av:'👩🏾'},
+  {name:'OffGridGal',   home:'van',      lv:120, homeLv:12, vip:10, acres:23, huntLv:22, zone:2, av:'👩🏻'},
+  {name:'SunflowerSam', home:'modern',   lv:110, homeLv:11, vip:9,  acres:20, huntLv:20, zone:1, av:'👨🏽'},
+  {name:'CropKing99',   home:'cabin',    lv:100, homeLv:10, vip:8,  acres:17, huntLv:18, zone:2, av:'👨🏾'},
+  {name:'HomesteadPro', home:'cottage',  lv:90,  homeLv:9,  vip:7,  acres:14, huntLv:15, zone:1, av:'👩🏽'},
+  {name:'TrueGrower',   home:'ranch',    lv:80,  homeLv:8,  vip:6,  acres:12, huntLv:12, zone:2, av:'👨🏻'},
+  {name:'ValleyFarm',   home:'modern',   lv:70,  homeLv:7,  vip:5,  acres:10, huntLv:10, zone:1, av:'👩🏾'},
+  {name:'SeedMaster',   home:'cabin',    lv:60,  homeLv:6,  vip:4,  acres:8,  huntLv:8,  zone:2, av:'👨🏽'},
+  {name:'HarvestKing',  home:'cottage',  lv:50,  homeLv:5,  vip:3,  acres:7,  huntLv:5,  zone:1, av:'👩🏻'},
+  {name:'WoodsFarm',    home:'van',      lv:40,  homeLv:4,  vip:2,  acres:6,  huntLv:3,  zone:2, av:'👨🏾'},
+  {name:'PrairieHome',  home:'ranch',    lv:30,  homeLv:3,  vip:1,  acres:5,  huntLv:1,  zone:1, av:'👩🏽'},
+];
+
+let currentLBTab = 'all';
+
+function switchLBTab(tab) {
+  currentLBTab = tab;
+  ['all','zone','friends'].forEach(t => {
+    let btn = document.getElementById('lb-tab-'+t);
+    if(btn) btn.style.background = t===tab?'#1a3a1a':'';
+    if(btn) btn.style.borderColor = t===tab?'#3a6a3a':'';
+    if(btn) btn.style.color = t===tab?'#7dff7d':'';
+  });
+  renderLeaderboard();
+}
+
+function getPlayerScore(p) {
+  return (p.lv||1)*10 + (p.homeLv||1)*50 + (p.vip||0)*100 + (p.acres||4)*20 + (p.huntLv||1)*5;
+}
+
+function renderLeaderboard() {
+  let myScore = getPlayerScore({lv:G.level,homeLv:G.homeLv||1,vip:G.vipLevel||0,acres:G.plots?.length||4,huntLv:G.hunting?.level||1});
+  let me = {name:G.name||'You',home:G.homeType||'farmhouse',lv:G.level,homeLv:G.homeLv||1,vip:G.vipLevel||0,acres:G.plots?.length||4,huntLv:G.hunting?.level||1,zone:G.zone||1,av:AVATARS[G.avatar]||'🌱',isMe:true};
+
+  let allPlayers = [...FAKE_PLAYERS_LB, me];
+  // Filter by tab
+  if(currentLBTab === 'zone') allPlayers = allPlayers.filter(p => p.zone === G.zone);
+  // Sort by score
+  allPlayers.sort((a,b) => getPlayerScore(b) - getPlayerScore(a));
+  let top25 = allPlayers.slice(0,25);
+  let myRank = allPlayers.findIndex(p=>p.isMe) + 1;
+
+  let list = document.getElementById('leaderboard-list');
+  if(list) {
+    list.innerHTML = top25.map((p,i) => {
+      let rankEmoji = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+      let homeEmoji = HOME_EMOJIS[p.home]||'🏠';
+      let isTop25 = i < 25;
+      let prize = i===0?'500💎':i<3?'300💎':i<10?'200💎':i<25?'100💎':'';
+      let isZone1 = p.zone === 1;
+      return `<div style="background:${p.isMe?'#1a3a1a':isTop25&&i<3?'#1a1a2a':'#0d1a0d'};border:1px solid ${p.isMe?'#5aaa3a':i<3?'#ffd70044':'#1a2a1a'};border-radius:8px;padding:8px;margin-bottom:5px;display:flex;align-items:center;gap:8px;${i<25?'box-shadow:0 0 8px '+(i===0?'#ffd70033':i<3?'#ffffff11':'none')+';':''}">
+        <div style="font-size:${i<3?'18':'14'}px;min-width:28px;text-align:center;">${rankEmoji}</div>
+        <div style="font-size:18px;">${p.av}</div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:11px;color:${p.isMe?'#7dff7d':i===0?'#ffd700':'#e8f5e8'};font-weight:bold;">${p.name}</span>
+            ${p.isMe?'<span style="font-size:7px;background:#2a5a2a;color:#7dff7d;padding:1px 4px;border-radius:4px;">YOU</span>':''}
+            <span style="font-size:7px;color:${isZone1?'#ff7d7d':'#7db8ff'}">${isZone1?'⚔️Z1':'🛡️Z2'}</span>
+          </div>
+          <div style="font-size:8px;color:#aaa;">${homeEmoji} Lv${p.lv} | Home Lv${p.homeLv} | ${p.acres}🌾 | Hunter Lv${p.huntLv}</div>
+        </div>
+        <div style="font-size:9px;color:#ffd700;text-align:right;">${prize}</div>
+      </div>`;
+    }).join('');
+  }
+
+  let yr = document.getElementById('your-rank');
+  let yhl = document.getElementById('your-home-lv');
+  let ylv = document.getElementById('lb-your-level');
+  let yz = document.getElementById('lb-your-zone');
+  if(yr) yr.textContent = `#${myRank}`;
+  if(yhl) yhl.textContent = G.homeLv||1;
+  if(ylv) ylv.textContent = G.level;
+  if(yz) yz.textContent = `Zone ${G.zone||'?'}`;
+}
+
+// ===== PLAYER PROFILE =====
+function getPlayerTitle() {
+  let lv = G.level;
+  let homeLv = G.homeLv || 1;
+  if(lv >= 250) return '👑 TRUE HOMESTEADER LEGEND';
+  if(lv >= 200) return '💫 Mythic Homesteader';
+  if(lv >= 150) return '🌟 Master Homesteader';
+  if(lv >= 100) return '🏆 Expert Homesteader';
+  if(homeLv >= 15) return '🏠 Estate Owner';
+  if(homeLv >= 10) return '🌾 Established Farmer';
+  if(homeLv >= 5) return '🌱 Growing Farmer';
+  if(lv >= 50) return '🚜 Veteran Farmer';
+  if(lv >= 25) return '🌿 Skilled Grower';
+  if(lv >= 10) return '🌱 Apprentice Farmer';
+  return '🐣 Beginner Homesteader';
+}
+
+function renderProfile() {
+  let e = id => document.getElementById(id);
+  if(e('profile-avatar')) e('profile-avatar').textContent = AVATARS[G.avatar]||'🌱';
+  if(e('profile-name')) e('profile-name').textContent = G.name||'Farmer';
+  if(e('profile-zone')) e('profile-zone').textContent = `${getZoneEmoji()} ${getZoneName()}`;
+  if(e('profile-title')) e('profile-title').textContent = getPlayerTitle();
+  if(e('profile-level')) e('profile-level').textContent = G.level;
+  if(e('profile-vip')) e('profile-vip').textContent = G.vipLevel||0;
+  if(e('profile-homelv')) e('profile-homelv').textContent = G.homeLv||1;
+  if(e('profile-acres')) e('profile-acres').textContent = G.plots?.length||4;
+  if(e('profile-hunter')) e('profile-hunter').textContent = G.hunting?.level||1;
+  if(e('profile-mark')) e('profile-mark').textContent = G.hunting?.marksmanship||1;
+  if(e('profile-harv')) e('profile-harv').textContent = G.totalHarvested||0;
+  if(e('profile-hunts')) e('profile-hunts').textContent = G.hunting?.totalKills||0;
+  if(e('profile-fish')) e('profile-fish').textContent = G.fishCaught||0;
+  if(e('profile-gold')) e('profile-gold').textContent = (G.totalEarned||0)+'g';
+  if(e('profile-days')) e('profile-days').textContent = G.day||1;
+  if(e('profile-streak')) e('profile-streak').textContent = (G.loginStreak||1)+' days';
+}
+
+// ===== DAILY LOGIN REWARDS =====
+const DAILY_REWARDS = [
+  {day:1,  reward:'50💰',   type:'gold',  amount:50},
+  {day:2,  reward:'100💰',  type:'gold',  amount:100},
+  {day:3,  reward:'5💎',    type:'gems',  amount:5},
+  {day:4,  reward:'150💰',  type:'gold',  amount:150},
+  {day:5,  reward:'💧Full', type:'water', amount:0},
+  {day:6,  reward:'10💎',   type:'gems',  amount:10},
+  {day:7,  reward:'50💎+🎰',type:'bonus', amount:50},
+  {day:8,  reward:'200💰',  type:'gold',  amount:200},
+  {day:9,  reward:'15💎',   type:'gems',  amount:15},
+  {day:10, reward:'300💰',  type:'gold',  amount:300},
+  {day:14, reward:'25💎',   type:'gems',  amount:25},
+  {day:21, reward:'50💎',   type:'gems',  amount:50},
+  {day:30, reward:'500💎+🎰x3',type:'mega',amount:500},
+  {day:60, reward:'750💎',  type:'gems',  amount:750},
+  {day:100,reward:'1000💎+🐣',type:'mega', amount:1000},
+  {day:365,reward:'2000💎+👑',type:'mega', amount:2000},
+];
+
+function checkDailyLogin() {
+  let now = new Date();
+  let today = now.toDateString();
+  if(G.lastLoginDate === today) return; // Already logged in today
+  let yesterday = new Date(now - 86400000).toDateString();
+  if(G.lastLoginDate === yesterday) {
+    G.loginStreak = (G.loginStreak||0) + 1;
+  } else if(G.lastLoginDate !== today) {
+    G.loginStreak = 1; // Reset streak
+  }
+  G.lastLoginDate = today;
+  G.dailyClaimed = false;
+  saveGame();
+  // Show daily reward popup after 2 seconds
+  setTimeout(showDailyLoginPopup, 2000);
+}
+
+function showDailyLoginPopup() {
+  let streak = G.loginStreak || 1;
+  let reward = getDailyReward(streak);
+  showModal('🎁 Daily Login!', `
+    <div style="text-align:center;">
+      <div style="font-size:48px;">🎁</div>
+      <div style="font-size:14px;color:#7dff7d;font-weight:bold;margin-bottom:4px;">Day ${streak} Login!</div>
+      <div style="font-size:12px;color:#ffd700;margin-bottom:8px;">${reward.reward}</div>
+      <div style="font-size:9px;color:#aaa;margin-bottom:12px;">Keep logging in daily to maintain your streak!</div>
+      <button class="btn bg bfu" onclick="claimDailyReward();closeModal()">🎁 Claim Reward!</button>
+    </div>`);
+}
+
+function getDailyReward(streak) {
+  // Find closest reward day
+  let reward = DAILY_REWARDS[0];
+  for(let r of DAILY_REWARDS) {
+    if(streak >= r.day) reward = r;
+    else break;
+  }
+  return reward;
+}
+
+function claimDailyReward() {
+  if(G.dailyClaimed) { showToast('✅ Already claimed today! Come back tomorrow!'); return; }
+  let streak = G.loginStreak || 1;
+  let reward = getDailyReward(streak);
+  if(reward.type === 'gold') { G.gold += reward.amount; G.totalEarned += reward.amount; }
+  else if(reward.type === 'gems') { G.gems = (G.gems||0) + reward.amount; }
+  else if(reward.type === 'water') { G.water = G.maxWater; }
+  else if(reward.type === 'bonus' || reward.type === 'mega') {
+    G.gems = (G.gems||0) + reward.amount;
+    G.lastSpin = 0; // Free spin
+  }
+  G.dailyClaimed = true;
+  updateHUD();
+  saveGame();
+  renderDailyRewards();
+  showToast(`🎁 Day ${streak} reward claimed! ${reward.reward}`);
+}
+
+function renderDailyRewards() {
+  let streak = G.loginStreak || 1;
+  let grid = document.getElementById('daily-rewards-grid');
+  let streakEl = document.getElementById('login-streak');
+  if(streakEl) streakEl.textContent = streak;
+
+  if(grid) {
+    let show = DAILY_REWARDS.slice(0, 8); // Show first 8
+    grid.innerHTML = show.map(r => {
+      let done = streak > r.day;
+      let current = streak === r.day || (streak >= r.day && streak < (DAILY_REWARDS[DAILY_REWARDS.indexOf(r)+1]?.day||999));
+      return `<div style="background:${done?'#1a3a1a':current?'#1a1a2a':'#0a0a0a'};border:1px solid ${done?'#3a6a3a':current?'#ffd700':'#1a1a1a'};border-radius:8px;padding:8px;text-align:center;">
+        <div style="font-size:8px;color:${done?'#7dff7d':current?'#ffd700':'#555'};margin-bottom:3px;">Day ${r.day}</div>
+        <div style="font-size:16px;">${done?'✅':current?'🎁':'🔒'}</div>
+        <div style="font-size:8px;color:#aaa;margin-top:3px;">${r.reward}</div>
+      </div>`;
+    }).join('');
+  }
+
+  let claimBtn = document.getElementById('claim-daily-btn');
+  if(claimBtn) {
+    claimBtn.textContent = G.dailyClaimed ? '✅ Claimed Today!' : '🎁 Claim Today\'s Reward!';
+    claimBtn.disabled = G.dailyClaimed;
+    claimBtn.style.opacity = G.dailyClaimed ? '0.5' : '1';
+  }
+}
+
+// ===== ZONE CHAT =====
+let currentChatTab = 'world';
+let zoneMessages = [];
+let worldMessages = [];
+
+function switchChatTab(tab) {
+  currentChatTab = tab;
+  ['world','zone','friends'].forEach(t => {
+    let btn = document.getElementById('tab-'+t);
+    if(btn) { btn.style.background = t===tab?'#1a3a1a':''; btn.style.color = t===tab?'#7dff7d':''; }
+  });
+  renderChat();
+}
+
+function shareResource(resource, amount) {
+  let owned = resource === 'Water' ? G.water : (G.inventory[resource]||0);
+  if(owned < amount) { showToast(`❌ Need ${amount}x ${resource}!`); return; }
+  if(resource === 'Water') G.water -= amount;
+  else G.inventory[resource] = Math.max(0, (G.inventory[resource]||0) - amount);
+  updateHUD();
+  saveGame();
+  let z = ZONES[G.zone]||{name:'Zone'};
+  showToast(`🔄 Shared ${amount}x ${resource} with ${z.name}!`);
+  // Add to zone chat
+  let t = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  zoneMessages.push({user:G.name||'You',msg:`🔄 Shared ${amount}x ${resource} with the zone!`,time:t,zone:G.zone});
+  renderChat();
+}
+
+// Update zone display in chat
+function updateZoneChatDisplay() {
+  let z = ZONES[G.zone]||{name:'Loading...',emoji:'🌍'};
+  let ze = document.getElementById('chat-zone-emoji');
+  let zn = document.getElementById('chat-zone-name');
+  if(ze) ze.textContent = z.emoji;
+  if(zn) zn.textContent = z.name;
+}
+
+// ===== UPDATE SHOWPANEL =====
 
 // ===== ANIMAL MARKET =====
 const ANIMAL_MARKET_PRICES = {
@@ -2407,7 +2791,25 @@ function updateHUD(){
 let chatMsgs=[{user:'FarmerJoe',msg:'Just hit Level 5! Greenhouse unlocked! 🌿',time:'2:30pm'},{user:'HomesteadQueen',msg:'Bees make the best passive income 🐝',time:'2:28pm'},{user:'GreenThumb99',msg:'Build the Well first — trust me!',time:'2:25pm'},{user:'WildEdgeFarm',msg:'Anyone fishing for treasure? 💎',time:'2:20pm'},{user:'SystemBot',msg:'🌱 Welcome to True Homesteader!',time:'2:00pm'}];
 let fakeUsers=['FarmerJoe','HomesteadQueen','GreenThumb99','WildEdgeFarm','SunflowerSam','CropKing','BeeKeeper','RuralDrip'];
 let chatReplies=['Nice work! 🌱','Same here lol','Great tip!','How do you get so much gold?','Try fishing!','Love this game!','Building my barn next!','This is addicting 😂'];
-function renderChat(){let box=document.getElementById('cm');if(!box)return;box.innerHTML=chatMsgs.slice(-25).map(m=>`<div class="cmsg"><span class="cu">${m.user}</span><span class="ctm">${m.time}</span><div style="color:#e8f5e8;margin-top:1px;">${m.msg}</div></div>`).join('');box.scrollTop=box.scrollHeight;let op=document.getElementById('op');if(op)op.innerHTML=fakeUsers.slice(0,5).map(u=>`<span style="display:inline-block;background:#1a3a1a;border-radius:10px;padding:2px 7px;margin:2px;font-size:9px;">🟢 ${u}</span>`).join('');}
+function renderChat(){
+  let box=document.getElementById('cm');if(!box)return;
+  let msgs = currentChatTab === 'zone' ? zoneMessages : currentChatTab === 'friends' ? [] : chatMsgs;
+  if(currentChatTab === 'friends') {
+    box.innerHTML = '<div style="text-align:center;color:#555;padding:20px;font-size:10px;">👥 Friends chat coming soon!<br>Add friends from the leaderboard.</div>';
+  } else if(msgs.length === 0) {
+    box.innerHTML = '<div style="text-align:center;color:#555;padding:20px;font-size:10px;">No messages yet. Be the first to chat!</div>';
+  } else {
+    box.innerHTML=msgs.slice(-25).map(m=>`<div class="cmsg">
+      ${m.zone?`<span style="font-size:8px;color:${m.zone===1?'#ff7d7d':'#7db8ff'};">${m.zone===1?'⚔️':'🛡️'}</span> `:''}
+      <span class="cu">${m.user}</span><span class="ctm">${m.time}</span>
+      <div style="color:#e8f5e8;margin-top:1px;">${m.msg}</div>
+    </div>`).join('');
+  }
+  box.scrollTop=box.scrollHeight;
+  let op=document.getElementById('op');
+  if(op)op.innerHTML=fakeUsers.slice(0,5).map(u=>`<span style="display:inline-block;background:#1a3a1a;border-radius:10px;padding:2px 7px;margin:2px;font-size:9px;">🟢 ${u}</span>`).join('');
+  updateZoneChatDisplay();
+}
 function sendChat(){let inp=document.getElementById('ci');let msg=inp.value.trim();if(!msg)return;let now=new Date(),t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');chatMsgs.push({user:G.name||'You',msg,time:t});inp.value='';renderChat();setTimeout(()=>{chatMsgs.push({user:fakeUsers[Math.floor(Math.random()*fakeUsers.length)],msg:chatReplies[Math.floor(Math.random()*chatReplies.length)],time:t});renderChat();},1500+Math.random()*2000);}
 let aiMsgs=[{role:'bot',text:"🌱 Hi! I'm your Homestead AI. Ask me REAL questions about farming, animals, crops, land, food preservation, and off-grid living. For game tips, ask other players in Chat!"}];
 function renderAIMessages(){let box=document.getElementById('aim');if(!box)return;box.innerHTML=aiMsgs.map(m=>`<div class="${m.role==='user'?'abu':'abb'}"><div>${m.role==='bot'?'🤖 ':''}${m.text}</div></div>`).join('');box.scrollTop=box.scrollHeight;}
@@ -2458,7 +2860,7 @@ let audioCtx=null;
 function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 function playTone(freq,dur,type='square',vol=0.1){try{let ctx=getAudio();let osc=ctx.createOscillator();let gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type=type;osc.frequency.value=freq;gain.gain.value=vol;gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);osc.start();osc.stop(ctx.currentTime+dur);}catch(e){}}
 function playSound(type){if(type==='till')playTone(120,0.2,'sawtooth',0.08);else if(type==='plant')playTone(440,0.15,'sine',0.1);else if(type==='water'){playTone(880,0.1,'sine',0.08);playTone(660,0.15,'sine',0.08);}else if(type==='harvest'){playTone(523,0.1,'square',0.1);setTimeout(()=>playTone(659,0.1,'square',0.1),100);setTimeout(()=>playTone(784,0.2,'square',0.1),200);}else if(type==='levelup'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.2,'sine',0.12),i*100));}else if(type==='animal')playTone(300,0.3,'sine',0.08);else if(type==='fish'){playTone(440,0.1,'sine',0.1);setTimeout(()=>playTone(550,0.2,'sine',0.1),150);}else if(type==='build'){[200,250,300].forEach((f,i)=>setTimeout(()=>playTone(f,0.15,'square',0.1),i*80));}else if(type==='critter'){playTone(200,0.1,'sawtooth',0.1);setTimeout(()=>playTone(150,0.2,'sawtooth',0.1),100);}}
-function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();if(name==='home')renderHomeUpgrade();if(name==='leaderboard')renderLeaderboard();if(name==='guide')renderGuide();if(name==='hunt')renderHunting();if(name==='market2')renderMarket();if(name==='boss')renderBoss();}
+function showPanel(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));let p=document.getElementById('panel-'+name);if(p)p.classList.add('active');let n=document.getElementById('nav-'+name);if(n)n.classList.add('active');closeHUDPop();if(name==='inventory')renderInventory();if(name==='animals')renderAnimals();if(name==='quests')renderQuests();if(name==='shop')renderShop();if(name==='pond')renderPond();if(name==='vip')renderVIP();if(name==='buildings')renderBuildings();if(name==='upmarket')renderUpgradeMarket();if(name==='mining')renderMining();if(name==='chat')renderChat();if(name==='ai')renderAIMessages();if(name==='iap')updateHUD();if(name==='home')renderHomeUpgrade();if(name==='leaderboard')renderLeaderboard();if(name==='guide')renderGuide();if(name==='hunt')renderHunting();if(name==='market2')renderMarket();if(name==='boss')renderBoss();if(name==='daily')renderDailyRewards();if(name==='profile')renderProfile();if(name==='leaderboard')renderLeaderboard();if(name==='chat'){renderChat();updateZoneChatDisplay();}
 function showModal(title,body){document.getElementById('mt').textContent=title;document.getElementById('mb').innerHTML=body;document.getElementById('modal').classList.add('show');}
 function closeModal(){document.getElementById('modal').classList.remove('show');}
 let toastTO;
@@ -2544,7 +2946,7 @@ function renderMining(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine')
 function doMine(){let hasMine=G.hasMine||G.plots.some(p=>p.state==='mine');if(!hasMine){showToast('❌ Buy a Mine Plot from Store first!');return;}if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.water<10){showToast('❌ Need 10💧 to mine!');return;}G.water-=10;let campBonus=G.homeType==='camp'?2:1,found=[];for(let r=0;r<campBonus;r++){let roll=Math.random(),cum=0;for(let m of MINERALS){cum+=m.r;if(roll<=cum){found.push(m);break;}}}if(!found.length)found.push(MINERALS[0]);found.forEach(m=>{G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`${m.e} ${m.n} +${m.v}💰`);});let supDrop=getMineralDrop();renderMining();updateHUD();playSound('build');showToast(`⛏️ Found: ${found.map(m=>m.e+m.n).join(', ')}${supDrop}`);}
 function spendMineGems(){if((G.gems||0)<75){showToast('❌ Need 75💎!');return;}G.gems-=75;updateHUD();let rare=MINERALS.slice(4),m=rare[Math.floor(Math.random()*rare.length)];G.gold+=m.v;G.totalEarned+=m.v;G.mineralsMined=(G.mineralsMined||0)+1;addItem(m.n,1);if(!G.mineLog)G.mineLog=[];G.mineLog.push(`💎 RARE: ${m.e} ${m.n} +${m.v}💰`);renderMining();updateHUD();showToast(`💎 Deep Mine: ${m.e} ${m.n} worth ${m.v}💰!`);}
 function buyMinePlot(){if(G.level<10){showToast('❌ Mining unlocks at Level 10!');return;}if(G.gold<300){showToast('❌ Need 300g!');return;}if(G.hasMine){showToast('✅ Mine already built!');return;}G.gold-=300;G.hasMine=true;updateHUD();renderMining();renderShop();showToast('⛏️ Mine built! Go to Mine tab to start digging!');}
-function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(!data.stamina)data.stamina=100;if(!data.maxStamina)data.maxStamina=100;if(!data.lastStaminaRefill)data.lastStaminaRefill=Date.now();if(!data.zone)data.zone=0;if(!data.zoneAssigned)data.zoneAssigned=false;if(!data.workers)data.workers=0;if(!data.hunting)data.hunting=null;if(!data.bossDamage)data.bossDamage={zone1:0,zone2:0,myDamage:0,drops:[]};if(!data.bossDefeatedThisWeek)data.bossDefeatedThisWeek=false;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
+function migrateData(data){if(Array.isArray(data.buildings)){let bd={};data.buildings.forEach(k=>{bd[k]=1;});data.buildings=bd;}if(!data.buildings)data.buildings={};if(!data.buildingLevels)data.buildingLevels={};if(data.plots){data.plots.forEach(p=>{if(!p.state)p.state='empty';if(p.state==='building'&&p.building){if(!data.buildings[p.building])data.buildings[p.building]=1;if(!data.buildingLevels[p.building])data.buildingLevels[p.building]=1;p.state='tilled';p.building=null;}if(p.state==='mine'){data.hasMine=true;p.state='empty';}});}if(data.animals)data.animals.forEach(a=>{if(!a.feeds)a.feeds=0;if(!a.produceTimer)a.produceTimer=0;});if(!data.quests)data.quests={};if(!data.inventory)data.inventory={};if(!data.autoPlantList)data.autoPlantList=[];if(!data.mineLog)data.mineLog=[];if(!data.fishLog)data.fishLog=[];if(!data.vipLevel)data.vipLevel=0;if(!data.acreage)data.acreage=0.5;if(!data.homeType)data.homeType='farmhouse';if(!data.homeLevel)data.homeLevel=1;if(!data.homeLv)data.homeLv=data.homeLevel||1;if(!data.tradeInbox)data.tradeInbox=[];if(!data.modernFreeSpins)data.modernFreeSpins=0;if(!data.achPlotBonus)data.achPlotBonus=0;if(!data.spinPlotBonus)data.spinPlotBonus=0;if(!data.achPlotsAwarded)data.achPlotsAwarded={};if(!data.stamina)data.stamina=100;if(!data.maxStamina)data.maxStamina=100;if(!data.lastStaminaRefill)data.lastStaminaRefill=Date.now();if(!data.zone)data.zone=0;if(!data.zoneAssigned)data.zoneAssigned=false;if(!data.workers)data.workers=0;if(!data.hunting)data.hunting=null;if(!data.bossDamage)data.bossDamage={zone1:0,zone2:0,myDamage:0,drops:[]};if(!data.bossDefeatedThisWeek)data.bossDefeatedThisWeek=false;if(!data.loginStreak)data.loginStreak=1;if(!data.lastLoginDate)data.lastLoginDate='';if(!data.dailyClaimed)data.dailyClaimed=false;if(data.buildings['well']){let wellLv=data.buildingLevels['well']||1;data.maxWater=Math.max(data.maxWater||10,10+wellLv*5);}return data;}
 // ===== HOME UPGRADE SYSTEM =====
 // Cost multipliers per home type (how expensive to upgrade)
 const HOME_COST_MULT={
@@ -3302,33 +3704,10 @@ const FAKE_LB=[
   {name:'TrueGrower',  home:'ranch',    lv:8, av:'👨🏻'},
 ];
 
-function renderLeaderboard(){
-  let myLv=G.homeLv||1;
-  let all=[...FAKE_LB,{name:G.name||'You',home:G.homeType||'farmhouse',lv:myLv,av:AVATARS[G.avatar]||'🌱',isMe:true}];
-  all.sort((a,b)=>b.lv-a.lv);
-  let top10=all.slice(0,10);
-  let myRank=all.findIndex(p=>p.isMe)+1;
-  let list=document.getElementById('leaderboard-list');
-  if(list)list.innerHTML=top10.map((p,i)=>{
-    let re=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
-    let he=HOME_EMOJIS[p.home]||'🏠';
-    let prize=i===0?'500💎':i<3?'300💎':'100💎';
-    return `<div style="background:${p.isMe?'#1a3a1a':'#1a1a2a'};border:1px solid ${p.isMe?'#5aaa3a':'#2a2a4a'};border-radius:8px;padding:8px;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-      <div style="font-size:16px;min-width:24px;">${re}</div>
-      <div style="font-size:20px;">${p.av}</div>
-      <div style="flex:1;"><div style="font-size:11px;color:${p.isMe?'#7dff7d':'#e8f5e8'};font-weight:bold;">${p.name}${p.isMe?' (You)':''}</div>
-      <div style="font-size:9px;color:#aaa;">${he} Home Lv${p.lv}</div></div>
-      <div style="font-size:9px;color:#ffd700;">${prize}</div>
-    </div>`;
-  }).join('');
-  let yr=document.getElementById('your-rank');
-  let yhl=document.getElementById('your-home-lv');
-  if(yr)yr.textContent=`#${myRank}`;
-  if(yhl)yhl.textContent=myLv;
-}
+// renderLeaderboard moved to Phase 4
 
 setInterval(saveGame,30000);
-if(loadGame()&&G.name){document.getElementById('avatar-screen')?.classList.add('hidden');document.getElementById('hud').style.display='block';document.getElementById('gc').style.display='block';document.getElementById('bn').style.display='flex';renderAll();startCycles();updateHUD();checkOfflineEarnings();checkAutoCollectBtn();showToast(`📂 Welcome back ${G.name}!`);}
+if(loadGame()&&G.name){document.getElementById('avatar-screen')?.classList.add('hidden');document.getElementById('hud').style.display='block';document.getElementById('gc').style.display='block';document.getElementById('bn').style.display='flex';renderAll();startCycles();updateHUD();checkOfflineEarnings();checkAutoCollectBtn();checkDailyLogin();showToast(`📂 Welcome back ${G.name}!`);}
 document.addEventListener('keydown',e=>{if(e.key==='Enter'){let ci=document.getElementById('ci');let ai=document.getElementById('aii');if(document.activeElement===ci)sendChat();if(document.activeElement===ai)askAI();}});
 </script>
 </body>
