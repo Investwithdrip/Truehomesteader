@@ -652,7 +652,14 @@ html,body{height:100%;overflow:hidden;background:#0d1a0d;font-family:'Segoe UI',
       <div class="conv-row"><div><div style="font-size:13px;font-weight:700;">25 💎</div><div style="font-size:11px;color:#aaa;">2,000g</div></div><button class="btn btn-gem btn-sm" onclick="convGold(2000,25)">Convert</button></div>
       <div class="conv-row"><div><div style="font-size:13px;font-weight:700;">75 💎</div><div style="font-size:11px;color:#aaa;">5,000g</div></div><button class="btn btn-gem btn-sm" onclick="convGold(5000,75)">Convert</button></div>
       <div class="conv-row"><div><div style="font-size:13px;font-weight:700;">200 💎</div><div style="font-size:11px;color:#aaa;">10,000g</div></div><button class="btn btn-gem btn-sm" onclick="convGold(10000,200)">Convert</button></div>
-      <div style="font-size:11px;color:#444;text-align:center;margin-top:12px;">⚠️ App Store purchases coming soon. Demo mode.</div>
+      <div class="stitle">💎 Convert Gems → Gold</div>
+      <div id="gems-to-gold-section">
+        <div class="conv-row"><div><div style="font-size:13px;font-weight:700;">💰 100g</div><div style="font-size:11px;color:#aaa;">10💎 → gold</div></div><button class="btn btn-gold btn-sm" onclick="convGemsToGold(10,100)">Convert</button></div>
+        <div class="conv-row"><div><div style="font-size:13px;font-weight:700;">💰 600g</div><div style="font-size:11px;color:#aaa;">50💎 → gold</div></div><button class="btn btn-gold btn-sm" onclick="convGemsToGold(50,600)">Convert</button></div>
+        <div class="conv-row"><div><div style="font-size:13px;font-weight:700;">💰 1,400g</div><div style="font-size:11px;color:#aaa;">100💎 → gold</div></div><button class="btn btn-gold btn-sm" onclick="convGemsToGold(100,1400)">Convert</button></div>
+        <div class="conv-row"><div><div style="font-size:13px;font-weight:700;">💰 8,000g</div><div style="font-size:11px;color:#aaa;">500💎 → gold</div></div><button class="btn btn-gold btn-sm" onclick="convGemsToGold(500,8000)">Convert</button></div>
+      </div>
+      <div style="font-size:11px;color:#444;text-align:center;margin-top:12px;">⚠️ App Store purchases coming soon. Demo mode active.</div>
     </div>
   </div><!-- end content -->
   <!-- BOTTOM NAV -->
@@ -1476,6 +1483,265 @@ function applySpinReward(s){
   const sb=document.getElementById('spin-btn');if(sb)sb.disabled=true;
   hud();save();
 }
+// ===== HUNT =====
+function renderHunt(){
+  const wg=document.getElementById('wep-grid');
+  if(wg)wg.innerHTML=WEAPONS.map(w=>{
+    const locked=G.level<w.lv&&w.lv>1;const active=G.currentWeapon===w.id;
+    return `<div class="wep-card ${active?'active':''} ${locked?'locked':''}" onclick="${locked?'':('selWep("'+w.id+'")')}"><div style="font-size:28px;">${w.e}</div><div style="font-size:11px;font-weight:700;color:var(--hay);margin-top:4px;">${w.n}</div><div style="font-size:10px;color:#aaa;">${locked?'Lv'+w.lv+' req':w.acc+'% acc'}</div>${active?'<div style="font-size:9px;color:var(--sage);">✓ Equipped</div>':(!locked&&w.cost>0?'<div style="font-size:9px;color:var(--hay);">'+w.cost+'g</div>':'')}</div>`;
+  }).join('');
+  const ag=document.getElementById('hunt-animal-grid');
+  if(ag)ag.innerHTML=HUNT_ANIMALS.map(a=>{
+    const locked=G.hunterLevel<a.lv;
+    return `<div class="wep-card ${locked?'locked':''}" onclick="${locked?'':('selHuntTarget("'+a.id+'")')}"><div style="font-size:28px;">${a.e}</div><div style="font-size:11px;font-weight:700;color:var(--hay);margin-top:4px;">${a.n}</div><div style="font-size:10px;color:#aaa;">${locked?'Hunter Lv'+a.lv:'+'+a.gold+'g'}</div></div>`;
+  }).join('');
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  s('hlvl',G.hunterLevel+'/50');s('mlvl',G.marksLevel+'/50');
+  const hb=document.getElementById('hxpbar');if(hb)hb.style.width=Math.min(100,(G.hunterXP/(G.hunterLevel*50))*100)+'%';
+  const mb=document.getElementById('mxpbar');if(mb)mb.style.width=Math.min(100,(G.marksXP/(G.marksLevel*30))*100)+'%';
+  const w=WEAPONS.find(x=>x.id===G.currentWeapon)||WEAPONS[0];
+  const ha=document.getElementById('hunt-acc');if(ha)ha.textContent='🎯 Accuracy: '+w.acc+'%';
+  const mw=document.getElementById('my-wep');if(mw)mw.textContent=w.e;
+}
+function selWep(id){
+  const w=WEAPONS.find(x=>x.id===id);if(!w)return;
+  if(G.level<w.lv){toast('Level '+w.lv+' required!','err');return;}
+  if(w.cost>0&&G.currentWeapon!==id){if(G.gold<w.cost){toast('Need '+w.cost+'g!','err');return;}G.gold-=w.cost;}
+  G.currentWeapon=id;toast(w.e+' '+w.n+' equipped!');hud();renderHunt();save();
+}
+function selHuntTarget(id){
+  const a=HUNT_ANIMALS.find(x=>x.id===id);if(!a)return;
+  G.currentHuntTarget=id;
+  const ht=document.getElementById('hunt-target');if(ht)ht.textContent=a.e;
+  const hs=document.getElementById('hunt-status');if(hs)hs.textContent='Target: '+a.n+' • +'+a.gold+'g';
+  toast('🎯 Targeting '+a.n);
+}
+function doHunt(){
+  if(!G.huntLicense){toast('Buy Hunting License first! (Store → Tools)','err');return;}
+  if(!G.currentHuntTarget){toast('Select an animal to hunt first!','err');return;}
+  const a=HUNT_ANIMALS.find(x=>x.id===G.currentHuntTarget);
+  const w=WEAPONS.find(x=>x.id===G.currentWeapon)||WEAPONS[0];
+  if(G.stamina<15){toast('Need 15⚡ stamina!','err');return;}
+  G.stamina-=15;
+  const acc=w.acc+G.marksLevel;const hit=Math.random()*100<=acc;
+  if(hit){
+    const g=a.gold+Math.floor(Math.random()*a.gold*.3);
+    G.gold+=g;G.goldEarned+=g;G.xp+=a.xp;G.hunterXP+=a.xp;G.marksXP+=10;
+    G.totalHunts++;G.questProgress.hunts++;
+    const hl2=document.getElementById('hunt-log');
+    if(hl2)hl2.innerHTML='<div style="color:#8BC34A;padding:5px 0;">✅ '+a.e+' '+a.n+' caught! +'+g+'g</div>'+hl2.innerHTML;
+    const hs=document.getElementById('hunt-status');if(hs)hs.textContent='✅ Got '+a.n+'! +'+g+'g';
+    toast('🎯 '+a.e+' Hit! +'+g+'g','gold');
+    if(G.hunterXP>=G.hunterLevel*50&&G.hunterLevel<50){G.hunterLevel++;G.hunterXP=0;toast('🦌 Hunter Level '+G.hunterLevel+'!');}
+    if(G.marksXP>=G.marksLevel*30&&G.marksLevel<50){G.marksLevel++;G.marksXP=0;toast('🎯 Marksmanship Level '+G.marksLevel+'!');}
+    checkLv();
+  } else {
+    G.marksXP+=3;
+    const hl2=document.getElementById('hunt-log');
+    if(hl2)hl2.innerHTML='<div style="color:#666;padding:5px 0;">❌ Missed '+a.e+' '+a.n+'</div>'+hl2.innerHTML;
+    const hs=document.getElementById('hunt-status');if(hs)hs.textContent='❌ Missed! Try again.';
+    toast('❌ Miss! Adjust your aim.');
+  }
+  hud();renderHunt();save();
+}
+// ===== MINE =====
+function renderMine(){
+  if(!G.mineField||!G.mineField.length)initMine();
+  const f=document.getElementById('mine-field');
+  if(f)f.innerHTML=G.mineField.map((cell,i)=>`<div class="mine-cell ${cell.dug?'dug':''}" onclick="${cell.dug?'':'mineCell('+i+')'}">${cell.dug?(cell.mineral?MINERALS.find(m=>m.id===cell.mineral)?.e||'⬛':'⬛'):'🪨'}</div>`).join('');
+  const mf=document.getElementById('minerals-found');
+  if(mf){
+    const entries=Object.entries(G.minerals||{}).filter(([,v])=>v>0);
+    mf.innerHTML=entries.length?entries.map(([id,ct])=>{const m=MINERALS.find(x=>x.id===id);return m?`<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:20px;">${m.e}</div><div style="font-size:11px;font-weight:700;">${m.n}</div><div style="font-size:10px;color:#aaa;">x${ct} • ${m.v}g each</div></div>`:''}).join(''):'<div style="color:#555;font-size:12px;padding:8px;">Mine to find minerals!</div>';
+  }
+  const mc=document.getElementById('min-count');if(mc)mc.textContent=Object.values(G.minerals||{}).reduce((a,b)=>a+b,0);
+}
+function mineCell(idx){
+  if(!G.mineUnlocked&&G.level<10){toast('Buy Mine Plot from Store (Level 10+)!','err');return;}
+  if(!G.mineUnlocked)G.mineUnlocked=true;
+  if(G.water<10){toast('Need 10💧 water!','err');return;}
+  G.water-=10;G.questProgress.mines++;
+  if(idx===undefined){const undug=G.mineField.map((c,i)=>c.dug?-1:i).filter(i=>i>=0);if(!undug.length){initMine();toast('Mine field reset! Dig again.');hud();renderMine();return;}idx=undug[Math.floor(Math.random()*undug.length)];}
+  G.mineField[idx].dug=true;
+  const roll=Math.random()*100;let tot=0,found=null;
+  for(const m of MINERALS){tot+=m.rarity;if(roll<=tot){found=m;break;}}
+  if(found&&found.id!=='dirt'){
+    G.mineField[idx].mineral=found.id;if(!G.minerals)G.minerals={};
+    G.minerals[found.id]=(G.minerals[found.id]||0)+1;G.gold+=found.v;G.goldEarned+=found.v;
+    toast('⛏️ Found '+found.e+' '+found.n+'! +'+found.v+'g','gold');
+  } else toast('⛏️ Just dirt...');
+  hud();renderMine();save();
+}
+function mineRandom(){mineCell(undefined);}
+function deepMine(){
+  if(G.gems<75){toast('Need 75💎!','err');return;}G.gems-=75;
+  const rare=MINERALS.filter(m=>m.rarity<=5);const f=rare[Math.floor(Math.random()*rare.length)];
+  if(!G.minerals)G.minerals={};G.minerals[f.id]=(G.minerals[f.id]||0)+1;
+  G.gold+=f.v;G.goldEarned+=f.v;toast('💎 DEEP MINE: '+f.e+' '+f.n+'! +'+f.v+'g','gold');
+  hud();renderMine();save();
+}
+// ===== FISHING =====
+let fishInt=null;
+function castLine(){
+  if(G.level<3){toast('Fishing unlocks at Level 3!','err');return;}
+  if(G.fishingActive){toast('Already fishing! Wait for your catch.','err');return;}
+  if(G.water<5){toast('Need 5💧 water!','err');return;}
+  G.water-=5;G.fishingActive=true;
+  const ps=document.getElementById('pond-status');if(ps)ps.textContent='🎣 Line in the water...';
+  const ba=document.getElementById('bobber-area');if(ba)ba.innerHTML='<div class="bobber">🪝</div>';
+  const cb=document.getElementById('cast-btn');if(cb){cb.textContent='⏱️ Waiting...';cb.disabled=true;}
+  let t=30;
+  fishInt=setInterval(()=>{
+    t--;
+    const td=document.getElementById('pond-timer');if(td)td.textContent=t+'s remaining...';
+    if(t<=0){clearInterval(fishInt);reelIn();}
+  },1000);
+  hud();save();
+}
+function reelIn(){
+  G.fishingActive=false;
+  const ba=document.getElementById('bobber-area');if(ba)ba.innerHTML='';
+  const cb=document.getElementById('cast-btn');if(cb){cb.textContent='🎣 Cast Line (5💧 • 30s)';cb.disabled=false;}
+  const td=document.getElementById('pond-timer');if(td)td.textContent='';
+  const roll=Math.random()*100;let tot=0,caught=null;
+  for(const f of FISH){tot+=f.ch;if(roll<=tot){caught=f;break;}}if(!caught)caught=FISH[0];
+  G.gold+=caught.g;G.goldEarned+=caught.g;G.fishCount++;G.xp+=15;G.questProgress.fish++;
+  const ps=document.getElementById('pond-status');if(ps)ps.textContent='🎉 Caught '+caught.e+' '+caught.n+'! +'+caught.g+'g';
+  const fc=document.getElementById('fish-count');if(fc)fc.textContent=G.fishCount;
+  const fl=document.getElementById('fish-log');if(fl)fl.innerHTML='<div style="padding:4px 0;border-bottom:1px solid var(--border);">'+caught.e+' '+caught.n+' — +'+caught.g+'g</div>'+fl.innerHTML;
+  toast('🎣 '+caught.e+' '+caught.n+'! +'+caught.g+'g','gold');
+  checkLv();hud();save();
+}
+function speedFish(){
+  if(!G.fishingActive){toast('Cast a line first!','err');return;}
+  if(G.gems<10){toast('Need 10💎!','err');return;}
+  G.gems-=10;clearInterval(fishInt);reelIn();hud();
+}
+// ===== BOSS =====
+const BOSSES=[
+  {n:'Rat King',e:'👑🐀',hp:1000000},
+  {n:'Mega Raccoon',e:'💪🦝',hp:1200000},
+  {n:'Demon Boar',e:'😈🐗',hp:1500000},
+  {n:'Ancient Gator',e:'🌊🐊',hp:2000000},
+];
+function renderBoss(){
+  if(!G.bossObj)G.bossObj=BOSSES[0];
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  s('boss-icon',G.bossObj.e);s('boss-name',G.bossActive?G.bossObj.n:'Awaiting Boss...');
+  s('boss-next',G.bossActive?'BOSS ACTIVE — Attack now!':'Next boss: Saturday 12PM EST');
+  const hp=G.bossHP||G.bossObj.hp;const thp=G.bossTotalHP||G.bossObj.hp;
+  const pct=Math.max(0,(hp/thp)*100);
+  const hb=document.getElementById('boss-hp-bar');if(hb)hb.style.width=pct+'%';
+  s('boss-hp-txt',hp.toLocaleString()+' / '+thp.toLocaleString());
+  s('z1dmg',(G.z1dmg||0).toLocaleString());s('z2dmg',(G.z2dmg||0).toLocaleString());
+  s('my-zone','Zone '+G.zone+' ('+(G.zone===1?'Frontier':'Heartland')+')');
+  s('my-dmg',G.myDmg||0);
+  const z1=document.getElementById('z1card');const z2=document.getElementById('z2card');
+  if(z1)z1.classList.toggle('winning',(G.z1dmg||0)>=(G.z2dmg||0));
+  if(z2)z2.classList.toggle('winning',(G.z2dmg||0)>(G.z1dmg||0));
+  const w=WEAPONS.find(x=>x.id===G.currentWeapon)||WEAPONS[0];
+  const mw=document.getElementById('my-wep');if(mw)mw.textContent=w.e;
+}
+function attackBoss(){
+  if(!G.bossActive)G.bossActive=true;
+  if(G.stamina<20){toast('Need 20⚡ stamina!','err');return;}
+  G.stamina-=20;
+  const w=WEAPONS.find(x=>x.id===G.currentWeapon)||WEAPONS[0];
+  const hit=Math.random()*100<=w.acc+G.marksLevel;
+  if(hit){
+    const dmg=w.dmgMin+Math.floor(Math.random()*(w.dmgMax-w.dmgMin));
+    G.bossHP=Math.max(0,(G.bossHP||1000000)-dmg);
+    if(G.zone===1){G.z1dmg=(G.z1dmg||0)+dmg;}else{G.z2dmg=(G.z2dmg||0)+dmg;}
+    G.myDmg=(G.myDmg||0)+dmg;
+    const drops=[];
+    if(Math.random()<.6){const g=Math.floor(Math.random()*100+50);drops.push('💰+'+g+'g');G.gold+=g;G.goldEarned+=g;}
+    if(Math.random()<.15){const gm=Math.floor(Math.random()*10+5);drops.push('💎+'+gm);G.gems+=gm;}
+    if(Math.random()<.2){drops.push('⚡+10');G.stamina=Math.min(G.staminaMax,G.stamina+10);}
+    const bl=document.getElementById('boss-loot');if(bl)bl.innerHTML=drops.map(d=>'<div class="loot-item">'+d+'</div>').join('');
+    toast('⚔️ Hit '+dmg.toLocaleString()+' dmg! '+drops.join(' '),'gold');
+    if(G.bossHP<=0){bossDefeated();return;}
+  } else {
+    toast('❌ Missed the boss! Try a better weapon.');
+  }
+  hud();renderBoss();save();
+}
+function bossDefeated(){
+  const winZ=(G.z1dmg||0)>=(G.z2dmg||0)?1:2;const won=G.zone===winZ;
+  if(won){G.gems+=500;toast('🏆 YOUR ZONE WON! +500💎 + 2x Gold bonus!','gold');}
+  else{G.gems+=200;toast('🥈 Boss defeated. +200💎 consolation prize.');}
+  G.bossHP=1000000;G.bossTotalHP=1000000;G.bossActive=false;G.myDmg=0;G.z1dmg=0;G.z2dmg=0;
+  G.bossObj=BOSSES[Math.floor(Math.random()*BOSSES.length)];
+  hud();renderBoss();save();
+}
+// ===== VIP =====
+function renderVIP(){
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  s('vip-cur',G.vip);s('vip-gems-spent',(G.gemsSpent||0).toLocaleString());
+  const c=document.getElementById('vip-list');if(!c)return;
+  c.innerHTML=VIP_LVS.map(v=>{
+    const unlocked=G.vip>=v.lv;const current=G.vip===v.lv;
+    const canUnlock=G.vip===v.lv-1&&G.gems>=v.gems&&G.level>=v.glv;
+    return `<div class="vip-row ${unlocked?'unlocked':''} ${current?'current':''}">
+      <div class="vip-num">${v.lv}</div>
+      <div style="flex:1;"><div class="vip-perk">${v.perk}</div><div class="vip-req">Req: ${v.gems.toLocaleString()}💎 spent • Game Lv${v.glv}</div></div>
+      <div>${unlocked?'✅':canUnlock?`<button class="btn btn-gem btn-sm" onclick="unlockVIP(${v.lv},${v.gems})">Unlock</button>`:'🔒'}</div>
+    </div>`;
+  }).join('');
+}
+function unlockVIP(lv,cost){
+  if(G.gems<cost){toast('Need '+cost+'💎!','err');return;}
+  if(G.vip<lv-1){toast('Unlock VIP '+(lv-1)+' first!','err');return;}
+  G.gems-=cost;G.gemsSpent=(G.gemsSpent||0)+cost;G.vip=lv;
+  const gain=lv<=2?1:lv<=4?2:lv<=6?3:lv<=8?4:5;G.acres+=gain;initPlots();
+  toast('👑 VIP '+lv+' unlocked! +'+gain+' acres! Fields expanded!');hud();renderVIP();save();
+}
+// ===== QUESTS =====
+function renderQuests(){
+  const qc=document.getElementById('quests-list');
+  if(qc)qc.innerHTML=QUESTS.map(q=>{
+    const prog=G.questProgress[q.type]||0;const done=G.questsDone&&G.questsDone.includes(q.id);
+    const pct=Math.min(100,(prog/q.target)*100);
+    return `<div class="quest-item"><div class="qhdr"><div class="q-icon">${q.icon}</div><div><div class="q-title">${q.title}${done?' ✅':''}</div><div class="q-desc">${q.desc}</div><div class="q-reward">🎁 ${q.reward}</div></div></div><div style="display:flex;align-items:center;gap:8px;"><div class="pbar pg" style="flex:1;"><div class="pf" style="width:${pct}%"></div></div><div style="font-size:11px;color:#aaa;white-space:nowrap;">${Math.min(prog,q.target)}/${q.target}</div>${prog>=q.target&&!done?`<button class="btn btn-gold btn-sm" onclick="claimQ('${q.id}')">Claim!</button>`:''}</div></div>`;
+  }).join('');
+  const ac=document.getElementById('ach-list');
+  if(ac){
+    const achs=[
+      {i:'🌾',t:'First Harvest',d:G.totalHarvests>=1},
+      {i:'🐄',t:'Animal Owner',d:(G.animals||[]).length>=1},
+      {i:'🎣',t:'Fisher',d:G.fishCount>=1},
+      {i:'⛏️',t:'Miner',d:Object.values(G.minerals||{}).reduce((a,b)=>a+b,0)>=1},
+      {i:'🦌',t:'Hunter',d:G.totalHunts>=1},
+      {i:'⭐',t:'Level 5',d:G.level>=5},
+      {i:'⭐',t:'Level 10',d:G.level>=10},
+      {i:'💎',t:'VIP Member',d:G.vip>=1},
+      {i:'🤝',t:'Trader',d:(G.reputation||0)>=10},
+      {i:'🏆',t:'Zone Warrior',d:(G.myDmg||0)>0},
+    ];
+    ac.innerHTML=achs.map(a=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:${a.d?'rgba(67,160,71,.1)':'var(--card)'};border:1px solid ${a.d?'rgba(67,160,71,.4)':'var(--border)'};border-radius:10px;margin-bottom:6px;"><div style="font-size:22px;">${a.i}</div><div style="flex:1;font-size:13px;font-weight:700;">${a.t}</div><div>${a.d?'✅':'🔒'}</div></div>`).join('');
+  }
+  const lu=document.getElementById('lvl-unlocks');
+  if(lu){
+    const unlks=[
+      {lv:3,t:'🎣 Fishing Pond unlocked'},
+      {lv:5,t:'👑 VIP System unlocked'},
+      {lv:8,t:'🏹 Hunting Bow available in Store'},
+      {lv:10,t:'⛏️ Mining unlocked (buy Mine Plot)'},
+      {lv:15,t:'🤖 Auto-Plant available'},
+      {lv:25,t:'🎯 Sniper Rifle available'},
+      {lv:50,t:'👑 Elite VIP & seasonal events'},
+      {lv:100,t:'🌟 Legendary title on leaderboard'},
+      {lv:250,t:'👑 TRUE HOMESTEADER — Server-wide announcement!'},
+    ];
+    lu.innerHTML=unlks.map(u=>`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:${G.level>=u.lv?'rgba(67,160,71,.1)':'var(--card)'};border:1px solid ${G.level>=u.lv?'rgba(67,160,71,.4)':'var(--border)'};border-radius:10px;margin-bottom:6px;"><div style="font-size:15px;font-weight:900;color:${G.level>=u.lv?'#8BC34A':'var(--hay)'};min-width:42px;">Lv${u.lv}</div><div style="font-size:12px;flex:1;">${u.t}</div><div>${G.level>=u.lv?'✅':'🔒'}</div></div>`).join('');
+  }
+}
+function claimQ(id){
+  const q=QUESTS.find(x=>x.id===id);if(!q||G.questsDone&&G.questsDone.includes(id))return;
+  if(!G.questsDone)G.questsDone=[];G.questsDone.push(id);
+  const nums=q.reward.match(/\d+/g);
+  if(nums){G.gold+=parseInt(nums[0]);G.goldEarned+=parseInt(nums[0]);if(nums[1]){G.xp+=parseInt(nums[1]);}}
+  checkLv();toast('🎉 Quest complete! '+q.reward,'gold');hud();renderQuests();save();
+}
 // ===== BUILDS =====
 function renderBuilds(){
   const c=document.getElementById('builds-list');if(!c)return;
@@ -1636,20 +1902,48 @@ function renderLB(){
 function lbFilter(f,btn){document.querySelectorAll('#tab-ranks .cat-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLB();}
 // ===== GEMS =====
 function renderGems(){
-  const gb=document.getElementById('gem-big');if(gb)gb.textContent=G.gems+' Gems';
+  const gb=document.getElementById('gem-big');if(gb)gb.textContent=G.gems.toLocaleString()+' Gems';
   const gs=document.getElementById('gem-spends');if(!gs)return;
   const items=[
-    {e:'⚡',n:'Instant Grow',d:'All crops ready',c:50,fn:'speedAll()'},
-    {e:'💧',n:'Water Refill',d:'Fill to max',c:25,fn:'refillWater()'},
-    {e:'💰',n:'Gold Boost',d:'+500 gold now',c:75,fn:'goldBoost()'},
-    {e:'🌾',n:'Animal Feast',d:'Feed all animals',c:60,fn:'animalFeast()'},
-    {e:'🎰',n:'Extra Spin',d:'Spin again now',c:100,fn:'extraSpin()'},
-    {e:'👑',n:'VIP Boost',d:'Skip to next VIP',c:500,fn:'vipBoost()'},
+    {e:'⚡',n:'Instant Grow',d:'All crops ready NOW',c:50,fn:"speedAll()",canAfford:G.gems>=50},
+    {e:'💧',n:'Water Refill',d:'Fill water to max',c:25,fn:"refillWater()",canAfford:G.gems>=25},
+    {e:'💰',n:'Gold Boost',d:'+500 gold instantly',c:75,fn:"goldBoost()",canAfford:G.gems>=75},
+    {e:'🌾',n:'Animal Feast',d:'Feed & speed all animals',c:60,fn:"animalFeast()",canAfford:G.gems>=60},
+    {e:'🎣',n:'Speed Fish',d:'Instant catch (when fishing)',c:10,fn:"speedFish()",canAfford:G.gems>=10},
+    {e:'💎',n:'Deep Mine',d:'Mine for rare minerals',c:75,fn:"deepMine()",canAfford:G.gems>=75},
+    {e:'🎰',n:'Extra Spin',d:'Bonus spin right now',c:100,fn:"extraSpin()",canAfford:G.gems>=100},
+    {e:'👑',n:'VIP Boost',d:'Unlock next VIP level',c:500,fn:"vipBoost()",canAfford:G.gems>=500},
+    {e:'🌱',n:'Mega Farm',d:'Plant all plots instantly',c:150,fn:"megaFarm()",canAfford:G.gems>=150},
+    {e:'🐣',n:'Baby Animal',d:'Get a random baby animal',c:200,fn:"buyBabyAnimal()",canAfford:G.gems>=200},
   ];
-  gs.innerHTML=items.map(it=>`<div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:6px;"><div style="font-size:28px;">${it.e}</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">${it.n}</div><div style="font-size:11px;color:#aaa;">${it.d}</div></div><button class="btn btn-gem btn-sm" onclick="${it.fn}">💎 ${it.c}</button></div>`).join('');
+  gs.innerHTML=items.map(it=>`<div style="display:flex;align-items:center;gap:10px;padding:12px;background:${it.canAfford?'var(--card)':'rgba(0,0,0,.3)'};border:1px solid ${it.canAfford?'var(--border)':'rgba(255,255,255,.05)'};border-radius:12px;margin-bottom:6px;opacity:${it.canAfford?'1':'.5'};">
+    <div style="font-size:28px;">${it.e}</div>
+    <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${it.canAfford?'var(--cream)':'#777'};">${it.n}</div><div style="font-size:11px;color:#aaa;">${it.d}</div></div>
+    <button class="btn btn-gem btn-sm" onclick="${it.fn}" ${it.canAfford?'':'disabled style="opacity:.4;cursor:not-allowed;"'}>💎 ${it.c}</button>
+  </div>`).join('');
+  // Update convert gold section to also show gems→gold
+  const gcSection = document.getElementById('gems-to-gold-section');
+  if(gcSection) {
+    gcSection.innerHTML = [
+      {gems:10,gold:100},{gems:50,gold:600},{gems:100,gold:1400},{gems:500,gold:8000}
+    ].map(r=>`<div class="conv-row"><div><div style="font-size:13px;font-weight:700;">💰 ${r.gold.toLocaleString()}g</div><div style="font-size:11px;color:#aaa;">${r.gems}💎 → gold</div></div><button class="btn btn-gold btn-sm" onclick="convGemsToGold(${r.gems},${r.gold})" ${G.gems>=r.gems?'':'disabled style="opacity:.4;"'}>Convert</button></div>`).join('');
+  }
 }
-function buyGems(amt){G.gems+=amt;toast('💎 +'+amt+' Gems! (Demo mode)','gold');hud();renderGems();save();}
-function convGold(gc,gg){if(G.gold<gc){toast('Not enough gold!','err');return;}G.gold-=gc;G.gems+=gg;toast('💎 Converted '+gc+'g → '+gg+' Gems!');hud();renderGems();save();}
+function buyGems(amt,price){G.gems+=amt;toast('💎 +'+amt+' Gems added! (Demo mode — App Store coming soon)','gold');hud();renderGems();save();}
+function convGold(gc,gg){if(G.gold<gc){toast('Not enough gold!','err');return;}G.gold-=gc;G.gems+=gg;toast('💎 Converted '+gc.toLocaleString()+'g → '+gg+' Gems!');hud();renderGems();save();}
+function convGemsToGold(gc,gg){if(G.gems<gc){toast('Need '+gc+'💎!','err');return;}G.gems-=gc;G.gold+=gg;G.goldEarned+=gg;toast('💰 Converted '+gc+'💎 → '+gg.toLocaleString()+'g!','gold');hud();renderGems();save();}
+function megaFarm(){
+  if(G.gems<150){toast('Need 150💎!','err');return;}G.gems-=150;
+  const crops=['carrot','spinach','tomato','corn','potato'];let planted=0;
+  G.plots.forEach((p,i)=>{if(!p.crop){const c=crops[Math.floor(Math.random()*crops.length)];const crop=CROPS.find(x=>x.id===c);G.plots[i]={crop:c,planted:Date.now(),growTime:crop.time,watered:false};planted++;}});
+  toast('🌱 Mega Farm! '+planted+' plots planted!','gold');hud();renderFarm();save();
+}
+function buyBabyAnimal(){
+  if(G.gems<200){toast('Need 200💎!','err');return;}G.gems-=200;
+  const rand=ANIMALS[Math.floor(Math.random()*ANIMALS.length)];
+  G.animals.push({id:rand.id,stage:0,bornAt:Date.now(),stageTime:rand.times[0]});
+  toast('🐣 Got a baby '+rand.n+'!','gold');hud();renderAnimals();save();
+}
 function refillWater(){G.gems>=25?(G.gems-=25,G.water=G.waterMax,toast('💧 Refilled!'),hud(),save()):toast('Need 25💎!','err');}
 function goldBoost(){G.gems>=75?(G.gems-=75,G.gold+=500,G.goldEarned+=500,toast('💰 +500g!','gold'),hud(),save()):toast('Need 75💎!','err');}
 function animalFeast(){G.gems>=60?(G.gems-=60,G.animals.forEach((_,i)=>{G.animals[i].stageTime=Math.floor((G.animals[i].stageTime||300)*.8);}),toast('🌾 All fed!'),hud(),save()):toast('Need 60💎!','err');}
