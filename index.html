@@ -585,6 +585,11 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
       <div id="gem-convert-list"></div>
     </div>
 
+    <!-- ALLIANCE -->
+    <div class="tab" id="tab-alliance">
+      <div id="alliance-main"></div>
+    </div>
+
   </div><!-- end content -->
 
   <!-- BOTTOM NAV -->
@@ -609,6 +614,7 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
     <button class="nb" data-nav="profile"><span class="ni">👤</span>Profile</button>
     <button class="nb" data-nav="ranks"><span class="ni">🏆</span>Ranks</button>
     <button class="nb" data-nav="gems"><span class="ni">💎</span>Gems</button>
+    <button class="nb" data-nav="alliance"><span class="ni">⚔️</span>Alliance</button>
   </div>
 </div>
 
@@ -806,6 +812,43 @@ const HOME_UPGRADES={
     {lv:10,t:'GODMODE: 25 free spins daily. Farm runs zero input. Passive king.',boost:'Most passive income'},
   ]},
 };
+const ALLIANCE_RANKS=['Recruit','Member','Veteran','Officer','Founder'];
+const ALLIANCE_RANK_PERKS=[
+  'Limited access — being evaluated (7 days)',
+  'Full alliance access — chat, market, chest',
+  'Can invite directly — vote on decisions',
+  'Accept/kick members — set weekly goals — start raids',
+  'Full control — promote, dissolve, set all rules',
+];
+const FAKE_ALLIANCES=[
+  {id:'a1',name:'Iron Roots',tag:'[IRN]',emoji:'🌿',lv:8,members:47,maxMembers:200,zone:1,type:'Open',minLv:5,desc:'We grind every day. All home types welcome. Weekly boss required.',chest:128000,weeklyGoal:5000,wins:12,founded:'2 months ago',topHome:'ranch',score:284000},
+  {id:'a2',name:'Southern Harvest',tag:'[STH]',emoji:'🌾',lv:12,members:134,maxMembers:200,zone:2,type:'Apply',minLv:15,desc:'Elite alliance. Top 10 server. Must contribute 2000g/week minimum.',chest:890000,weeklyGoal:20000,wins:31,founded:'5 months ago',topHome:'cabin',score:712000},
+  {id:'a3',name:'Drip Nation',tag:'[DRP]',emoji:'💧',lv:5,members:22,maxMembers:200,zone:1,type:'Open',minLv:1,desc:'Beginners welcome! We teach, we grow, we win together. No pressure.',chest:42000,weeklyGoal:1000,wins:3,founded:'3 weeks ago',topHome:'cottage',score:98000},
+  {id:'a4',name:'Gator Country',tag:'[GCY]',emoji:'🐊',lv:15,members:178,maxMembers:200,zone:2,type:'InviteOnly',minLv:25,desc:'Invite only. Proven players only. Alliance Wars veterans.',chest:2400000,weeklyGoal:50000,wins:67,founded:'8 months ago',topHome:'modern',score:1840000},
+  {id:'a5',name:'Van Life Crew',tag:'[VAN]',emoji:'🚐',lv:6,members:61,maxMembers:200,zone:1,type:'Apply',minLv:8,desc:'Van & Modern players preferred. Oil economy specialists.',chest:195000,weeklyGoal:8000,wins:9,founded:'6 weeks ago',topHome:'van',score:321000},
+];
+const ALLIANCE_EVENTS_DATA=[
+  {id:'harvest',name:'Weekly Harvest Drive',icon:'🌾',desc:'Most harvests across alliance wins',reward:'Top 3: 200💎 each • All: 50💎',active:true},
+  {id:'boss',name:'Boss Blitz',icon:'👹',desc:'Alliance attacks Saturday boss together',reward:'Win: 500💎 split by damage dealt',active:true},
+  {id:'animal',name:'Animal Fair',icon:'🐄',desc:'Best Prime animal wins server badge',reward:'1st: Rare animal + 300💎',active:false},
+  {id:'trade',name:'Trade Week',icon:'📈',desc:'Most alliance market trades wins',reward:'Top alliance: 1000💎 chest bonus',active:false},
+  {id:'build',name:'Build Rush',icon:'🏗️',desc:'Most home upgrades across alliance',reward:'Win: 2x contribution all week',active:false},
+];
+const ALLIANCE_LV_PERKS=[
+  {lv:1,perk:'Alliance chat + member roster'},
+  {lv:2,perk:'Alliance Market — 0% tax between members'},
+  {lv:3,perk:'Alliance Bank — borrow gold, repay with interest'},
+  {lv:4,perk:'Alliance Farm — shared plots everyone harvests'},
+  {lv:5,perk:'Chest Bonus — +10% on all donations'},
+  {lv:6,perk:'Alliance Tag glows gold in all chats'},
+  {lv:7,perk:'Alliance Raids — attack bosses together'},
+  {lv:8,perk:'Alliance Territory — claim zone bonuses'},
+  {lv:9,perk:'Auction House — members bid on rare items'},
+  {lv:10,perk:'Alliance Emblem — icon on server leaderboard'},
+  {lv:15,perk:'⚔️ ALLIANCE WARS — challenge other alliances'},
+  {lv:20,perk:'Embassy — recruit from other alliances'},
+  {lv:25,perk:'🏆 LEGENDARY — server-wide fame + permanent banner'},
+];
 const BOSSES=[
   {n:'Rat King',e:'👑🐀',hp:1000000},
   {n:'Mega Raccoon',e:'💪🦝',hp:1200000},
@@ -853,6 +896,8 @@ var G={
   mats:{wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0},
   loginStreak:1,dailyClaimed:false,
   huntLicense:false,mineUnlocked:false,
+  alliance:null,allianceRank:0,allianceContrib:0,allianceWeeklyContrib:0,
+  pendingApps:[],
   hunterLv:1,hunterXP:0,marksLv:1,marksXP:0,
   weapon:'slingshot',spinAvail:true,
   qp:{harv:0,watr:0,anml:0,fish:0,mine:0,hunt:0},
@@ -1954,10 +1999,413 @@ function startTimers(){
   setInterval(saveG,60000);
 }
 
+function leaveAlliance(){if(confirm("Leave your alliance?")){G.alliance=null;G.allianceRank=0;G.allianceContrib=0;renderAlliance();saveG();}}
 function openGems(){navTo('gems');}
 function resetGame(){if(confirm('Reset all progress? This cannot be undone.')){localStorage.removeItem('th53');location.reload();}}
 
+function leaveAlliance(){if(confirm("Leave your alliance?")){G.alliance=null;G.allianceRank=0;G.allianceContrib=0;renderAlliance();saveG();}}
 function openGems(){navTo('gems');}
+// ===== ALLIANCE SYSTEM =====
+function renderAlliance(){
+  var c=ge('alliance-main');if(!c)return;
+  if(!G.alliance){renderAllianceBrowse();return;}
+  renderAllianceHome();
+}
+
+function renderAllianceBrowse(){
+  var c=ge('alliance-main');if(!c)return;
+  var html='';
+  // Header
+  html+='<div class="stl">⚔️ Alliance Directory</div>';
+  html+='<div class="card" style="margin-bottom:10px;background:linear-gradient(135deg,rgba(229,57,53,.1),rgba(45,27,14,.8));border-color:rgba(229,57,53,.3);">';
+  html+='<div style="font-size:13px;font-weight:700;color:#ef9a9a;margin-bottom:4px;">⚔️ What is an Alliance?</div>';
+  html+='<div style="font-size:12px;color:#ddd;line-height:1.6;">200 players. One name. One banner. Apply to join, earn your rank, contribute to the chest, and dominate the server together. Alliance Wars, Boss Blitzes, shared markets — this is where True Homesteader gets real.</div>';
+  html+='</div>';
+  // Create your own
+  html+='<button class="btn bdr2 bfw" style="margin-bottom:10px;" onclick="showCreateAlliance()">⚔️ CREATE YOUR OWN ALLIANCE</button>';
+  // Sort/Filter bar
+  html+='<div style="display:flex;gap:6px;margin-bottom:9px;overflow-x:auto;scrollbar-width:none;">';
+  html+='<button class="tabbtn on" data-f="all" onclick="filterAlliances(this,this.dataset.f)">All</button>';
+  html+='<button class="tabbtn" data-f="open" onclick="filterAlliances(this,this.dataset.f)">Open</button>';
+  html+='<button class="tabbtn" data-f="zone" onclick="filterAlliances(this,this.dataset.f)">My Zone</button>';
+  html+='<button class="tabbtn" data-f="top" onclick="filterAlliances(this,this.dataset.f)">Top Ranked</button>';
+  html+='</div>';
+  // Alliance list
+  html+='<div id="alliance-list-inner">';
+  html+=renderAllianceCards(FAKE_ALLIANCES);
+  html+='</div>';
+  c.innerHTML=html;
+}
+
+function renderAllianceCards(list){
+  return list.map(function(a){
+    var typeColor=a.type==='Open'?'rgba(67,160,71,.3)':a.type==='Apply'?'rgba(255,179,0,.3)':'rgba(229,57,53,.3)';
+    var typeLabel=a.type==='Open'?'🟢 Open':a.type==='Apply'?'🟡 Apply':'🔴 Invite Only';
+    var sameZone=false; // demo
+    var pct=Math.round((a.members/a.maxMembers)*100);
+    return '<div class="card" style="margin-bottom:9px;border-color:'+typeColor+';" data-aid="+a.id+" onclick="showAllianceProfile(this.dataset.aid)">'
+      +'<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;">'
+      +'<div style="font-size:40px;background:rgba(0,0,0,.3);border-radius:12px;padding:8px;flex-shrink:0;">'+a.emoji+'</div>'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:15px;font-weight:900;color:var(--hay);">'+a.tag+' '+a.name+'</div>'
+      +'<div style="font-size:11px;color:#8BC34A;margin:2px 0;">Lv'+a.lv+' Alliance • Zone '+a.zone+' • Founded '+a.founded+'</div>'
+      +'<div style="font-size:12px;color:#ddd;line-height:1.4;margin-top:3px;">'+a.desc+'</div>'
+      +'</div></div>'
+      +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px;">'
+      +'<div style="background:rgba(0,0,0,.25);border-radius:7px;padding:6px;text-align:center;"><div style="font-size:16px;font-weight:900;color:var(--hay);">'+a.members+'</div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;">Members</div></div>'
+      +'<div style="background:rgba(0,0,0,.25);border-radius:7px;padding:6px;text-align:center;"><div style="font-size:16px;font-weight:900;color:var(--geml);">'+a.wins+'</div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;">War Wins</div></div>'
+      +'<div style="background:rgba(0,0,0,.25);border-radius:7px;padding:6px;text-align:center;"><div style="font-size:16px;font-weight:900;color:#8BC34A;">'+a.score.toLocaleString()+'</div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;">Score</div></div>'
+      +'</div>'
+      +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">'
+      +'<div class="pb pbn" style="flex:1;"><div class="pf" style="width:'+pct+'%;"></div></div>'
+      +'<div style="font-size:10px;color:#aaa;white-space:nowrap;">'+a.members+'/'+a.maxMembers+'</div>'
+      +'</div>'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;">'
+      +'<div style="font-size:11px;padding:3px 9px;background:'+typeColor+';border-radius:20px;font-weight:700;">'+typeLabel+'</div>'
+      +'<div style="font-size:10px;color:#aaa;">Min Lv'+a.minLv+'</div>'
+      +'<button class="btn '+(a.type==='Open'?'bgn':'bg')+' bsm" onclick="applyToAlliance(this.dataset.aid,event)" data-aid="+a.id+">'+(a.type==='Open'?'Join Now':'Apply →')+'</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function filterAlliances(btn,filter){
+  document.querySelectorAll('#tab-alliance .tabbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var list=FAKE_ALLIANCES;
+  if(filter==='open')list=FAKE_ALLIANCES.filter(function(a){return a.type==='Open';});
+  else if(filter==='zone')list=FAKE_ALLIANCES.filter(function(a){return a.zone===G.zone;});
+  else if(filter==='top')list=FAKE_ALLIANCES.slice().sort(function(a,b){return b.score-a.score;});
+  var il=ge('alliance-list-inner');if(il)il.innerHTML=renderAllianceCards(list);
+}
+
+function showAllianceProfile(id){
+  var a=FAKE_ALLIANCES.find(function(x){return x.id===id;});if(!a)return;
+  var html='<div class="modal-title">'+a.emoji+' '+a.name+'</div>';
+  html+='<div style="text-align:center;margin-bottom:12px;">';
+  html+='<div style="font-size:13px;color:var(--hay);font-weight:700;">'+a.tag+'</div>';
+  html+='<div style="font-size:11px;color:#8BC34A;">Level '+a.lv+' Alliance • Zone '+a.zone+'</div>';
+  html+='</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:11px;">';
+  html+='<div class="card" style="padding:9px;text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--hay);">'+a.members+'<span style="font-size:11px;color:#666;">/'+a.maxMembers+'</span></div><div style="font-size:10px;color:#888;">Members</div></div>';
+  html+='<div class="card" style="padding:9px;text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--geml);">'+a.wins+'</div><div style="font-size:10px;color:#888;">War Wins</div></div>';
+  html+='<div class="card" style="padding:9px;text-align:center;"><div style="font-size:20px;font-weight:900;color:#8BC34A;">'+a.chest.toLocaleString()+'g</div><div style="font-size:10px;color:#888;">Alliance Chest</div></div>';
+  html+='<div class="card" style="padding:9px;text-align:center;"><div style="font-size:20px;font-weight:900;color:var(--sky);">'+a.weeklyGoal.toLocaleString()+'g</div><div style="font-size:10px;color:#888;">Weekly Goal</div></div>';
+  html+='</div>';
+  html+='<div class="card" style="margin-bottom:9px;"><div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:4px;">📋 Requirements</div>';
+  html+='<div style="font-size:12px;color:#ddd;line-height:1.7;">Min Level: '+a.minLv+'<br>Type: '+a.type+'<br>Weekly contribution: '+a.weeklyGoal.toLocaleString()+'g<br>'+a.desc+'</div></div>';
+  html+='<div class="card" style="margin-bottom:12px;"><div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:5px;">⚔️ Alliance Level '+a.lv+' Perks</div>';
+  ALLIANCE_LV_PERKS.filter(function(p){return p.lv<=a.lv;}).forEach(function(p){
+    html+='<div style="font-size:11px;color:#8BC34A;padding:3px 0;">✅ Lv'+p.lv+': '+p.perk+'</div>';
+  });
+  html+='</div>';
+  if(a.type==='Open'){
+    html+='<button class="btn bgn bfw" data-aid="+a.id+" onclick="joinAlliance(this.dataset.aid)">🌾 JOIN '+a.name.toUpperCase()+' NOW</button>';
+  } else if(a.type==='Apply'){
+    html+='<div class="inp-g" style="margin-bottom:7px;"><label>Your Application Message</label><input id="app-msg" type="text" placeholder="Why you want to join (200 chars)..." maxlength="200" style="width:100%;padding:11px;background:rgba(255,255,255,.08);border:1px solid var(--bdr);border-radius:10px;color:var(--cream);font-size:14px;outline:none;"></div>';
+    html+='<button class="btn bg bfw" onclick="submitApp(this.dataset.aid)" data-aid="+a.id+">📨 SEND APPLICATION</button>';
+  } else {
+    html+='<div style="text-align:center;padding:11px;background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.3);border-radius:10px;font-size:12px;color:#ef9a9a;">🔴 Invite Only — You must be invited by a Veteran or Officer</div>';
+  }
+  showModal(html);
+}
+
+function applyToAlliance(id,e){
+  if(e)e.stopPropagation();
+  showAllianceProfile(id);
+}
+
+function submitApp(id){
+  var msg=ge('app-msg');var txt=msg?msg.value.trim():'';
+  if(!txt){toast('Write a message first!','err');return;}
+  var a=FAKE_ALLIANCES.find(function(x){return x.id===id;});
+  closeModal();
+  toast('📨 Application sent to '+a.name+'! Officers will review within 48hrs.');
+  G.pendingApps=G.pendingApps||[];G.pendingApps.push({id:id,name:a.name,sent:Date.now()});
+  // Simulate acceptance after a moment for demo
+  setTimeout(function(){
+    toast('🎉 '+a.name+' accepted your application! Welcome, Recruit!','gld');
+    joinAlliance(id);
+  },4000);
+  saveG();
+}
+
+function joinAlliance(id){
+  var a=FAKE_ALLIANCES.find(function(x){return x.id===id;});if(!a)return;
+  G.alliance={id:id,name:a.name,tag:a.tag,emoji:a.emoji,lv:a.lv,joinedAt:Date.now()};
+  G.allianceRank=0;G.allianceContrib=0;G.allianceWeeklyContrib=0;
+  announce('⚔️ You joined '+a.tag+' '+a.name+'! Welcome, Recruit!');
+  renderAlliance();saveG();
+}
+
+function showCreateAlliance(){
+  var html='<div class="modal-title">⚔️ Create Alliance</div>';
+  html+='<div class="inp-g"><label>Alliance Name (20 chars)</label><input id="new-aname" type="text" placeholder="e.g. Drip Nation" maxlength="20" style="width:100%;padding:11px;background:rgba(255,255,255,.08);border:1px solid var(--bdr);border-radius:10px;color:var(--cream);font-size:14px;outline:none;"></div>';
+  html+='<div class="inp-g"><label>3-Letter Tag</label><input id="new-atag" type="text" placeholder="e.g. DRP" maxlength="3" style="width:100%;padding:11px;background:rgba(255,255,255,.08);border:1px solid var(--bdr);border-radius:10px;color:var(--cream);font-size:15px;outline:none;text-transform:uppercase;"></div>';
+  html+='<div class="inp-g"><label>Alliance Banner Emoji</label>';
+  html+='<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:5px;">';
+  var banners=['⚔️','🌾','🔥','🌿','💧','🐊','🦅','🌙','🏆','⭐','🌎','🛡️'];
+  banners.forEach(function(b){
+    html+='<div style="font-size:24px;text-align:center;padding:7px;background:rgba(255,255,255,.06);border-radius:8px;cursor:pointer;border:2px solid transparent;" class="banner-pick" data-b="'+b+'" onclick="pickBanner(this)">'+b+'</div>';
+  });
+  html+='</div></div>';
+  html+='<div class="inp-g"><label>Join Type</label><select id="new-atype" style="width:100%;padding:11px;background:rgba(30,50,30,.8);border:1px solid var(--bdr);border-radius:10px;color:var(--cream);font-size:14px;outline:none;"><option value="Open">🟢 Open — Anyone can join</option><option value="Apply">🟡 Apply — You review applications</option><option value="InviteOnly">🔴 Invite Only — Officers invite</option></select></div>';
+  html+='<div class="inp-g"><label>Description (100 chars)</label><input id="new-adesc" type="text" placeholder="What makes your alliance special?" maxlength="100" style="width:100%;padding:11px;background:rgba(255,255,255,.08);border:1px solid var(--bdr);border-radius:10px;color:var(--cream);font-size:14px;outline:none;"></div>';
+  html+='<div style="background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.3);border-radius:9px;padding:9px;margin-bottom:11px;font-size:12px;color:#ef9a9a;">⚠️ Cost: 500💎 to create. You become the Founder. Max 200 members.</div>';
+  html+='<button class="btn bdr2 bfw" onclick="createAlliance()">⚔️ CREATE FOR 500💎</button>';
+  showModal(html);
+}
+var pickedBanner='⚔️';
+function pickBanner(el){
+  document.querySelectorAll('.banner-pick').forEach(function(b){b.style.borderColor='transparent';});
+  el.style.borderColor='var(--hay)';pickedBanner=el.dataset.b;
+}
+function createAlliance(){
+  if(G.gems<500){toast('Need 500💎 to create alliance!','err');return;}
+  var nm=ge('new-aname'),tg=ge('new-atag'),tp=ge('new-atype'),ds=ge('new-adesc');
+  if(!nm||!nm.value.trim()){toast('Enter alliance name!','err');return;}
+  if(!tg||tg.value.trim().length<2){toast('Enter 2-3 letter tag!','err');return;}
+  G.gems-=500;G.gemsSpent=(G.gemsSpent||0)+500;
+  var tag='['+tg.value.toUpperCase().trim()+']';
+  G.alliance={id:'my_'+Date.now(),name:nm.value.trim(),tag:tag,emoji:pickedBanner,lv:1,joinedAt:Date.now(),isFounder:true,type:tp?tp.value:'Open',desc:ds?ds.value.trim():'',members:1,chest:0};
+  G.allianceRank=4;G.allianceContrib=0;
+  closeModal();announce('⚔️ Alliance '+tag+' '+G.alliance.name+' created! You are the Founder 👑');
+  updateHUD();renderAlliance();saveG();
+}
+
+function renderAllianceHome(){
+  var a=G.alliance;if(!a)return;
+  var c=ge('alliance-main');if(!c)return;
+  var rankName=ALLIANCE_RANKS[G.allianceRank||0];
+  var html='';
+  // Alliance header
+  html+='<div style="background:linear-gradient(135deg,rgba(229,57,53,.15),rgba(45,27,14,.9));border:2px solid rgba(229,57,53,.4);border-radius:16px;padding:16px;text-align:center;margin-bottom:10px;">';
+  html+='<div style="font-size:52px;margin-bottom:5px;">'+a.emoji+'</div>';
+  html+='<div style="font-size:20px;font-weight:900;color:var(--hay);">'+a.tag+' '+a.name+'</div>';
+  html+='<div style="font-size:12px;color:#8BC34A;margin:3px 0;">Level '+a.lv+' Alliance</div>';
+  html+='<div style="display:inline-block;background:rgba(229,57,53,.25);border:1px solid rgba(229,57,53,.4);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;color:#ef9a9a;margin-top:4px;">Your Rank: '+rankName+'</div>';
+  html+='</div>';
+  // Quick stats row
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;">';
+  html+='<div class="card" style="padding:9px;text-align:center;"><div style="font-size:18px;font-weight:900;color:var(--hay);">'+(a.members||1)+'</div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;">Members</div></div>';
+  html+='<div class="card" style="padding:9px;text-align:center;"><div style="font-size:18px;font-weight:900;color:#8BC34A;">'+(a.wins||0)+'</div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;">War Wins</div></div>';
+  html+='<div class="card" style="padding:9px;text-align:center;"><div style="font-size:18px;font-weight:900;color:var(--geml);">'+(G.allianceContrib||0).toLocaleString()+'g</div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;">Contributed</div></div>';
+  html+='</div>';
+  // Sub-tabs
+  html+='<div class="tabs" id="alli-tabs" style="margin-bottom:10px;">';
+  html+='<button class="tabbtn on" onclick="alliTab(this,this.dataset.t)" data-t="home>🏠 Home</button>';
+  html+='<button class="tabbtn" onclick="alliTab(this,this.dataset.t)" data-t="members>👥 Members</button>';
+  html+='<button class="tabbtn" onclick="alliTab(this,this.dataset.t)" data-t="chest>💰 Chest</button>';
+  html+='<button class="tabbtn" onclick="alliTab(this,this.dataset.t)" data-t="events>🎯 Events</button>';
+  html+='<button class="tabbtn" onclick="alliTab(this,this.dataset.t)" data-t="market>📈 Market</button>';
+  html+='<button class="tabbtn" onclick="alliTab(this,this.dataset.t)" data-t="wars>⚔️ Wars</button>';
+  html+='<button class="tabbtn" onclick="alliTab(this,this.dataset.t)" data-t="perks>⭐ Perks</button>';
+  html+='</div>';
+  html+='<div id="alli-content">';
+  html+=renderAlliSubHome(a);
+  html+='</div>';
+  c.innerHTML=html;
+}
+
+function alliTab(btn,tab){
+  document.querySelectorAll('#alli-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var c=ge('alli-content');if(!c)return;
+  var a=G.alliance;
+  if(tab==='home')c.innerHTML=renderAlliSubHome(a);
+  else if(tab==='members')c.innerHTML=renderAlliMembers(a);
+  else if(tab==='chest')c.innerHTML=renderAlliChest(a);
+  else if(tab==='events')c.innerHTML=renderAlliEvents(a);
+  else if(tab==='market')c.innerHTML=renderAlliMarket(a);
+  else if(tab==='wars')c.innerHTML=renderAlliWars(a);
+  else if(tab==='perks')c.innerHTML=renderAlliPerks(a);
+}
+
+function renderAlliSubHome(a){
+  var html='';
+  // Alliance chat
+  html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">💬 Alliance Chat</div>';
+  html+='<div class="chat-box" id="alli-chat" style="height:160px;margin-bottom:7px;">';
+  var msgs=[
+    {nm:'WildRootsCo',rank:'Officer',msg:'Boss Blitz starts Saturday 12PM! Everyone on deck 🔥'},
+    {nm:'SunflowerFarm',rank:'Member',msg:'I have 50 hay bales in the market — alliance price 8g each'},
+    {nm:'MountainMike',rank:'Veteran',msg:'Level 42 just hit! Upgrading my home tonight 💪'},
+    {nm:'OffGridMama',rank:'Recruit',msg:'Hi everyone! Just joined. Cabin player here 🛖'},
+    {nm:'PeachTreeGrace',rank:'Member',msg:'Who needs medicine? I can fill orders up to 20 packs'},
+  ];
+  msgs.forEach(function(m){
+    var rcolor=m.rank==='Officer'?'#ef9a9a':m.rank==='Veteran'?'var(--hay)':m.rank==='Recruit'?'#666':'#8BC34A';
+    html+='<div class="cmsg"><div class="cmsg-nm" style="color:'+rcolor+';">'+m.nm+' ['+m.rank+']</div><div class="cmsg-tx">'+m.msg+'</div></div>';
+  });
+  html+='</div>';
+  html+='<div style="display:flex;gap:7px;margin-bottom:12px;"><input class="chin" id="alli-inp" placeholder="Alliance chat..." maxlength="100"><button class="btn bg bsm" onclick="sendAlliChat()">Send</button></div>';
+  // Upcoming events
+  html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">🎯 Active Events</div>';
+  ALLIANCE_EVENTS_DATA.filter(function(e){return e.active;}).forEach(function(ev){
+    html+='<div style="display:flex;align-items:center;gap:9px;padding:10px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;margin-bottom:5px;">';
+    html+='<div style="font-size:28px;">'+ev.icon+'</div>';
+    html+='<div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+ev.name+'</div><div style="font-size:11px;color:#aaa;">'+ev.desc+'</div><div style="font-size:11px;color:#8BC34A;margin-top:2px;">🎁 '+ev.reward+'</div></div>';
+    html+='<button class="btn bgn bsm" style="font-size:10px;" onclick="toast(this.dataset.msg)" data-msg="Joined event!">Join</button>';
+    html+='</div>';
+  });
+  html+='<button class="btn bdr2 bfw" style="margin-top:8px;" onclick="leaveAlliance()">🚪 Leave Alliance</button>';
+  return html;
+}
+
+function renderAlliMembers(a){
+  var fakeMembers=[
+    {nm:'WildRootsCo',e:'👨🏽',lv:67,home:'van',rank:'Officer',contrib:28400,online:true},
+    {nm:'MountainMike',e:'👨🏻',lv:42,home:'modern',rank:'Veteran',contrib:15200,online:true},
+    {nm:G.playerName||'You',e:G.avatar,lv:G.lv,home:G.home,rank:ALLIANCE_RANKS[G.allianceRank||0],contrib:G.allianceContrib||0,online:true,me:true},
+    {nm:'BluegrassHmstd',e:'👨🏾',lv:28,home:'ranch',rank:'Member',contrib:9800,online:false},
+    {nm:'SunflowerFarm',e:'👩🏽',lv:15,home:'cottage',rank:'Member',contrib:6200,online:true},
+    {nm:'PeachTreeGrace',e:'👩🏾',lv:8,home:'cabin',rank:'Recruit',contrib:1400,online:false},
+    {nm:'OffGridMama',e:'👩🏼',lv:3,home:'cabin',rank:'Recruit',contrib:200,online:true},
+  ];
+  fakeMembers.sort(function(a,b){return b.contrib-a.contrib;});
+  var rcolor={Founder:'#FFD700',Officer:'#ef9a9a',Veteran:'var(--hay)',Member:'#8BC34A',Recruit:'#666'};
+  var html='<div style="font-size:11px;color:#aaa;margin-bottom:8px;">'+fakeMembers.length+'/200 members • Sorted by contribution</div>';
+  html+=fakeMembers.map(function(m,i){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:9px 10px;background:'+(m.me?'rgba(74,124,89,.1)':'var(--card)')+';border:1px solid '+(m.me?'var(--sage)':'var(--bdr)')+';border-radius:10px;margin-bottom:5px;">'
+      +'<div style="font-size:13px;font-weight:900;color:var(--hay);min-width:22px;">'+(i+1)+'</div>'
+      +'<div style="font-size:22px;">'+m.e+'</div>'
+      +'<div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+m.nm+(m.me?' (You)':'')+'</div>'
+      +'<div style="font-size:10px;color:'+rcolor[m.rank]+';font-weight:700;">'+m.rank+' • Lv'+m.lv+' '+hl(m.home)+'</div></div>'
+      +'<div style="text-align:right;"><div style="font-size:12px;font-weight:700;color:#8BC34A;">'+m.contrib.toLocaleString()+'g</div>'
+      +'<div style="font-size:9px;color:'+(m.online?'#8BC34A':'#444')+'">'+(m.online?'● Online':'○ Offline')+'</div></div>'
+      +'</div>';
+  }).join('');
+  if(G.allianceRank>=3){
+    html+='<div style="margin-top:10px;"><div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">⚔️ Officer Controls</div>';
+    html+='<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+    html+='<button class="btn bge bsm" onclick="toast(this.dataset.msg)" data-msg="Application queue: 3 pending">📨 Applications (3)</button>';
+    html+='<button class="btn bg bsm" onclick="toast(this.dataset.msg)" data-msg="Invite link copied!">🔗 Invite Link</button>';
+    html+='<button class="btn bsm" style="background:rgba(229,57,53,.2);color:#ef9a9a;" onclick="toast(this.dataset.msg)" data-msg="Select a member to kick">🚫 Kick Member</button>';
+    html+='</div></div>';
+  }
+  return html;
+}
+
+function renderAlliChest(a){
+  var total=(a.chest||0)+(G.allianceContrib||0);
+  var html='<div style="background:linear-gradient(135deg,rgba(255,179,0,.12),rgba(45,27,14,.9));border:1px solid rgba(255,179,0,.3);border-radius:14px;padding:16px;text-align:center;margin-bottom:10px;">';
+  html+='<div style="font-size:42px;margin-bottom:5px;">💰</div>';
+  html+='<div style="font-size:28px;font-weight:900;color:var(--hay);">'+total.toLocaleString()+'g</div>';
+  html+='<div style="font-size:11px;color:#aaa;margin-top:3px;">Alliance Treasury</div>';
+  html+='<div style="font-size:12px;color:#8BC34A;margin-top:5px;">Your contribution: '+(G.allianceContrib||0).toLocaleString()+'g</div>';
+  html+='</div>';
+  // Contribute
+  html+='<div class="card" style="margin-bottom:9px;">';
+  html+='<div style="font-size:12px;font-weight:700;color:var(--hay);margin-bottom:8px;">💰 Donate to Alliance</div>';
+  var amounts=[100,500,1000,5000];
+  html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;">';
+  amounts.forEach(function(amt){
+    var can=G.gold>=amt;
+    html+='<button class="btn '+(can?'bg':'')+'  bsm bfw" style="'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" onclick="donateChest('+amt+')" '+(can?'':'disabled')+'>💰 Donate '+amt.toLocaleString()+'g</button>';
+  });
+  html+='</div></div>';
+  // Gem donation
+  html+='<div class="card" style="margin-bottom:9px;">';
+  html+='<div style="font-size:12px;font-weight:700;color:var(--geml);margin-bottom:8px;">💎 Donate Gems</div>';
+  [50,200,500].forEach(function(amt){
+    var can=G.gems>=amt;
+    html+='<button class="btn '+(can?'bge':'')+'  bsm bfw" style="margin-bottom:5px;'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" onclick="donateGems('+amt+')" '+(can?'':'disabled')+'>💎 Donate '+amt+' Gems</button>';
+  });
+  html+='</div>';
+  // Weekly leaderboard
+  html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">🏆 Weekly Contribution Leaders</div>';
+  var leaders=[{nm:'WildRootsCo',amt:8400},{nm:'MountainMike',amt:5200},{nm:G.playerName||'You',amt:G.allianceWeeklyContrib||0,me:true},{nm:'SunflowerFarm',amt:3100},{nm:'BluegrassHmstd',amt:2800}];
+  leaders.sort(function(a,b){return b.amt-a.amt;});
+  leaders.forEach(function(l,i){
+    var rc=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'';
+    html+='<div style="display:flex;align-items:center;gap:9px;padding:8px 10px;background:'+(l.me?'rgba(74,124,89,.1)':'var(--card)')+';border-radius:9px;margin-bottom:4px;"><div style="width:22px;font-size:14px;">'+rc+'</div><div style="flex:1;font-size:12px;font-weight:700;">'+l.nm+(l.me?' (You)':'')+'</div><div style="font-size:12px;font-weight:700;color:#8BC34A;">'+l.amt.toLocaleString()+'g</div></div>';
+  });
+  return html;
+}
+
+function donateChest(amt){
+  if(G.gold<amt){toast('Not enough gold!','err');return;}
+  G.gold-=amt;G.allianceContrib=(G.allianceContrib||0)+amt;G.allianceWeeklyContrib=(G.allianceWeeklyContrib||0)+amt;
+  toast('💰 Donated '+amt.toLocaleString()+'g to alliance chest!','gld');
+  updateHUD();alliTab(document.querySelector('#alli-tabs .tabbtn.on')||{classList:{add:function(){},remove:function(){}}}, 'chest');saveG();
+}
+function donateGems(amt){
+  if(G.gems<amt){toast('Need '+amt+'💎!','err');return;}
+  G.gems-=amt;G.gemsSpent=(G.gemsSpent||0)+amt;G.allianceContrib=(G.allianceContrib||0)+amt*50;
+  toast('💎 Donated '+amt+' gems to alliance!');updateHUD();saveG();
+}
+
+function renderAlliEvents(a){
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:9px;line-height:1.6;">Alliance events run weekly. Participate to earn gems, rare animals, and rank up faster.</div>';
+  html+=ALLIANCE_EVENTS_DATA.map(function(ev){
+    return '<div class="card" style="margin-bottom:8px;border-color:'+(ev.active?'rgba(67,160,71,.3)':'var(--bdr)')+';background:'+(ev.active?'rgba(67,160,71,.05)':'var(--card)')+';">'
+      +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">'
+      +'<div style="font-size:32px;">'+ev.icon+'</div>'
+      +'<div><div style="font-size:13px;font-weight:700;color:'+(ev.active?'var(--hay)':'#888')+';">'+ev.name+(ev.active?' <span style="font-size:10px;background:rgba(67,160,71,.3);color:#8BC34A;padding:2px 7px;border-radius:10px;">ACTIVE</span>':'')+'</div>'
+      +'<div style="font-size:11px;color:#aaa;margin-top:2px;">'+ev.desc+'</div></div></div>'
+      +'<div style="font-size:11px;color:#8BC34A;margin-bottom:7px;">🎁 '+ev.reward+'</div>'
+      +(ev.active?'<button class="btn bgn bsm" onclick="toast(this.dataset.msg)" data-msg="Participating!">✅ Participate</button>':'<div style="font-size:11px;color:#444;">Starts next week</div>')
+      +'</div>';
+  }).join('');
+  return html;
+}
+
+function renderAlliMarket(a){
+  if(a.lv<2){
+    return '<div style="text-align:center;padding:24px;"><div style="font-size:38px;margin-bottom:9px;">🔒</div><div style="font-size:14px;font-weight:700;color:#888;">Unlocks at Alliance Level 2</div><div style="font-size:12px;color:#555;margin-top:5px;">Trade with alliance members at 0% tax. Normal market charges 10%.</div></div>';
+  }
+  var html='<div style="background:rgba(67,160,71,.08);border:1px solid rgba(67,160,71,.3);border-radius:10px;padding:9px;margin-bottom:10px;">';
+  html+='<div style="font-size:12px;font-weight:700;color:#8BC34A;">✅ ALLIANCE MARKET — 0% TAX</div>';
+  html+='<div style="font-size:11px;color:#aaa;margin-top:3px;">Members only. Normal server market charges 10% on every sale.</div></div>';
+  var listings=[
+    {nm:'SunflowerFarm',e:'👩🏽',item:'💊 Medicine x10',price:'400g',desc:'Cottage Lv3'},
+    {nm:'WildRootsCo',e:'👨🏽',item:'⛽ Oil Barrel x5',price:'900g',desc:'Van player'},
+    {nm:'BluegrassHmstd',e:'👨🏾',item:'🌾 Hay Bale x20',price:'180g',desc:'Ranch Lv4'},
+    {nm:'MountainMike',e:'👨🏻',item:'🤖 Drone Day',price:'80g',desc:'Modern Lv6'},
+    {nm:'PeachTreeGrace',e:'👩🏾',item:'💧 Water x15',price:'120g',desc:'Cabin Lv2'},
+  ];
+  html+=listings.map(function(l){
+    return '<div style="display:flex;align-items:center;gap:9px;padding:10px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;margin-bottom:6px;">'
+      +'<div style="font-size:24px;">'+l.e+'</div>'
+      +'<div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+l.item+'</div><div style="font-size:10px;color:#aaa;">From: '+l.nm+' • '+l.desc+'</div></div>'
+      +'<div style="text-align:right;"><div style="font-size:13px;font-weight:900;color:var(--hay);">'+l.price+'</div><button class="btn bgn bsm" style="font-size:10px;margin-top:3px;" onclick="toast(this.dataset.msg)" data-msg="Buying item...">Buy</button></div>'
+      +'</div>';
+  }).join('');
+  html+='<button class="btn bg bfw" style="margin-top:5px;" onclick="toast(this.dataset.msg)" data-msg="Post item to alliance market (coming soon)">📦 Post Item</button>';
+  return html;
+}
+
+function renderAlliWars(a){
+  if(a.lv<15){
+    return '<div style="text-align:center;padding:24px;"><div style="font-size:38px;margin-bottom:9px;">🔒</div><div style="font-size:14px;font-weight:700;color:#888;">Alliance Wars unlock at Level 15</div><div style="font-size:12px;color:#555;margin-top:5px;">Challenge other alliances to 72-hour wars. Winner takes 20% of the loser war chest.</div></div>';
+  }
+  return '<div class="card"><div style="font-size:14px;font-weight:700;color:#ef9a9a;margin-bottom:5px;">⚔️ Alliance Wars</div><div style="font-size:12px;color:#aaa;">No active wars. Challenge an alliance to begin.</div><button class="btn bdr2 bfw" style="margin-top:9px;" onclick="toast(this.dataset.msg)" data-msg="Declare war coming next update!">⚔️ Declare War</button></div>';
+}
+
+function renderAlliPerks(a){
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:9px;">Alliance levels up as members contribute to the chest. Higher levels = better perks for everyone.</div>';
+  html+=ALLIANCE_LV_PERKS.map(function(p){
+    var unl=a.lv>=p.lv;
+    return '<div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:'+(unl?'rgba(67,160,71,.08)':'rgba(0,0,0,.2)')+';border:1px solid '+(unl?'rgba(67,160,71,.3)':'rgba(255,255,255,.05)')+';border-radius:9px;margin-bottom:5px;">'
+      +'<div style="font-size:13px;font-weight:900;color:'+(unl?'#8BC34A':'#444');+'min-width:34px;">Lv'+p.lv+'</div>'
+      +'<div style="flex:1;font-size:12px;color:'+(unl?'#ddd':'#444')+';">'+p.perk+'</div>'
+      +'<div>'+(unl?'✅':'🔒')+'</div>'
+      +'</div>';
+  }).join('');
+  return html;
+}
+
+function sendAlliChat(){
+  var inp=ge('alli-inp');if(!inp||!inp.value.trim())return;
+  var txt=inp.value.trim();inp.value='';
+  var chat=ge('alli-chat');if(!chat)return;
+  var d=document.createElement('div');d.className='cmsg';
+  var rankName=ALLIANCE_RANKS[G.allianceRank||0];
+  var rcolor=G.allianceRank>=3?'#ef9a9a':G.allianceRank>=2?'var(--hay)':'#8BC34A';
+  d.innerHTML='<div class="cmsg-nm" style="color:'+rcolor+';">'+(G.playerName||'You')+' ['+rankName+']</div><div class="cmsg-tx">'+txt+'</div>';
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+
 // WIRE UP ALL EVENTS
 function wireEvents(){
   // Splash
