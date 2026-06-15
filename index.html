@@ -240,10 +240,15 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
     <!-- FARM -->
     <div class="tab on" id="tab-farm">
       <div class="stl">🌾 Your Homestead</div>
-      <div style="display:flex;gap:6px;margin-bottom:9px;">
+      <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
         <button class="btn bgn bsm" id="btn-harv-all">🌾 Harvest All</button>
         <button class="btn bsm" style="background:rgba(126,200,227,.2);color:#7EC8E3;" id="btn-water-all">💧 Water All</button>
         <button class="btn bg bsm" id="btn-speed-all">⚡ Speed All (50💎)</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:9px;flex-wrap:wrap;">
+        <button class="btn bsm" style="background:rgba(139,90,43,.3);color:#D4A847;" id="btn-chop">🪵 Chop (5⚡)</button>
+        <button class="btn bsm" style="background:rgba(100,100,100,.25);color:#aaa;" id="btn-quarry">🪨 Quarry (5⚡)</button>
+        <button class="btn bsm" style="background:rgba(30,80,30,.3);color:#8BC34A;" id="btn-forage">🌿 Forage (3⚡)</button>
       </div>
       <div class="farm-grid" id="farm-grid"></div>
       <div class="card" style="text-align:center;font-size:11px;color:#666;">Tap empty plot to plant • Tap growing crop to water • Tap ready crop to harvest</div>
@@ -565,8 +570,14 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <div class="gpack best" data-buy="120"><div style="font-size:28px;">💎💎</div><div style="font-size:19px;font-weight:900;color:var(--geml);">120</div><div style="font-size:10px;color:#888;">Best Value</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$1.99</div></div>
         <div class="gpack" data-buy="300"><div style="font-size:28px;">💎💎💎</div><div style="font-size:19px;font-weight:900;color:var(--geml);">300</div><div style="font-size:10px;color:#888;">Popular</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$4.99</div></div>
         <div class="gpack" data-buy="700"><div style="font-size:28px;">👑</div><div style="font-size:19px;font-weight:900;color:var(--geml);">700</div><div style="font-size:10px;color:#888;">King Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$9.99</div></div>
-        <div class="gpack" data-buy="2000"><div style="font-size:28px;">🌟</div><div style="font-size:19px;font-weight:900;color:var(--geml);">2,000</div><div style="font-size:10px;color:#888;">Whale Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$24.99</div></div>
+        <div class="gpack" data-buy="2000"><div style="font-size:28px;">🌟</div><div style="font-size:19px;font-weight:900;color:var(--geml);">2,000</div><div style="font-size:10px;color:#888;">Power Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$24.99</div></div>
         <div class="gpack" data-buy="5500"><div style="font-size:28px;">👑💎</div><div style="font-size:19px;font-weight:900;color:var(--geml);">5,500</div><div style="font-size:10px;color:#888;">Ultra Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$49.99</div></div>
+      </div>
+      <div class="gpacks" style="margin-top:6px;">
+        <div class="gpack" data-buy="15000"><div style="font-size:28px;">🔥</div><div style="font-size:19px;font-weight:900;color:var(--geml);">15,000</div><div style="font-size:10px;color:#888;">Baron Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$99.99</div></div>
+        <div class="gpack best" data-buy="35000"><div style="font-size:28px;">💫</div><div style="font-size:19px;font-weight:900;color:var(--geml);">35,000</div><div style="font-size:10px;color:#888;">Overlord Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$199.99</div></div>
+        <div class="gpack" data-buy="100000"><div style="font-size:28px;">👑🌾</div><div style="font-size:19px;font-weight:900;color:#FFB300;">100,000</div><div style="font-size:10px;color:#888;">Patriarch Pack</div><div style="font-size:13px;color:#FFB300;font-weight:700;margin-top:3px;">$499.99</div></div>
+        <div class="gpack" style="background:linear-gradient(135deg,rgba(255,179,0,.25),rgba(45,27,14,.8));border-color:var(--hay);" data-buy="999999"><div style="font-size:28px;">💎👑💎</div><div style="font-size:19px;font-weight:900;color:#FFD700;">∞ Gems</div><div style="font-size:10px;color:#FFB300;font-weight:700;">TRUE LEGEND</div><div style="font-size:13px;color:#FFD700;font-weight:900;margin-top:3px;">$999.99</div></div>
       </div>
       <div class="stl">⚡ Spend Gems</div>
       <div id="gem-spend-list"></div>
@@ -702,16 +713,28 @@ const SPIN_TABLE=[
   {l:'500 Gems',e:'👑',c:'#B71C1C',v:{gems:500},ch:1},
 ];
 const VIP_LVLS=[
-  {lv:1,perk:'1 extra acre (5 total) • -5% all timers',gems:100,glv:5},
-  {lv:2,perk:'1 extra acre (6) • -10% timers',gems:250,glv:15},
-  {lv:3,perk:'2 acres (8) • -15% • Gem market',gems:500,glv:25},
-  {lv:4,perk:'2 acres (10) • -20% • 2x daily spin',gems:1000,glv:35},
-  {lv:5,perk:'3 acres (13) • -25% • VIP chat tag 👑',gems:2000,glv:50},
-  {lv:6,perk:'3 acres (16) • -30%',gems:3500,glv:65},
-  {lv:7,perk:'4 acres (20) • -35% • Exclusive animal',gems:5500,glv:80},
-  {lv:8,perk:'4 acres (24) • -40% • Gold border',gems:8000,glv:100},
-  {lv:9,perk:'5 acres (29) • -45% • Bonus weekly gems',gems:12000,glv:125},
-  {lv:10,perk:'5 acres (34) • -50% • Lord of the Land 🌾',gems:18000,glv:150},
+  // --- POWER TIERS (gameplay benefits) ---
+  {lv:1,perk:'🌾 +1 acre (5 total) • -5% all timers',gems:100,glv:5,tier:'power'},
+  {lv:2,perk:'🌾 +1 acre (6) • -10% timers • Daily gift',gems:250,glv:15,tier:'power'},
+  {lv:3,perk:'🌾 +2 acres (8) • -15% • Gem market access',gems:500,glv:25,tier:'power'},
+  {lv:4,perk:'🌾 +2 acres (10) • -20% • 2x daily spin',gems:1000,glv:35,tier:'power'},
+  {lv:5,perk:'🌾 +3 acres (13) • -25% • VIP chat badge 👑',gems:2000,glv:50,tier:'power'},
+  {lv:6,perk:'🌾 +3 acres (16) • -30% • Priority market listings',gems:3500,glv:65,tier:'power'},
+  {lv:7,perk:'🌾 +4 acres (20) • -35% • Exclusive animal unlock',gems:5500,glv:80,tier:'power'},
+  {lv:8,perk:'🌾 +4 acres (24) • -40% • Gold name border',gems:8000,glv:100,tier:'power'},
+  {lv:9,perk:'🌾 +5 acres (29) • -45% • Weekly 500💎 stipend',gems:12000,glv:125,tier:'power'},
+  {lv:10,perk:'🌾 +5 acres (34) • -50% ALL timers • Lord of the Land 🌾',gems:18000,glv:150,tier:'power'},
+  // --- STATUS TIERS (identity & prestige — flex on the server) ---
+  {lv:11,perk:'👑 NAME GLOWS GOLD on leaderboard & chat forever',gems:30000,glv:175,tier:'status'},
+  {lv:12,perk:'📣 Server announcement every time you log in',gems:45000,glv:200,tier:'status'},
+  {lv:13,perk:'🏅 Custom title above name (Patron, Overlord, etc.)',gems:65000,glv:215,tier:'status'},
+  {lv:14,perk:'✨ Exclusive golden avatar frame — visible to all',gems:90000,glv:225,tier:'status'},
+  {lv:15,perk:'🗺️ Landowner badge on profile + 50 acres permanent',gems:125000,glv:235,tier:'status'},
+  {lv:16,perk:'💰 500💎 delivered to your account every week auto',gems:165000,glv:240,tier:'status'},
+  {lv:17,perk:'🔴 BARON title — exclusive red chat text server-wide',gems:210000,glv:245,tier:'status'},
+  {lv:18,perk:'🎰 Daily RARE spin — 5x better odds on gems & animals',gems:260000,glv:248,tier:'status'},
+  {lv:19,perk:'👁️ See ALL player inventories & market prices server-wide',gems:325000,glv:249,tier:'status'},
+  {lv:20,perk:'🌾 TRUE PATRIARCH — Your name is LEGEND. Eternal server fame.',gems:400000,glv:250,tier:'status'},
 ];
 const QUESTS=[
   {id:'q1',t:'First Harvest',d:'Harvest 5 crops',icon:'🌾',target:5,r:'50g+10xp',type:'harv'},
@@ -789,6 +812,27 @@ const BOSSES=[
   {n:'Demon Boar',e:'😈🐗',hp:1500000},
   {n:'Ancient Gator',e:'🌊🐊',hp:2000000},
 ];
+const BUILD_MATS=[
+  {id:'wood',n:'Lumber',e:'🪵',desc:'Basic building material. Chop trees or buy from store.'},
+  {id:'stone',n:'Stone',e:'🪨',desc:'Quarried from mining. Used in all upgrades.'},
+  {id:'clay',n:'Clay',e:'🧱',desc:'Found while mining. Needed from Level 2 up.'},
+  {id:'iron',n:'Iron',e:'⚙️',desc:'Rare mine drop. Required from Level 3 up.'},
+  {id:'coal',n:'Coal',e:'⚫',desc:'Mine drop. Powers forges for higher upgrades.'},
+  {id:'diamond',n:'Diamond',e:'💎',desc:'Very rare mine drop. Lv6-10 upgrades only.'},
+  {id:'crystal',n:'Rare Crystal',e:'🔮',desc:'Only drops deep mine. Lv10 only.'},
+];
+const HOME_UPGRADE_COSTS=[
+  {lv:1, gems:50,  mats:{wood:10,stone:5}},
+  {lv:2, gems:100, mats:{wood:20,stone:10,clay:5}},
+  {lv:3, gems:200, mats:{wood:30,stone:20,clay:10,iron:5}},
+  {lv:4, gems:350, mats:{wood:40,stone:30,clay:15,iron:10,coal:5}},
+  {lv:5, gems:500, mats:{wood:50,stone:40,clay:20,iron:15,coal:10}},
+  {lv:6, gems:750, mats:{wood:60,stone:50,clay:25,iron:20,coal:15,diamond:3}},
+  {lv:7, gems:1000,mats:{wood:75,stone:60,clay:30,iron:25,coal:20,diamond:6}},
+  {lv:8, gems:1500,mats:{wood:100,stone:75,clay:40,iron:30,coal:25,diamond:10}},
+  {lv:9, gems:2000,mats:{wood:125,stone:100,clay:50,iron:40,coal:30,diamond:15}},
+  {lv:10,gems:3000,mats:{wood:150,stone:125,clay:75,iron:50,coal:40,diamond:25,crystal:5}},
+];
 const FAKE_PLAYERS=[
   {n:'WildRootsCo',e:'👨🏽',lv:67,home:'van',zone:1,gold:158400},
   {n:'MountainMike',e:'👨🏻',lv:42,home:'modern',zone:1,gold:98200},
@@ -806,6 +850,7 @@ var G={
   vip:0,gemsSpent:0,acres:4,
   plots:[],animals:[],buildings:[],inventory:{},minerals:{},
   fishCount:0,totalHarvests:0,totalHunts:0,goldEarned:0,daysPlayed:1,
+  mats:{wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0},
   loginStreak:1,dailyClaimed:false,
   huntLicense:false,mineUnlocked:false,
   hunterLv:1,hunterXP:0,marksLv:1,marksXP:0,
@@ -998,7 +1043,12 @@ function harvest(idx){
   var g=c.gold+bonus;
   G.gold+=g;G.goldEarned+=g;G.xp+=c.xp;G.totalHarvests++;G.qp.harv++;
   G.plots[idx]={crop:null,planted:0,growTime:0,watered:false};
-  checkLv();toast(c.e+' +'+g+'g!','gld');updateHUD();renderFarm();saveG();
+  // Tree crops also yield lumber
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  var woodGain=0;
+  if(c.cat==='trees'){woodGain=3+Math.floor(Math.random()*3);G.mats.wood=(G.mats.wood||0)+woodGain;}
+  else if(Math.random()<0.15){woodGain=1;G.mats.wood=(G.mats.wood||0)+1;}
+  checkLv();toast(c.e+' +'+g+'g!'+(woodGain?' 🪵+'+woodGain:''),'gld');updateHUD();renderFarm();saveG();
 }
 function harvestAll(){
   var ct=0,total=0,now=Date.now();
@@ -1109,22 +1159,76 @@ function removeAnimal(i){if(confirm('Remove animal?')){G.animals.splice(i,1);ren
 
 // BUILDS
 function renderBuilds(){
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
   var panel=ge('home-upgrade-panel');
   if(panel&&G.home){
     var upg=HOME_UPGRADES[G.home];
-    if(upg){
-      var cost=G.homeUpgradeCost||500;
-      var nextLv=G.homeLv+1;
-      var canUpgrade=nextLv<=10&&G.gold>=cost;
-      panel.innerHTML='<div class="upg-card"><div class="upg-hdr"><div class="upg-ico">'+(G.home==='cottage'?'🏡':G.home==='cabin'?'🛖':G.home==='van'?'🚐':G.home==='ranch'?'🏚️':'🏗️')+'</div><div><div class="upg-nm">'+hl(G.home)+' — Level '+G.homeLv+'/10</div><div class="upg-lv">'+('⭐'.repeat(G.homeLv))+'</div></div></div>'+
-        '<div class="upg-perks">'+upg.upgrades.map(function(u){
-          var done=G.homeLv>=u.lv;var cur=G.homeLv===u.lv-1;
-          return '<div class="upg-perk'+(done?' done':cur?' cur':'')+'">'+'<div class="upg-lbl">Lv'+u.lv+'</div>'+'<div><div style="color:'+(done?'#8BC34A':cur?'var(--hay)':'#ccc')+';">'+u.t+'</div><div style="font-size:10px;color:var(--geml);margin-top:2px;">⚡ '+u.boost+'</div></div>'+(done?'<div style="font-size:14px;">✅</div>':'')+'</div>';
-        }).join('')+'</div>'+
-        (G.homeLv<10?'<button class="btn bg bfw" style="margin-top:11px;" onclick="upgradeHome()">⬆️ Upgrade to Lv'+nextLv+' ('+cost.toLocaleString()+'g)</button>':'<div style="text-align:center;padding:10px;color:#8BC34A;font-weight:700;">🌟 MAX LEVEL REACHED!</div>')+
-        '</div>';
+    var homeEmoji={cottage:'🏡',cabin:'🛖',van:'🚐',ranch:'🏚️',modern:'🏗️'}[G.home]||'🏠';
+    var nextLv=G.homeLv+1;
+    var nextCost=HOME_UPGRADE_COSTS[nextLv-1];
+    var canUp=G.homeLv<10&&nextCost&&G.gems>=nextCost.gems&&hasMats(nextCost.mats);
+    var html='<div class="upg-card">';
+    // Header
+    html+='<div class="upg-hdr"><div class="upg-ico">'+homeEmoji+'</div><div><div class="upg-nm">'+hl(G.home)+' — Level '+G.homeLv+'/10</div><div class="upg-lv" style="color:#8BC34A;">'+('⭐'.repeat(G.homeLv)+('☆'.repeat(10-G.homeLv)))+'</div></div></div>';
+    // Materials on hand
+    html+='<div style="background:rgba(0,0,0,.25);border:1px solid var(--bdr);border-radius:10px;padding:9px;margin-bottom:9px;">';
+    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">🎒 YOUR MATERIALS</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">';
+    BUILD_MATS.forEach(function(m){
+      var have=G.mats[m.id]||0;
+      html+='<div style="background:rgba(0,0,0,.3);border:1px solid '+(have>0?'rgba(67,160,71,.4)':'rgba(255,255,255,.05)')+';border-radius:7px;padding:5px;text-align:center;"><div style="font-size:16px;">'+m.e+'</div><div style="font-size:9px;color:#aaa;margin:1px 0;">'+m.n+'</div><div style="font-size:13px;font-weight:900;color:'+(have>0?'#8BC34A':'#444')+';">'+have+'</div></div>';
+    });
+    html+='</div></div>';
+    // Next upgrade requirements
+    if(G.homeLv<10&&nextCost){
+      html+='<div style="background:rgba(124,77,255,.08);border:1px solid rgba(124,77,255,.25);border-radius:10px;padding:9px;margin-bottom:9px;">';
+      html+='<div style="font-size:11px;color:var(--geml);font-weight:700;margin-bottom:6px;">⬆️ TO REACH LV'+nextLv+' YOU NEED:</div>';
+      html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px;">';
+      html+='<div style="background:rgba(124,77,255,.2);border:1px solid rgba(124,77,255,.3);border-radius:7px;padding:4px 9px;font-size:12px;font-weight:700;color:'+(G.gems>=nextCost.gems?'#B39DDB':'#E53935')+'" >💎 '+nextCost.gems+(G.gems>=nextCost.gems?' ✅':' (need '+(nextCost.gems-G.gems)+' more)')+'</div>';
+      for(var k in nextCost.mats){
+        var need=nextCost.mats[k],have2=G.mats[k]||0,ok=have2>=need;
+        var m2=BUILD_MATS.find(function(x){return x.id===k;});
+        html+='<div style="background:rgba(0,0,0,.25);border:1px solid '+(ok?'rgba(67,160,71,.4)':'rgba(229,57,53,.4)')+';border-radius:7px;padding:4px 9px;font-size:12px;font-weight:700;color:'+(ok?'#8BC34A':'#ef9a9a')+'">'+(m2?m2.e:k)+' '+need+(ok?' ✅':' (have '+have2+')')+'</div>';
+      }
+      html+='</div>';
+      var miss=getMissingMats(nextCost.mats);var gemOk=G.gems>=nextCost.gems;
+      if(canUp){html+='<button class="btn bgn bfw" onclick="upgradeHome()">⬆️ UPGRADE TO LEVEL '+nextLv+' NOW!</button>';}
+      else{
+        html+='<div style="font-size:11px;color:#ef9a9a;line-height:1.6;margin-bottom:5px;">';
+        if(!gemOk)html+='⚠️ Need '+(nextCost.gems-G.gems)+' more gems<br>';
+        if(miss.length)html+='⚠️ '+miss.join('<br>⚠️ ');
+        html+='<button class="btn bfw" style="background:rgba(124,77,255,.25);color:var(--geml);" onclick="openGems()">💎 Get Gems</button>';
+        html+='<button class="btn bfw" style="background:rgba(124,77,255,.25);color:var(--geml);" onclick="navTo(\'gems\')">💎 Get Gems</button>';
+      }
+      html+='</div>';
+    } else if(G.homeLv>=10){
+      html+='<div style="text-align:center;padding:14px;background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.3);border-radius:10px;"><div style="font-size:28px;">🌟</div><div style="font-size:14px;font-weight:900;color:var(--hay);margin-top:5px;">MAX LEVEL REACHED!</div></div>';
     }
+    // Perk list
+    if(upg){
+      html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin:10px 0 6px;">📊 FULL PERK PATH</div>';
+      html+='<div class="upg-perks">'+upg.upgrades.map(function(u){
+        var done=G.homeLv>=u.lv;var cur=G.homeLv===u.lv-1;
+        var c2=HOME_UPGRADE_COSTS[u.lv-1];
+        var matStr=c2?Object.entries(c2.mats).map(function(e){var m2=BUILD_MATS.find(function(x){return x.id===e[0];});return(m2?m2.e:e[0])+e[1];}).join(' '):'';
+        return '<div class="upg-perk'+(done?' done':cur?' cur':'')+'">'+'<div class="upg-lbl">Lv'+u.lv+'</div>'+'<div style="flex:1;"><div style="font-size:12px;color:'+(done?'#8BC34A':cur?'var(--hay)':'#ccc')+';">'+u.t+'</div><div style="font-size:10px;color:var(--geml);margin-top:1px;">⚡ '+u.boost+'</div><div style="font-size:10px;color:#666;margin-top:1px;">Cost: '+(c2?c2.gems+'💎 '+matStr:'')+'</div></div>'+(done?'<div>✅</div>':'')+'</div>';
+      }).join('')+'</div>';
+    }
+    html+='</div>';
+    // BUY MATERIALS SECTION
+    html+='<div class="card" style="margin-top:10px;background:rgba(139,95,10,.1);border-color:rgba(212,168,71,.3);">';
+    html+='<div style="font-size:12px;font-weight:800;color:var(--hay);margin-bottom:8px;">🛒 BUY BUILDING MATERIALS</div>';
+    html+='<div style="font-size:11px;color:#aaa;margin-bottom:8px;">You can also earn materials by mining, chopping, and foraging. Buying is faster.</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
+    var matPrices={wood:{qty:20,cost:100},stone:{qty:20,cost:120},clay:{qty:10,cost:150},iron:{qty:5,cost:200},coal:{qty:5,cost:180},diamond:{qty:1,cost:350},crystal:{qty:1,cost:800}};
+    BUILD_MATS.forEach(function(m){
+      var p=matPrices[m.id];
+      html+='<div style="display:flex;align-items:center;gap:6px;padding:7px 8px;background:rgba(0,0,0,.2);border:1px solid var(--bdr);border-radius:8px;"><div style="font-size:20px;">'+m.e+'</div><div style="flex:1;"><div style="font-size:11px;font-weight:700;">'+m.n+'</div><div style="font-size:10px;color:#aaa;">x'+p.qty+' = '+p.cost+'g</div></div><button class="btn bg bsm" style="font-size:10px;padding:5px 8px;" data-mid="'+m.id+'" data-qty="'+p.qty+'" data-cost="'+p.cost+'" onclick="buyMat(this.dataset.mid,+this.dataset.qty,+this.dataset.cost)">Buy</button></div>';
+    });
+    html+='</div></div>';
+    panel.innerHTML=html;
   }
+  // Buildings owned
   var bl=ge('builds-list');
   if(bl){
     if(!G.buildings||!G.buildings.length){
@@ -1132,18 +1236,42 @@ function renderBuilds(){
     } else {
       bl.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+G.buildings.map(function(id){
         var b=BUILDINGS.find(function(x){return x.id===id;});if(!b)return'';
-        return '<div class="card" style="padding:12px;"><div style="font-size:36px;margin-bottom:5px;">'+b.e+'</div><div style="font-size:12px;font-weight:700;color:var(--hay);">'+b.n+'</div><div style="font-size:10px;color:#aaa;margin:3px 0;">Level 1</div><div style="font-size:11px;color:#8BC34A;">✅ '+b.perk+'</div></div>';
+        return '<div class="card" style="padding:12px;"><div style="font-size:36px;margin-bottom:5px;">'+b.e+'</div><div style="font-size:12px;font-weight:700;color:var(--hay);">'+b.n+'</div><div style="font-size:10px;color:#aaa;margin:3px 0;">Active</div><div style="font-size:11px;color:#8BC34A;">✅ '+b.perk+'</div></div>';
       }).join('')+'</div>';
     }
   }
 }
+function matName(id){var m=BUILD_MATS.find(function(x){return x.id===id;});return m?m.e+' '+m.n:id;}
+function hasMats(req){
+  for(var k in req){if((G.mats[k]||0)<req[k])return false;}
+  return true;
+}
+function getMissingMats(req){
+  var miss=[];
+  for(var k in req){var need=req[k],have=G.mats[k]||0;if(have<need)miss.push(matName(k)+' ('+(need-have)+' more needed)');}
+  return miss;
+}
 function upgradeHome(){
-  var cost=G.homeUpgradeCost||500;
   if(G.homeLv>=10){toast('Already max level!');return;}
-  if(G.gold<cost){toast('Need '+cost.toLocaleString()+'g!','err');return;}
-  G.gold-=cost;G.homeLv++;G.homeUpgradeCost=Math.floor(cost*1.8);
-  toast('🏠 '+hl(G.home)+' upgraded to Level '+G.homeLv+'! 🎉','gld');
+  var nextLv=G.homeLv+1;
+  var costDef=HOME_UPGRADE_COSTS[nextLv-1];if(!costDef)return;
+  if(G.gems<costDef.gems){toast('Need '+costDef.gems+'💎!','err');return;}
+  if(!hasMats(costDef.mats)){
+    var miss=getMissingMats(costDef.mats);
+    toast('Missing: '+miss.slice(0,2).join(', '),'err');return;
+  }
+  G.gems-=costDef.gems;G.gemsSpent=(G.gemsSpent||0)+costDef.gems;
+  for(var k in costDef.mats){G.mats[k]=(G.mats[k]||0)-costDef.mats[k];}
+  G.homeLv=nextLv;
+  toast('🏠 '+hl(G.home)+' upgraded to Level '+G.homeLv+'! 🎉');
+  announce('🏠 '+G.playerName+' upgraded their '+hl(G.home)+' to Level '+G.homeLv+'!');
   updateHUD();renderBuilds();saveG();
+}
+function buyMat(id,qty,cost){
+  if(G.gold<cost){toast('Need '+cost+'g!','err');return;}
+  G.gold-=cost;if(!G.mats)G.mats={};G.mats[id]=(G.mats[id]||0)+qty;
+  var m=BUILD_MATS.find(function(x){return x.id===id;});
+  toast((m?m.e+' ':'')+qty+'x '+(m?m.n:id)+' purchased!');updateHUD();renderBuilds();saveG();
 }
 
 // MARKET
@@ -1294,13 +1422,25 @@ function mineCell(idx){
   if(G.water<10){toast('Need 10💧 water!','err');return;}
   G.water-=10;G.qp.mine++;
   G.mineField[idx].dug=true;
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
   var roll=Math.random()*100,tot=0,found=null;
   for(var i=0;i<MINERALS.length;i++){tot+=MINERALS[i].rarity;if(roll<=tot){found=MINERALS[i];break;}}
   if(found&&found.id!=='dirt'){
     G.mineField[idx].mineral=found.id;if(!G.minerals)G.minerals={};
     G.minerals[found.id]=(G.minerals[found.id]||0)+1;G.gold+=found.v;G.goldEarned+=found.v;
-    toast('⛏️ Found '+found.e+' '+found.n+'! +'+found.v+'g','gld');
-  } else toast('⛏️ Just dirt...');
+    // Also earn building materials from mining
+    var matGains=[];
+    G.mats.stone=(G.mats.stone||0)+2;matGains.push('🪨+2');
+    if(found.id==='clay'){G.mats.clay=(G.mats.clay||0)+1;matGains.push('🧱+1');}
+    if(found.id==='coal'){G.mats.coal=(G.mats.coal||0)+1;matGains.push('⚫+1');}
+    if(found.id==='iron'){G.mats.iron=(G.mats.iron||0)+1;matGains.push('⚙️+1');}
+    if(found.id==='diamond'){G.mats.diamond=(G.mats.diamond||0)+1;matGains.push('💎+1');}
+    toast('⛏️ '+found.e+' '+found.n+'! +'+found.v+'g '+matGains.join(' '),'gld');
+  } else {
+    // Even dirt gives stone
+    G.mats.stone=(G.mats.stone||0)+1;
+    toast('⛏️ Stone +1 🪨 (keep mining for rarer materials)');
+  }
   var allDug=G.mineField.every(function(c){return c.dug;});
   if(allDug){initMine();toast('Mine field reset! Dig again.');}
   updateHUD();renderMine();saveG();
@@ -1312,10 +1452,18 @@ function doMine(){
 }
 function deepMine(){
   if(G.gems<75){toast('Need 75💎!','err');return;}G.gems-=75;
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
   var rare=MINERALS.filter(function(m){return m.rarity<=5;});
   var f=rare[Math.floor(Math.random()*rare.length)];
   if(!G.minerals)G.minerals={};G.minerals[f.id]=(G.minerals[f.id]||0)+1;
-  G.gold+=f.v;G.goldEarned+=f.v;toast('💎 Deep Mine: '+f.e+' '+f.n+'! +'+f.v+'g','gld');
+  G.gold+=f.v;G.goldEarned+=f.v;
+  // Deep mine can yield rare build mats
+  var bonuses=[];
+  if(f.id==='diamond'){G.mats.diamond=(G.mats.diamond||0)+1;bonuses.push('💎 Diamond mat +1');}
+  if(f.id==='gold_ore'&&Math.random()<0.25){G.mats.crystal=(G.mats.crystal||0)+1;bonuses.push('🔮 Rare Crystal +1!');}
+  G.mats.iron=(G.mats.iron||0)+2;bonuses.push('⚙️+2');
+  G.mats.coal=(G.mats.coal||0)+1;bonuses.push('⚫+1');
+  toast('💎 Deep Mine: '+f.e+' '+f.n+'! +'+f.v+'g '+bonuses.join(' '),'gld');
   updateHUD();renderMine();saveG();
 }
 
@@ -1409,10 +1557,24 @@ function bossDefeated(){
 function renderVIP(){
   st('vip-cur',G.vip);st('vip-spent',(G.gemsSpent||0).toLocaleString());
   var c=ge('vip-list');if(!c)return;
-  c.innerHTML=VIP_LVLS.map(function(v){
-    var unl=G.vip>=v.lv,cur=G.vip===v.lv,canUnlock=G.vip===v.lv-1&&G.gems>=v.gems&&G.lv>=v.glv;
-    return '<div class="vip-row'+(unl?' unl':'')+(cur?' cur':'')+'"><div style="font-size:17px;font-weight:900;color:var(--geml);width:30px;">'+v.lv+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+v.perk+'</div><div style="font-size:10px;color:#888;">Req: '+v.gems.toLocaleString()+'💎 • Game Lv'+v.glv+'</div></div><div>'+(unl?'✅':canUnlock?'<button class="btn bge bsm" onclick="unlockVIP('+v.lv+','+v.gems+')">Unlock</button>':'🔒')+'</div></div>';
-  }).join('');
+  var html='';
+  var lastTier='';
+  VIP_LVLS.forEach(function(v){
+    if(v.tier!==lastTier){
+      lastTier=v.tier;
+      html+=v.tier==='power'?
+        '<div style="font-size:11px;color:#8BC34A;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin:12px 0 6px;padding:5px 9px;background:rgba(67,160,71,.1);border-left:3px solid #8BC34A;border-radius:0 7px 7px 0;">⚡ POWER TIERS — Gameplay Benefits</div>':
+        '<div style="font-size:11px;color:#FFB300;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin:16px 0 6px;padding:5px 9px;background:rgba(255,179,0,.1);border-left:3px solid var(--hay);border-radius:0 7px 7px 0;">👑 STATUS TIERS — Identity & Prestige</div>';
+    }
+    var unl=G.vip>=v.lv,canUnlock=G.vip===v.lv-1&&G.gems>=v.gems&&G.lv>=v.glv;
+    html+='<div class="vip-row'+(unl?' unl':'')+'" style="'+(v.tier==='status'?'background:linear-gradient(135deg,rgba(255,179,0,.07),rgba(45,27,14,.8));border-color:rgba(255,179,0,.25);':'')+'">';
+    html+='<div style="font-size:15px;font-weight:900;color:'+(v.tier==='status'?'var(--hay)':'var(--geml)')+';width:30px;text-align:center;">'+v.lv+'</div>';
+    html+='<div style="flex:1;"><div style="font-size:12px;font-weight:700;color:'+(unl?'#ccc':'#aaa')+';">'+v.perk+'</div>';
+    html+='<div style="font-size:10px;color:#666;margin-top:2px;">'+v.gems.toLocaleString()+'💎 • Game Lv'+v.glv+' required</div></div>';
+    html+='<div>'+(unl?'<span style="color:#8BC34A;font-size:18px;">✅</span>':canUnlock?'<button class="btn bge bsm" onclick="unlockVIP('+v.lv+','+v.gems+')">Unlock</button>':'<span style="color:#333;font-size:16px;">🔒</span>')+'</div>';
+    html+='</div>';
+  });
+  c.innerHTML=html;
 }
 function unlockVIP(lv,cost){
   if(G.gems<cost){toast('Need '+cost.toLocaleString()+'💎!','err');return;}
@@ -1792,8 +1954,10 @@ function startTimers(){
   setInterval(saveG,60000);
 }
 
+function openGems(){navTo('gems');}
 function resetGame(){if(confirm('Reset all progress? This cannot be undone.')){localStorage.removeItem('th53');location.reload();}}
 
+function openGems(){navTo('gems');}
 // WIRE UP ALL EVENTS
 function wireEvents(){
   // Splash
@@ -1814,6 +1978,30 @@ function wireEvents(){
   ge('btn-water-all').onclick=waterAll;
   ge('btn-speed-all').onclick=speedAll;
   ge('btn-reset').onclick=resetGame;
+  ge('btn-chop').onclick=function(){
+    if(G.stamina<5){toast('Need 5⚡!','err');return;}
+    G.stamina-=5;if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+    var w=2+Math.floor(Math.random()*3);G.mats.wood=(G.mats.wood||0)+w;
+    toast('🪵 Chopped! +'+w+' Lumber');updateHUD();saveG();
+  };
+  ge('btn-quarry').onclick=function(){
+    if(G.stamina<5){toast('Need 5⚡!','err');return;}
+    G.stamina-=5;if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+    var s=2+Math.floor(Math.random()*3);G.mats.stone=(G.mats.stone||0)+s;
+    var bonus='';
+    if(Math.random()<0.2){G.mats.clay=(G.mats.clay||0)+1;bonus=' 🧱+1';}
+    toast('🪨 Quarried! +'+s+' Stone'+bonus);updateHUD();saveG();
+  };
+  ge('btn-forage').onclick=function(){
+    if(G.stamina<3){toast('Need 3⚡!','err');return;}
+    G.stamina-=3;G.xp+=5;
+    var r=Math.random();
+    if(r<0.4){G.water=Math.min(G.waterMax,G.water+2);toast('🌿 Found a stream! +2 Water');}
+    else if(r<0.65){if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};G.mats.wood=(G.mats.wood||0)+1;toast('🪵 Found sticks! +1 Lumber');}
+    else if(r<0.8){G.gold+=15;G.goldEarned+=15;toast('🍄 Wild mushrooms! +15g','gld');}
+    else{G.xp+=20;toast('🌺 Rare herb! +20xp');}
+    checkLv();updateHUD();saveG();
+  };
 
   // Store tabs
   document.querySelectorAll('#store-tabs .tabbtn').forEach(function(btn){
