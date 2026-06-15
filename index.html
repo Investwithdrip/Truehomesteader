@@ -325,11 +325,28 @@ html,body{height:100%;overflow:hidden;background:#0d1a0d;font-family:'Segoe UI',
     </div>
     <!-- MARKET -->
     <div class="tab-panel" id="tab-market">
-      <div class="stitle">📈 Animal Market</div>
-      <div class="card" style="background:linear-gradient(135deg,rgba(67,160,71,.15),rgba(30,61,47,.5));margin-bottom:10px;"><div style="font-size:12px;color:#8BC34A;margin-bottom:4px;">💡 Market Tip</div><div style="font-size:13px;">Grow animals to 👑 Prime then sell. Ranch players earn 3x!</div></div>
-      <div id="market-list"></div>
-      <div class="stitle">💊 Cottage Medicine Store</div>
-      <div class="card"><div style="font-size:13px;color:#aaa;">Only Cottage players run the Medicine Store. Visit a Cottage player to buy.</div></div>
+      <div class="stitle">🏪 Player Market Board</div>
+      <div class="card" style="background:linear-gradient(135deg,rgba(255,179,0,.1),rgba(45,27,14,.8));margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--hay);font-weight:700;margin-bottom:6px;">🔗 THE DEPENDENCY ECONOMY</div>
+        <div style="font-size:12px;color:#ddd;line-height:1.7;">Every home produces something others desperately need. No home can fully max alone.</div>
+      </div>
+      <div class="social-tabs">
+        <button class="stab active" onclick="mktTab('board',this)">📋 Board</button>
+        <button class="stab" onclick="mktTab('animals',this)">🐄 Animals</button>
+        <button class="stab" onclick="mktTab('resources',this)">📦 Resources</button>
+        <button class="stab" onclick="mktTab('contracts',this)">🤝 Contracts</button>
+      </div>
+      <div id="mkt-board"><div id="market-listings"></div><button class="btn btn-gold btn-full" onclick="postListing()" style="margin-top:8px;">+ Post Your Listing</button></div>
+      <div id="mkt-animals" style="display:none;"><div id="animal-market-list"></div></div>
+      <div id="mkt-resources" style="display:none;"><div id="resource-market"></div></div>
+      <div id="mkt-contracts" style="display:none;">
+        <div class="card" style="margin-bottom:10px;background:rgba(124,77,255,.08);border-color:rgba(124,77,255,.3);">
+          <div style="font-size:12px;color:var(--gem-light);font-weight:700;">🤝 Zone Contracts</div>
+          <div style="font-size:12px;color:#aaa;margin-top:4px;">Sign weekly supply deals with zone members. Both earn bonus gems. Breaking a contract hurts your Reputation.</div>
+        </div>
+        <div id="contracts-list"></div>
+        <button class="btn btn-gem btn-full" onclick="proposeContract()" style="margin-top:8px;">🤝 Propose Contract</button>
+      </div>
     </div>
     <!-- HUNT -->
     <div class="tab-panel" id="tab-hunt">
@@ -447,9 +464,16 @@ html,body{height:100%;overflow:hidden;background:#0d1a0d;font-family:'Segoe UI',
     <!-- SOCIAL -->
     <div class="tab-panel" id="tab-social">
       <div class="stitle">💬 Social Hub</div>
+      <div id="rep-bar" style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:linear-gradient(135deg,rgba(67,160,71,.15),rgba(30,61,47,.5));border:1px solid rgba(67,160,71,.3);border-radius:12px;margin-bottom:10px;">
+        <div style="font-size:22px;">⭐</div>
+        <div style="flex:1;"><div style="font-size:11px;color:#8BC34A;font-weight:700;">REPUTATION</div><div class="pbar pgreen" style="margin-top:4px;"><div class="pf" id="rep-fill" style="width:0%"></div></div></div>
+        <div style="font-size:14px;font-weight:900;color:#8BC34A;" id="rep-score">0 pts</div>
+      </div>
       <div class="social-tabs">
         <button class="stab active" onclick="socTab('world',this)">🌍 World</button>
         <button class="stab" onclick="socTab('zone',this)">⚔️ Zone</button>
+        <button class="stab" onclick="socTab('share',this)">🤝 Share</button>
+        <button class="stab" onclick="socTab('visit',this)">🏡 Visit</button>
         <button class="stab" onclick="socTab('friends',this)">👥 Friends</button>
       </div>
       <div id="soc-world">
@@ -460,15 +484,37 @@ html,body{height:100%;overflow:hidden;background:#0d1a0d;font-family:'Segoe UI',
         </div>
       </div>
       <div id="soc-zone" style="display:none;">
-        <div style="font-size:13px;color:#aaa;margin-bottom:12px;">Share with your zone members. Gold & gems cannot be shared.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button class="btn btn-green" onclick="shareRes('💧 Water')">💧 Share Water</button>
-          <button class="btn btn-gold" onclick="shareRes('🌾 Hay')">🌾 Share Hay</button>
-          <button class="btn btn-sm" style="background:rgba(229,57,53,.3);color:#ef9a9a;" onclick="shareRes('🍖 Meat')">🍖 Share Meat</button>
-          <button class="btn btn-green" onclick="shareRes('🌱 Seeds')">🌱 Share Seeds</button>
+        <div class="chat-msgs" id="zone-msgs"></div>
+        <div class="chat-row">
+          <input class="chat-in" id="zone-in" placeholder="Zone chat..." maxlength="80" onkeypress="if(event.key==='Enter')sendZoneChat()">
+          <button class="btn btn-gold btn-sm" onclick="sendZoneChat()">Send</button>
         </div>
       </div>
-      <div id="soc-friends" style="display:none;"><div style="text-align:center;padding:30px;color:#555;"><div style="font-size:40px;margin-bottom:10px;">👥</div><div>Add friends to visit their farms!</div></div></div>
+      <div id="soc-share" style="display:none;">
+        <div class="card" style="margin-bottom:10px;background:rgba(67,160,71,.08);border-color:rgba(67,160,71,.3);">
+          <div style="font-size:12px;color:#8BC34A;font-weight:700;margin-bottom:4px;">🤝 Share Resources = Earn Reputation</div>
+          <div style="font-size:12px;color:#aaa;">Each share earns +10 Reputation pts. High rep = gem drops, leaderboard badge, market priority.</div>
+        </div>
+        <div style="display:grid;gap:8px;" id="share-grid"></div>
+        <div class="stitle" style="margin-top:12px;">📦 What Your Home Produces</div>
+        <div id="home-produces"></div>
+        <div class="stitle">🔗 What You Need From Others</div>
+        <div id="home-needs"></div>
+      </div>
+      <div id="soc-visit" style="display:none;">
+        <div class="card" style="margin-bottom:10px;background:rgba(255,179,0,.08);border-color:rgba(255,179,0,.3);">
+          <div style="font-size:12px;color:var(--hay);font-weight:700;margin-bottom:4px;">🏡 Farm Visits</div>
+          <div style="font-size:12px;color:#aaa;">Same zone = buy their resources directly. Different zone = friends only. Each visit has 1-5💎 drop chance.</div>
+        </div>
+        <div id="visit-list"></div>
+      </div>
+      <div id="soc-friends" style="display:none;">
+        <div style="text-align:center;padding:30px;color:#555;"><div style="font-size:40px;margin-bottom:10px;">👥</div><div>Add friends to visit their farms!</div><div style="font-size:11px;margin-top:6px;">Share your Zone code to recruit specific home types</div></div>
+        <div class="card" style="margin-top:10px;background:rgba(124,77,255,.08);border-color:rgba(124,77,255,.3);">
+          <div style="font-size:12px;color:var(--gem-light);font-weight:700;margin-bottom:6px;">🎯 Zone Balance Bonus</div>
+          <div style="font-size:12px;color:#aaa;">When your zone has all 5 home types active — EVERYONE gets +20% gold and +10% gem drops all week.</div>
+        </div>
+      </div>
       <div class="stitle" style="margin-top:12px;">🌐 Online Now</div>
       <div id="online-list"></div>
     </div>
@@ -517,8 +563,14 @@ html,body{height:100%;overflow:hidden;background:#0d1a0d;font-family:'Segoe UI',
     <!-- GUIDE -->
     <div class="tab-panel" id="tab-guide">
       <div class="stitle">📖 Home Guide</div>
-      <div style="font-size:12px;color:#aaa;margin-bottom:12px;">All 5 active homes — full perk paths to max level</div>
-      <div id="guide-list"></div>
+      <div class="social-tabs">
+        <button class="stab active" onclick="guideTab('perks',this)">🏠 Home Perks</button>
+        <button class="stab" onclick="guideTab('economy',this)">🔗 Economy Web</button>
+        <button class="stab" onclick="guideTab('tips',this)">💡 Strategy</button>
+      </div>
+      <div id="guide-perks"><div id="guide-list"></div></div>
+      <div id="guide-economy" style="display:none;"><div id="economy-web"></div></div>
+      <div id="guide-tips" style="display:none;"><div id="strategy-tips"></div></div>
     </div>
     <!-- DAILY -->
     <div class="tab-panel" id="tab-daily">
@@ -744,11 +796,86 @@ const QUESTS=[
   {id:'q6',title:'Hunter',desc:'Complete 1 hunt',icon:'🦌',target:1,reward:'120g + 30xp',type:'hunts'},
 ];
 const HOME_GUIDES=[
-  {id:'cottage',n:'Cottage',e:'🏡',tag:'⚕️ HEALER',perks:[{lv:1,t:'Vet access — heal animals 20g'},{lv:3,t:'Medicine inventory: 3 health packs'},{lv:5,t:'Community Healer: sell meds to players'},{lv:8,t:'Vitamin production: +10% yield'},{lv:10,t:'🌿 Vitamin Trading unlocked'},{lv:15,t:'Herbal Medicine: 2x heal effect'},{lv:20,t:'Master Healer: all healing -50%'}]},
-  {id:'cabin',n:'Cabin',e:'🛖',tag:'💧 RESOURCE',perks:[{lv:1,t:'Offline protection: nothing decays'},{lv:3,t:'Water barrel: +20 max water'},{lv:5,t:'Infinite water offline'},{lv:8,t:'Resource vault: no crop spoil'},{lv:10,t:'🐟 Fish Trading unlocked'},{lv:15,t:'Auto-feed animals from storage'},{lv:20,t:'10x all rewards at max'}]},
-  {id:'van',n:'Van → RV',e:'🚐',tag:'⭐ XP KING',perks:[{lv:1,t:'Stealth: 1.5x trade income'},{lv:3,t:'Road warrior: fast market travel'},{lv:5,t:'Mobile farm: +2 crop plots'},{lv:8,t:'Oil production starts'},{lv:10,t:'⛽ Oil Trading unlocked'},{lv:15,t:'RV upgrade: +3 rooms'},{lv:20,t:'7x XP + Silent 2x trade income'}]},
-  {id:'ranch',n:'Ranch',e:'🏚️',tag:'🐄 ANIMALS',perks:[{lv:1,t:'Animals never die'},{lv:3,t:'+10 max stamina (110)'},{lv:5,t:'Hay production: free feed'},{lv:8,t:'+10 more stamina (120)'},{lv:10,t:'3x animal market + Egg Trading'},{lv:15,t:'Herd bonus: +5% each animal'},{lv:20,t:'Ostrich empire + gem drops from animals'}]},
-  {id:'modern',n:'Modern',e:'🏗️',tag:'🤖 TECH',perks:[{lv:1,t:'Vehicle Trading from Level 1'},{lv:3,t:'Smart sensors: crop ready alerts'},{lv:5,t:'Drone patrol: auto-catch critters'},{lv:8,t:'All tools 2x faster'},{lv:10,t:'Drone army: 5 drones 24/7'},{lv:15,t:'Automated planting & harvesting'},{lv:20,t:'25 free spins daily'}]},
+  {id:'cottage',n:'Cottage',e:'🏡',tag:'⚕️ THE HEALER — Monopoly on Medicine',
+   weakness:'Lowest stamina (90). Slowest gold early. Needs visitors.',
+   secret:'At Lv10 YOU set medicine prices. Every server needs you.',
+   produces:['💊 Medicine','🌿 Vitamins','🧪 Antidotes','🫙 Herbal Tinctures'],
+   needs:['🐄 Animals from Ranch (to heal)','⛽ Oil from Van (herb processing)','🤖 Drones from Modern (garden protection)','🐟 Fish from Cabin (medicine crafting)'],
+   perks:[
+    {lv:1,t:'Only home with Vet — heal animals 10g',boost:'90 max stamina (lowest)'},
+    {lv:3,t:'Medicine Bag — carry 10 packs, sell to anyone',boost:'+5% crop yield'},
+    {lv:5,t:'Herb Garden — +25% crop yield from medicinal plants',boost:'Medicine sells for 150g'},
+    {lv:8,t:'Vitamin Drops — 20% chance every harvest drops vitamin worth 200g',boost:'Antidote crafting unlocked'},
+    {lv:10,t:'🏪 MEDICINE STORE OPEN — other players buy from YOU, you earn GEMS not gold',boost:'Medicine price: YOU decide'},
+    {lv:12,t:'Antidote Master — cure critter attacks instantly, zero stamina cost',boost:'Vitamins worth 350g each'},
+    {lv:15,t:'Herbal Boost — feed herbs to animals, reach Prime 2x faster',boost:'Rare tinctures: 800g each'},
+    {lv:18,t:'Apothecary — craft legendary items no other home can make',boost:'Gem drops from medicine sales'},
+    {lv:20,t:'💊 GODMODE — Medicine sells for gems. Vet free. All animals immune forever.',boost:'Highest community value home'},
+  ]},
+  {id:'cabin',n:'Cabin',e:'🛖',tag:'💧 THE OFFLINE BEAST — Earns While You Sleep',
+   weakness:'Slow online play. Weakest boss damage. No animal bonus.',
+   secret:'At Lv20 the 10x multiplier makes Cabin the richest home. Patience wins.',
+   produces:['💧 Water Barrels','🐟 Preserved Fish','🥫 Canned Food','🧂 Preserved Goods'],
+   needs:['💊 Medicine from Cottage (pond health)','🌾 Hay from Ranch (offline animal feed)','🤖 Drones from Modern (offline harvest)','⛽ Oil from Van (long offline runs)'],
+   perks:[
+    {lv:1,t:'Nothing decays offline. Ever.',boost:'100 stamina (normal)'},
+    {lv:3,t:'Crops water themselves overnight automatically',boost:'Water barrel: +20 max water'},
+    {lv:5,t:'Animals auto-feed from storage while offline',boost:'Offline crops grow at 75% speed'},
+    {lv:8,t:'Away Chest — return to bonus rewards based on hours offline',boost:'Offline crops grow at 90% speed'},
+    {lv:10,t:'🐟 Fish Trading unlocked — pond runs 24/7 without you',boost:'Offline crops grow at 100% speed'},
+    {lv:12,t:'Passive Gold Vault — earn 50g every hour offline automatically',boost:'Away Chest doubles'},
+    {lv:15,t:'Ghost Animals — animals stage up offline without feeding',boost:'+100g/hr offline'},
+    {lv:18,t:'Resource Preservation — sell preserved food to all players for premium',boost:'Offline vault: 250g/hr'},
+    {lv:20,t:'💤 GODMODE — 10x ALL rewards. Offline OR online. Highest ceiling in game.',boost:'Richest home at max level'},
+  ]},
+  {id:'van',n:'Van → RV',e:'🚐',tag:'🚀 THE LEVEL RACER — Hit 250 First',
+   weakness:'Weakest animals. No passive defense. Oil useless without Modern players.',
+   secret:'Van players trigger the Level 250 server announcement FIRST. That title is permanent.',
+   produces:['⛽ Oil Barrels','🗺️ Trade Routes','📦 Road Market Access','⭐ XP Boosts'],
+   needs:['🏗️ Modern to refine oil into gas (3x value)','🐄 Ranch animals to transport and sell','💊 Cottage medicine for stamina recovery','💧 Cabin water barrels for long trips'],
+   perks:[
+    {lv:1,t:'+50% XP on every single action from Day 1',boost:'110 max stamina'},
+    {lv:3,t:'Road Hustle — sell at 1.5x price at any market',boost:'+75% XP on everything'},
+    {lv:5,t:'Oil Passive — earn oil barrel every 2 hours automatically',boost:'Mobile Farm: +2 bonus plots'},
+    {lv:8,t:'Double XP Events hit Van first and last 2x longer than anyone else',boost:'+100% XP multiplier'},
+    {lv:10,t:'⛽ Oil Trading — sell barrels to Modern players for 800g each',boost:'2x XP Events only for Van'},
+    {lv:12,t:'RV Upgrade — van becomes full RV, unlock 4 bonus crop plots',boost:'Oil income every 1 hour'},
+    {lv:15,t:'Silent Income — ALL trades earn 2x gold with zero stamina cost',boost:'XP overflow converts to gold'},
+    {lv:18,t:'XP God — excess XP auto-converts to gold and gems',boost:'3x XP on all actions'},
+    {lv:20,t:'🚀 GODMODE — 7x XP forever + first to 250 gets LEGENDARY title on every server',boost:'Fastest path to max level'},
+  ]},
+  {id:'ranch',n:'Ranch',e:'🏚️',tag:'🐄 THE ANIMAL EMPIRE — Your Animals Never Die',
+   weakness:'Slowest crops. No tech. No offline bonus. Needs active play daily.',
+   secret:'Ranch Auction at Lv15 means other players literally pay YOU to play.',
+   produces:['🌾 Hay Bales','🥚 Eggs','🍖 Premium Meat','🐄 Prime Animals'],
+   needs:['💊 Cottage is the ONLY vet — your animals never die but still need healing','💧 Cabin water for hay fields','🚐 Van to transport and sell animals at distant markets','🏗️ Modern drones to auto-feed herd'],
+   perks:[
+    {lv:1,t:'Animals NEVER die. No vet needed. EVER.',boost:'120 max stamina (highest)'},
+    {lv:3,t:'Hay Farm — grow unlimited free hay, sell to ALL players',boost:'2x Prime sell price'},
+    {lv:5,t:'Egg Trading unlocked — hens produce sellable eggs daily',boost:'Animals grow 25% faster'},
+    {lv:8,t:'Breeding Pen — breed animals for rare trait offspring',boost:'Rare trait animals worth 5x'},
+    {lv:10,t:'3x Prime sell price permanently + Ranch Auction preview',boost:'Herd of 15 animals max'},
+    {lv:12,t:'Herd Bond — each animal boosts ALL others +10% growth speed',boost:'4x Prime sell price'},
+    {lv:15,t:'🏆 Ranch Auction — host weekly auctions, zone players BID on your animals',boost:'Auction gems go to YOU'},
+    {lv:18,t:'Rare Gem Drops — 15% chance animals drop gems when sold at Prime',boost:'5x Prime sell price'},
+    {lv:20,t:'🐄 GODMODE — Ostrich + exotic animals unlocked. Animals drop gems daily. 5x market.',boost:'Wealthiest active player home'},
+  ]},
+  {id:'modern',n:'Modern',e:'🏗️',tag:'🤖 THE MACHINE — Your Farm Runs Itself',
+   weakness:'Most expensive to upgrade. Weak offline. Needs Van for oil chain.',
+   secret:'Modern + Van is the most powerful alliance in the game. Oil economy is player-driven.',
+   produces:['⛽ Refined Gas','🤖 Drone Services','⚙️ Farming Equipment','🔋 Power Cells'],
+   needs:['⛽ Oil from Van (REQUIRED to run drones and machines)','🌾 Hay from Ranch (bio-generator fuel)','💊 Cottage medicine (drone repairs)','💧 Cabin water (refinery cooling)'],
+   perks:[
+    {lv:1,t:'Vehicle Trading — passive gold every 30 min from Day 1',boost:'100 stamina (normal)'},
+    {lv:3,t:'Smart Sensors — instant alerts the second ANY crop or animal is ready',boost:'Auto-sell ready crops'},
+    {lv:5,t:'Drone Scout — auto-kills critters before they touch crops',boost:'2 drones active'},
+    {lv:8,t:'Auto-Harvester — machine harvests everything automatically',boost:'3 drones active'},
+    {lv:10,t:'⚙️ Drone Army — 5 drones mine, protect, and patrol 24/7',boost:'Refinery: oil→gas 3x value'},
+    {lv:12,t:'Refinery Active — buy oil from Van, refine into gas, sell for 3x profit',boost:'5 drones + auto-plant'},
+    {lv:15,t:'Full Automation — planting, watering, AND harvesting all automatic',boost:'Gem Factory drones'},
+    {lv:18,t:'Gem Factory — drones find and collect gems from mining automatically',boost:'10 drones active'},
+    {lv:20,t:'🤖 GODMODE — 25 free spins daily. Entire farm runs zero input. Passive king.',boost:'Most passive income home'},
+  ]},
 ];
 const CHAT_SEED=[
   {name:'FarmerJoe',zone:1,msg:'Just got my first cow! 🐄 Ranch life!'},
@@ -780,7 +907,7 @@ let G={
   currentWeapon:'slingshot',spinAvail:true,lastSpin:0,questProgress:{harv:0,water:0,animals:0,fish:0,mines:0,hunts:0},
   questsDone:[],bossHP:1000000,bossTotalHP:1000000,bossActive:false,bossObj:null,
   zone:1,myDmg:0,z1dmg:0,z2dmg:0,critterActive:false,dailyClaimed:false,
-  fishingActive:false,mineField:[],currentHuntTarget:null,
+  fishingActive:false,mineField:[],currentHuntTarget:null,reputation:0,
 };
 function hl(h){return{cottage:'Cottage',cabin:'Cabin',van:'Van',ranch:'Ranch',modern:'Modern'}[h]||h;}
 function ft(s){return s<60?s+'s':s<3600?Math.ceil(s/60)+'m':Math.ceil(s/3600)+'h';}
@@ -1017,260 +1144,276 @@ function sellAnimal(i){
 }
 function removeAnimal(i){G.animals.splice(i,1);renderAnimals();save();}
 // ===== MARKET =====
-function renderMarket(){
-  const c=document.getElementById('market-list');if(!c)return;
-  c.innerHTML=ANIMALS.map(a=>`<div class="mi-row"><div style="display:flex;align-items:center;gap:10px;"><div style="font-size:28px;">${a.e}</div><div><div style="font-size:13px;font-weight:700;">${a.n}</div><div style="font-size:11px;color:#aaa;">Buy: ${a.cost}g</div></div></div><div style="text-align:right;"><div style="font-size:14px;font-weight:800;color:#8BC34A;">${G.home==='ranch'?a.sell*3:a.sell}g</div><div style="font-size:9px;color:#aaa;">${G.home==='ranch'?'3x Ranch!':'Prime sell'}</div></div></div>`).join('');
+const HOME_PRODUCES={
+  cottage:['💊 Medicine (only source)','🌿 Vitamins','🧪 Antidotes','🫙 Herbal Tinctures'],
+  cabin:['💧 Water Barrels','🐟 Preserved Fish','🥫 Canned Food','🧂 Preserved Goods'],
+  van:['⛽ Oil Barrels','🗺️ Trade Routes','⭐ XP Boosts','📦 Road Market Access'],
+  ranch:['🌾 Hay Bales','🥚 Eggs','🍖 Premium Meat','🐄 Prime Animals'],
+  modern:['⛽ Refined Gas','🤖 Drone Services','⚙️ Equipment','🔋 Power Cells'],
+};
+const HOME_NEEDS={
+  cottage:['🐄 Animals from Ranch — steady medicine income','⛽ Oil from Van — herb processing','🤖 Drones from Modern — garden protection','🐟 Fish from Cabin — medicine crafting'],
+  cabin:['💊 Medicine from Cottage — pond health','🌾 Hay from Ranch — offline animal feed','🤖 Drones from Modern — offline harvest','⛽ Oil from Van — long offline runs'],
+  van:['🏗️ Modern to refine your oil into gas (3x value)','🐄 Ranch animals to transport & sell','💊 Cottage medicine — stamina recovery','💧 Cabin water barrels — long trips'],
+  ranch:['💊 Cottage is the ONLY vet in the game','💧 Cabin water for hay fields','🚐 Van transport to distant markets','🤖 Modern drones to auto-feed herd'],
+  modern:['⛽ Oil from Van — REQUIRED for drones & machines','🌾 Hay from Ranch — bio-generator fuel','💊 Cottage medicine — drone repairs','💧 Cabin water — refinery cooling'],
+};
+const SHAREABLE_RESOURCES=[
+  {id:'water',n:'Water',e:'💧',prod:'cabin',cost:0,repGain:10,desc:'Cabin players share water with zone'},
+  {id:'hay',n:'Hay Bale',e:'🌾',prod:'ranch',cost:0,repGain:10,desc:'Ranch players share hay for animal feed'},
+  {id:'medicine',n:'Medicine',e:'💊',prod:'cottage',cost:50,repGain:15,desc:'Cottage sells medicine to everyone'},
+  {id:'oil',n:'Oil Barrel',e:'⛽',prod:'van',cost:0,repGain:10,desc:'Van players sell oil to Modern'},
+  {id:'fish',n:'Preserved Fish',e:'🐟',prod:'cabin',cost:30,repGain:8,desc:'Cabin trades fish to zone'},
+  {id:'eggs',n:'Eggs',e:'🥚',prod:'ranch',cost:20,repGain:8,desc:'Ranch sells eggs at market'},
+  {id:'gas',n:'Refined Gas',e:'⛽',prod:'modern',cost:200,repGain:20,desc:'Modern refines Van oil into gas'},
+  {id:'drones',n:'Drone Service',e:'🤖',prod:'modern',cost:100,repGain:15,desc:'Modern rents drone services'},
+  {id:'vitamins',n:'Vitamins',e:'🌿',prod:'cottage',cost:80,repGain:12,desc:'Cottage crafts vitamins for yield boost'},
+  {id:'meat',n:'Premium Meat',e:'🍖',prod:'ranch',cost:60,repGain:10,desc:'Ranch sells premium meat'},
+];
+const FAKE_CONTRACTS=[
+  {from:'BluegrassHmstd',fromHome:'ranch',to:'SunflowerFarm',toHome:'cottage',offer:'50 Hay/week',want:'20 Medicine/week',reward:'100💎 each',active:true},
+  {from:'WildRootsCo',fromHome:'van',to:'MountainMike',toHome:'modern',offer:'30 Oil/week',want:'Gas Refining',reward:'150💎 each',active:true},
+  {from:'PeachTreeGrace',fromHome:'cabin',to:'Anyone',toHome:'any',offer:'100 Water/week',want:'Medicine or Hay',reward:'80💎',active:false},
+];
+function mktTab(tab,btn){
+  ['board','animals','resources','contracts'].forEach(t=>{const e=document.getElementById('mkt-'+t);if(e)e.style.display='none';});
+  document.querySelectorAll('#tab-market .stab').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('mkt-'+tab);if(el)el.style.display='block';
+  if(btn)btn.classList.add('active');
+  if(tab==='board')renderMarketBoard();
+  if(tab==='animals')renderAnimalMarket();
+  if(tab==='resources')renderResourceMarket();
+  if(tab==='contracts')renderContracts();
 }
-// ===== HUNT =====
-function renderHunt(){
-  const wg=document.getElementById('wep-grid');
-  if(wg)wg.innerHTML=WEAPONS.map(w=>{
-    const locked=G.level<w.lv&&w.lv>1;const active=G.currentWeapon===w.id;
-    return `<div class="wep-card ${active?'active':''} ${locked?'locked':''}" onclick="${locked?'':('selWep("'+w.id+'")')}"><div style="font-size:28px;">${w.e}</div><div style="font-size:11px;font-weight:700;color:var(--hay);margin-top:4px;">${w.n}</div><div style="font-size:10px;color:#aaa;">${locked?'Lv'+w.lv+' req':w.acc+'% acc'}</div>${active?'<div style="font-size:9px;color:var(--sage);">✓ Equipped</div>':(!locked&&w.cost>0?'<div style="font-size:9px;color:var(--hay);">'+w.cost+'g</div>':'')}</div>`;
-  }).join('');
-  const ag=document.getElementById('hunt-animal-grid');
-  if(ag)ag.innerHTML=HUNT_ANIMALS.map(a=>{
-    const locked=G.hunterLevel<a.lv;
-    return `<div class="wep-card ${locked?'locked':''}" onclick="${locked?'':('selHuntTarget("'+a.id+'")')}"><div style="font-size:28px;">${a.e}</div><div style="font-size:11px;font-weight:700;color:var(--hay);margin-top:4px;">${a.n}</div><div style="font-size:10px;color:#aaa;">${locked?'Hunter Lv'+a.lv:'+'+a.gold+'g'}</div></div>`;
-  }).join('');
-  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  s('hlvl',G.hunterLevel+'/50');s('mlvl',G.marksLevel+'/50');
-  const hb=document.getElementById('hxpbar');if(hb)hb.style.width=Math.min(100,(G.hunterXP/(G.hunterLevel*50))*100)+'%';
-  const mb=document.getElementById('mxpbar');if(mb)mb.style.width=Math.min(100,(G.marksXP/(G.marksLevel*30))*100)+'%';
-  const w=WEAPONS.find(x=>x.id===G.currentWeapon)||WEAPONS[0];
-  const ha=document.getElementById('hunt-acc');if(ha)ha.textContent='🎯 Accuracy: '+w.acc+'%';
-  const mwd=document.getElementById('my-wep');if(mwd)mwd.textContent=w.e;
+function renderMarket(){mktTab('board',document.querySelector('#tab-market .stab'));}
+function renderMarketBoard(){
+  const c=document.getElementById('market-listings');if(!c)return;
+  const listings=[
+    {player:'BluegrassHmstd',e:'👨🏾',home:'ranch',item:'🐄 Prime Cow',price:'950g',type:'sell',zone:1},
+    {player:'SunflowerFarm',e:'👩🏽',home:'cottage',item:'💊 Medicine x5',price:'250g',type:'sell',zone:2},
+    {player:'WildRootsCo',e:'👨🏽',home:'van',item:'⛽ Oil Barrel x3',price:'600g',type:'sell',zone:1},
+    {player:'PeachTreeGrace',e:'👩🏾',home:'cabin',item:'💧 Water Barrel x10',price:'150g',type:'sell',zone:2},
+    {player:'MountainMike',e:'👨🏻',home:'modern',item:'🤖 Drone Service (1 day)',price:'100g',type:'sell',zone:1},
+    {player:G.playerName||'You',e:G.avatar,home:G.home,item:'Looking for: '+HOME_NEEDS[G.home]?.[0]||'Resources',price:'Offer pending',type:'want',zone:G.zone},
+  ];
+  c.innerHTML=listings.map(l=>`<div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card);border:1px solid ${l.type==='want'?'rgba(126,200,227,.3)':'var(--border)'};border-radius:12px;margin-bottom:7px;">
+    <div style="font-size:28px;">${l.e}</div>
+    <div style="flex:1;">
+      <div style="font-size:12px;font-weight:700;color:var(--hay);">${l.player} ${l.player===G.playerName?'(You)':''}</div>
+      <div style="font-size:11px;color:#8BC34A;">${hl(l.home)} • Zone ${l.zone}</div>
+      <div style="font-size:13px;margin-top:3px;">${l.item}</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:13px;font-weight:800;color:var(--hay);">${l.price}</div>
+      <button class="btn btn-${l.type==='want'?'sm" style="background:rgba(126,200,227,.2);color:#7EC8E3;font-size:10px;margin-top:4px;':' gold btn-sm" style="font-size:10px;margin-top:4px;'}" onclick="toast('Contacting ${l.player}...')">${l.type==='want'?'Offer':'Buy'}</button>
+    </div>
+  </div>`).join('');
 }
-function selWep(id){
-  const w=WEAPONS.find(x=>x.id===id);if(!w)return;
-  if(G.level<w.lv){toast('Level '+w.lv+' required!','err');return;}
-  if(w.cost>0&&G.currentWeapon!==id){if(G.gold<w.cost){toast('Need '+w.cost+'g!','err');return;}G.gold-=w.cost;}
-  G.currentWeapon=id;toast(w.e+' '+w.n+' equipped!');hud();renderHunt();save();
-}
-function selHuntTarget(id){
-  const a=HUNT_ANIMALS.find(x=>x.id===id);if(!a)return;
-  G.currentHuntTarget=id;
-  const ht=document.getElementById('hunt-target');if(ht)ht.textContent=a.e;
-  const hs=document.getElementById('hunt-status');if(hs)hs.textContent='Target: '+a.n+' • +'+a.gold+'g';
-  toast('🎯 Targeting '+a.n);
-}
-function doHunt(){
-  if(!G.huntLicense){toast('Buy Hunting License first! (Store → Tools)','err');return;}
-  if(!G.currentHuntTarget){toast('Select an animal to hunt!','err');return;}
-  const a=HUNT_ANIMALS.find(x=>x.id===G.currentHuntTarget);
-  const w=WEAPONS.find(x=>x.id===G.currentWeapon)||WEAPONS[0];
-  if(G.stamina<15){toast('Need 15⚡!','err');return;}
-  G.stamina-=15;
-  const acc=w.acc+G.marksLevel;const hit=Math.random()*100<=acc;
-  if(hit){
-    const g=a.gold+Math.floor(Math.random()*a.gold*.3);
-    G.gold+=g;G.goldEarned+=g;G.xp+=a.xp;G.hunterXP+=a.xp;G.marksXP+=10;
-    G.totalHunts++;G.questProgress.hunts++;
-    const hl=document.getElementById('hunt-log');
-    if(hl)hl.innerHTML='<div style="color:#8BC34A;padding:5px 0;">✅ '+a.e+' '+a.n+' caught! +'+g+'g</div>'+hl.innerHTML;
-    const hs=document.getElementById('hunt-status');if(hs)hs.textContent='✅ Got '+a.n+'! +'+g+'g';
-    toast('🎯 '+a.e+' Hit! +'+g+'g','gold');
-    if(G.hunterXP>=G.hunterLevel*50&&G.hunterLevel<50){G.hunterLevel++;G.hunterXP=0;toast('🦌 Hunter Level '+G.hunterLevel+'!');}
-    if(G.marksXP>=G.marksLevel*30&&G.marksLevel<50){G.marksLevel++;G.marksXP=0;toast('🎯 Marksmanship Level '+G.marksLevel+'!');}
-    checkLv();
-  } else {
-    G.marksXP+=3;
-    const hl=document.getElementById('hunt-log');
-    if(hl)hl.innerHTML='<div style="color:#666;padding:5px 0;">❌ Missed '+a.e+' '+a.n+'</div>'+hl.innerHTML;
-    const hs=document.getElementById('hunt-status');if(hs)hs.textContent='❌ Missed! Try again.';
-    toast('❌ Miss! Adjust aim.');
-  }
-  hud();renderHunt();save();
-}
-// ===== MINE =====
-function renderMine(){
-  if(!G.mineField||!G.mineField.length)initMine();
-  const f=document.getElementById('mine-field');
-  if(f)f.innerHTML=G.mineField.map((cell,i)=>`<div class="mine-cell ${cell.dug?'dug':''}" onclick="${cell.dug?'':'mineCell('+i+')'}">${cell.dug?(cell.mineral?MINERALS.find(m=>m.id===cell.mineral)?.e||'⬛':'⬛'):'🪨'}</div>`).join('');
-  const mf=document.getElementById('minerals-found');
-  if(mf){
-    const entries=Object.entries(G.minerals||{}).filter(([,v])=>v>0);
-    mf.innerHTML=entries.length?entries.map(([id,ct])=>{const m=MINERALS.find(x=>x.id===id);return m?`<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:20px;">${m.e}</div><div style="font-size:11px;font-weight:700;">${m.n}</div><div style="font-size:10px;color:#aaa;">x${ct}</div></div>`:''}).join(''):'<div style="color:#555;font-size:12px;">Mine to find minerals!</div>';
-  }
-  const mc=document.getElementById('min-count');if(mc)mc.textContent=Object.values(G.minerals||{}).reduce((a,b)=>a+b,0);
-}
-function mineCell(idx){
-  if(!G.mineUnlocked&&G.level<10){toast('Buy Mine Plot (Level 10+)!','err');return;}
-  if(!G.mineUnlocked)G.mineUnlocked=true;
-  if(G.water<10){toast('Need 10💧!','err');return;}
-  G.water-=10;G.questProgress.mines++;
-  if(idx===undefined){const undug=G.mineField.map((c,i)=>c.dug?-1:i).filter(i=>i>=0);if(!undug.length){initMine();toast('Field reset!');hud();renderMine();return;}idx=undug[Math.floor(Math.random()*undug.length)];}
-  G.mineField[idx].dug=true;
-  const roll=Math.random()*100;let tot=0,found=null;
-  for(const m of MINERALS){tot+=m.rarity;if(roll<=tot){found=m;break;}}
-  if(found&&found.id!=='dirt'){
-    G.mineField[idx].mineral=found.id;if(!G.minerals)G.minerals={};
-    G.minerals[found.id]=(G.minerals[found.id]||0)+1;G.gold+=found.v;G.goldEarned+=found.v;
-    toast('⛏️ Found '+found.e+' '+found.n+'! +'+found.v+'g','gold');
-  } else toast('⛏️ Just dirt...');
-  hud();renderMine();save();
-}
-function mineRandom(){mineCell(undefined);}
-function deepMine(){
-  if(G.gems<75){toast('Need 75💎!','err');return;}G.gems-=75;
-  const rare=MINERALS.filter(m=>m.rarity<=5);const f=rare[Math.floor(Math.random()*rare.length)];
-  if(!G.minerals)G.minerals={};G.minerals[f.id]=(G.minerals[f.id]||0)+1;
-  G.gold+=f.v;G.goldEarned+=f.v;toast('💎 DEEP: '+f.e+' '+f.n+'! +'+f.v+'g','gold');
-  hud();renderMine();save();
-}
-// ===== FISHING =====
-let fishInt=null;
-function castLine(){
-  if(G.level<3){toast('Fishing unlocks at Level 3!','err');return;}
-  if(G.fishingActive){toast('Already fishing!');return;}
-  if(G.water<5){toast('Need 5💧!','err');return;}
-  G.water-=5;G.fishingActive=true;
-  const ps=document.getElementById('pond-status');if(ps)ps.textContent='🎣 Line in the water...';
-  const ba=document.getElementById('bobber-area');if(ba)ba.innerHTML='<div class="bobber">🪝</div>';
-  const cb=document.getElementById('cast-btn');if(cb){cb.textContent='⏱️ Waiting...';cb.disabled=true;}
-  let t=30;
-  fishInt=setInterval(()=>{t--;const td=document.getElementById('pond-timer');if(td)td.textContent=t+'s...';if(t<=0){clearInterval(fishInt);reelIn();}},1000);
-  hud();save();
-}
-function reelIn(){
-  G.fishingActive=false;
-  const ba=document.getElementById('bobber-area');if(ba)ba.innerHTML='';
-  const cb=document.getElementById('cast-btn');if(cb){cb.textContent='🎣 Cast Line (5💧 • 30s)';cb.disabled=false;}
-  const td=document.getElementById('pond-timer');if(td)td.textContent='';
-  const roll=Math.random()*100;let tot=0,caught=null;
-  for(const f of FISH){tot+=f.ch;if(roll<=tot){caught=f;break;}}if(!caught)caught=FISH[0];
-  G.gold+=caught.g;G.goldEarned+=caught.g;G.fishCount++;G.xp+=15;G.questProgress.fish++;
-  const ps=document.getElementById('pond-status');if(ps)ps.textContent='🎉 Caught '+caught.e+' '+caught.n+'! +'+caught.g+'g';
-  const fc=document.getElementById('fish-count');if(fc)fc.textContent=G.fishCount;
-  const fl=document.getElementById('fish-log');if(fl)fl.innerHTML='<div>'+caught.e+' '+caught.n+' — +'+caught.g+'g</div>'+fl.innerHTML;
-  toast('🎣 '+caught.e+' '+caught.n+'! +'+caught.g+'g','gold');
-  checkLv();hud();save();
-}
-function speedFish(){
-  if(!G.fishingActive){toast('Cast a line first!','err');return;}
-  if(G.gems<10){toast('Need 10💎!','err');return;}
-  G.gems-=10;clearInterval(fishInt);reelIn();hud();
-}
-// ===== BOSS =====
-function renderBoss(){
-  if(!G.bossObj)G.bossObj=BOSSES[0];
-  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  s('boss-icon',G.bossObj.e);s('boss-name',G.bossActive?G.bossObj.n:'Awaiting Boss...');
-  s('boss-next',G.bossActive?'BOSS ACTIVE — Attack now!':'Next boss: Saturday 12PM EST');
-  const hp=G.bossHP||G.bossObj.hp;const thp=G.bossTotalHP||G.bossObj.hp;
-  const pct=Math.max(0,(hp/thp)*100);
-  const hb=document.getElementById('boss-hp-bar');if(hb)hb.style.width=pct+'%';
-  s('boss-hp-txt',hp.toLocaleString()+'/'+thp.toLocaleString());
-  s('z1dmg',(G.z1dmg||0).toLocaleString());s('z2dmg',(G.z2dmg||0).toLocaleString());
-  s('my-zone','Zone '+G.zone+' ('+(G.zone===1?'Frontier':'Heartland')+')');
-  s('my-dmg',G.myDmg||0);
-  const z1=document.getElementById('z1card');const z2=document.getElementById('z2card');
-  if(z1)z1.classList.toggle('winning',(G.z1dmg||0)>=(G.z2dmg||0));
-  if(z2)z2.classList.toggle('winning',(G.z2dmg||0)>(G.z1dmg||0));
-  const w=WEAPONS.find(x=>x.id===G.currentWeapon)||WEAPONS[0];
-  const mw=document.getElementById('my-wep');if(mw)mw.textContent=w.e;
-}
-function attackBoss(){
-  if(!G.bossActive)G.bossActive=true;
-  if(G.stamina<20){toast('Need 20⚡!','err');return;}
-  G.stamina-=20;
-  const w=WEAPONS.find(x=>x.id===G.currentWeapon)||WEAPONS[0];
-  const hit=Math.random()*100<=w.acc+G.marksLevel;
-  if(hit){
-    const dmg=w.dmgMin+Math.floor(Math.random()*(w.dmgMax-w.dmgMin));
-    G.bossHP=Math.max(0,(G.bossHP||1000000)-dmg);
-    if(G.zone===1){G.z1dmg=(G.z1dmg||0)+dmg;}else{G.z2dmg=(G.z2dmg||0)+dmg;}
-    G.myDmg=(G.myDmg||0)+dmg;
-    const drops=[];
-    if(Math.random()<.6){const g=Math.floor(Math.random()*100+50);drops.push('💰 +'+g+'g');G.gold+=g;G.goldEarned+=g;}
-    if(Math.random()<.1){const gm=Math.floor(Math.random()*10+5);drops.push('💎 +'+gm);G.gems+=gm;}
-    const bl=document.getElementById('boss-loot');if(bl)bl.innerHTML=drops.map(d=>'<div class="loot-item">'+d+'</div>').join('');
-    toast('⚔️ Hit '+dmg+' dmg! '+drops.join(' '),'gold');
-    if(G.bossHP<=0){bossDefeated();return;}
-  } else toast('❌ Missed the boss!');
-  hud();renderBoss();save();
-}
-function bossDefeated(){
-  const winZ=( G.z1dmg||0)>=(G.z2dmg||0)?1:2;const won=G.zone===winZ;
-  if(won){G.gems+=500;toast('🏆 ZONE WON! +500💎 + Weapon Upgrade!','gold');}
-  else{G.gems+=200;toast('🥈 +200💎 consolation reward');}
-  G.bossHP=1000000;G.bossTotalHP=1000000;G.bossActive=false;G.myDmg=0;G.z1dmg=0;G.z2dmg=0;
-  G.bossObj=BOSSES[Math.floor(Math.random()*BOSSES.length)];
-  hud();renderBoss();save();
-}
-// ===== VIP =====
-function renderVIP(){
-  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  s('vip-cur',G.vip);s('vip-gems-spent',(G.gemsSpent||0).toLocaleString());
-  const c=document.getElementById('vip-list');if(!c)return;
-  c.innerHTML=VIP_LVS.map(v=>{
-    const unlocked=G.vip>=v.lv;const current=G.vip===v.lv;
-    const canUnlock=G.vip===v.lv-1&&G.gems>=v.gems&&G.level>=v.glv;
-    return `<div class="vip-row ${unlocked?'unlocked':''} ${current?'current':''}"><div class="vip-num">${v.lv}</div><div style="flex:1;"><div class="vip-perk">${v.perk}</div><div class="vip-req">Req: ${v.gems}💎 • Game Lv${v.glv}</div></div><div>${unlocked?'✅':canUnlock?`<button class="btn btn-gem btn-sm" onclick="unlockVIP(${v.lv},${v.gems})">Unlock</button>`:'🔒'}</div></div>`;
+function renderAnimalMarket(){
+  const c=document.getElementById('animal-market-list');if(!c)return;
+  c.innerHTML=`<div style="background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(45,27,14,.8));border:1px solid rgba(229,57,53,.3);border-radius:12px;padding:12px;margin-bottom:12px;">
+    <div style="font-size:12px;color:#ef9a9a;font-weight:700;margin-bottom:4px;">🏚️ Ranch players earn ${G.home==='ranch'?'3x — YOUR BONUS!':'3x. You earn 1x.'}</div>
+    <div style="font-size:12px;color:#aaa;">Animals NEVER die on Ranch. Every other home risks losing animals.</div>
+  </div>`+
+  ANIMALS.map(a=>{
+    const myPrice=G.home==='ranch'?a.sell*3:a.sell;
+    return `<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:7px;">
+      <div style="font-size:36px;">${a.e}</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:700;">${a.n}</div>
+        <div style="font-size:11px;color:#aaa;">Buy: ${a.cost}g → Grow to Prime → Sell</div>
+        <div style="font-size:11px;color:#8BC34A;">5 growth stages</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:15px;font-weight:900;color:${G.home==='ranch'?'#FFB300':'#8BC34A'};">${myPrice}g</div>
+        <div style="font-size:9px;color:#aaa;">${G.home==='ranch'?'3x RANCH!':'Prime sell'}</div>
+        <button class="btn btn-gold btn-sm" style="font-size:10px;margin-top:4px;" onclick="buyAnimal('${a.id}')">Buy</button>
+      </div>
+    </div>`;
   }).join('');
 }
-function unlockVIP(lv,cost){
-  if(G.gems<cost){toast('Not enough gems!','err');return;}
-  if(G.vip<lv-1){toast('Unlock VIP '+(lv-1)+' first!','err');return;}
-  G.gems-=cost;G.gemsSpent=(G.gemsSpent||0)+cost;G.vip=lv;
-  const gain=lv<=2?1:lv<=4?2:lv<=6?3:lv<=8?4:5;G.acres+=gain;initPlots();
-  toast('👑 VIP '+lv+' unlocked! +'+gain+' acres!');hud();renderVIP();save();
-}
-// ===== QUESTS =====
-function renderQuests(){
-  const qc=document.getElementById('quests-list');
-  if(qc)qc.innerHTML=QUESTS.map(q=>{
-    const prog=G.questProgress[q.type]||0;const done=G.questsDone&&G.questsDone.includes(q.id);
-    const pct=Math.min(100,(prog/q.target)*100);
-    return `<div class="quest-item"><div class="qhdr"><div class="q-icon">${q.icon}</div><div><div class="q-title">${q.title}${done?' ✅':''}</div><div class="q-desc">${q.desc}</div><div class="q-reward">🎁 ${q.reward}</div></div></div><div style="display:flex;align-items:center;gap:8px;"><div class="pbar pg" style="flex:1;"><div class="pf" style="width:${pct}%"></div></div><div style="font-size:11px;color:#aaa;">${Math.min(prog,q.target)}/${q.target}</div>${prog>=q.target&&!done?`<button class="btn btn-gold btn-sm" onclick="claimQ('${q.id}')">Claim!</button>`:''}</div></div>`;
+function renderResourceMarket(){
+  const c=document.getElementById('resource-market');if(!c)return;
+  c.innerHTML=`<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Resources produced by each home type. Buy from players in your zone.</div>`+
+  SHAREABLE_RESOURCES.map(r=>{
+    const isMyProd=r.prod===G.home||r.prod==='any';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:12px;background:${isMyProd?'rgba(67,160,71,.1)':'var(--card)'};border:1px solid ${isMyProd?'rgba(67,160,71,.4)':'var(--border)'};border-radius:12px;margin-bottom:7px;">
+      <div style="font-size:30px;">${r.e}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;">${r.n} ${isMyProd?'⭐ YOU PRODUCE THIS':''}</div>
+        <div style="font-size:11px;color:#aaa;">${r.desc}</div>
+        <div style="font-size:11px;color:var(--gem-light);">Share earns +${r.repGain} Reputation</div>
+      </div>
+      <div style="text-align:right;">
+        ${r.cost>0?`<div style="font-size:13px;font-weight:800;color:var(--hay);">${r.cost}g</div>`:'<div style="font-size:11px;color:#8BC34A;">Free share</div>'}
+        <button class="btn btn-${isMyProd?'green':'gold'} btn-sm" style="font-size:10px;margin-top:4px;" onclick="${isMyProd?`shareResource('${r.id}')`:`toast('Find a ${hl(r.prod)} player in your zone!')`}">${isMyProd?'Share':'Find'}</button>
+      </div>
+    </div>`;
   }).join('');
-  const ac=document.getElementById('ach-list');
-  if(ac){
-    const achs=[
-      {i:'🌾',t:'First Harvest',d:G.totalHarvests>=1},{i:'🐄',t:'Animal Owner',d:G.animals.length>=1},
-      {i:'🎣',t:'Fisher',d:G.fishCount>=1},{i:'⛏️',t:'Miner',d:Object.values(G.minerals||{}).reduce((a,b)=>a+b,0)>=1},
-      {i:'🦌',t:'Hunter',d:G.totalHunts>=1},{i:'⭐',t:'Level 5',d:G.level>=5},
-      {i:'⭐',t:'Level 10',d:G.level>=10},{i:'💎',t:'VIP Member',d:G.vip>=1},
-    ];
-    ac.innerHTML=achs.map(a=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:${a.d?'rgba(67,160,71,.1)':'var(--card)'};border:1px solid ${a.d?'rgba(67,160,71,.4)':'var(--border)'};border-radius:10px;margin-bottom:6px;"><div style="font-size:22px;">${a.i}</div><div style="flex:1;font-size:13px;font-weight:700;">${a.t}</div><div>${a.d?'✅':'🔒'}</div></div>`).join('');
-  }
-  const lu=document.getElementById('lvl-unlocks');
-  if(lu){
-    const unlks=[{lv:3,t:'🎣 Fishing Pond'},{lv:5,t:'👑 VIP System'},{lv:8,t:'🏹 Hunting Bow'},{lv:10,t:'⛏️ Mining'},{lv:15,t:'🤖 Auto-Plant'},{lv:25,t:'🎯 Sniper Rifle'},{lv:50,t:'👑 Elite VIP'},{lv:250,t:'👑 TRUE HOMESTEADER — Server announcement!'}];
-    lu.innerHTML=unlks.map(u=>`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:${G.level>=u.lv?'rgba(67,160,71,.1)':'var(--card)'};border:1px solid ${G.level>=u.lv?'rgba(67,160,71,.4)':'var(--border)'};border-radius:10px;margin-bottom:6px;"><div style="font-size:16px;font-weight:900;color:${G.level>=u.lv?'#8BC34A':'var(--hay)'};min-width:40px;">Lv${u.lv}</div><div style="font-size:12px;">${u.t}</div><div>${G.level>=u.lv?'✅':'🔒'}</div></div>`).join('');
-  }
 }
-function claimQ(id){
-  const q=QUESTS.find(x=>x.id===id);if(!q||G.questsDone&&G.questsDone.includes(id))return;
-  if(!G.questsDone)G.questsDone=[];G.questsDone.push(id);
-  const nums=q.reward.match(/\d+/g);if(nums){G.gold+=parseInt(nums[0]);G.goldEarned+=parseInt(nums[0]);if(nums[1]){G.xp+=parseInt(nums[1]);}}
-  checkLv();toast('🎉 Quest complete! '+q.reward,'gold');hud();renderQuests();save();
+function renderContracts(){
+  const c=document.getElementById('contracts-list');if(!c)return;
+  c.innerHTML=FAKE_CONTRACTS.map(ct=>`<div style="background:var(--card);border:1px solid ${ct.active?'rgba(124,77,255,.4)':'var(--border)'};border-radius:14px;padding:14px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div style="font-size:20px;">${ct.active?'📋':'🔍'}</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:700;">${ct.from} → ${ct.to}</div><div style="font-size:11px;color:#aaa;">${hl(ct.fromHome)} supplies ${hl(ct.toHome)}</div></div>
+      <div style="font-size:10px;background:${ct.active?'rgba(124,77,255,.2)':'rgba(255,179,0,.1)'};color:${ct.active?'var(--gem-light)':'#aaa'};padding:3px 8px;border-radius:10px;">${ct.active?'ACTIVE':'OPEN'}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-bottom:8px;">
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:8px;"><div style="color:#aaa;font-size:10px;">OFFERS</div><div style="font-weight:700;">${ct.offer}</div></div>
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:8px;"><div style="color:#aaa;font-size:10px;">WANTS</div><div style="font-weight:700;">${ct.want}</div></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:12px;color:var(--hay);">🎁 Bonus: ${ct.reward}</div>
+      <button class="btn btn-gem btn-sm" onclick="joinContract('${ct.from}')">${ct.active?'Observe':'Join'}</button>
+    </div>
+  </div>`).join('');
 }
+function shareResource(id){
+  const r=SHAREABLE_RESOURCES.find(x=>x.id===id);if(!r)return;
+  if(r.id==='water'&&G.water<10){toast('Need 10💧 water to share!','err');return;}
+  if(r.id==='water')G.water-=10;
+  G.reputation=(G.reputation||0)+r.repGain;
+  toast(r.e+' Shared with Zone '+G.zone+'! +'+r.repGain+' Reputation ⭐');
+  updateRepBar();save();
+}
+function updateRepBar(){
+  const rf=document.getElementById('rep-fill');const rs=document.getElementById('rep-score');
+  if(rf)rf.style.width=Math.min(100,((G.reputation||0)/500)*100)+'%';
+  if(rs)rs.textContent=(G.reputation||0)+' pts';
+}
+function postListing(){
+  const h=HOME_PRODUCES[G.home]||[];
+  showModal(`<div class="modal-title">📋 Post a Listing</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:12px;">What can you offer? Based on your ${hl(G.home)} home:</div>
+    ${h.map((p,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(67,160,71,.1);border:1px solid rgba(67,160,71,.3);border-radius:10px;margin-bottom:6px;cursor:pointer;" onclick="createListing('${p}')">
+      <div style="font-size:18px;">${p.split(' ')[0]}</div><div style="flex:1;font-size:13px;">${p}</div><button class="btn btn-green btn-sm">Post</button></div>`).join('')}
+    <div style="margin-top:12px;font-size:11px;color:#666;text-align:center;">Posting a listing earns +5 Reputation</div>`);
+}
+function createListing(item){closeModal();G.reputation=(G.reputation||0)+5;toast('📋 '+item+' listed on Market Board! +5 Rep');updateRepBar();save();}
+function joinContract(from){toast('🤝 Contract request sent to '+from+'!');}
+function proposeContract(){
+  showModal(`<div class="modal-title">🤝 Propose a Zone Contract</div>
+    <div style="font-size:13px;color:#aaa;margin-bottom:16px;">You offer resources. Zone member accepts. Both earn bonus gems weekly.</div>
+    <div style="font-size:12px;color:var(--hay);font-weight:700;margin-bottom:8px;">You (${hl(G.home)}) can offer:</div>
+    ${(HOME_PRODUCES[G.home]||[]).map(p=>`<div style="padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;" onclick="toast('Contract proposal sent to zone! +5 Rep');G.reputation=(G.reputation||0)+5;updateRepBar();closeModal();">
+      <div style="font-size:13px;font-weight:700;">${p}</div><div style="font-size:11px;color:#aaa;margin-top:2px;">Weekly contract • Both earn 100💎 bonus</div></div>`).join('')}`);
+}
+
 // ===== SOCIAL =====
 function renderSocial(){
   const cm=document.getElementById('chat-msgs');
   if(cm&&!cm.children.length){
-    CHAT_SEED.forEach(m=>{const d=document.createElement('div');d.className='cmsg';d.innerHTML='<div class="cmsg-name">'+m.name+' (Zone '+m.zone+')</div><div class="cmsg-text">'+m.msg+'</div>';cm.appendChild(d);});
+    const seed=[
+      {name:'FarmerJoe',zone:1,home:'ranch',msg:'Just got my first cow! 🐄 Ranch life!'},
+      {name:'GardenQueen',zone:2,home:'cottage',msg:'Medicine store open! Come buy 💊'},
+      {name:'TexasHarvest',zone:1,home:'van',msg:'Selling oil barrels! Any Modern players? ⛽'},
+      {name:'OffGridMama',zone:2,home:'cabin',msg:'Water barrels available — 15g each 💧'},
+      {name:'WildRootsCo',zone:1,home:'van',msg:'Zone 1 needs a Cottage player BADLY 🏥'},
+    ];
+    seed.forEach(m=>{const d=document.createElement('div');d.className='cmsg';d.innerHTML='<div class="cmsg-name">'+m.name+' ('+hl(m.home)+' • Zone '+m.zone+')</div><div class="cmsg-text">'+m.msg+'</div>';cm.appendChild(d);});
   }
+  const zc=document.getElementById('zone-msgs');
+  if(zc&&!zc.children.length){
+    const zmsgs=[
+      {name:'BluegrassHmstd',home:'ranch',msg:'Zone '+G.zone+' — anyone need hay? I have 50 bales 🌾'},
+      {name:'PeachTreeGrace',home:'cabin',msg:'Sharing water with zone today! 💧'},
+    ];
+    zmsgs.forEach(m=>{const d=document.createElement('div');d.className='cmsg';d.innerHTML='<div class="cmsg-name" style="color:#7EC8E3;">'+m.name+' ('+hl(m.home)+')</div><div class="cmsg-text">'+m.msg+'</div>';zc.appendChild(d);});
+  }
+  renderShareTab();renderVisitList();
   const ol=document.getElementById('online-list');
   if(ol&&!ol.children.length){
     const fk=[{n:'BluegrassHmstd',e:'👨🏾',lv:28,zone:1,home:'ranch'},{n:'SunflowerFarm',e:'👩🏽',lv:15,zone:2,home:'cottage'},{n:'MountainMike',e:'👨🏻',lv:42,zone:1,home:'modern'},{n:'PeachTreeGrace',e:'👩🏾',lv:8,zone:2,home:'cabin'},{n:'WildRootsCo',e:'👨🏽',lv:67,zone:1,home:'van'}];
-    ol.innerHTML=fk.map(p=>`<div class="lb-row"><div class="lb-avatar">${p.e}</div><div class="lb-info"><div class="lb-name">${p.n}</div><div class="lb-stats">Lv${p.lv} • Zone ${p.zone} • ${hl(p.home)}</div></div><button class="btn btn-sm btn-green" style="font-size:10px;" onclick="toast('Visiting ${p.n}...')">Visit 🏡</button></div>`).join('');
+    ol.innerHTML=fk.map(p=>`<div class="lb-row"><div class="lb-avatar">${p.e}</div><div class="lb-info"><div class="lb-name">${p.n}</div><div class="lb-stats">Lv${p.lv} • ${hl(p.home)} • Zone ${p.zone} ${p.zone===G.zone?'• <span style="color:#8BC34A;">SAME ZONE</span>':''}</div></div><button class="btn btn-sm btn-${p.zone===G.zone?'green':'gold'}" style="font-size:10px;" onclick="visitPlayer('${p.n}','${p.home}',${p.zone})">${p.zone===G.zone?'Buy 🛒':'Visit 🏡'}</button></div>`).join('');
+  }
+  updateRepBar();
+}
+function renderShareTab(){
+  const sg=document.getElementById('share-grid');
+  if(sg&&!sg.innerHTML){
+    sg.innerHTML=SHAREABLE_RESOURCES.filter(r=>r.prod===G.home).map(r=>`
+      <div style="background:rgba(67,160,71,.1);border:1px solid rgba(67,160,71,.3);border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="font-size:32px;">${r.e}</div>
+          <div><div style="font-size:13px;font-weight:700;">${r.n}</div><div style="font-size:11px;color:#8BC34A;">⭐ YOUR ${hl(G.home).toUpperCase()} HOME PRODUCES THIS</div></div>
+        </div>
+        <div style="font-size:12px;color:#aaa;margin-bottom:10px;">${r.desc}</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-green" style="flex:1;" onclick="shareResource('${r.id}')">🤝 Share Free (+${r.repGain} Rep)</button>
+          ${r.cost>0?`<button class="btn btn-gold btn-sm" onclick="sellResource('${r.id}',${r.cost})">💰 Sell ${r.cost}g</button>`:''}
+        </div>
+      </div>`).join('') ||
+      `<div class="card"><div style="font-size:13px;color:#aaa;">Your ${hl(G.home)} home produces resources as you level up!</div></div>`;
+  }
+  const hp=document.getElementById('home-produces');
+  if(hp&&!hp.innerHTML){
+    hp.innerHTML=(HOME_PRODUCES[G.home]||[]).map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(67,160,71,.1);border:1px solid rgba(67,160,71,.3);border-radius:8px;margin-bottom:6px;font-size:12px;">${p}</div>`).join('');
+  }
+  const hn=document.getElementById('home-needs');
+  if(hn&&!hn.innerHTML){
+    hn.innerHTML=(HOME_NEEDS[G.home]||[]).map(n=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.2);border-radius:8px;margin-bottom:6px;font-size:12px;">⚠️ ${n}</div>`).join('');
   }
 }
+function renderVisitList(){
+  const vl=document.getElementById('visit-list');if(!vl)return;
+  const players=[
+    {n:'BluegrassHmstd',e:'👨🏾',lv:28,home:'ranch',zone:1,online:true},
+    {n:'SunflowerFarm',e:'👩🏽',lv:15,home:'cottage',zone:2,online:true},
+    {n:'MountainMike',e:'👨🏻',lv:42,home:'modern',zone:1,online:false},
+    {n:'PeachTreeGrace',e:'👩🏾',lv:8,home:'cabin',zone:2,online:true},
+    {n:'WildRootsCo',e:'👨🏽',lv:67,home:'van',zone:1,online:true},
+  ];
+  vl.innerHTML=players.map(p=>{
+    const sameZone=p.zone===G.zone;
+    const needed=(HOME_PRODUCES[p.home]||[]).some(prod=>(HOME_NEEDS[G.home]||[]).some(need=>need.toLowerCase().includes(hl(p.home).toLowerCase())));
+    return `<div style="display:flex;align-items:center;gap:10px;padding:12px;background:${needed?'rgba(255,179,0,.08)':'var(--card)'};border:1px solid ${needed?'rgba(255,179,0,.3)':'var(--border)'};border-radius:12px;margin-bottom:7px;">
+      <div style="position:relative;"><div style="font-size:30px;">${p.e}</div>${p.online?'<div style="position:absolute;bottom:0;right:0;width:8px;height:8px;background:#8BC34A;border-radius:50%;"></div>':''}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;">${p.n} ${needed?'<span style="font-size:10px;color:var(--hay);">⭐ HAS WHAT YOU NEED</span>':''}</div>
+        <div style="font-size:11px;color:#aaa;">${hl(p.home)} • Zone ${p.zone} • Lv${p.lv}</div>
+        <div style="font-size:11px;color:#8BC34A;">${sameZone?'✅ Same Zone — can BUY resources':'🔒 Different Zone — friends only'}</div>
+      </div>
+      <button class="btn btn-${sameZone?'green':'sm" style="background:rgba(255,255,255,.08)'}" onclick="visitPlayer('${p.n}','${p.home}',${p.zone})">${sameZone?'Buy 🛒':'Visit'}</button>
+    </div>`;
+  }).join('');
+}
+function visitPlayer(name,home,zone){
+  const sameZone=zone===G.zone;
+  const gemDrop=Math.random()<0.1;
+  if(gemDrop){G.gems+=Math.floor(Math.random()*5)+1;toast('🏡 Visiting '+name+'! 💎 Gem drop!','gold');}
+  else toast('🏡 Visiting '+name+' ('+hl(home)+')'+(sameZone?' — you can buy their resources!':' — friends only zone'));
+  hud();save();
+}
+function sellResource(id,price){
+  G.gold+=price;G.goldEarned+=price;G.reputation=(G.reputation||0)+5;
+  toast('💰 Resource sold for '+price+'g! +5 Rep','gold');
+  updateRepBar();hud();save();
+}
 function socTab(tab,btn){
-  document.querySelectorAll('#tab-social [id^=soc-]').forEach(p=>p.style.display='none');
-  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('soc-'+tab).style.display='block';btn.classList.add('active');
+  ['world','zone','share','visit','friends'].forEach(t=>{const e=document.getElementById('soc-'+t);if(e)e.style.display='none';});
+  document.querySelectorAll('#tab-social .stab').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('soc-'+tab);if(el)el.style.display='block';
+  if(btn)btn.classList.add('active');
+  if(tab==='share')renderShareTab();
+  if(tab==='visit')renderVisitList();
 }
 function sendChat(){
   const inp=document.getElementById('chat-in');const txt=inp.value.trim();if(!txt)return;
   const cm=document.getElementById('chat-msgs');
   const d=document.createElement('div');d.className='cmsg';
-  d.innerHTML='<div class="cmsg-name" style="color:#8BC34A;">'+(G.playerName||'You')+' (Zone '+G.zone+')</div><div class="cmsg-text">'+txt+'</div>';
+  d.innerHTML='<div class="cmsg-name" style="color:#8BC34A;">'+(G.playerName||'You')+' ('+hl(G.home)+' • Zone '+G.zone+')</div><div class="cmsg-text">'+txt+'</div>';
   cm.appendChild(d);cm.scrollTop=cm.scrollHeight;inp.value='';
 }
-function shareRes(type){toast(type+' shared with Zone '+G.zone+'! 🤝');}
+function sendZoneChat(){
+  const inp=document.getElementById('zone-in');const txt=inp.value.trim();if(!txt)return;
+  const zc=document.getElementById('zone-msgs');
+  const d=document.createElement('div');d.className='cmsg';
+  d.innerHTML='<div class="cmsg-name" style="color:#7EC8E3;">'+(G.playerName||'You')+' ('+hl(G.home)+')</div><div class="cmsg-text">'+txt+'</div>';
+  zc.appendChild(d);zc.scrollTop=zc.scrollHeight;inp.value='';
+}
+function shareRes(type){toast(type+' shared with Zone '+G.zone+'! +10 Rep');G.reputation=(G.reputation||0)+10;updateRepBar();save();}
+
 // ===== AI ADVISOR =====
 async function sendVera(){const inp=document.getElementById('ai-in');if(!inp)return;askVera(inp.value.trim());inp.value='';}
 async function askVera(q){
@@ -1344,11 +1487,113 @@ function renderBuilds(){
 }
 // ===== GUIDE =====
 function renderGuide(){
+  renderGuidePerkTab();
+}
+function guideTab(tab,btn){
+  ['perks','economy','tips'].forEach(t=>{const e=document.getElementById('guide-'+t);if(e)e.style.display='none';});
+  document.querySelectorAll('#tab-guide .stab').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('guide-'+tab);if(el)el.style.display='block';
+  if(btn)btn.classList.add('active');
+  if(tab==='perks')renderGuidePerkTab();
+  if(tab==='economy')renderEconomyWeb();
+  if(tab==='tips')renderStrategyTips();
+}
+function renderGuidePerkTab(){
   const c=document.getElementById('guide-list');if(!c)return;
   c.innerHTML=HOME_GUIDES.map(h=>{
     const mine=G.home===h.id;
-    return `<div class="hg-card" style="${mine?'border-color:var(--hay);':''}"><div class="hg-hdr"><div style="font-size:42px;">${h.e}</div><div><div style="font-size:16px;font-weight:900;color:var(--hay);">${h.n}${mine?' ⭐':''}</div><div style="font-size:11px;color:#8BC34A;">${h.tag}</div></div></div><div>${h.perks.map(p=>`<div class="perk-row"><div class="perk-lv">Lv ${p.lv}</div><div style="font-size:12px;color:#ddd;">${p.t}</div></div>`).join('')}</div></div>`;
+    return `<div class="hg-card" style="${mine?'border-color:var(--hay);border-width:2px;':''}">
+      <div class="hg-hdr">
+        <div style="font-size:44px;">${h.e}</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:900;color:var(--hay);">${h.n}${mine?' <span style="font-size:11px;background:var(--hay);color:#0d1a0d;padding:2px 8px;border-radius:10px;">YOUR HOME</span>':''}</div>
+          <div style="font-size:11px;color:#8BC34A;margin-top:2px;">${h.tag}</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.2);border-radius:8px;padding:8px;">
+          <div style="font-size:10px;color:#ef9a9a;font-weight:700;margin-bottom:4px;">⚠️ WEAKNESS</div>
+          <div style="font-size:11px;color:#ddd;">${h.weakness}</div>
+        </div>
+        <div style="background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.2);border-radius:8px;padding:8px;">
+          <div style="font-size:10px;color:var(--hay);font-weight:700;margin-bottom:4px;">🔑 SECRET WEAPON</div>
+          <div style="font-size:11px;color:#ddd;">${h.secret}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#8BC34A;font-weight:700;margin-bottom:6px;">📊 PERK PATH BY LEVEL</div>
+      <div>${h.perks.map(p=>{
+        const unlocked=G.home===h.id&&G.homeLevel>=p.lv;
+        return `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:${unlocked?'rgba(67,160,71,.12)':'rgba(0,0,0,.2)'};border-left:3px solid ${unlocked?'#8BC34A':'#3a2010'};border-radius:0 8px 8px 0;margin-bottom:4px;">
+          <div style="font-size:11px;font-weight:900;color:${unlocked?'#8BC34A':'var(--gem-light)'};min-width:36px;">Lv${p.lv}</div>
+          <div style="flex:1;">
+            <div style="font-size:12px;color:${unlocked?'#fff':'#ccc'};">${p.t}</div>
+            <div style="font-size:10px;color:var(--hay);margin-top:2px;">⚡ ${p.boost}</div>
+          </div>
+          ${unlocked?'<div style="font-size:14px;">✅</div>':''}
+        </div>`;
+      }).join('')}</div>
+    </div>`;
   }).join('');
+}
+function renderEconomyWeb(){
+  const c=document.getElementById('economy-web');if(!c)return;
+  const deps=[
+    {from:'🏡 Cottage',to:'🏚️ Ranch',what:'Heals animals — Ranch NEEDS Cottage',type:'critical'},
+    {from:'🏡 Cottage',to:'🚐 Van',what:'Medicine for stamina recovery on road',type:'helpful'},
+    {from:'🛖 Cabin',to:'🏚️ Ranch',what:'Water for hay fields',type:'helpful'},
+    {from:'🛖 Cabin',to:'🏗️ Modern',what:'Water to cool the refinery',type:'helpful'},
+    {from:'🚐 Van',to:'🏗️ Modern',what:'Oil barrels — Modern NEEDS Van oil to run',type:'critical'},
+    {from:'🚐 Van',to:'🏡 Cottage',what:'Oil to power herb processing',type:'helpful'},
+    {from:'🏚️ Ranch',to:'🏡 Cottage',what:'Animals to heal = steady medicine income',type:'critical'},
+    {from:'🏚️ Ranch',to:'🛖 Cabin',what:'Hay for offline animal feeding',type:'helpful'},
+    {from:'🏗️ Modern',to:'🚐 Van',what:'Refined gas — Van gets 3x oil value',type:'critical'},
+    {from:'🏗️ Modern',to:'🏡 Cottage',what:'Drone protection for medicine garden',type:'helpful'},
+  ];
+  c.innerHTML=`<div style="font-size:13px;color:#aaa;margin-bottom:14px;line-height:1.6;">No home can fully max alone. Here's who needs who:</div>
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <div style="width:12px;height:12px;background:#E53935;border-radius:3px;margin-top:2px;flex-shrink:0;"></div>
+        <div style="font-size:12px;color:#ef9a9a;font-weight:700;">CRITICAL — one home cannot fully progress without the other</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div style="width:12px;height:12px;background:var(--hay);border-radius:3px;margin-top:2px;flex-shrink:0;"></div>
+        <div style="font-size:12px;color:var(--hay);font-weight:700;">HELPFUL — major boost when available</div>
+      </div>
+    </div>
+    ${deps.map(d=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:${d.type==='critical'?'rgba(229,57,53,.08)':'rgba(255,179,0,.06)'};border:1px solid ${d.type==='critical'?'rgba(229,57,53,.3)':'rgba(255,179,0,.2)'};border-radius:10px;margin-bottom:6px;">
+      <div style="font-size:18px;">${d.type==='critical'?'🔴':'🟡'}</div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:${d.type==='critical'?'#ef9a9a':'var(--hay)'};">${d.from} → ${d.to}</div>
+        <div style="font-size:11px;color:#aaa;margin-top:2px;">${d.what}</div>
+      </div>
+    </div>`).join('')}
+    <div class="card" style="margin-top:14px;background:rgba(67,160,71,.1);border-color:rgba(67,160,71,.3);">
+      <div style="font-size:13px;font-weight:700;color:#8BC34A;margin-bottom:6px;">🏆 Zone Balance Bonus</div>
+      <div style="font-size:12px;color:#ddd;line-height:1.7;">When your zone has ALL 5 home types active and playing:
+<br>• Everyone gets +20% gold<br>• +10% gem drops<br>• -15% all timers<br>• Zone Balance Badge on leaderboard</div>
+    </div>`;
+}
+function renderStrategyTips(){
+  const c=document.getElementById('strategy-tips');if(!c)return;
+  const tips={
+    cottage:['🏥 Open your Medicine Store the moment you hit Level 10 — set prices high early','💊 Stockpile medicine and sell during Saturday Boss when animals take damage','🌿 Herb Garden crops heal faster — grow them alongside food crops','⭐ Your reputation grows fastest of any home. Use it to win market priority','💰 Medicine + Vitamins = the most passive gold source in late game'],
+    cabin:['💤 Log off for 8+ hours — your Away Chest rewards grow the longer you sleep','🐟 Cast your fishing line before you close the app every single time','💧 Share water with your zone daily — easiest reputation farming','📅 Daily login is MORE important for Cabin than any other home (Away Chest stacks)','🏆 Cabin reaches peak power at Lv20. You need patience — you will be rewarded'],
+    van:['⭐ Do EVERYTHING — even small actions give 50-100% more XP from Day 1','⛽ Find a Modern player ASAP and lock in an oil contract. That is your money printer','🏎️ You will hit Level 250 first. That server announcement is your marketing','🗺️ Road Market sells at 1.5x — always sell away from home zone when possible','🤝 Van + Modern alliance is the strongest two-home combo in the game'],
+    ranch:['🐄 Buy your cheapest animals first, reach Prime fast, roll that money into more','🏥 Find a Cottage player in your zone immediately — your animals ARE your business','🌾 Sell hay to everyone — it is free income you are literally throwing away if you dont','🏆 Ranch Auction at Lv15 is the most powerful single feature in the game. Work toward it','💎 Prime animals with gem drops at Lv20 = passive income that compounds forever'],
+    modern:['⚙️ Prioritize finding a Van player — without oil your drones do not run','🤖 Let your machines earn while you focus on boss battles and social contracts','💎 Gem Factory drones at Lv18 = the most passive gems of any home type','🏪 Rent drone services to Cottage and Ranch players for extra income','📊 Modern rewards patience — early game is hardest. Lv10+ is where you dominate'],
+  };
+  const myTips=tips[G.home]||tips.cabin;
+  c.innerHTML=`<div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(255,179,0,.1),rgba(45,27,14,.8));">
+    <div style="font-size:14px;font-weight:900;color:var(--hay);margin-bottom:8px;">💡 ${hl(G.home)} Strategy Guide</div>
+    ${myTips.map((t,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:rgba(0,0,0,.2);border-radius:8px;margin-bottom:6px;">
+      <div style="font-size:16px;font-weight:900;color:var(--gem-light);min-width:24px;">${i+1}</div>
+      <div style="font-size:12px;line-height:1.5;color:#ddd;">${t}</div>
+    </div>`).join('')}
+  </div>
+  <div class="card" style="background:rgba(124,77,255,.08);border-color:rgba(124,77,255,.3);">
+    <div style="font-size:13px;font-weight:700;color:var(--gem-light);margin-bottom:8px;">⚔️ The Debate</div>
+    <div style="font-size:12px;color:#aaa;line-height:1.7;">Which home is best? The answer changes based on your zone partners, your playstyle, and your patience level. No home dominates in every situation. That is why this game has legs. 🌱</div>
+  </div>`;
 }
 // ===== DAILY =====
 function renderDaily(){
