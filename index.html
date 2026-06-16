@@ -245,10 +245,36 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <button class="btn bsm" style="background:rgba(126,200,227,.2);color:#7EC8E3;" id="btn-water-all">💧 Water All</button>
         <button class="btn bg bsm" id="btn-speed-all">⚡ Speed All (50💎)</button>
       </div>
-      <div style="display:flex;gap:6px;margin-bottom:9px;flex-wrap:wrap;">
+      <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
         <button class="btn bsm" style="background:rgba(139,90,43,.3);color:#D4A847;" id="btn-chop">🪵 Chop (5⚡)</button>
         <button class="btn bsm" style="background:rgba(100,100,100,.25);color:#aaa;" id="btn-quarry">🪨 Quarry (5⚡)</button>
         <button class="btn bsm" style="background:rgba(30,80,30,.3);color:#8BC34A;" id="btn-forage">🌿 Forage (3⚡)</button>
+      </div>
+      <div style="background:rgba(0,100,180,.12);border:1px solid rgba(126,200,227,.3);border-radius:11px;padding:9px;margin-bottom:9px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="font-size:12px;font-weight:700;color:#7EC8E3;">💧 Water Tank</div>
+          <div style="font-size:12px;color:#7EC8E3;" id="farm-water-disp">10/10</div>
+        </div>
+        <div class="pb" style="margin-bottom:7px;"><div class="pf" id="farm-water-bar" style="width:100%;background:linear-gradient(90deg,#0277BD,#7EC8E3);"></div></div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <button class="btn bsm" style="background:rgba(2,119,189,.3);color:#7EC8E3;" id="btn-water-buy1">💧+10 (20g)</button>
+          <button class="btn bsm" style="background:rgba(2,119,189,.3);color:#7EC8E3;" id="btn-water-buy2">💧+25 (45g)</button>
+          <button class="btn bsm" style="background:rgba(2,119,189,.3);color:#7EC8E3;" id="btn-water-buy3">💧 Fill (100g)</button>
+          <button class="btn bge bsm" id="btn-water-gem">💎 Fill (10💎)</button>
+        </div>
+      </div>
+      <div style="background:rgba(255,120,0,.1);border:1px solid rgba(255,120,0,.3);border-radius:11px;padding:9px;margin-bottom:9px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="font-size:12px;font-weight:700;color:#FF8F00;">⚡ Stamina</div>
+          <div style="font-size:12px;color:#FF8F00;" id="farm-stam-disp">100/100</div>
+        </div>
+        <div class="pb" style="margin-bottom:7px;"><div class="pf" id="farm-stam-bar" style="width:100%;background:linear-gradient(90deg,#E65100,#FFB300);"></div></div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <button class="btn bsm" style="background:rgba(230,81,0,.3);color:#FF8F00;" id="btn-stam-buy1">⚡+20 (30g)</button>
+          <button class="btn bsm" style="background:rgba(230,81,0,.3);color:#FF8F00;" id="btn-stam-buy2">⚡+50 (60g)</button>
+          <button class="btn bsm" style="background:rgba(230,81,0,.3);color:#FF8F00;" id="btn-stam-buy3">⚡ Fill (150g)</button>
+          <button class="btn bge bsm" id="btn-stam-gem">💎 Fill (20💎)</button>
+        </div>
       </div>
       <div class="farm-grid" id="farm-grid"></div>
       <div class="card" style="text-align:center;font-size:11px;color:#666;">Tap empty plot to plant • Tap growing crop to water • Tap ready crop to harvest</div>
@@ -290,14 +316,12 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
 
     <!-- UPGRADES / BUILDINGS -->
     <div class="tab" id="tab-builds">
-      <div class="stl">🏗️ Home Upgrades</div>
-      <div class="card" style="margin-bottom:10px;background:linear-gradient(135deg,rgba(124,77,255,.12),rgba(45,27,14,.8));">
-        <div style="font-size:12px;color:var(--geml);font-weight:700;margin-bottom:4px;">🏠 Home Level System</div>
-        <div style="font-size:12px;color:#aaa;line-height:1.6;">Upgrade your home to unlock powerful perks unique to your home type. Each level costs gold + gems.</div>
+      <div class="tabs" id="builds-tabs" style="margin-bottom:10px;">
+        <button class="tabbtn on" data-bld="upgrade">🏠 Upgrade</button>
+        <button class="tabbtn" data-bld="shop">🛒 Material Shop</button>
+        <button class="tabbtn" data-bld="buildings">🏚️ Buildings</button>
       </div>
-      <div id="home-upgrade-panel"></div>
-      <div class="stl" style="margin-top:14px;">🏚️ Your Buildings</div>
-      <div id="builds-list"><div style="text-align:center;padding:24px;color:#555;font-size:13px;">No buildings yet — buy from Store</div></div>
+      <div id="builds-panel"></div>
     </div>
 
     <!-- MARKET -->
@@ -585,6 +609,40 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
       <div id="gem-convert-list"></div>
     </div>
 
+    <!-- ACTIVITY (Hunt + Mine + Pond) -->
+    <div class="tab" id="tab-activity">
+      <div class="tabs" id="activity-tabs">
+        <button class="tabbtn on" data-act="hunt">🦌 Hunt</button>
+        <button class="tabbtn" data-act="mine">⛏️ Mine</button>
+        <button class="tabbtn" data-act="pond">🎣 Pond</button>
+        <button class="tabbtn" data-act="inv">🎒 Inventory</button>
+      </div>
+      <div id="activity-content"></div>
+    </div>
+
+    <!-- COMBAT (Boss + VIP) -->
+    <div class="tab" id="tab-combat">
+      <div class="tabs" id="combat-tabs">
+        <button class="tabbtn on" data-cbt="boss">👹 Boss</button>
+        <button class="tabbtn" data-cbt="vip">👑 VIP</button>
+        <button class="tabbtn" data-cbt="spin">🎰 Spin</button>
+      </div>
+      <div id="combat-content"></div>
+    </div>
+
+    <!-- PROGRESS (Quests + Daily + Profile + Ranks + Guide + AI) -->
+    <div class="tab" id="tab-progress">
+      <div class="tabs" id="progress-tabs">
+        <button class="tabbtn on" data-prg="quests">📜 Quests</button>
+        <button class="tabbtn" data-prg="daily">📅 Daily</button>
+        <button class="tabbtn" data-prg="profile">👤 Profile</button>
+        <button class="tabbtn" data-prg="ranks">🏆 Ranks</button>
+        <button class="tabbtn" data-prg="guide">📖 Guide</button>
+        <button class="tabbtn" data-prg="ai">🤖 Vera AI</button>
+      </div>
+      <div id="progress-content"></div>
+    </div>
+
     <!-- ALLIANCE -->
     <div class="tab" id="tab-alliance">
       <div id="alliance-main"></div>
@@ -596,25 +654,14 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
   <div id="bnav">
     <button class="nb on" data-nav="farm"><span class="ni">🌱</span>Farm</button>
     <button class="nb" data-nav="store"><span class="ni">🏪</span>Store</button>
-    <button class="nb" data-nav="animals"><span class="ni">🐄</span>Animals</button>
     <button class="nb" data-nav="builds"><span class="ni">🏠</span>Builds</button>
+    <button class="nb" data-nav="activity"><span class="ni">🦌</span>Activity</button>
     <button class="nb" data-nav="market"><span class="ni">📈</span>Market</button>
-    <button class="nb" data-nav="hunt"><span class="ni">🦌</span>Hunt</button>
-    <button class="nb" data-nav="mine"><span class="ni">⛏️</span>Mine</button>
-    <button class="nb" data-nav="pond"><span class="ni">🎣</span>Pond</button>
-    <button class="nb" data-nav="boss"><span class="ni">👹</span>Boss</button>
-    <button class="nb" data-nav="vip"><span class="ni">👑</span>VIP</button>
-    <button class="nb" data-nav="quests"><span class="ni">📜</span>Quests</button>
+    <button class="nb" data-nav="combat"><span class="ni">👹</span>Combat</button>
     <button class="nb" data-nav="social"><span class="ni">💬</span>Social</button>
-    <button class="nb" data-nav="ai"><span class="ni">🤖</span>AI</button>
-    <button class="nb" data-nav="spin"><span class="ni">🎰</span>Spin</button>
-    <button class="nb" data-nav="inv"><span class="ni">🎒</span>Inv</button>
-    <button class="nb" data-nav="guide"><span class="ni">📖</span>Guide</button>
-    <button class="nb" data-nav="daily"><span class="ni">📅</span>Daily</button>
-    <button class="nb" data-nav="profile"><span class="ni">👤</span>Profile</button>
-    <button class="nb" data-nav="ranks"><span class="ni">🏆</span>Ranks</button>
-    <button class="nb" data-nav="gems"><span class="ni">💎</span>Gems</button>
     <button class="nb" data-nav="alliance"><span class="ni">⚔️</span>Alliance</button>
+    <button class="nb" data-nav="progress"><span class="ni">📜</span>Progress</button>
+    <button class="nb" data-nav="gems"><span class="ni">💎</span>Gems</button>
   </div>
 </div>
 
@@ -927,6 +974,7 @@ function updateHUD(){
   st('hud-season',(seMap[G.season]||'🌱')+' '+G.season+' D'+G.day);
   st('hud-vip','👑 VIP'+G.vip);
   st('gem-big',G.gems.toLocaleString()+' Gems');
+  updateFarmBars();
 }
 
 // NAVIGATION
@@ -945,7 +993,19 @@ function renderTab(t){
     vip:renderVIP,quests:renderQuests,social:renderSocial,guide:renderGuide,
     daily:renderDaily,profile:renderProfile,ranks:renderLB,gems:renderGems,
     spin:function(){renderSpin();drawWheel();},inv:renderInv,ai:function(){},
-    alliance:renderAlliance
+    alliance:renderAlliance,
+    activity:function(){
+      var c=ge('activity-content');
+      if(c&&!c.innerHTML){renderHunt();c.innerHTML=ge('tab-hunt').innerHTML;}
+    },
+    combat:function(){
+      var c=ge('combat-content');
+      if(c&&!c.innerHTML){renderBoss();c.innerHTML=ge('tab-boss').innerHTML;}
+    },
+    progress:function(){
+      var c=ge('progress-content');
+      if(c&&!c.innerHTML){renderQuests();c.innerHTML=ge('tab-quests').innerHTML;}
+    }
   };
   if(map[t])map[t]();
 }
@@ -971,6 +1031,13 @@ function announce(txt){
 function checkLv(){
   while(G.xp>=G.xpMax&&G.lv<250){
     G.xp-=G.xpMax;G.lv++;G.xpMax=Math.floor(100*Math.pow(1.15,G.lv-1));
+    // Every 5 levels: +5 stamina max, +2 water max
+    if(G.lv%5===0){
+      var stBase={cottage:90,cabin:100,van:110,ranch:120,modern:100}[G.home]||100;
+      G.staminaMax=stBase+Math.floor(G.lv/5)*5;
+      G.waterMax=10+Math.floor(G.lv/5)*2;
+      toast('📈 Stats upgraded! Stamina +5 Water +2','gld');
+    }
     G.stamina=G.staminaMax;G.water=G.waterMax;
     announce('⭐ LEVEL UP! You reached Level '+G.lv+'!');
     if(G.lv===250)announce('👑 '+G.playerName+' is a TRUE HOMESTEADER! Level 250! 🌾');
@@ -1206,97 +1273,246 @@ function removeAnimal(i){if(confirm('Remove animal?')){G.animals.splice(i,1);ren
 // BUILDS
 function renderBuilds(){
   if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
-  var panel=ge('home-upgrade-panel');
-  if(panel&&G.home){
-    var upg=HOME_UPGRADES[G.home];
-    var homeEmoji={cottage:'🏡',cabin:'🛖',van:'🚐',ranch:'🏚️',modern:'🏗️'}[G.home]||'🏠';
-    var nextLv=G.homeLv+1;
-    var nextCost=HOME_UPGRADE_COSTS[nextLv-1];
-    var canUp=G.homeLv<10&&nextCost&&G.gems>=nextCost.gems&&hasMats(nextCost.mats);
-    var html='<div class="upg-card">';
-    // Header
-    html+='<div class="upg-hdr"><div class="upg-ico">'+homeEmoji+'</div><div><div class="upg-nm">'+hl(G.home)+' — Level '+G.homeLv+'/10</div><div class="upg-lv" style="color:#8BC34A;">'+('⭐'.repeat(G.homeLv)+('☆'.repeat(10-G.homeLv)))+'</div></div></div>';
-    // Materials on hand
-    html+='<div style="background:rgba(0,0,0,.25);border:1px solid var(--bdr);border-radius:10px;padding:9px;margin-bottom:9px;">';
-    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">🎒 YOUR MATERIALS</div>';
-    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">';
-    BUILD_MATS.forEach(function(m){
-      var have=G.mats[m.id]||0;
-      html+='<div style="background:rgba(0,0,0,.3);border:1px solid '+(have>0?'rgba(67,160,71,.4)':'rgba(255,255,255,.05)')+';border-radius:7px;padding:5px;text-align:center;"><div style="font-size:16px;">'+m.e+'</div><div style="font-size:9px;color:#aaa;margin:1px 0;">'+m.n+'</div><div style="font-size:13px;font-weight:900;color:'+(have>0?'#8BC34A':'#444')+';">'+have+'</div></div>';
-    });
-    html+='</div></div>';
-    // Next upgrade requirements
-    if(G.homeLv<10&&nextCost){
-      html+='<div style="background:rgba(124,77,255,.08);border:1px solid rgba(124,77,255,.25);border-radius:10px;padding:9px;margin-bottom:9px;">';
-      html+='<div style="font-size:11px;color:var(--geml);font-weight:700;margin-bottom:6px;">⬆️ TO REACH LV'+nextLv+' YOU NEED:</div>';
-      html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px;">';
-      html+='<div style="background:rgba(124,77,255,.2);border:1px solid rgba(124,77,255,.3);border-radius:7px;padding:4px 9px;font-size:12px;font-weight:700;color:'+(G.gems>=nextCost.gems?'#B39DDB':'#E53935')+'" >💎 '+nextCost.gems+(G.gems>=nextCost.gems?' ✅':' (need '+(nextCost.gems-G.gems)+' more)')+'</div>';
-      for(var k in nextCost.mats){
-        var need=nextCost.mats[k],have2=G.mats[k]||0,ok=have2>=need;
-        var m2=BUILD_MATS.find(function(x){return x.id===k;});
-        html+='<div style="background:rgba(0,0,0,.25);border:1px solid '+(ok?'rgba(67,160,71,.4)':'rgba(229,57,53,.4)')+';border-radius:7px;padding:4px 9px;font-size:12px;font-weight:700;color:'+(ok?'#8BC34A':'#ef9a9a')+'">'+(m2?m2.e:k)+' '+need+(ok?' ✅':' (have '+have2+')')+'</div>';
-      }
-      html+='</div>';
-      var miss=getMissingMats(nextCost.mats);var gemOk=G.gems>=nextCost.gems;
-      if(canUp){html+='<button class="btn bgn bfw" onclick="upgradeHome()">⬆️ UPGRADE TO LEVEL '+nextLv+' NOW!</button>';}
-      else{
-        html+='<div style="font-size:11px;color:#ef9a9a;line-height:1.6;margin-bottom:5px;">';
-        if(!gemOk)html+='⚠️ Need '+(nextCost.gems-G.gems)+' more gems<br>';
-        if(miss.length)html+='⚠️ '+miss.join('<br>⚠️ ');
-        html+='<button class="btn bfw" style="background:rgba(124,77,255,.25);color:var(--geml);" onclick="openGems()">💎 Get Gems</button>';
-        html+='<button class="btn bfw" style="background:rgba(124,77,255,.25);color:var(--geml);" onclick="navTo(\'gems\')">💎 Get Gems</button>';
-      }
-      html+='</div>';
-    } else if(G.homeLv>=10){
-      html+='<div style="text-align:center;padding:14px;background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.3);border-radius:10px;"><div style="font-size:28px;">🌟</div><div style="font-size:14px;font-weight:900;color:var(--hay);margin-top:5px;">MAX LEVEL REACHED!</div></div>';
-    }
-    // Perk list
-    if(upg){
-      html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin:10px 0 6px;">📊 FULL PERK PATH</div>';
-      html+='<div class="upg-perks">'+upg.upgrades.map(function(u){
-        var done=G.homeLv>=u.lv;var cur=G.homeLv===u.lv-1;
-        var c2=HOME_UPGRADE_COSTS[u.lv-1];
-        var matStr=c2?Object.entries(c2.mats).map(function(e){var m2=BUILD_MATS.find(function(x){return x.id===e[0];});return(m2?m2.e:e[0])+e[1];}).join(' '):'';
-        return '<div class="upg-perk'+(done?' done':cur?' cur':'')+'">'+'<div class="upg-lbl">Lv'+u.lv+'</div>'+'<div style="flex:1;"><div style="font-size:12px;color:'+(done?'#8BC34A':cur?'var(--hay)':'#ccc')+';">'+u.t+'</div><div style="font-size:10px;color:var(--geml);margin-top:1px;">⚡ '+u.boost+'</div><div style="font-size:10px;color:#666;margin-top:1px;">Cost: '+(c2?c2.gems+'💎 '+matStr:'')+'</div></div>'+(done?'<div>✅</div>':'')+'</div>';
-      }).join('')+'</div>';
+  var p=ge('builds-panel');if(!p)return;
+  // Check which sub-tab is active
+  var active=document.querySelector('#builds-tabs .tabbtn.on');
+  var sub=active?active.dataset.bld:'upgrade';
+  if(sub==='upgrade')p.innerHTML=renderBuildsUpgrade();
+  else if(sub==='shop')p.innerHTML=renderMatShop();
+  else if(sub==='buildings')p.innerHTML=renderBuildingsList();
+}
+
+function renderBuildsUpgrade(){
+  if(!G.home)return'<div style="text-align:center;padding:24px;color:#555;">Choose a home first</div>';
+  var upg=HOME_UPGRADES[G.home];
+  var homeEmoji={cottage:'🏡',cabin:'🛖',van:'🚐',ranch:'🏚️',modern:'🏗️'}[G.home]||'🏠';
+  var nextLv=G.homeLv+1;
+  var nextCost=HOME_UPGRADE_COSTS[nextLv-1];
+  var canUp=G.homeLv<10&&nextCost&&G.gems>=nextCost.gems&&hasMats(nextCost.mats);
+  var html='<div class="upg-card">';
+  // Header with progress stars
+  html+='<div class="upg-hdr"><div class="upg-ico">'+homeEmoji+'</div><div style="flex:1;">';
+  html+='<div class="upg-nm">'+hl(G.home)+' — Level '+G.homeLv+'/10</div>';
+  html+='<div style="display:flex;gap:2px;margin-top:4px;">';
+  for(var s=1;s<=10;s++){
+    html+='<div style="width:22px;height:6px;border-radius:3px;background:'+(s<=G.homeLv?'var(--hay)':'rgba(255,255,255,.1)')+'"></div>';
+  }
+  html+='</div></div></div>';
+
+  // Materials on hand — compact grid
+  html+='<div style="background:rgba(0,0,0,.25);border:1px solid var(--bdr);border-radius:10px;padding:9px;margin-bottom:9px;">';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
+  html+='<div style="font-size:11px;color:var(--hay);font-weight:700;">🎒 YOUR MATERIALS</div>';
+  html+='<button class="btn bsm" style="font-size:10px;background:rgba(255,179,0,.15);color:var(--hay);" data-bsub="shop" onclick="bldTab(null,this.dataset.bsub)">+ Buy More</button>';
+  html+='</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">';
+  BUILD_MATS.forEach(function(m){
+    var have=G.mats[m.id]||0;
+    var needed=nextCost?nextCost.mats[m.id]||0:0;
+    var ok=have>=needed;
+    html+='<div style="background:rgba(0,0,0,.3);border:1px solid '+(have>0?'rgba(67,160,71,.3)':'rgba(255,255,255,.05)')+';border-radius:7px;padding:5px 3px;text-align:center;">';
+    html+='<div style="font-size:16px;">'+m.e+'</div>';
+    html+='<div style="font-size:9px;color:#aaa;">'+m.n+'</div>';
+    html+='<div style="font-size:13px;font-weight:900;color:'+(have>0?'#8BC34A':'#444')+';">'+have+'</div>';
+    if(needed>0)html+='<div style="font-size:9px;color:'+(ok?'#8BC34A':'#ef9a9a')+';">need '+needed+'</div>';
+    html+='</div>';
+  });
+  html+='</div></div>';
+
+  // Next upgrade requirements box
+  if(G.homeLv<10&&nextCost){
+    html+='<div style="background:rgba(124,77,255,.08);border:1px solid rgba(124,77,255,.25);border-radius:10px;padding:9px;margin-bottom:9px;">';
+    html+='<div style="font-size:11px;color:var(--geml);font-weight:700;margin-bottom:7px;">⬆️ UPGRADE TO LEVEL '+nextLv+' REQUIRES:</div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">';
+    // Gems requirement
+    var gemOk=G.gems>=nextCost.gems;
+    html+='<div style="padding:4px 9px;border-radius:7px;font-size:12px;font-weight:700;background:rgba(124,77,255,.2);border:1px solid rgba(124,77,255,.3);color:'+(gemOk?'var(--geml)':'#ef9a9a')+';">💎 '+nextCost.gems+(gemOk?' ✅':' — need '+(nextCost.gems-G.gems)+' more')+'</div>';
+    // Material requirements
+    for(var k in nextCost.mats){
+      var need=nextCost.mats[k],have=G.mats[k]||0,ok2=have>=need;
+      var m2=BUILD_MATS.find(function(x){return x.id===k;});
+      html+='<div style="padding:4px 9px;border-radius:7px;font-size:12px;font-weight:700;background:rgba(0,0,0,.25);border:1px solid '+(ok2?'rgba(67,160,71,.4)':'rgba(229,57,53,.4)')+';color:'+(ok2?'#8BC34A':'#ef9a9a')+'">'+(m2?m2.e:k)+' '+need+(ok2?' ✅':' ('+have+'/'+ need+')')+'</div>';
     }
     html+='</div>';
-    // BUY MATERIALS SECTION
-    html+='<div class="card" style="margin-top:10px;background:rgba(139,95,10,.1);border-color:rgba(212,168,71,.3);">';
-    html+='<div style="font-size:12px;font-weight:800;color:var(--hay);margin-bottom:8px;">🛒 BUY BUILDING MATERIALS</div>';
-    html+='<div style="font-size:11px;color:#aaa;margin-bottom:8px;">You can also earn materials by mining, chopping, and foraging. Buying is faster.</div>';
-    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
-    var matPrices={wood:{qty:20,cost:100},stone:{qty:20,cost:120},clay:{qty:10,cost:150},iron:{qty:5,cost:200},coal:{qty:5,cost:180},diamond:{qty:1,cost:350},crystal:{qty:1,cost:800}};
-    BUILD_MATS.forEach(function(m){
-      var p=matPrices[m.id];
-      html+='<div style="display:flex;align-items:center;gap:6px;padding:7px 8px;background:rgba(0,0,0,.2);border:1px solid var(--bdr);border-radius:8px;"><div style="font-size:20px;">'+m.e+'</div><div style="flex:1;"><div style="font-size:11px;font-weight:700;">'+m.n+'</div><div style="font-size:10px;color:#aaa;">x'+p.qty+' = '+p.cost+'g</div></div><button class="btn bg bsm" style="font-size:10px;padding:5px 8px;" data-mid="'+m.id+'" data-qty="'+p.qty+'" data-cost="'+p.cost+'" onclick="buyMat(this.dataset.mid,+this.dataset.qty,+this.dataset.cost)">Buy</button></div>';
+    var miss=getMissingMats(nextCost.mats);
+    if(canUp){
+      html+='<button class="btn bgn bfw" onclick="upgradeHome()">⬆️ UPGRADE TO LEVEL '+nextLv+' NOW! 🎉</button>';
+    } else {
+      if(!gemOk)html+='<div style="font-size:11px;color:#ef9a9a;margin-bottom:4px;">⚠️ Need '+(nextCost.gems-G.gems)+' more gems — <button class="btn bge bsm" style="font-size:10px;" onclick="navTo(this.dataset.t)" data-t="gems">Get Gems 💎</button></div>';
+      if(miss.length)html+='<div style="font-size:11px;color:#ef9a9a;margin-bottom:4px;">⚠️ Missing materials — <button class="btn bsm" style="font-size:10px;background:rgba(255,179,0,.2);color:var(--hay);" data-bsub="shop" onclick="bldTab(null,this.dataset.bsub)">Buy in Shop 🛒</button></div>';
+    }
+    html+='</div>';
+  } else if(G.homeLv>=10){
+    html+='<div style="text-align:center;padding:14px;background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.3);border-radius:10px;"><div style="font-size:28px;">🌟</div><div style="font-size:14px;font-weight:900;color:var(--hay);margin-top:5px;">MAX LEVEL REACHED!</div></div>';
+  }
+
+  // Full perk path
+  if(upg){
+    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin:10px 0 6px;">📊 FULL PERK PATH</div>';
+    html+='<div class="upg-perks">';
+    upg.upgrades.forEach(function(u){
+      var done=G.homeLv>=u.lv,cur=G.homeLv===u.lv-1;
+      var c2=HOME_UPGRADE_COSTS[u.lv-1];
+      var matStr=c2?Object.entries(c2.mats).map(function(e){var m2=BUILD_MATS.find(function(x){return x.id===e[0];});return(m2?m2.e:e[0])+e[1];}).join(' '):'';
+      html+='<div class="upg-perk'+(done?' done':cur?' cur':'')+'">'
+        +'<div class="upg-lbl">Lv'+u.lv+'</div>'
+        +'<div style="flex:1;">'
+        +'<div style="font-size:12px;color:'+(done?'#8BC34A':cur?'var(--hay)':'#ccc')+';">'+u.t+'</div>'
+        +'<div style="font-size:10px;color:var(--geml);margin-top:1px;">⚡ '+u.boost+'</div>'
+        +'<div style="font-size:10px;color:#555;margin-top:1px;">'+(c2?'💎'+c2.gems+' '+matStr:'')+'</div>'
+        +'</div>'
+        +(done?'<div>✅</div>':'')
+        +'</div>';
+    });
+    html+='</div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function renderMatShop(){
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  var html='';
+
+  // Current stock banner
+  html+='<div style="background:linear-gradient(135deg,rgba(139,95,10,.15),rgba(45,27,14,.9));border:1px solid rgba(212,168,71,.3);border-radius:12px;padding:11px;margin-bottom:10px;">';
+  html+='<div style="font-size:12px;font-weight:800;color:var(--hay);margin-bottom:7px;">🎒 YOUR CURRENT STOCK</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">';
+  BUILD_MATS.forEach(function(m){
+    var have=G.mats[m.id]||0;
+    html+='<div style="text-align:center;background:rgba(0,0,0,.3);border-radius:7px;padding:6px 3px;">'
+      +'<div style="font-size:18px;">'+m.e+'</div>'
+      +'<div style="font-size:10px;color:#aaa;">'+m.n+'</div>'
+      +'<div style="font-size:14px;font-weight:900;color:'+(have>0?'#8BC34A':'#444')+';">'+have+'</div>'
+      +'</div>';
+  });
+  html+='</div></div>';
+
+  // Bundle packs — great value
+  html+='<div style="font-size:11px;color:var(--hay);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">⚡ BUNDLE PACKS — Best Value</div>';
+
+  var bundles=[
+    {name:'Starter Bundle',desc:'Perfect for Lv1-3 upgrades',emoji:'📦',price:250,items:{wood:40,stone:30,clay:10}},
+    {name:'Builder Pack',desc:'Lv4-6 upgrades covered',emoji:'🏗️',price:600,items:{wood:80,stone:60,clay:25,iron:15,coal:10}},
+    {name:'Master Pack',desc:'Everything for Lv7-9',emoji:'👑',price:1200,items:{wood:150,stone:120,clay:50,iron:35,coal:30,diamond:8}},
+    {name:'MAX Pack',desc:'Full Lv10 upgrade materials',emoji:'🌟',price:2500,items:{wood:200,stone:175,clay:90,iron:65,coal:55,diamond:30,crystal:5}},
+    {name:'Gem Starter',desc:'Rare materials fast',emoji:'💎',price:50,currency:'gems',items:{iron:10,coal:8,diamond:3}},
+    {name:'Crystal Pack',desc:'Deep mine materials',emoji:'🔮',price:150,currency:'gems',items:{iron:20,coal:15,diamond:8,crystal:3}},
+  ];
+
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;">';
+  bundles.forEach(function(b,idx){
+    var isGem=b.currency==='gems';
+    var can=isGem?(G.gems>=b.price):(G.gold>=b.price);
+    var matList=Object.entries(b.items).map(function(e){
+      var m=BUILD_MATS.find(function(x){return x.id===e[0];});
+      return(m?m.e:e[0])+'×'+e[1];
+    }).join(' ');
+    html+='<div style="background:linear-gradient(135deg,'+(isGem?'rgba(124,77,255,.12)':'rgba(45,27,14,.8)')+',rgba(20,40,20,.6));border:1px solid '+(isGem?'rgba(124,77,255,.3)':'rgba(212,168,71,.2)')+';border-radius:12px;padding:11px;">';
+    html+='<div style="font-size:28px;margin-bottom:4px;">'+b.emoji+'</div>';
+    html+='<div style="font-size:12px;font-weight:800;color:var(--hay);">'+b.name+'</div>';
+    html+='<div style="font-size:10px;color:#aaa;margin:2px 0;">'+b.desc+'</div>';
+    html+='<div style="font-size:10px;color:#8BC34A;margin:4px 0;line-height:1.5;">'+matList+'</div>';
+    html+='<button class="btn '+(can?(isGem?'bge':'bg'):'')+'  bsm bfw" style="margin-top:5px;'+(can?'':'opacity:.45;background:rgba(255,255,255,.05);')+'" data-idx="'+idx+'" onclick="buyBundle(+this.dataset.idx)" '+(can?'':' disabled')+'>'+(isGem?'💎':'💰')+' '+(isGem?b.price+'💎':b.price+'g')+'</button>';
+    html+='</div>';
+  });
+  html+='</div>';
+  window._shopBundles=bundles;
+
+  // Individual materials
+  html+='<div style="font-size:11px;color:var(--hay);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">🪵 BUY INDIVIDUAL MATERIALS</div>';
+
+  var matPacks=[
+    {id:'wood',  packs:[{qty:10,g:55},{qty:25,g:120},{qty:50,g:220},{qty:100,g:400}]},
+    {id:'stone', packs:[{qty:10,g:65},{qty:25,g:140},{qty:50,g:250},{qty:100,g:450}]},
+    {id:'clay',  packs:[{qty:5,g:80},{qty:15,g:210},{qty:30,g:380}]},
+    {id:'iron',  packs:[{qty:3,g:70},{qty:10,g:200},{qty:20,g:360}]},
+    {id:'coal',  packs:[{qty:3,g:60},{qty:10,g:180},{qty:20,g:320}]},
+    {id:'diamond',packs:[{qty:1,g:350},{qty:3,g:950},{qty:1,gems:75},{qty:5,gems:300}]},
+    {id:'crystal',packs:[{qty:1,g:800},{qty:1,gems:150},{qty:3,gems:400}]},
+  ];
+
+  matPacks.forEach(function(mp){
+    var m=BUILD_MATS.find(function(x){return x.id===mp.id;});
+    if(!m)return;
+    var have=G.mats[mp.id]||0;
+    html+='<div style="background:rgba(0,0,0,.2);border:1px solid var(--bdr);border-radius:11px;padding:10px;margin-bottom:7px;">';
+    html+='<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;">';
+    html+='<div style="font-size:28px;">'+m.e+'</div>';
+    html+='<div><div style="font-size:13px;font-weight:700;color:var(--hay);">'+m.n+'</div><div style="font-size:11px;color:#8BC34A;">In stock: '+have+'</div></div>';
+    html+='<div style="font-size:11px;color:#aaa;margin-left:auto;">'+m.desc+'</div>';
+    html+='</div>';
+    html+='<div style="display:flex;gap:5px;flex-wrap:wrap;">';
+    mp.packs.forEach(function(pk,pi){
+      var isGem=!!pk.gems;
+      var cost=isGem?pk.gems:pk.g;
+      var can=isGem?(G.gems>=cost):(G.gold>=cost);
+      html+='<button class="btn '+(can?(isGem?'bge':'bg'):'')+'  bsm" style="'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-mid="'+mp.id+'" data-qty="'+pk.qty+'" data-cost="'+cost+'" data-gem="'+(isGem?1:0)+'" onclick="buyMatPack(this.dataset.mid,+this.dataset.qty,+this.dataset.cost,+this.dataset.gem)" '+(can?'':' disabled')+'>×'+pk.qty+' '+(isGem?'💎'+cost:cost+'g')+'</button>';
     });
     html+='</div></div>';
-    panel.innerHTML=html;
+  });
+
+  return html;
+}
+
+function renderBuildingsList(){
+  var html='';
+  if(!G.buildings||!G.buildings.length){
+    html='<div style="text-align:center;padding:28px;color:#555;"><div style="font-size:44px;margin-bottom:9px;">🏚️</div><div>No buildings yet</div><div style="font-size:11px;margin-top:5px;">Buy from Store → Buildings</div></div>';
+  } else {
+    html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+    html+=G.buildings.map(function(id){
+      var b=BUILDINGS.find(function(x){return x.id===id;});if(!b)return'';
+      return '<div class="card" style="padding:12px;text-align:center;">'
+        +'<div style="font-size:36px;margin-bottom:5px;">'+b.e+'</div>'
+        +'<div style="font-size:12px;font-weight:700;color:var(--hay);">'+b.n+'</div>'
+        +'<div style="font-size:10px;color:#aaa;margin:3px 0;">Active</div>'
+        +'<div style="font-size:11px;color:#8BC34A;">✅ '+b.perk+'</div>'
+        +'</div>';
+    }).join('');
+    html+='</div>';
   }
-  // Buildings owned
-  var bl=ge('builds-list');
-  if(bl){
-    if(!G.buildings||!G.buildings.length){
-      bl.innerHTML='<div style="text-align:center;padding:20px;color:#555;font-size:13px;">No buildings yet — buy from Store → Buildings</div>';
-    } else {
-      bl.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+G.buildings.map(function(id){
-        var b=BUILDINGS.find(function(x){return x.id===id;});if(!b)return'';
-        return '<div class="card" style="padding:12px;"><div style="font-size:36px;margin-bottom:5px;">'+b.e+'</div><div style="font-size:12px;font-weight:700;color:var(--hay);">'+b.n+'</div><div style="font-size:10px;color:#aaa;margin:3px 0;">Active</div><div style="font-size:11px;color:#8BC34A;">✅ '+b.perk+'</div></div>';
-      }).join('')+'</div>';
-    }
+  // Add building shop shortcut
+  html+='<div style="margin-top:10px;"><button class="btn bg bfw" onclick="navTo(this.dataset.t)" data-t="store">🏪 Buy Buildings from Store →</button></div>';
+  return html;
+}
+
+function buyBundle(idx){
+  var b=window._shopBundles[idx];if(!b)return;
+  var isGem=b.currency==='gems';
+  if(isGem){if(G.gems<b.price){toast('Need '+b.price+'💎!','err');return;}G.gems-=b.price;G.gemsSpent=(G.gemsSpent||0)+b.price;}
+  else{if(G.gold<b.price){toast('Need '+b.price+'g!','err');return;}G.gold-=b.price;}
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  var gained=[];
+  Object.entries(b.items).forEach(function(e){
+    G.mats[e[0]]=(G.mats[e[0]]||0)+e[1];
+    var m=BUILD_MATS.find(function(x){return x.id===e[0];});
+    gained.push((m?m.e:e[0])+'×'+e[1]);
+  });
+  toast('📦 '+b.name+'! Got: '+gained.slice(0,3).join(' '),'gld');
+  updateHUD();renderBuilds();saveG();
+}
+
+function buyMatPack(id,qty,cost,isGem){
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  if(isGem){if(G.gems<cost){toast('Need '+cost+'💎!','err');return;}G.gems-=cost;G.gemsSpent=(G.gemsSpent||0)+cost;}
+  else{if(G.gold<cost){toast('Need '+cost+'g!','err');return;}G.gold-=cost;}
+  G.mats[id]=(G.mats[id]||0)+qty;
+  var m=BUILD_MATS.find(function(x){return x.id===id;});
+  toast((m?m.e+' ':'')+m.n+' ×'+qty+' purchased!','gld');
+  updateHUD();renderBuilds();saveG();
+}
+
+function bldTab(btn,sub){
+  document.querySelectorAll('#builds-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  else{
+    var match=document.querySelector('#builds-tabs .tabbtn[data-bld="'+sub+'"]');
+    if(match)match.classList.add('on');
   }
+  renderBuilds();
 }
-function matName(id){var m=BUILD_MATS.find(function(x){return x.id===id;});return m?m.e+' '+m.n:id;}
-function hasMats(req){
-  for(var k in req){if((G.mats[k]||0)<req[k])return false;}
-  return true;
-}
-function getMissingMats(req){
-  var miss=[];
-  for(var k in req){var need=req[k],have=G.mats[k]||0;if(have<need)miss.push(matName(k)+' ('+(need-have)+' more needed)');}
-  return miss;
-}
+
 function upgradeHome(){
   if(G.homeLv>=10){toast('Already max level!');return;}
   var nextLv=G.homeLv+1;
@@ -1923,13 +2139,55 @@ function renderGuideTips(){
 // INVENTORY
 function renderInv(){
   var c=ge('inv-list');if(!c)return;
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  var html='';
+  // Building Materials section
+  var matTotal=Object.values(G.mats).reduce(function(a,b){return a+b;},0);
+  html+='<div style="font-size:11px;color:var(--hay);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">🪵 Building Materials</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;">';
+  BUILD_MATS.forEach(function(m){
+    var have=G.mats[m.id]||0;
+    html+='<div style="background:'+(have>0?'rgba(67,160,71,.1)':'rgba(0,0,0,.2)')+';border:1px solid '+(have>0?'rgba(67,160,71,.3)':'rgba(255,255,255,.05)')+';border-radius:9px;padding:8px 4px;text-align:center;">'
+      +'<div style="font-size:20px;">'+m.e+'</div>'
+      +'<div style="font-size:9px;color:#aaa;">'+m.n+'</div>'
+      +'<div style="font-size:15px;font-weight:900;color:'+(have>0?'#8BC34A':'#444')+';">'+have+'</div>'
+      +'<button class="btn bg bsm" style="font-size:9px;padding:3px 5px;margin-top:3px;width:100%;" data-mid="'+m.id+'" onclick="buyMatFromInv(this.dataset.mid)">Buy</button>'
+      +'</div>';
+  });
+  html+='</div>';
+  // Quick upgrade button
+  if(G.home&&G.homeLv<10){
+    var nc=HOME_UPGRADE_COSTS[G.homeLv];
+    html+='<button class="btn bgn bfw" style="margin-bottom:12px;" onclick="navTo(this.dataset.t)" data-t="builds">🏠 Upgrade '+hl(G.home)+' (Lv'+(G.homeLv+1)+') →</button>';
+  }
+  // Regular inventory items
   var entries=Object.entries(G.inventory||{}).filter(function(e){return e[1]>0;});
-  if(!entries.length){c.innerHTML='<div style="text-align:center;padding:28px;color:#555;"><div style="font-size:38px;margin-bottom:9px;">🎒</div><div>Inventory empty</div></div>';return;}
-  var allItems=[].concat(TOOLS,BUILDINGS,CROPS);
-  c.innerHTML=entries.map(function(e){
-    var it=allItems.find(function(x){return x.id===e[0];});
-    return it?'<div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;margin-bottom:5px;"><div style="font-size:24px;">'+it.e+'</div><div style="flex:1;font-size:13px;font-weight:700;">'+it.n+'</div><div style="font-size:13px;color:var(--hay);">x'+e[1]+'</div></div>':'';
-  }).join('');
+  html+='<div style="font-size:11px;color:var(--hay);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">🎒 Items</div>';
+  if(!entries.length){
+    html+='<div style="text-align:center;padding:16px;color:#555;font-size:13px;">No items yet — buy from Store</div>';
+  } else {
+    var allItems=[].concat(TOOLS,BUILDINGS,CROPS);
+    html+=entries.map(function(e){
+      var it=allItems.find(function(x){return x.id===e[0];});
+      if(!it)return'';
+      return '<div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;margin-bottom:5px;">'
+        +'<div style="font-size:24px;">'+it.e+'</div>'
+        +'<div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+it.n+'</div>'
+        +'<div style="font-size:11px;color:#aaa;">'+(it.perk||'')+'</div></div>'
+        +'<div style="font-size:13px;color:var(--hay);font-weight:700;">x'+e[1]+'</div>'
+        +'</div>';
+    }).join('');
+  }
+  c.innerHTML=html;
+}
+function buyMatFromInv(id){
+  var prices={wood:{qty:20,cost:100},stone:{qty:20,cost:120},clay:{qty:10,cost:150},iron:{qty:5,cost:200},coal:{qty:5,cost:180},diamond:{qty:1,cost:350},crystal:{qty:1,cost:800}};
+  var p=prices[id];if(!p)return;
+  buyMat(id,p.qty,p.cost);
+  // Re-render whichever tab we're in
+  var actC=ge('activity-content');
+  if(actC&&actC.innerHTML)renderActivityTab('inv');
+  else renderInv();
 }
 
 // DAILY
@@ -2002,6 +2260,64 @@ function startTimers(){
 
 function leaveAlliance(){if(confirm("Leave your alliance?")){G.alliance=null;G.allianceRank=0;G.allianceContrib=0;renderAlliance();saveG();}}
 function openGems(){navTo('gems');}
+
+// ACTIVITY TAB (Hunt/Mine/Pond/Inv)
+function renderActivityTab(sub){
+  var c=ge('activity-content');if(!c)return;
+  // Get inner HTML from existing tabs
+  var map={
+    hunt:function(){renderHunt();return ge('tab-hunt').innerHTML;},
+    mine:function(){renderMine();return ge('tab-mine').innerHTML;},
+    pond:function(){return ge('tab-pond').innerHTML;},
+    inv:function(){renderInv();return ge('inv-list')?'<div id="inv-list">'+ge('inv-list').innerHTML+'</div>':'';}
+  };
+  if(map[sub])c.innerHTML='<div id="inv-list" style="display:'+(sub==='inv'?'block':'none')+'"></div>'+map[sub]();
+  else c.innerHTML='';
+  if(sub==='inv'){renderInv();}
+  if(sub==='hunt'){renderHunt();}
+  if(sub==='mine'){renderMine();}
+}
+function actTab(btn,sub){
+  document.querySelectorAll('#activity-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var c=ge('activity-content');if(!c)return;
+  // Pull content from the hidden source tabs
+  if(sub==='hunt'){renderHunt();c.innerHTML=ge('tab-hunt').innerHTML;}
+  else if(sub==='mine'){renderMine();c.innerHTML=ge('tab-mine').innerHTML;}
+  else if(sub==='pond'){c.innerHTML=ge('tab-pond').innerHTML;}
+  else if(sub==='inv'){c.innerHTML='<div id="inv-list"></div>';renderInv();}
+}
+
+// COMBAT TAB (Boss/VIP/Spin)
+function cbtTab(btn,sub){
+  document.querySelectorAll('#combat-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var c=ge('combat-content');if(!c)return;
+  if(sub==='boss'){renderBoss();c.innerHTML=ge('tab-boss').innerHTML;}
+  else if(sub==='vip'){renderVIP();c.innerHTML=ge('tab-vip').innerHTML;}
+  else if(sub==='spin'){renderSpin();drawWheel();c.innerHTML=ge('tab-spin').innerHTML;}
+}
+
+// PROGRESS TAB (Quests/Daily/Profile/Ranks/Guide/AI)
+function prgTab(btn,sub){
+  document.querySelectorAll('#progress-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var c=ge('progress-content');if(!c)return;
+  if(sub==='quests'){renderQuests();c.innerHTML=ge('tab-quests').innerHTML;}
+  else if(sub==='daily'){renderDaily();c.innerHTML=ge('tab-daily').innerHTML;}
+  else if(sub==='profile'){renderProfile();c.innerHTML=ge('tab-profile').innerHTML;}
+  else if(sub==='ranks'){renderLB();c.innerHTML=ge('tab-ranks').innerHTML;}
+  else if(sub==='guide'){renderGuide();c.innerHTML=ge('tab-guide').innerHTML;}
+  else if(sub==='ai'){c.innerHTML=ge('tab-ai').innerHTML;}
+}
+
+// Update farm water/stamina display
+function updateFarmBars(){
+  var wd=ge('farm-water-disp');if(wd)wd.textContent=G.water+'/'+G.waterMax;
+  var wb=ge('farm-water-bar');if(wb)wb.style.width=Math.min(100,(G.water/G.waterMax)*100)+'%';
+  var sd=ge('farm-stam-disp');if(sd)sd.textContent=G.stamina+'/'+G.staminaMax;
+  var sb=ge('farm-stam-bar');if(sb)sb.style.width=Math.min(100,(G.stamina/G.staminaMax)*100)+'%';
+}
 function resetGame(){if(confirm('Reset all progress? This cannot be undone.')){localStorage.removeItem('th53');location.reload();}}
 
 function leaveAlliance(){if(confirm("Leave your alliance?")){G.alliance=null;G.allianceRank=0;G.allianceContrib=0;renderAlliance();saveG();}}
@@ -2427,6 +2743,66 @@ function wireEvents(){
   ge('btn-water-all').onclick=waterAll;
   ge('btn-speed-all').onclick=speedAll;
   ge('btn-reset').onclick=resetGame;
+
+  // Water buy buttons
+  ge('btn-water-buy1').onclick=function(){
+    if(G.gold<20){toast('Need 20g!','err');return;}
+    G.gold-=20;G.water=Math.min(G.waterMax,G.water+10);
+    toast('💧 +10 Water!');updateHUD();updateFarmBars();saveG();
+  };
+  ge('btn-water-buy2').onclick=function(){
+    if(G.gold<45){toast('Need 45g!','err');return;}
+    G.gold-=45;G.water=Math.min(G.waterMax,G.water+25);
+    toast('💧 +25 Water!');updateHUD();updateFarmBars();saveG();
+  };
+  ge('btn-water-buy3').onclick=function(){
+    if(G.gold<100){toast('Need 100g!','err');return;}
+    G.gold-=100;G.water=G.waterMax;
+    toast('💧 Tank full!');updateHUD();updateFarmBars();saveG();
+  };
+  ge('btn-water-gem').onclick=function(){
+    if(G.gems<10){toast('Need 10💎!','err');return;}
+    G.gems-=10;G.water=G.waterMax;
+    toast('💧 Tank filled with gems!');updateHUD();updateFarmBars();saveG();
+  };
+
+  // Stamina buy buttons
+  ge('btn-stam-buy1').onclick=function(){
+    if(G.gold<30){toast('Need 30g!','err');return;}
+    G.gold-=30;G.stamina=Math.min(G.staminaMax,G.stamina+20);
+    toast('⚡ +20 Stamina!');updateHUD();updateFarmBars();saveG();
+  };
+  ge('btn-stam-buy2').onclick=function(){
+    if(G.gold<60){toast('Need 60g!','err');return;}
+    G.gold-=60;G.stamina=Math.min(G.staminaMax,G.stamina+50);
+    toast('⚡ +50 Stamina!');updateHUD();updateFarmBars();saveG();
+  };
+  ge('btn-stam-buy3').onclick=function(){
+    if(G.gold<150){toast('Need 150g!','err');return;}
+    G.gold-=150;G.stamina=G.staminaMax;
+    toast('⚡ Stamina full!');updateHUD();updateFarmBars();saveG();
+  };
+  ge('btn-stam-gem').onclick=function(){
+    if(G.gems<20){toast('Need 20💎!','err');return;}
+    G.gems-=20;G.stamina=G.staminaMax;
+    toast('⚡ Stamina filled with gems!');updateHUD();updateFarmBars();saveG();
+  };
+
+  // Builds tab sub-buttons
+  document.querySelectorAll('#builds-tabs .tabbtn').forEach(function(btn){
+    btn.onclick=function(){bldTab(btn,btn.dataset.bld);};
+  });
+
+  // Combined tab sub-buttons (wired via data attributes)
+  document.querySelectorAll('#activity-tabs .tabbtn').forEach(function(btn){
+    btn.onclick=function(){actTab(btn,btn.dataset.act);};
+  });
+  document.querySelectorAll('#combat-tabs .tabbtn').forEach(function(btn){
+    btn.onclick=function(){cbtTab(btn,btn.dataset.cbt);};
+  });
+  document.querySelectorAll('#progress-tabs .tabbtn').forEach(function(btn){
+    btn.onclick=function(){prgTab(btn,btn.dataset.prg);};
+  });
   ge('btn-chop').onclick=function(){
     if(G.stamina<5){toast('Need 5⚡!','err');return;}
     G.stamina-=5;if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
