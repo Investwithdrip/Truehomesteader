@@ -944,7 +944,8 @@ function renderTab(t){
     hunt:renderHunt,mine:renderMine,pond:function(){},boss:renderBoss,
     vip:renderVIP,quests:renderQuests,social:renderSocial,guide:renderGuide,
     daily:renderDaily,profile:renderProfile,ranks:renderLB,gems:renderGems,
-    spin:function(){renderSpin();drawWheel();},inv:renderInv,ai:function(){}
+    spin:function(){renderSpin();drawWheel();},inv:renderInv,ai:function(){},
+    alliance:renderAlliance
   };
   if(map[t])map[t]();
 }
@@ -1040,16 +1041,16 @@ function renderFarm(){
   for(var i=0;i<total;i++){
     var p=G.plots[i]||{crop:null};
     if(!p.crop){
-      html+='<div class="plot emp" data-plot="'+i+'" onclick="openPlant('+i+')"><div class="pnum">'+(i+1)+'</div><div style="font-size:20px;color:#3a2010;">+</div><div style="font-size:9px;color:#3a2010;">Plant</div></div>';
+      html+='<div class="plot emp" data-plot="'+i+'" data-pi="'+i+'" onclick="openPlant(+this.dataset.pi)"><div class="pnum">'+(i+1)+'</div><div style="font-size:20px;color:#3a2010;">+</div><div style="font-size:9px;color:#3a2010;">Plant</div></div>';
     } else {
       var c=CROPS.find(function(x){return x.id===p.crop;});
-      if(!c){html+='<div class="plot emp" onclick="openPlant('+i+')"></div>';continue;}
+      if(!c){html+='<div class="plot emp" data-pi="'+i+'" onclick="openPlant(+this.dataset.pi)"></div>';continue;}
       var el=(now-p.planted)/1000,gt=p.growTime||c.time,done=el>=gt;
       if(done){
-        html+='<div class="plot rdy" onclick="harvest('+i+')"><div class="pnum">'+(i+1)+'</div><div style="font-size:26px;">'+c.e+'</div><div style="font-size:9px;color:var(--hay);font-weight:700;">HARVEST!</div></div>';
+        html+='<div class="plot rdy" data-pi="'+i+'" onclick="harvest(+this.dataset.pi)"><div class="pnum">'+(i+1)+'</div><div style="font-size:26px;">'+c.e+'</div><div style="font-size:9px;color:var(--hay);font-weight:700;">HARVEST!</div></div>';
       } else {
         var rem=Math.ceil(gt-el),pct=Math.min(100,(el/gt)*100);
-        html+='<div class="plot grw" onclick="waterCrop('+i+')"><div class="pnum">'+(i+1)+'</div><div style="font-size:24px;">'+c.e+'</div><div style="font-size:9px;color:#8BC34A;">'+c.n+'</div><div style="font-size:9px;color:#aaa;">'+ft(rem)+'</div><div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(0,0,0,.3);border-radius:0 0 10px 10px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--sage);"></div></div></div>';
+        html+='<div class="plot grw" data-pi="'+i+'" onclick="waterCrop(+this.dataset.pi)"><div class="pnum">'+(i+1)+'</div><div style="font-size:24px;">'+c.e+'</div><div style="font-size:9px;color:#8BC34A;">'+c.n+'</div><div style="font-size:9px;color:#aaa;">'+ft(rem)+'</div><div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(0,0,0,.3);border-radius:0 0 10px 10px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--sage);"></div></div></div>';
       }
     }
   }
@@ -1062,7 +1063,7 @@ function renderFarm(){
 function openPlant(idx){
   var html='<div class="modal-title">🌱 Plant a Crop</div><div style="font-size:12px;color:#aaa;margin-bottom:10px;">Plot '+(idx+1)+'</div>';
   CROPS.forEach(function(c){
-    html+='<div class="sitem" onclick="plantCrop('+idx+',\''+c.id+'\')"><div class="sitem-ico">'+c.e+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+c.n+'</div><div style="font-size:11px;color:#aaa;">⏱️ '+ft(c.time)+' • +'+c.xp+'xp</div><div style="font-size:12px;color:var(--hay);">💰'+c.cost+'g → 🌾'+c.gold+'g</div></div><button class="btn bg bsm">Plant</button></div>';
+    html+='<div class="sitem" data-idx="'+idx+'" data-cid="'+c.id+'" onclick="plantCrop(+this.dataset.idx,this.dataset.cid)"><div class="sitem-ico">'+c.e+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+c.n+'</div><div style="font-size:11px;color:#aaa;">⏱️ '+ft(c.time)+' • +'+c.xp+'xp</div><div style="font-size:12px;color:var(--hay);">💰'+c.cost+'g → 🌾'+c.gold+'g</div></div><button class="btn bg bsm">Plant</button></div>';
   });
   showModal(html);
 }
@@ -1138,7 +1139,7 @@ function renderStore(cat){
   c.innerHTML=items.map(function(it){
     var extra=it.sell?' → 👑 '+it.sell+'g at Prime':it.gold?' → 🌾'+it.gold+'g':'';
     var desc=it.perk||(it.time?'⏱️ '+ft(it.time)+' grow':'')+extra;
-    return '<div class="sitem"><div class="sitem-ico">'+it.e+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+it.n+'</div><div style="font-size:11px;color:#aaa;">'+desc+'</div><div style="font-size:12px;color:var(--hay);">💰 '+it.cost+'g</div></div><button class="btn bg bsm" onclick="buyItem(\''+it.id+'\',\''+currentCat+'\')">Buy</button></div>';
+    return '<div class="sitem"><div class="sitem-ico">'+it.e+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+it.n+'</div><div style="font-size:11px;color:#aaa;">'+desc+'</div><div style="font-size:12px;color:var(--hay);">💰 '+it.cost+'g</div></div><button class="btn bg bsm" data-iid="'+it.id+'" data-icat="'+currentCat+'" onclick="buyItem(this.dataset.iid,this.dataset.icat)">Buy</button></div>';
   }).join('')||'<div style="text-align:center;padding:24px;color:#555;">Nothing here yet</div>';
 }
 function buyItem(id,cat){
@@ -1186,7 +1187,7 @@ function renderAnimals(){
     var el=(now-a.bornAt)/1000,st2=a.stageTime||d.times[a.stage]||300;
     var pct=isPrime?100:Math.min(100,(el/st2)*100);
     var sellP=G.home==='ranch'?d.sell*3:d.sell;
-    return '<div class="an-card">'+(isPrime?'<div class="prime-b">👑 PRIME</div>':'')+'<div style="font-size:44px;margin-bottom:5px;">'+d.e+'</div><div style="font-size:13px;font-weight:700;color:var(--hay);">'+d.n+'</div><div style="font-size:10px;color:#aaa;margin-bottom:7px;">'+d.stages[a.stage]+'</div><div class="pb pbn" style="margin-bottom:5px;"><div class="pf" style="width:'+pct+'%"></div></div><div style="font-size:10px;color:#aaa;margin-bottom:9px;">'+(isPrime?'Ready to sell!':ft(Math.max(0,Math.ceil(st2-el)))+' to next stage')+'</div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><button class="btn bsm" style="background:rgba(126,200,227,.2);color:#7EC8E3;font-size:10px;" onclick="feedAnimal('+i+')">🌾 Feed</button>'+(isPrime?'<button class="btn bgn bsm" style="font-size:10px;" onclick="sellAnimal('+i+')">💰 '+sellP+'g</button>':'')+'<button class="btn bdr2 bsm" style="font-size:10px;" onclick="removeAnimal('+i+')">✕</button></div></div>';
+    return '<div class="an-card">'+(isPrime?'<div class="prime-b">👑 PRIME</div>':'')+'<div style="font-size:44px;margin-bottom:5px;">'+d.e+'</div><div style="font-size:13px;font-weight:700;color:var(--hay);">'+d.n+'</div><div style="font-size:10px;color:#aaa;margin-bottom:7px;">'+d.stages[a.stage]+'</div><div class="pb pbn" style="margin-bottom:5px;"><div class="pf" style="width:'+pct+'%"></div></div><div style="font-size:10px;color:#aaa;margin-bottom:9px;">'+(isPrime?'Ready to sell!':ft(Math.max(0,Math.ceil(st2-el)))+' to next stage')+'</div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><button class="btn bsm" style="background:rgba(126,200,227,.2);color:#7EC8E3;font-size:10px;" data-ai="'+i+'" onclick="feedAnimal(+this.dataset.ai)">🌾 Feed</button>'+(isPrime?'<button class="btn bgn bsm" style="font-size:10px;" data-ai="'+i+'" onclick="sellAnimal(+this.dataset.ai)">💰 '+sellP+'g</button>':'')+'<button class="btn bdr2 bsm" style="font-size:10px;" data-ai="'+i+'" onclick="removeAnimal(+this.dataset.ai)">✕</button></div></div>';
   }).join('')+'</div>';
 }
 function feedAnimal(i){
@@ -1346,7 +1347,7 @@ function renderMktBoard(){
     return '<div style="display:flex;align-items:center;gap:9px;padding:11px;background:var(--card);border:1px solid var(--bdr);border-radius:11px;margin-bottom:6px;">'+
       '<div style="font-size:26px;">'+l.e+'</div>'+
       '<div style="flex:1;"><div style="font-size:12px;font-weight:700;color:var(--hay);">'+l.p+'</div><div style="font-size:11px;color:#8BC34A;">'+hl(l.home)+' • Zone '+l.zone+(l.zone===G.zone?' ✅ Same Zone':'')+'</div><div style="font-size:13px;margin-top:2px;">'+l.item+'</div></div>'+
-      '<div style="text-align:right;"><div style="font-size:13px;font-weight:800;color:var(--hay);">'+l.price+'</div><button class="btn bg bsm" style="font-size:10px;margin-top:4px;" onclick="toast(\'Contacting '+l.p+'...\')">Buy</button></div></div>';
+      '<div style="text-align:right;"><div style="font-size:13px;font-weight:800;color:var(--hay);">'+l.price+'</div><button class="btn bg bsm" style="font-size:10px;margin-top:4px;" onclick="toast(this.dataset.msg)" data-msg="Contacting...">Buy</button></div></div>';
   }).join('');
 }
 function renderMktAnimals(){
@@ -1354,7 +1355,7 @@ function renderMktAnimals(){
   c.innerHTML='<div style="background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.3);border-radius:11px;padding:11px;margin-bottom:10px;font-size:12px;color:#ef9a9a;"><strong>🏚️ Ranch players earn '+(G.home==='ranch'?'3x — YOUR BONUS! ⭐':'3x. You earn 1x.')+'</strong> Animals never die on Ranch.</div>'+
   ANIMALS.map(function(a){
     var p=G.home==='ranch'?a.sell*3:a.sell;
-    return '<div style="display:flex;align-items:center;gap:11px;padding:11px;background:var(--card);border:1px solid var(--bdr);border-radius:11px;margin-bottom:6px;"><div style="font-size:34px;">'+a.e+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+a.n+'</div><div style="font-size:11px;color:#aaa;">Buy '+a.cost+'g → Grow to Prime → Sell</div></div><div style="text-align:right;"><div style="font-size:14px;font-weight:900;color:'+(G.home==='ranch'?'var(--gold)':'#8BC34A')+';">'+p+'g</div><div style="font-size:9px;color:#aaa;">'+(G.home==='ranch'?'3x RANCH!':'Prime price')+'</div><button class="btn bg bsm" style="font-size:10px;margin-top:3px;" onclick="buyAnimal(\''+a.id+'\')">Buy</button></div></div>';
+    return '<div style="display:flex;align-items:center;gap:11px;padding:11px;background:var(--card);border:1px solid var(--bdr);border-radius:11px;margin-bottom:6px;"><div style="font-size:34px;">'+a.e+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+a.n+'</div><div style="font-size:11px;color:#aaa;">Buy '+a.cost+'g → Grow to Prime → Sell</div></div><div style="text-align:right;"><div style="font-size:14px;font-weight:900;color:'+(G.home==='ranch'?'var(--gold)':'#8BC34A')+';">'+p+'g</div><div style="font-size:9px;color:#aaa;">'+(G.home==='ranch'?'3x RANCH!':'Prime price')+'</div><button class="btn bg bsm" style="font-size:10px;margin-top:3px;" data-aid="'+a.id+'" onclick="buyAnimal(this.dataset.aid)">Buy</button></div></div>';
   }).join('');
 }
 function renderMktRes(){
@@ -1383,14 +1384,14 @@ function renderHunt(){
   if(wg){
     wg.innerHTML=WEAPONS.map(function(w){
       var lkd=G.lv<w.minLv&&w.minLv>1,active=G.weapon===w.id;
-      return '<div class="wep'+(active?' on':'')+(lkd?' lkd':'')+'" onclick="'+(lkd?'':('selWep("'+w.id+'")'))+'"><div style="font-size:26px;">'+w.e+'</div><div style="font-size:11px;font-weight:700;color:var(--hay);margin-top:3px;">'+w.n+'</div><div style="font-size:10px;color:#aaa;">'+(lkd?'Lv'+w.minLv+' req':w.acc+'% acc')+'</div>'+(active?'<div style="font-size:9px;color:var(--sage);">✓ Equipped</div>':''+((!lkd&&w.cost>0)?'<div style="font-size:9px;color:var(--hay);">'+w.cost+'g</div>':''))+'</div>';
+      return '<div class="wep'+(active?' on':'')+(lkd?' lkd':'')+' " data-wid="'+w.id+'" onclick="'+(lkd?'':'selWep(this.dataset.wid)')+'" ><div style="font-size:26px;">'+w.e+'</div><div style="font-size:11px;font-weight:700;color:var(--hay);margin-top:3px;">'+w.n+'</div><div style="font-size:10px;color:#aaa;">'+(lkd?'Lv'+w.minLv+' req':w.acc+'% acc')+'</div>'+(active?'<div style="font-size:9px;color:var(--sage);">✓ Equipped</div>':''+((!lkd&&w.cost>0)?'<div style="font-size:9px;color:var(--hay);">'+w.cost+'g</div>':''))+'</div>';
     }).join('');
   }
   var ag=ge('hunt-animal-grid');
   if(ag){
     ag.innerHTML=HUNT_ANIMALS.map(function(a){
       var lkd=G.hunterLv<a.minHLv;
-      return '<div class="wep'+(lkd?' lkd':'')+'" onclick="'+(lkd?'':('selHuntTarget("'+a.id+'")'))+'"><div style="font-size:26px;">'+a.e+'</div><div style="font-size:11px;font-weight:700;color:var(--hay);margin-top:3px;">'+a.n+'</div><div style="font-size:10px;color:#aaa;">'+(lkd?'Hunter Lv'+a.minHLv:'+'+a.gold+'g')+'</div></div>';
+      return '<div class="wep'+(lkd?' lkd':'')+' " data-hid="'+a.id+'" onclick="'+(lkd?'':'selHuntTarget(this.dataset.hid)')+'" ><div style="font-size:26px;">'+a.e+'</div><div style="font-size:11px;font-weight:700;color:var(--hay);margin-top:3px;">'+a.n+'</div><div style="font-size:10px;color:#aaa;">'+(lkd?'Hunter Lv'+a.minHLv:'+'+a.gold+'g')+'</div></div>';
     }).join('');
   }
   st('h-hlv',G.hunterLv+'/50');st('h-mlv',G.marksLv+'/50');
@@ -1448,7 +1449,7 @@ function renderMine(){
   if(f){
     f.innerHTML=G.mineField.map(function(cell,i){
       if(cell.dug){var m=cell.mineral?MINERALS.find(function(x){return x.id===cell.mineral;}):null;return '<div class="mcell dug">'+(m?m.e:'⬛')+'</div>';}
-      return '<div class="mcell" onclick="mineCell('+i+')">🪨</div>';
+      return '<div class="mcell" data-mi="'+i+'" onclick="mineCell(+this.dataset.mi)">🪨</div>';
     }).join('');
   }
   var mf=ge('minerals-found');
@@ -1616,7 +1617,7 @@ function renderVIP(){
     html+='<div style="font-size:15px;font-weight:900;color:'+(v.tier==='status'?'var(--hay)':'var(--geml)')+';width:30px;text-align:center;">'+v.lv+'</div>';
     html+='<div style="flex:1;"><div style="font-size:12px;font-weight:700;color:'+(unl?'#ccc':'#aaa')+';">'+v.perk+'</div>';
     html+='<div style="font-size:10px;color:#666;margin-top:2px;">'+v.gems.toLocaleString()+'💎 • Game Lv'+v.glv+' required</div></div>';
-    html+='<div>'+(unl?'<span style="color:#8BC34A;font-size:18px;">✅</span>':canUnlock?'<button class="btn bge bsm" onclick="unlockVIP('+v.lv+','+v.gems+')">Unlock</button>':'<span style="color:#333;font-size:16px;">🔒</span>')+'</div>';
+    html+='<div>'+(unl?'<span style="color:#8BC34A;font-size:18px;">✅</span>':canUnlock?'<button class="btn bge bsm" data-lv="'+v.lv+'" data-cost="'+v.gems+'" onclick="unlockVIP(+this.dataset.lv,+this.dataset.cost)">Unlock</button>':'<span style="color:#333;font-size:16px;">🔒</span>')+'</div>';
     html+='</div>';
   });
   c.innerHTML=html;
@@ -1635,7 +1636,7 @@ function renderQuests(){
   if(qc)qc.innerHTML=QUESTS.map(function(q){
     var prog=G.qp[q.type]||0,done=G.qDone&&G.qDone.includes(q.id);
     var pct=Math.min(100,(prog/q.target)*100);
-    return '<div class="card" style="margin-bottom:8px;"><div style="display:flex;align-items:flex-start;gap:9px;margin-bottom:9px;"><div style="font-size:26px;">'+q.icon+'</div><div><div style="font-size:13px;font-weight:700;">'+q.t+(done?' ✅':'')+'</div><div style="font-size:11px;color:#aaa;">'+q.d+'</div><div style="font-size:11px;color:var(--hay);">🎁 '+q.r+'</div></div></div><div style="display:flex;align-items:center;gap:7px;"><div class="pb pbg" style="flex:1;"><div class="pf" style="width:'+pct+'%"></div></div><div style="font-size:11px;color:#aaa;white-space:nowrap;">'+Math.min(prog,q.target)+'/'+q.target+'</div>'+(prog>=q.target&&!done?'<button class="btn bg bsm" onclick="claimQ(\''+q.id+'\')">Claim!</button>':'')+'</div></div>';
+    return '<div class="card" style="margin-bottom:8px;"><div style="display:flex;align-items:flex-start;gap:9px;margin-bottom:9px;"><div style="font-size:26px;">'+q.icon+'</div><div><div style="font-size:13px;font-weight:700;">'+q.t+(done?' ✅':'')+'</div><div style="font-size:11px;color:#aaa;">'+q.d+'</div><div style="font-size:11px;color:var(--hay);">🎁 '+q.r+'</div></div></div><div style="display:flex;align-items:center;gap:7px;"><div class="pb pbg" style="flex:1;"><div class="pf" style="width:'+pct+'%"></div></div><div style="font-size:11px;color:#aaa;white-space:nowrap;">'+Math.min(prog,q.target)+'/'+q.target+'</div>'+(prog>=q.target&&!done?'<button class="btn bg bsm" data-qid="'+q.id+'" onclick="claimQ(this.dataset.qid)">Claim!</button>':'')+'</div></div>';
   }).join('');
   var ac=ge('ach-list');
   if(ac){
@@ -1684,7 +1685,7 @@ function renderSocial(){
   var ol=ge('online-list');
   if(ol&&!ol.children.length){
     ol.innerHTML=FAKE_PLAYERS.map(function(p){
-      return '<div style="display:flex;align-items:center;gap:9px;padding:10px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;margin-bottom:5px;"><div style="font-size:26px;">'+p.e+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+p.n+'</div><div style="font-size:11px;color:#aaa;">Lv'+p.lv+' • '+hl(p.home)+' • Zone '+p.zone+(p.zone===G.zone?' <span style="color:#8BC34A;">✅ Same Zone</span>':'')+'</div></div><button class="btn bsm '+(p.zone===G.zone?'bgn':' bg"')+'" style="font-size:10px;" onclick="toast(\'Visiting '+p.n+'...\')">Visit</button>';
+      return '<div style="display:flex;align-items:center;gap:9px;padding:10px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;margin-bottom:5px;"><div style="font-size:26px;">'+p.e+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+p.n+'</div><div style="font-size:11px;color:#aaa;">Lv'+p.lv+' • '+hl(p.home)+' • Zone '+p.zone+(p.zone===G.zone?' <span style="color:#8BC34A;">✅ Same Zone</span>':'')+'</div></div><button class="btn bsm '+(p.zone===G.zone?'bgn':' bg"')+'" style="font-size:10px;" onclick="toast(this.dataset.msg)" data-msg="Contacting...">Visit</button>';
     }).join('');
   }
   var sc=ge('share-content');
@@ -1698,7 +1699,7 @@ function renderSocial(){
   if(vl&&!vl.innerHTML){
     vl.innerHTML=FAKE_PLAYERS.map(function(p){
       var sameZone=p.zone===G.zone;
-      return '<div style="display:flex;align-items:center;gap:9px;padding:11px;background:var(--card);border:1px solid '+(sameZone?'rgba(67,160,71,.3)':'var(--bdr)')+';border-radius:11px;margin-bottom:6px;"><div style="font-size:28px;">'+p.e+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+p.n+'</div><div style="font-size:11px;color:#aaa;">'+hl(p.home)+' • Zone '+p.zone+'</div><div style="font-size:11px;color:'+(sameZone?'#8BC34A':'#666')+'">'+(sameZone?'✅ Same zone — can BUY their resources':'🔒 Different zone — friends only')+'</div></div><button class="btn bsm '+(sameZone?'bgn':'')+(sameZone?'':' " style="background:rgba(255,255,255,.08)"')+'" onclick="toast(\'Visiting '+p.n+'...\')">'+(sameZone?'Buy 🛒':'Visit')+'</button>';
+      return '<div style="display:flex;align-items:center;gap:9px;padding:11px;background:var(--card);border:1px solid '+(sameZone?'rgba(67,160,71,.3)':'var(--bdr)')+';border-radius:11px;margin-bottom:6px;"><div style="font-size:28px;">'+p.e+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+p.n+'</div><div style="font-size:11px;color:#aaa;">'+hl(p.home)+' • Zone '+p.zone+'</div><div style="font-size:11px;color:'+(sameZone?'#8BC34A':'#666')+'">'+(sameZone?'✅ Same zone — can BUY their resources':'🔒 Different zone — friends only')+'</div></div><button class="btn bsm '+(sameZone?'bgn':'')+(sameZone?'':' " style="background:rgba(255,255,255,.08)"')+'" onclick="toast(this.dataset.msg)" data-msg="Contacting...">'+(sameZone?'Buy 🛒':'Visit')+'</button>';
     }).join('');
   }
 }
@@ -1809,7 +1810,7 @@ function renderGems(){
     ];
     gs.innerHTML=spends.map(function(it,i){
       var can=G.gems>=it.c;
-      return '<div style="display:flex;align-items:center;gap:9px;padding:11px;background:'+(can?'var(--card)':'rgba(0,0,0,.3)')+';border:1px solid '+(can?'var(--bdr)':'rgba(255,255,255,.04)')+';border-radius:11px;margin-bottom:5px;opacity:'+(can?'1':'.5')+';"><div style="font-size:26px;">'+it.e+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+it.n+'</div><div style="font-size:11px;color:#aaa;">'+it.d+'</div></div><button class="btn bge bsm" onclick="gemSpends['+i+'].fn()" '+(can?'':' disabled')+'>💎 '+it.c+'</button></div>';
+      return '<div style="display:flex;align-items:center;gap:9px;padding:11px;background:'+(can?'var(--card)':'rgba(0,0,0,.3)')+';border:1px solid '+(can?'var(--bdr)':'rgba(255,255,255,.04)')+';border-radius:11px;margin-bottom:5px;opacity:'+(can?'1':'.5')+';"><div style="font-size:26px;">'+it.e+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+it.n+'</div><div style="font-size:11px;color:#aaa;">'+it.d+'</div></div><button class="btn bge bsm" data-gi="'+i+'" onclick="gemSpends[+this.dataset.gi].fn()" '+(can?'':' disabled')+'>💎 '+it.c+'</button></div>';
     }).join('');
     window.gemSpends=spends;
   }
@@ -1820,13 +1821,13 @@ function renderGems(){
       {gc:500,gg:5},{gc:2000,gg:25},{gc:5000,gg:75},{gc:10000,gg:200}
     ].map(function(r){
       var can=G.gold>=r.gc;
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;margin-bottom:5px;"><div><div style="font-size:12px;font-weight:700;">'+r.gc.toLocaleString()+'g → 💎 '+r.gg+'</div><div style="font-size:10px;color:#aaa;">Gold to Gems</div></div><button class="btn bge bsm" onclick="convGold('+r.gc+','+r.gg+')" '+(can?'':' disabled style="opacity:.4;"')+'>Convert</button></div>';
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;margin-bottom:5px;"><div><div style="font-size:12px;font-weight:700;">'+r.gc.toLocaleString()+'g → 💎 '+r.gg+'</div><div style="font-size:10px;color:#aaa;">Gold to Gems</div></div><button class="btn bge bsm" data-gc="'+r.gc+'" data-gg="'+r.gg+'" onclick="convGold(+this.dataset.gc,+this.dataset.gg)" '+(can?'':' disabled style="opacity:.4;"')+'>Convert</button></div>';
     }).join('')+
     [
       {gm:10,gg:100},{gm:50,gg:600},{gm:100,gg:1400},{gm:500,gg:8000}
     ].map(function(r){
       var can=G.gems>=r.gm;
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:var(--card);border:1px solid rgba(255,179,0,.2);border-radius:9px;margin-bottom:5px;"><div><div style="font-size:12px;font-weight:700;">💎 '+r.gm+' → '+r.gg.toLocaleString()+'g</div><div style="font-size:10px;color:#aaa;">Gems to Gold</div></div><button class="btn bg bsm" onclick="convGems('+r.gm+','+r.gg+')" '+(can?'':' disabled style="opacity:.4;"')+'>Convert</button></div>';
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:var(--card);border:1px solid rgba(255,179,0,.2);border-radius:9px;margin-bottom:5px;"><div><div style="font-size:12px;font-weight:700;">💎 '+r.gm+' → '+r.gg.toLocaleString()+'g</div><div style="font-size:10px;color:#aaa;">Gems to Gold</div></div><button class="btn bg bsm" data-gm="'+r.gm+'" data-gg="'+r.gg+'" onclick="convGems(+this.dataset.gm,+this.dataset.gg)" '+(can?'':' disabled style="opacity:.4;"')+'>Convert</button></div>';
     }).join('');
   }
 }
@@ -1983,7 +1984,7 @@ function scheduleCritter(){
 function showCritter(){
   var crts=[{e:'🐛',n:'Worm Swarm',c:50},{e:'🦗',n:'Cricket Gang',c:80},{e:'🐜',n:'Ant Colony',c:100},{e:'🦊',n:'Fox',c:150}];
   var cr=crts[Math.floor(Math.random()*crts.length)];
-  showModal('<div class="modal-title">🐛 Critter Attack!</div><div style="font-size:68px;text-align:center;animation:fl 1s ease-in-out infinite;">'+cr.e+'</div><div style="text-align:center;font-size:14px;font-weight:700;margin:10px 0;">'+cr.n+' attacking!</div><div style="font-size:12px;color:#aaa;text-align:center;margin-bottom:14px;">They will destroy 25% of your crops!</div><div style="display:flex;flex-direction:column;gap:8px;"><button class="btn bdr2 bfw" onclick="fightCritter()">⚔️ Fight! (30⚡)</button><button class="btn bg bfw" onclick="bribeCritter('+cr.c+')">💰 Bribe ('+cr.c+'g)</button><button class="btn bfw" style="background:rgba(255,255,255,.08);" onclick="ignoreCritter()">Ignore (risk crops)</button></div>');
+  showModal('<div class="modal-title">🐛 Critter Attack!</div><div style="font-size:68px;text-align:center;animation:fl 1s ease-in-out infinite;">'+cr.e+'</div><div style="text-align:center;font-size:14px;font-weight:700;margin:10px 0;">'+cr.n+' attacking!</div><div style="font-size:12px;color:#aaa;text-align:center;margin-bottom:14px;">They will destroy 25% of your crops!</div><div style="display:flex;flex-direction:column;gap:8px;"><button class="btn bdr2 bfw" onclick="fightCritter()">⚔️ Fight! (30⚡)</button><button class="btn bg bfw" data-cc="+cr.c+" onclick="bribeCritter(+this.dataset.cc)">💰 Bribe ('+cr.c+'g)</button><button class="btn bfw" style="background:rgba(255,255,255,.08);" onclick="ignoreCritter()">Ignore (risk crops)</button></div>');
 }
 function fightCritter(){if(G.stamina<30){toast('Need 30⚡!','err');return;}G.stamina-=30;endCritter();toast('⚔️ Fought off critters! 💪');}
 function bribeCritter(c){if(G.gold<c){toast('Not enough gold!','err');return;}G.gold-=c;endCritter();toast('💰 Critters bribed away!');}
@@ -2043,7 +2044,7 @@ function renderAllianceCards(list){
     var typeLabel=a.type==='Open'?'🟢 Open':a.type==='Apply'?'🟡 Apply':'🔴 Invite Only';
     var sameZone=false; // demo
     var pct=Math.round((a.members/a.maxMembers)*100);
-    return '<div class="card" style="margin-bottom:9px;border-color:'+typeColor+';" data-aid="+a.id+" onclick="showAllianceProfile(this.dataset.aid)">'
+    return '<div class="card" style="margin-bottom:9px;border-color:'+typeColor+';" data-aid="'+a.id+'" onclick="showAllianceProfile(this.dataset.aid)">'
       +'<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;">'
       +'<div style="font-size:40px;background:rgba(0,0,0,.3);border-radius:12px;padding:8px;flex-shrink:0;">'+a.emoji+'</div>'
       +'<div style="flex:1;">'
@@ -2100,10 +2101,10 @@ function showAllianceProfile(id){
   });
   html+='</div>';
   if(a.type==='Open'){
-    html+='<button class="btn bgn bfw" data-aid="+a.id+" onclick="joinAlliance(this.dataset.aid)">🌾 JOIN '+a.name.toUpperCase()+' NOW</button>';
+    html+='<button class="btn bgn bfw" data-aid="'+a.id+'" onclick="joinAlliance(this.dataset.aid)">🌾 JOIN '+a.name.toUpperCase()+' NOW</button>';
   } else if(a.type==='Apply'){
     html+='<div class="inp-g" style="margin-bottom:7px;"><label>Your Application Message</label><input id="app-msg" type="text" placeholder="Why you want to join (200 chars)..." maxlength="200" style="width:100%;padding:11px;background:rgba(255,255,255,.08);border:1px solid var(--bdr);border-radius:10px;color:var(--cream);font-size:14px;outline:none;"></div>';
-    html+='<button class="btn bg bfw" onclick="submitApp(this.dataset.aid)" data-aid="+a.id+">📨 SEND APPLICATION</button>';
+    html+='<button class="btn bg bfw" onclick="submitApp(this.dataset.aid)" data-aid="'+a.id+'">📨 SEND APPLICATION</button>';
   } else {
     html+='<div style="text-align:center;padding:11px;background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.3);border-radius:10px;font-size:12px;color:#ef9a9a;">🔴 Invite Only — You must be invited by a Veteran or Officer</div>';
   }
@@ -2301,7 +2302,7 @@ function renderAlliChest(a){
   html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;">';
   amounts.forEach(function(amt){
     var can=G.gold>=amt;
-    html+='<button class="btn '+(can?'bg':'')+'  bsm bfw" style="'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" onclick="donateChest('+amt+')" '+(can?'':'disabled')+'>💰 Donate '+amt.toLocaleString()+'g</button>';
+    html+='<button class="btn '+(can?'bg':'')+'  bsm bfw" style="'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-amt="'+amt+'" onclick="donateChest(+this.dataset.amt)" '+(can?'':'disabled')+'>💰 Donate '+amt.toLocaleString()+'g</button>';
   });
   html+='</div></div>';
   // Gem donation
@@ -2309,7 +2310,7 @@ function renderAlliChest(a){
   html+='<div style="font-size:12px;font-weight:700;color:var(--geml);margin-bottom:8px;">💎 Donate Gems</div>';
   [50,200,500].forEach(function(amt){
     var can=G.gems>=amt;
-    html+='<button class="btn '+(can?'bge':'')+'  bsm bfw" style="margin-bottom:5px;'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" onclick="donateGems('+amt+')" '+(can?'':'disabled')+'>💎 Donate '+amt+' Gems</button>';
+    html+='<button class="btn '+(can?'bge':'')+'  bsm bfw" style="margin-bottom:5px;'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-amt="'+amt+'" onclick="donateGems(+this.dataset.amt)" '+(can?'':'disabled')+'>💎 Donate '+amt+' Gems</button>';
   });
   html+='</div>';
   // Weekly leaderboard
