@@ -166,6 +166,7 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
 </head>
 <body>
 <div id="toast"></div>
+<div id="err-box" style="display:none;position:fixed;bottom:60px;left:0;right:0;background:#b71c1c;color:#fff;padding:10px;font-size:11px;z-index:9999;word-break:break-all;"></div>
 <div id="ann"></div>
 
 <!-- SPLASH -->
@@ -588,21 +589,44 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <div style="font-size:28px;font-weight:900;color:var(--geml);" id="gem-big">0 Gems</div>
         <div style="font-size:11px;color:#aaa;">VIP acres • Speed boosts • More</div>
       </div>
-      <div class="stl">💎 Buy Gems (Demo)</div>
-      <div class="gpacks">
-        <div class="gpack" data-buy="50"><div style="font-size:28px;">💎</div><div style="font-size:19px;font-weight:900;color:var(--geml);">50</div><div style="font-size:10px;color:#888;">Starter</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$0.99</div></div>
-        <div class="gpack best" data-buy="120"><div style="font-size:28px;">💎💎</div><div style="font-size:19px;font-weight:900;color:var(--geml);">120</div><div style="font-size:10px;color:#888;">Best Value</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$1.99</div></div>
-        <div class="gpack" data-buy="300"><div style="font-size:28px;">💎💎💎</div><div style="font-size:19px;font-weight:900;color:var(--geml);">300</div><div style="font-size:10px;color:#888;">Popular</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$4.99</div></div>
-        <div class="gpack" data-buy="700"><div style="font-size:28px;">👑</div><div style="font-size:19px;font-weight:900;color:var(--geml);">700</div><div style="font-size:10px;color:#888;">King Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$9.99</div></div>
-        <div class="gpack" data-buy="2000"><div style="font-size:28px;">🌟</div><div style="font-size:19px;font-weight:900;color:var(--geml);">2,000</div><div style="font-size:10px;color:#888;">Power Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$24.99</div></div>
-        <div class="gpack" data-buy="5500"><div style="font-size:28px;">👑💎</div><div style="font-size:19px;font-weight:900;color:var(--geml);">5,500</div><div style="font-size:10px;color:#888;">Ultra Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$49.99</div></div>
+      <div class="stl">💎 Gem Store</div>
+
+      <!-- STARTER PACKS -->
+      <div style="background:rgba(124,77,255,.08);border:1px solid rgba(124,77,255,.25);border-radius:12px;padding:10px;margin-bottom:9px;">
+        <div style="font-size:11px;color:var(--geml);font-weight:800;letter-spacing:1px;margin-bottom:8px;">🌱 STARTER PACKS</div>
+        <div class="gpacks">
+          <div class="gpack" data-buy="60"><div style="font-size:24px;">💎</div><div style="font-size:17px;font-weight:900;color:var(--geml);">60</div><div style="font-size:10px;color:#aaa;">Try It</div><div style="font-size:12px;color:var(--hay);font-weight:800;margin-top:3px;">$0.99</div></div>
+          <div class="gpack" data-buy="150"><div style="font-size:24px;">💎💎</div><div style="font-size:17px;font-weight:900;color:var(--geml);">150</div><div style="font-size:10px;color:#aaa;">Beginner</div><div style="font-size:12px;color:var(--hay);font-weight:800;margin-top:3px;">$1.99</div></div>
+          <div class="gpack best" data-buy="400"><div style="font-size:24px;">💎💎💎</div><div style="font-size:17px;font-weight:900;color:var(--geml);">400</div><div style="font-size:10px;color:#aaa;">Best Value</div><div style="font-size:12px;color:var(--hay);font-weight:800;margin-top:3px;">$4.99</div></div>
+          <div class="gpack" data-buy="900"><div style="font-size:24px;">🌱</div><div style="font-size:17px;font-weight:900;color:var(--geml);">900</div><div style="font-size:10px;color:#aaa;">Homesteader</div><div style="font-size:12px;color:var(--hay);font-weight:800;margin-top:3px;">$9.99</div></div>
+        </div>
       </div>
-      <div class="gpacks" style="margin-top:6px;">
-        <div class="gpack" data-buy="15000"><div style="font-size:28px;">🔥</div><div style="font-size:19px;font-weight:900;color:var(--geml);">15,000</div><div style="font-size:10px;color:#888;">Baron Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$99.99</div></div>
-        <div class="gpack best" data-buy="35000"><div style="font-size:28px;">💫</div><div style="font-size:19px;font-weight:900;color:var(--geml);">35,000</div><div style="font-size:10px;color:#888;">Overlord Pack</div><div style="font-size:13px;color:var(--hay);font-weight:700;margin-top:3px;">$199.99</div></div>
-        <div class="gpack" data-buy="100000"><div style="font-size:28px;">👑🌾</div><div style="font-size:19px;font-weight:900;color:#FFB300;">100,000</div><div style="font-size:10px;color:#888;">Patriarch Pack</div><div style="font-size:13px;color:#FFB300;font-weight:700;margin-top:3px;">$499.99</div></div>
-        <div class="gpack" style="background:linear-gradient(135deg,rgba(255,179,0,.25),rgba(45,27,14,.8));border-color:var(--hay);" data-buy="999999"><div style="font-size:28px;">💎👑💎</div><div style="font-size:19px;font-weight:900;color:#FFD700;">∞ Gems</div><div style="font-size:10px;color:#FFB300;font-weight:700;">TRUE LEGEND</div><div style="font-size:13px;color:#FFD700;font-weight:900;margin-top:3px;">$999.99</div></div>
+
+      <!-- MID PACKS -->
+      <div style="background:rgba(255,140,0,.08);border:1px solid rgba(255,140,0,.25);border-radius:12px;padding:10px;margin-bottom:9px;">
+        <div style="font-size:11px;color:var(--gold);font-weight:800;letter-spacing:1px;margin-bottom:8px;">⚡ GRINDER PACKS</div>
+        <div class="gpacks">
+          <div class="gpack" data-buy="2000"><div style="font-size:24px;">🔥</div><div style="font-size:17px;font-weight:900;color:var(--geml);">2,000</div><div style="font-size:10px;color:#aaa;">Hustler</div><div style="font-size:12px;color:var(--gold);font-weight:800;margin-top:3px;">$14.99</div></div>
+          <div class="gpack" data-buy="3500"><div style="font-size:24px;">⚡</div><div style="font-size:17px;font-weight:900;color:var(--geml);">3,500</div><div style="font-size:10px;color:#aaa;">Grinder</div><div style="font-size:12px;color:var(--gold);font-weight:800;margin-top:3px;">$24.99</div></div>
+          <div class="gpack best" data-buy="6000"><div style="font-size:24px;">💪</div><div style="font-size:17px;font-weight:900;color:var(--geml);">6,000</div><div style="font-size:10px;color:#aaa;">Builder</div><div style="font-size:12px;color:var(--gold);font-weight:800;margin-top:3px;">$34.99</div></div>
+          <div class="gpack" data-buy="9000"><div style="font-size:24px;">🏆</div><div style="font-size:17px;font-weight:900;color:var(--geml);">9,000</div><div style="font-size:10px;color:#aaa;">Champion</div><div style="font-size:12px;color:var(--gold);font-weight:800;margin-top:3px;">$49.99</div></div>
+        </div>
       </div>
+
+      <!-- WHALE PACK -->
+      <div style="background:linear-gradient(135deg,rgba(229,57,53,.12),rgba(124,77,255,.1));border:2px solid rgba(229,57,53,.5);border-radius:14px;padding:14px;margin-bottom:9px;">
+        <div style="font-size:11px;color:#ef9a9a;font-weight:800;letter-spacing:2px;margin-bottom:10px;">👑 TRUE HOMESTEADER PACK</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:52px;">👑</div>
+          <div style="flex:1;">
+            <div style="font-size:22px;font-weight:900;color:var(--geml);">20,000 💎</div>
+            <div style="font-size:11px;color:#aaa;margin:4px 0;line-height:1.5;">Enough for VIP 1–7 + all home upgrades to Lv6. One-time big move.</div>
+            <div style="font-size:11px;color:#8BC34A;margin-top:3px;">🎁 Bonus: 500 of every material + 10,000g</div>
+          </div>
+        </div>
+        <button class="btn bdr2 bfw" style="margin-top:11px;padding:14px;" onclick="buyWhale()">👑 GET IT — $99.99</button>
+      </div>
+
       <div class="stl">⚡ Spend Gems</div>
       <div id="gem-spend-list"></div>
       <div class="stl">💰 Gold ↔ Gems</div>
@@ -735,14 +759,70 @@ const FISH=[
   {n:'Pike',e:'🦈',ch:4,g:150},{n:'Golden Fish',e:'✨',ch:1,g:500},
 ];
 const BUILDINGS=[
-  {id:'barn',n:'Barn',e:'🏚️',cost:500,perk:'+50 hay storage',cat:'buildings'},
-  {id:'silo',n:'Grain Silo',e:'🏛️',cost:400,perk:'+25% crop yield',cat:'buildings'},
-  {id:'smokehouse',n:'Smokehouse',e:'🏠',cost:600,perk:'Meat 2x value',cat:'buildings'},
-  {id:'greenhouse',n:'Greenhouse',e:'🌿',cost:800,perk:'Year-round crops',cat:'buildings'},
-  {id:'workshop',n:'Workshop',e:'🔧',cost:700,perk:'Craft items',cat:'buildings'},
-  {id:'watchtower',n:'Watch Tower',e:'🗼',cost:300,perk:'-50% critters',cat:'buildings'},
-  {id:'well',n:'Water Well',e:'⛲',cost:250,perk:'+5 water max/day',cat:'buildings'},
-  {id:'henhouse',n:'Hen House',e:'🐔',cost:350,perk:'Chickens 2x eggs',cat:'buildings'},
+  {id:'barn',      n:'Barn',         e:'🏚️',cost:500, perk:'+50 hay storage',   cat:'buildings',
+   upgrades:[
+    {lv:1,perk:'+50 hay storage',       mats:{wood:15,nails:10},          gold:0},
+    {lv:2,perk:'+100 hay • Animals 10% faster', mats:{wood:25,nails:20,screws:10},  gold:200},
+    {lv:3,perk:'+200 hay • Auto feed animals',  mats:{wood:40,screws:20,concrete:5},gold:500},
+    {lv:4,perk:'+400 hay • 2x animal growth',   mats:{wood:60,steel:5,bolts:10},   gold:1000},
+    {lv:5,perk:'MEGA BARN: infinite hay • 3x growth', mats:{wood:100,steel:15,bolts:20,glass:5},gold:2000},
+  ]},
+  {id:'silo',      n:'Grain Silo',   e:'🏛️',cost:400, perk:'+25% crop yield', cat:'buildings',
+   upgrades:[
+    {lv:1,perk:'+25% crop yield',         mats:{wood:10,stone:15,nails:10},     gold:0},
+    {lv:2,perk:'+50% crop yield',         mats:{wood:20,stone:25,screws:15},    gold:200},
+    {lv:3,perk:'+75% crop yield • auto water', mats:{stone:40,concrete:10,pipe:5},gold:500},
+    {lv:4,perk:'+100% crop yield',        mats:{stone:60,steel:8,pipe:10},      gold:1000},
+    {lv:5,perk:'MEGA SILO: 2x all crop gold', mats:{stone:100,steel:20,concrete:20},gold:2000},
+  ]},
+  {id:'smokehouse',n:'Smokehouse',   e:'🏠',cost:600, perk:'Meat 2x value',   cat:'buildings',
+   upgrades:[
+    {lv:1,perk:'Meat 2x value',           mats:{wood:15,stone:10,nails:15},     gold:0},
+    {lv:2,perk:'Meat 2.5x • Fish 1.5x',  mats:{wood:25,stone:20,screws:20},    gold:300},
+    {lv:3,perk:'Meat 3x • Fish 2x',      mats:{wood:40,stone:30,steel:5},      gold:600},
+    {lv:4,perk:'All food 3x • Gem drops', mats:{stone:50,steel:10,bolts:15},    gold:1200},
+    {lv:5,perk:'PREMIUM: All food 5x + daily gem', mats:{steel:20,glass:10,bolts:25},gold:2500},
+  ]},
+  {id:'greenhouse',n:'Greenhouse',   e:'🌿',cost:800, perk:'Year-round crops', cat:'buildings',
+   upgrades:[
+    {lv:1,perk:'Year-round crops',        mats:{wood:20,glass:10,nails:15},     gold:0},
+    {lv:2,perk:'Year-round • 30% faster', mats:{wood:30,glass:20,screws:20},    gold:400},
+    {lv:3,perk:'2x speed • Rare crops',   mats:{glass:35,wire:10,pipe:8},       gold:800},
+    {lv:4,perk:'3x speed • Auto plant',   mats:{glass:50,steel:8,pipe:15},      gold:1500},
+    {lv:5,perk:'HYDROPONIC: 5x speed • never water', mats:{glass:80,steel:20,pipe:25,wire:20},gold:3000},
+  ]},
+  {id:'workshop',  n:'Workshop',     e:'🔧',cost:700, perk:'Craft items',     cat:'buildings',
+   upgrades:[
+    {lv:1,perk:'Basic crafting',          mats:{wood:15,iron:5,screws:10},      gold:0},
+    {lv:2,perk:'Craft tools • 10% discount', mats:{wood:25,iron:10,bolts:10},   gold:300},
+    {lv:3,perk:'Craft weapons • 20% discount', mats:{iron:20,steel:5,wire:10},  gold:700},
+    {lv:4,perk:'Craft rare items • refine ore', mats:{steel:15,bolts:20,wire:15},gold:1400},
+    {lv:5,perk:'FORGE: craft anything • gems from refining', mats:{steel:30,diamond:3,bolts:30},gold:3000},
+  ]},
+  {id:'watchtower',n:'Watch Tower',  e:'🗼',cost:300, perk:'-50% critters',  cat:'buildings',
+   upgrades:[
+    {lv:1,perk:'-50% critter attacks',    mats:{wood:20,stone:10,nails:15},     gold:0},
+    {lv:2,perk:'-60% critters • alert',   mats:{wood:30,stone:20,screws:15},    gold:150},
+    {lv:3,perk:'-75% critters • trap',    mats:{stone:40,iron:8,wire:15},       gold:400},
+    {lv:4,perk:'-90% critters • auto kill', mats:{stone:50,steel:8,wire:20},    gold:800},
+    {lv:5,perk:'FORTRESS: 0% critters ever', mats:{stone:80,steel:20,bolts:20,wire:30},gold:1800},
+  ]},
+  {id:'well',      n:'Water Well',   e:'⛲',cost:250, perk:'+5 water/day',   cat:'buildings',
+   upgrades:[
+    {lv:1,perk:'+5 water max per day',    mats:{stone:20,clay:10,pipe:5},       gold:0},
+    {lv:2,perk:'+10 water max per day',   mats:{stone:30,clay:20,pipe:10},      gold:150},
+    {lv:3,perk:'+20 water • auto refill', mats:{stone:50,pipe:20,concrete:8},   gold:400},
+    {lv:4,perk:'+35 water • irrigation',  mats:{stone:60,pipe:30,steel:5},      gold:900},
+    {lv:5,perk:'CISTERN: unlimited water', mats:{stone:100,pipe:50,steel:15,concrete:20},gold:2000},
+  ]},
+  {id:'henhouse',  n:'Hen House',    e:'🐔',cost:350, perk:'Chickens 2x eggs', cat:'buildings',
+   upgrades:[
+    {lv:1,perk:'Chickens 2x eggs',        mats:{wood:15,wire:10,nails:10},      gold:0},
+    {lv:2,perk:'All birds 2x • auto collect', mats:{wood:25,wire:20,screws:15}, gold:200},
+    {lv:3,perk:'All birds 3x • rare drops', mats:{wood:40,wire:25,glass:8},     gold:500},
+    {lv:4,perk:'All birds 4x • gem drops', mats:{wood:50,steel:5,wire:30},      gold:1000},
+    {lv:5,perk:'MEGA COOP: 5x all birds + daily rare animal', mats:{wood:80,steel:15,wire:50,glass:15},gold:2200},
+  ]},
 ];
 const TOOLS=[
   {id:'watering_can',n:'Watering Can+',e:'🪣',cost:150,perk:'+5 water max',cat:'tools'},
@@ -903,25 +983,37 @@ const BOSSES=[
   {n:'Ancient Gator',e:'🌊🐊',hp:2000000},
 ];
 const BUILD_MATS=[
-  {id:'wood',n:'Lumber',e:'🪵',desc:'Basic building material. Chop trees or buy from store.'},
-  {id:'stone',n:'Stone',e:'🪨',desc:'Quarried from mining. Used in all upgrades.'},
-  {id:'clay',n:'Clay',e:'🧱',desc:'Found while mining. Needed from Level 2 up.'},
-  {id:'iron',n:'Iron',e:'⚙️',desc:'Rare mine drop. Required from Level 3 up.'},
-  {id:'coal',n:'Coal',e:'⚫',desc:'Mine drop. Powers forges for higher upgrades.'},
-  {id:'diamond',n:'Diamond',e:'💎',desc:'Very rare mine drop. Lv6-10 upgrades only.'},
-  {id:'crystal',n:'Rare Crystal',e:'🔮',desc:'Only drops deep mine. Lv10 only.'},
+  // Basic natural
+  {id:'wood',     n:'Lumber',      e:'🪵', desc:'Basic framing. Chop trees or buy bundles.',      cat:'basic'},
+  {id:'stone',    n:'Stone',       e:'🪨', desc:'Foundation and walls. Mine or quarry.',           cat:'basic'},
+  {id:'clay',     n:'Clay',        e:'🧱', desc:'Bricks and mortar. Mine drop.',                  cat:'basic'},
+  // Hardware
+  {id:'nails',    n:'Nails',       e:'🔩', desc:'Essential for all wood construction.',            cat:'hardware'},
+  {id:'screws',   n:'Screws',      e:'🪛', desc:'Stronger than nails. Mid-level builds.',         cat:'hardware'},
+  {id:'bolts',    n:'Bolts',       e:'⚙️', desc:'Heavy-duty fasteners. High-level structures.',   cat:'hardware'},
+  {id:'wire',     n:'Wire',        e:'🔌', desc:'Electrical and fencing. Workshop builds.',       cat:'hardware'},
+  // Refined
+  {id:'glass',    n:'Glass',       e:'🪟', desc:'Windows and greenhouse panels.',                  cat:'refined'},
+  {id:'concrete', n:'Concrete',    e:'🏗️', desc:'Strong foundations. Home Lv5+ upgrades.',        cat:'refined'},
+  {id:'steel',    n:'Steel Beam',  e:'🔧', desc:'Structural support. High-level only.',           cat:'refined'},
+  {id:'pipe',     n:'Pipe',        e:'🚿', desc:'Plumbing and irrigation systems.',               cat:'refined'},
+  // Rare
+  {id:'iron',     n:'Iron',        e:'🪝', desc:'Forged from mine iron. Needed for metal work.',  cat:'rare'},
+  {id:'coal',     n:'Coal',        e:'⚫', desc:'Fuel for forge and kiln.',                       cat:'rare'},
+  {id:'diamond',  n:'Diamond',     e:'💎', desc:'Cutting tools and luxury finishes.',             cat:'rare'},
+  {id:'crystal',  n:'Crystal',     e:'🔮', desc:'Rare. Deep mine only. Lv10 structures.',        cat:'rare'},
 ];
 const HOME_UPGRADE_COSTS=[
-  {lv:1, gems:50,  mats:{wood:10,stone:5}},
-  {lv:2, gems:100, mats:{wood:20,stone:10,clay:5}},
-  {lv:3, gems:200, mats:{wood:30,stone:20,clay:10,iron:5}},
-  {lv:4, gems:350, mats:{wood:40,stone:30,clay:15,iron:10,coal:5}},
-  {lv:5, gems:500, mats:{wood:50,stone:40,clay:20,iron:15,coal:10}},
-  {lv:6, gems:750, mats:{wood:60,stone:50,clay:25,iron:20,coal:15,diamond:3}},
-  {lv:7, gems:1000,mats:{wood:75,stone:60,clay:30,iron:25,coal:20,diamond:6}},
-  {lv:8, gems:1500,mats:{wood:100,stone:75,clay:40,iron:30,coal:25,diamond:10}},
-  {lv:9, gems:2000,mats:{wood:125,stone:100,clay:50,iron:40,coal:30,diamond:15}},
-  {lv:10,gems:3000,mats:{wood:150,stone:125,clay:75,iron:50,coal:40,diamond:25,crystal:5}},
+  {lv:1, gems:50,  gold:500,   mats:{wood:15,nails:10,stone:5}},
+  {lv:2, gems:100, gold:1000,  mats:{wood:25,nails:20,screws:10,stone:15,clay:5}},
+  {lv:3, gems:200, gold:2000,  mats:{wood:40,screws:20,stone:25,clay:15,glass:5,nails:15}},
+  {lv:4, gems:350, gold:3500,  mats:{wood:50,screws:30,concrete:10,iron:8,bolts:10,pipe:5}},
+  {lv:5, gems:500, gold:5000,  mats:{wood:60,concrete:20,steel:5,iron:15,bolts:15,wire:10}},
+  {lv:6, gems:750, gold:8000,  mats:{wood:75,steel:10,concrete:30,bolts:20,glass:15,wire:15,diamond:2}},
+  {lv:7, gems:1000,gold:12000, mats:{wood:100,steel:20,bolts:30,glass:25,wire:20,iron:25,diamond:5}},
+  {lv:8, gems:1500,gold:18000, mats:{steel:30,concrete:50,bolts:40,glass:35,wire:30,diamond:10,pipe:20}},
+  {lv:9, gems:2000,gold:25000, mats:{steel:50,concrete:75,bolts:60,glass:50,wire:40,diamond:18,crystal:3}},
+  {lv:10,gems:3000,gold:40000, mats:{steel:80,concrete:100,bolts:80,glass:75,wire:60,diamond:30,crystal:8}},
 ];
 const FAKE_PLAYERS=[
   {n:'WildRootsCo',e:'👨🏽',lv:67,home:'van',zone:1,gold:158400},
@@ -940,7 +1032,8 @@ var G={
   vip:0,gemsSpent:0,acres:4,
   plots:[],animals:[],buildings:[],inventory:{},minerals:{},
   fishCount:0,totalHarvests:0,totalHunts:0,goldEarned:0,daysPlayed:1,
-  mats:{wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0},
+  mats:{wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0,nails:0,screws:0,bolts:0,wire:0,glass:0,concrete:0,steel:0,pipe:0},
+  buildingLvs:{},
   loginStreak:1,dailyClaimed:false,
   huntLicense:false,mineUnlocked:false,
   alliance:null,allianceRank:0,allianceContrib:0,allianceWeeklyContrib:0,
@@ -961,13 +1054,34 @@ function ge(id){return document.getElementById(id);}
 function st(id,v){var e=ge(id);if(e)e.textContent=v;}
 
 // SAVE/LOAD
-function saveG(){try{localStorage.setItem('th53',JSON.stringify(G));}catch(e){}}
-function loadG(){try{var d=localStorage.getItem('th53');if(d)Object.assign(G,JSON.parse(d));}catch(e){}}
+function saveG(){
+  try{
+    if(isNaN(G.gold))G.gold=50;
+    if(isNaN(G.gems))G.gems=0;
+    if(isNaN(G.stamina))G.stamina=G.staminaMax||100;
+    if(isNaN(G.water))G.water=G.waterMax||10;
+    localStorage.setItem('th54',JSON.stringify(G));
+  }catch(e){}
+}
+function loadG(){
+  try{
+    var d=localStorage.getItem('th54');
+    if(d)Object.assign(G,JSON.parse(d));
+    // Migrate: ensure all new material keys exist
+    if(!G.mats)G.mats={};
+    var _allM=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+    _allM.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
+    if(!G.buildingLvs)G.buildingLvs={};
+    // Set default buildingLvs for owned buildings
+    (G.buildings||[]).forEach(function(id){if(!G.buildingLvs[id])G.buildingLvs[id]=1;});
+  }catch(e){}
+}
 function initPlots(){G.plots=[];for(var i=0;i<G.acres*4;i++)G.plots.push({crop:null,planted:0,growTime:0,watered:false});}
 function initMine(){G.mineField=[];for(var i=0;i<25;i++)G.mineField.push({dug:false,mineral:null});}
 
 // HUD
 function updateHUD(){
+  if(isNaN(G.gold))G.gold=50;
   st('h-gold',G.gold+'g');st('h-gems',G.gems);st('h-lv','Lv'+G.lv);
   st('h-st',G.stamina+'/'+G.staminaMax);st('h-wt',G.water+'/'+G.waterMax);
   var seMap={Spring:'🌸',Summer:'☀️',Fall:'🍂',Winter:'❄️'};
@@ -1157,7 +1271,9 @@ function harvest(idx){
   G.gold+=g;G.goldEarned+=g;G.xp+=c.xp;G.totalHarvests++;G.qp.harv++;
   G.plots[idx]={crop:null,planted:0,growTime:0,watered:false};
   // Tree crops also yield lumber
-  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
   var woodGain=0;
   if(c.cat==='trees'){woodGain=3+Math.floor(Math.random()*3);G.mats.wood=(G.mats.wood||0)+woodGain;}
   else if(Math.random()<0.15){woodGain=1;G.mats.wood=(G.mats.wood||0)+1;}
@@ -1272,209 +1388,254 @@ function removeAnimal(i){if(confirm('Remove animal?')){G.animals.splice(i,1);ren
 
 // BUILDS
 function renderBuilds(){
-  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  try{
+  if(!G.mats)G.mats={};
+  var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+  _allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
+  if(!G.buildingLvs)G.buildingLvs={};
   var p=ge('builds-panel');if(!p)return;
-  // Check which sub-tab is active
   var active=document.querySelector('#builds-tabs .tabbtn.on');
   var sub=active?active.dataset.bld:'upgrade';
   if(sub==='upgrade')p.innerHTML=renderBuildsUpgrade();
   else if(sub==='shop')p.innerHTML=renderMatShop();
   else if(sub==='buildings')p.innerHTML=renderBuildingsList();
+  }catch(e){
+    var p2=ge('builds-panel');
+    if(p2)p2.innerHTML='<div style="padding:14px;color:#ef9a9a;font-size:12px;">Error: '+e.message+'<br>'+e.stack.split('\\n')[1]+'</div>';
+    var eb=ge('err-box');if(eb){eb.style.display='block';eb.textContent='renderBuilds: '+e.message;}
+  }
 }
 
 function renderBuildsUpgrade(){
-  if(!G.home)return'<div style="text-align:center;padding:24px;color:#555;">Choose a home first</div>';
-  var upg=HOME_UPGRADES[G.home];
-  var homeEmoji={cottage:'🏡',cabin:'🛖',van:'🚐',ranch:'🏚️',modern:'🏗️'}[G.home]||'🏠';
-  var nextLv=G.homeLv+1;
-  var nextCost=HOME_UPGRADE_COSTS[nextLv-1];
-  var canUp=G.homeLv<10&&nextCost&&G.gems>=nextCost.gems&&hasMats(nextCost.mats);
-  var html='<div class="upg-card">';
-  // Header with progress stars
-  html+='<div class="upg-hdr"><div class="upg-ico">'+homeEmoji+'</div><div style="flex:1;">';
-  html+='<div class="upg-nm">'+hl(G.home)+' — Level '+G.homeLv+'/10</div>';
-  html+='<div style="display:flex;gap:2px;margin-top:4px;">';
-  for(var s=1;s<=10;s++){
-    html+='<div style="width:22px;height:6px;border-radius:3px;background:'+(s<=G.homeLv?'var(--hay)':'rgba(255,255,255,.1)')+'"></div>';
-  }
-  html+='</div></div></div>';
-
-  // Materials on hand — compact grid
-  html+='<div style="background:rgba(0,0,0,.25);border:1px solid var(--bdr);border-radius:10px;padding:9px;margin-bottom:9px;">';
-  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
-  html+='<div style="font-size:11px;color:var(--hay);font-weight:700;">🎒 YOUR MATERIALS</div>';
-  html+='<button class="btn bsm" style="font-size:10px;background:rgba(255,179,0,.15);color:var(--hay);" data-bsub="shop" onclick="bldTab(null,this.dataset.bsub)">+ Buy More</button>';
-  html+='</div>';
-  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">';
-  BUILD_MATS.forEach(function(m){
-    var have=G.mats[m.id]||0;
-    var needed=nextCost?nextCost.mats[m.id]||0:0;
-    var ok=have>=needed;
-    html+='<div style="background:rgba(0,0,0,.3);border:1px solid '+(have>0?'rgba(67,160,71,.3)':'rgba(255,255,255,.05)')+';border-radius:7px;padding:5px 3px;text-align:center;">';
-    html+='<div style="font-size:16px;">'+m.e+'</div>';
-    html+='<div style="font-size:9px;color:#aaa;">'+m.n+'</div>';
-    html+='<div style="font-size:13px;font-weight:900;color:'+(have>0?'#8BC34A':'#444')+';">'+have+'</div>';
-    if(needed>0)html+='<div style="font-size:9px;color:'+(ok?'#8BC34A':'#ef9a9a')+';">need '+needed+'</div>';
-    html+='</div>';
-  });
-  html+='</div></div>';
-
-  // Next upgrade requirements box
-  if(G.homeLv<10&&nextCost){
-    html+='<div style="background:rgba(124,77,255,.08);border:1px solid rgba(124,77,255,.25);border-radius:10px;padding:9px;margin-bottom:9px;">';
-    html+='<div style="font-size:11px;color:var(--geml);font-weight:700;margin-bottom:7px;">⬆️ UPGRADE TO LEVEL '+nextLv+' REQUIRES:</div>';
-    html+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">';
-    // Gems requirement
-    var gemOk=G.gems>=nextCost.gems;
-    html+='<div style="padding:4px 9px;border-radius:7px;font-size:12px;font-weight:700;background:rgba(124,77,255,.2);border:1px solid rgba(124,77,255,.3);color:'+(gemOk?'var(--geml)':'#ef9a9a')+';">💎 '+nextCost.gems+(gemOk?' ✅':' — need '+(nextCost.gems-G.gems)+' more')+'</div>';
-    // Material requirements
-    for(var k in nextCost.mats){
-      var need=nextCost.mats[k],have=G.mats[k]||0,ok2=have>=need;
-      var m2=BUILD_MATS.find(function(x){return x.id===k;});
-      html+='<div style="padding:4px 9px;border-radius:7px;font-size:12px;font-weight:700;background:rgba(0,0,0,.25);border:1px solid '+(ok2?'rgba(67,160,71,.4)':'rgba(229,57,53,.4)')+';color:'+(ok2?'#8BC34A':'#ef9a9a')+'">'+(m2?m2.e:k)+' '+need+(ok2?' ✅':' ('+have+'/'+ need+')')+'</div>';
-    }
-    html+='</div>';
-    var miss=getMissingMats(nextCost.mats);
-    if(canUp){
-      html+='<button class="btn bgn bfw" onclick="upgradeHome()">⬆️ UPGRADE TO LEVEL '+nextLv+' NOW! 🎉</button>';
-    } else {
-      if(!gemOk)html+='<div style="font-size:11px;color:#ef9a9a;margin-bottom:4px;">⚠️ Need '+(nextCost.gems-G.gems)+' more gems — <button class="btn bge bsm" style="font-size:10px;" onclick="navTo(this.dataset.t)" data-t="gems">Get Gems 💎</button></div>';
-      if(miss.length)html+='<div style="font-size:11px;color:#ef9a9a;margin-bottom:4px;">⚠️ Missing materials — <button class="btn bsm" style="font-size:10px;background:rgba(255,179,0,.2);color:var(--hay);" data-bsub="shop" onclick="bldTab(null,this.dataset.bsub)">Buy in Shop 🛒</button></div>';
-    }
-    html+='</div>';
-  } else if(G.homeLv>=10){
-    html+='<div style="text-align:center;padding:14px;background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.3);border-radius:10px;"><div style="font-size:28px;">🌟</div><div style="font-size:14px;font-weight:900;color:var(--hay);margin-top:5px;">MAX LEVEL REACHED!</div></div>';
-  }
-
-  // Full perk path
-  if(upg){
-    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin:10px 0 6px;">📊 FULL PERK PATH</div>';
-    html+='<div class="upg-perks">';
-    upg.upgrades.forEach(function(u){
-      var done=G.homeLv>=u.lv,cur=G.homeLv===u.lv-1;
-      var c2=HOME_UPGRADE_COSTS[u.lv-1];
-      var matStr=c2?Object.entries(c2.mats).map(function(e){var m2=BUILD_MATS.find(function(x){return x.id===e[0];});return(m2?m2.e:e[0])+e[1];}).join(' '):'';
-      html+='<div class="upg-perk'+(done?' done':cur?' cur':'')+'">'
-        +'<div class="upg-lbl">Lv'+u.lv+'</div>'
-        +'<div style="flex:1;">'
-        +'<div style="font-size:12px;color:'+(done?'#8BC34A':cur?'var(--hay)':'#ccc')+';">'+u.t+'</div>'
-        +'<div style="font-size:10px;color:var(--geml);margin-top:1px;">⚡ '+u.boost+'</div>'
-        +'<div style="font-size:10px;color:#555;margin-top:1px;">'+(c2?'💎'+c2.gems+' '+matStr:'')+'</div>'
-        +'</div>'
-        +(done?'<div>✅</div>':'')
-        +'</div>';
+  try{
+    if(!G.home)return '<div style="padding:20px;color:#555;text-align:center;">Choose a home first</div>';
+    var upg=HOME_UPGRADES[G.home]||{upgrades:[]};
+    var emoji={cottage:'🏡',cabin:'🛖',van:'🚐',ranch:'🏚️',modern:'🏗️'}[G.home]||'🏠';
+    var nextLv=G.homeLv+1;
+    var nc=HOME_UPGRADE_COSTS[nextLv-1]||null;
+    var html='<div class="card">';
+    // Header
+    html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
+    html+='<div style="font-size:44px;">'+emoji+'</div>';
+    html+='<div><div style="font-size:16px;font-weight:900;color:var(--hay);">'+hl(G.home)+'</div>';
+    html+='<div style="font-size:12px;color:#8BC34A;">Level '+G.homeLv+' / 10</div>';
+    html+='<div style="display:flex;gap:2px;margin-top:5px;">';
+    for(var s=1;s<=10;s++)html+='<div style="width:20px;height:5px;border-radius:2px;background:'+(s<=G.homeLv?'var(--hay)':'rgba(255,255,255,.1)')+'"></div>';
+    html+='</div></div></div>';
+    // Materials you have
+    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">🎒 Your Materials</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:10px;">';
+    var mkeys=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+    var mEmoji={wood:'🪵',stone:'🪨',clay:'🧱',nails:'🔩',screws:'🪛',bolts:'⚙️',wire:'🔌',glass:'🪟',concrete:'🏗️',steel:'🔧',pipe:'🚿',iron:'🪝',coal:'⚫',diamond:'💎',crystal:'🔮'};
+    mkeys.forEach(function(k){
+      var have=G.mats[k]||0;
+      var needed=nc&&nc.mats&&nc.mats[k]?nc.mats[k]:0;
+      var ok=have>=needed;
+      html+='<div style="text-align:center;background:rgba(0,0,0,.3);border:1px solid '+(needed>0?(ok?'rgba(67,160,71,.4)':'rgba(229,57,53,.4)'):'rgba(255,255,255,.05)')+';border-radius:7px;padding:4px 2px;">';
+      html+='<div style="font-size:14px;">'+mEmoji[k]+'</div>';
+      html+='<div style="font-size:11px;font-weight:700;color:'+(have>0?'#8BC34A':'#444')+';">'+have+'</div>';
+      if(needed>0)html+='<div style="font-size:8px;color:'+(ok?'#8BC34A':'#ef9a9a')+';">'+needed+'</div>';
+      html+='</div>';
     });
     html+='</div>';
-  }
-  html+='</div>';
-  return html;
+    // Next upgrade cost
+    if(G.homeLv<10&&nc){
+      html+='<div style="background:rgba(124,77,255,.1);border:1px solid rgba(124,77,255,.3);border-radius:10px;padding:10px;margin-bottom:10px;">';
+      html+='<div style="font-size:12px;font-weight:700;color:var(--geml);margin-bottom:7px;">⬆️ Next: Level '+nextLv+'</div>';
+      var gemOk=G.gems>=(nc.gems||0);
+      var goldOk=G.gold>=(nc.gold||0);
+      html+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">';
+      html+='<div style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid '+(gemOk?'rgba(67,160,71,.4)':'rgba(229,57,53,.4)')+';color:'+(gemOk?'#8BC34A':'#ef9a9a')+';">💎'+(nc.gems||0)+'</div>';
+      if(nc.gold)html+='<div style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid '+(goldOk?'rgba(67,160,71,.4)':'rgba(229,57,53,.4)')+';color:'+(goldOk?'#8BC34A':'#ef9a9a')+';">💰'+nc.gold.toLocaleString()+'g</div>';
+      if(nc.mats){Object.keys(nc.mats).forEach(function(k){
+        var need=nc.mats[k],have=G.mats[k]||0,ok2=have>=need;
+        html+='<div style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid '+(ok2?'rgba(67,160,71,.4)':'rgba(229,57,53,.4)')+';color:'+(ok2?'#8BC34A':'#ef9a9a')+';">'+(mEmoji[k]||k)+' '+need+'</div>';
+      });}
+      html+='</div>';
+      var canUp=gemOk&&goldOk&&(!nc.mats||Object.keys(nc.mats).every(function(k){return (G.mats[k]||0)>=(nc.mats[k]||0);}));
+      if(canUp){
+        html+='<button class="btn bgn bfw" onclick="upgradeHome()">⬆️ Upgrade to Level '+nextLv+'!</button>';
+      } else {
+        html+='<button class="btn bfw" style="background:rgba(255,255,255,.05);opacity:.5;" disabled>⬆️ Upgrade to Level '+nextLv+'</button>';
+        html+='<div style="text-align:center;margin-top:5px;"><button class="btn bsm" style="font-size:10px;background:rgba(255,179,0,.15);color:var(--hay);" data-bsub="shop" onclick="bldTab(null,this.dataset.bsub)">🛒 Buy Materials</button></div>';
+      }
+      html+='</div>';
+    } else if(G.homeLv>=10){
+      html+='<div style="text-align:center;padding:14px;background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.3);border-radius:10px;font-weight:900;color:var(--hay);">🌟 MAX LEVEL!</div>';
+    }
+    // Perk path
+    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin:10px 0 6px;">📊 All Perks</div>';
+    (upg.upgrades||[]).forEach(function(u){
+      var done=G.homeLv>=u.lv;
+      html+='<div style="display:flex;gap:8px;padding:7px 9px;margin-bottom:3px;background:rgba(0,0,0,.2);border-left:3px solid '+(done?'#8BC34A':'#333')+';border-radius:0 7px 7px 0;">';
+      html+='<div style="font-size:11px;font-weight:800;color:'+(done?'#8BC34A':'#555');+'min-width:30px;">Lv'+u.lv+'</div>';
+      html+='<div style="font-size:11px;color:'+(done?'#ccc':'#555');+'flex:1;">'+u.t+'</div>';
+      if(done)html+='<div>✅</div>';
+      html+='</div>';
+    });
+    html+='</div>';
+    return html;
+  }catch(e){return '<div style="padding:14px;color:#ef9a9a;font-size:12px;word-break:break-all;">Upgrade error: '+e.message+'</div>';}
 }
-
 function renderMatShop(){
-  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
-  var html='';
-
-  // Current stock banner
-  html+='<div style="background:linear-gradient(135deg,rgba(139,95,10,.15),rgba(45,27,14,.9));border:1px solid rgba(212,168,71,.3);border-radius:12px;padding:11px;margin-bottom:10px;">';
-  html+='<div style="font-size:12px;font-weight:800;color:var(--hay);margin-bottom:7px;">🎒 YOUR CURRENT STOCK</div>';
-  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">';
-  BUILD_MATS.forEach(function(m){
-    var have=G.mats[m.id]||0;
-    html+='<div style="text-align:center;background:rgba(0,0,0,.3);border-radius:7px;padding:6px 3px;">'
-      +'<div style="font-size:18px;">'+m.e+'</div>'
-      +'<div style="font-size:10px;color:#aaa;">'+m.n+'</div>'
-      +'<div style="font-size:14px;font-weight:900;color:'+(have>0?'#8BC34A':'#444')+';">'+have+'</div>'
-      +'</div>';
-  });
-  html+='</div></div>';
-
-  // Bundle packs — great value
-  html+='<div style="font-size:11px;color:var(--hay);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">⚡ BUNDLE PACKS — Best Value</div>';
-
-  var bundles=[
-    {name:'Starter Bundle',desc:'Perfect for Lv1-3 upgrades',emoji:'📦',price:250,items:{wood:40,stone:30,clay:10}},
-    {name:'Builder Pack',desc:'Lv4-6 upgrades covered',emoji:'🏗️',price:600,items:{wood:80,stone:60,clay:25,iron:15,coal:10}},
-    {name:'Master Pack',desc:'Everything for Lv7-9',emoji:'👑',price:1200,items:{wood:150,stone:120,clay:50,iron:35,coal:30,diamond:8}},
-    {name:'MAX Pack',desc:'Full Lv10 upgrade materials',emoji:'🌟',price:2500,items:{wood:200,stone:175,clay:90,iron:65,coal:55,diamond:30,crystal:5}},
-    {name:'Gem Starter',desc:'Rare materials fast',emoji:'💎',price:50,currency:'gems',items:{iron:10,coal:8,diamond:3}},
-    {name:'Crystal Pack',desc:'Deep mine materials',emoji:'🔮',price:150,currency:'gems',items:{iron:20,coal:15,diamond:8,crystal:3}},
-  ];
-
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;">';
-  bundles.forEach(function(b,idx){
-    var isGem=b.currency==='gems';
-    var can=isGem?(G.gems>=b.price):(G.gold>=b.price);
-    var matList=Object.entries(b.items).map(function(e){
-      var m=BUILD_MATS.find(function(x){return x.id===e[0];});
-      return(m?m.e:e[0])+'×'+e[1];
-    }).join(' ');
-    html+='<div style="background:linear-gradient(135deg,'+(isGem?'rgba(124,77,255,.12)':'rgba(45,27,14,.8)')+',rgba(20,40,20,.6));border:1px solid '+(isGem?'rgba(124,77,255,.3)':'rgba(212,168,71,.2)')+';border-radius:12px;padding:11px;">';
-    html+='<div style="font-size:28px;margin-bottom:4px;">'+b.emoji+'</div>';
-    html+='<div style="font-size:12px;font-weight:800;color:var(--hay);">'+b.name+'</div>';
-    html+='<div style="font-size:10px;color:#aaa;margin:2px 0;">'+b.desc+'</div>';
-    html+='<div style="font-size:10px;color:#8BC34A;margin:4px 0;line-height:1.5;">'+matList+'</div>';
-    html+='<button class="btn '+(can?(isGem?'bge':'bg'):'')+'  bsm bfw" style="margin-top:5px;'+(can?'':'opacity:.45;background:rgba(255,255,255,.05);')+'" data-idx="'+idx+'" onclick="buyBundle(+this.dataset.idx)" '+(can?'':' disabled')+'>'+(isGem?'💎':'💰')+' '+(isGem?b.price+'💎':b.price+'g')+'</button>';
-    html+='</div>';
-  });
-  html+='</div>';
-  window._shopBundles=bundles;
-
-  // Individual materials
-  html+='<div style="font-size:11px;color:var(--hay);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;">🪵 BUY INDIVIDUAL MATERIALS</div>';
-
-  var matPacks=[
-    {id:'wood',  packs:[{qty:10,g:55},{qty:25,g:120},{qty:50,g:220},{qty:100,g:400}]},
-    {id:'stone', packs:[{qty:10,g:65},{qty:25,g:140},{qty:50,g:250},{qty:100,g:450}]},
-    {id:'clay',  packs:[{qty:5,g:80},{qty:15,g:210},{qty:30,g:380}]},
-    {id:'iron',  packs:[{qty:3,g:70},{qty:10,g:200},{qty:20,g:360}]},
-    {id:'coal',  packs:[{qty:3,g:60},{qty:10,g:180},{qty:20,g:320}]},
-    {id:'diamond',packs:[{qty:1,g:350},{qty:3,g:950},{qty:1,gems:75},{qty:5,gems:300}]},
-    {id:'crystal',packs:[{qty:1,g:800},{qty:1,gems:150},{qty:3,gems:400}]},
-  ];
-
-  matPacks.forEach(function(mp){
-    var m=BUILD_MATS.find(function(x){return x.id===mp.id;});
-    if(!m)return;
-    var have=G.mats[mp.id]||0;
-    html+='<div style="background:rgba(0,0,0,.2);border:1px solid var(--bdr);border-radius:11px;padding:10px;margin-bottom:7px;">';
-    html+='<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;">';
-    html+='<div style="font-size:28px;">'+m.e+'</div>';
-    html+='<div><div style="font-size:13px;font-weight:700;color:var(--hay);">'+m.n+'</div><div style="font-size:11px;color:#8BC34A;">In stock: '+have+'</div></div>';
-    html+='<div style="font-size:11px;color:#aaa;margin-left:auto;">'+m.desc+'</div>';
-    html+='</div>';
-    html+='<div style="display:flex;gap:5px;flex-wrap:wrap;">';
-    mp.packs.forEach(function(pk,pi){
-      var isGem=!!pk.gems;
-      var cost=isGem?pk.gems:pk.g;
-      var can=isGem?(G.gems>=cost):(G.gold>=cost);
-      html+='<button class="btn '+(can?(isGem?'bge':'bg'):'')+'  bsm" style="'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-mid="'+mp.id+'" data-qty="'+pk.qty+'" data-cost="'+cost+'" data-gem="'+(isGem?1:0)+'" onclick="buyMatPack(this.dataset.mid,+this.dataset.qty,+this.dataset.cost,+this.dataset.gem)" '+(can?'':' disabled')+'>×'+pk.qty+' '+(isGem?'💎'+cost:cost+'g')+'</button>';
+  try{
+    if(!G.mats)G.mats={};
+    var _m=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+    _m.forEach(function(k){if(!G.mats[k])G.mats[k]=0;});
+    var mE={wood:'🪵',stone:'🪨',clay:'🧱',nails:'🔩',screws:'🪛',bolts:'⚙️',wire:'🔌',glass:'🪟',concrete:'🏗️',steel:'🔧',pipe:'🚿',iron:'🪝',coal:'⚫',diamond:'💎',crystal:'🔮'};
+    var mN={wood:'Lumber',stone:'Stone',clay:'Clay',nails:'Nails',screws:'Screws',bolts:'Bolts',wire:'Wire',glass:'Glass',concrete:'Concrete',steel:'Steel',pipe:'Pipe',iron:'Iron',coal:'Coal',diamond:'Diamond',crystal:'Crystal'};
+    var html='';
+    // Stock
+    html+='<div style="background:rgba(139,95,10,.12);border:1px solid rgba(212,168,71,.3);border-radius:12px;padding:10px;margin-bottom:10px;">';
+    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:7px;">🎒 Your Stock</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;">';
+    _m.forEach(function(k){
+      var have=G.mats[k]||0;
+      html+='<div style="text-align:center;background:rgba(0,0,0,.3);border-radius:6px;padding:5px 2px;border:1px solid '+(have>0?'rgba(67,160,71,.3)':'rgba(255,255,255,.04)')+'">';
+      html+='<div style="font-size:14px;">'+mE[k]+'</div>';
+      html+='<div style="font-size:9px;color:#888;">'+mN[k]+'</div>';
+      html+='<div style="font-size:12px;font-weight:900;color:'+(have>0?'#8BC34A':'#333')+';">'+have+'</div>';
+      html+='</div>';
     });
     html+='</div></div>';
-  });
-
-  return html;
-}
-
-function renderBuildingsList(){
-  var html='';
-  if(!G.buildings||!G.buildings.length){
-    html='<div style="text-align:center;padding:28px;color:#555;"><div style="font-size:44px;margin-bottom:9px;">🏚️</div><div>No buildings yet</div><div style="font-size:11px;margin-top:5px;">Buy from Store → Buildings</div></div>';
-  } else {
-    html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-    html+=G.buildings.map(function(id){
-      var b=BUILDINGS.find(function(x){return x.id===id;});if(!b)return'';
-      return '<div class="card" style="padding:12px;text-align:center;">'
-        +'<div style="font-size:36px;margin-bottom:5px;">'+b.e+'</div>'
-        +'<div style="font-size:12px;font-weight:700;color:var(--hay);">'+b.n+'</div>'
-        +'<div style="font-size:10px;color:#aaa;margin:3px 0;">Active</div>'
-        +'<div style="font-size:11px;color:#8BC34A;">✅ '+b.perk+'</div>'
-        +'</div>';
-    }).join('');
+    // Bundles
+    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;letter-spacing:1px;margin-bottom:7px;">📦 BUNDLE PACKS</div>';
+    var bundles=[
+      {n:'Framing Pack', e:'🪵',p:400,  d:'Home Lv1-2 basics',items:{wood:50,stone:30,nails:40,screws:20}},
+      {n:'Hardware Kit', e:'🔩',p:600,  d:'All fasteners stocked',items:{nails:100,screws:80,bolts:40,wire:30}},
+      {n:'Builder Pack', e:'🏗️',p:1200, d:'Home Lv3-4 + buildings',items:{wood:80,stone:60,nails:60,screws:40,glass:20,bolts:25,clay:20}},
+      {n:'Glass & Pipe', e:'🪟',p:1800, d:'Greenhouse & Well upgrades',items:{glass:50,pipe:40,concrete:20,wire:30}},
+      {n:'Contractor',   e:'👷',p:3500, d:'Home Lv5-6 power move',items:{wood:120,concrete:40,steel:20,bolts:60,wire:40,glass:35,pipe:20}},
+      {n:'Master Build', e:'👑',p:7500, d:'Home Lv7-8 top tier',items:{steel:60,concrete:80,bolts:80,glass:55,wire:55,pipe:45,iron:40}},
+      {n:'MAX Bundle',   e:'🌟',p:15000,d:'Home Lv9-10 final push',items:{steel:100,concrete:120,bolts:100,glass:90,wire:80,pipe:65,diamond:25,crystal:8}},
+      {n:'Gem Steel',    e:'⚡',p:75,   d:'Refined mats fast',items:{steel:25,concrete:25,glass:20,bolts:25,wire:20},gem:true},
+      {n:'Crystal Pack', e:'🔮',p:200,  d:'Endgame Lv8-10',items:{steel:50,diamond:15,crystal:8,bolts:50,glass:40},gem:true},
+    ];
+    window._bundles=bundles;
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;">';
+    bundles.forEach(function(b,i){
+      var isGem=!!b.gem;
+      var can=isGem?G.gems>=b.p:G.gold>=b.p;
+      var matStr=Object.keys(b.items).map(function(k){return mE[k]+'×'+b.items[k];}).join(' ');
+      html+='<div style="background:rgba(0,0,0,.3);border:1px solid '+(isGem?'rgba(124,77,255,.3)':'rgba(212,168,71,.2)')+';border-radius:11px;padding:11px;">';
+      html+='<div style="font-size:26px;margin-bottom:4px;">'+b.e+'</div>';
+      html+='<div style="font-size:12px;font-weight:800;color:var(--hay);">'+b.n+'</div>';
+      html+='<div style="font-size:10px;color:#aaa;margin:2px 0;">'+b.d+'</div>';
+      html+='<div style="font-size:10px;color:#8BC34A;margin:4px 0;line-height:1.5;">'+matStr+'</div>';
+      html+='<button class="btn '+(can?(isGem?'bge':'bg'):'')+'  bsm bfw" style="margin-top:5px;'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-bi="'+i+'" onclick="buyBndl(+this.dataset.bi)" '+(can?'':'disabled')+'>'+(isGem?'💎':'💰')+b.p+(isGem?'💎':'g')+'</button>';
+      html+='</div>';
+    });
     html+='</div>';
-  }
-  // Add building shop shortcut
-  html+='<div style="margin-top:10px;"><button class="btn bg bfw" onclick="navTo(this.dataset.t)" data-t="store">🏪 Buy Buildings from Store →</button></div>';
-  return html;
+    // Individual mats
+    html+='<div style="font-size:11px;color:var(--hay);font-weight:700;letter-spacing:1px;margin-bottom:7px;">🛒 INDIVIDUAL MATERIALS</div>';
+    var indiv=[
+      {k:'wood',    packs:[{q:20,p:120},{q:50,p:280},{q:100,p:500}]},
+      {k:'stone',   packs:[{q:20,p:140},{q:50,p:310},{q:100,p:560}]},
+      {k:'clay',    packs:[{q:10,p:160},{q:25,p:360},{q:50,p:650}]},
+      {k:'nails',   packs:[{q:20,p:100},{q:50,p:220},{q:100,p:400}]},
+      {k:'screws',  packs:[{q:15,p:130},{q:40,p:300},{q:80,p:540}]},
+      {k:'bolts',   packs:[{q:10,p:180},{q:25,p:420},{q:50,p:750}]},
+      {k:'wire',    packs:[{q:10,p:150},{q:25,p:340},{q:50,p:600}]},
+      {k:'glass',   packs:[{q:5,p:350},{q:15,p:900},{q:1,p:35,gem:true},{q:10,p:250,gem:true}]},
+      {k:'concrete',packs:[{q:10,p:400},{q:25,p:900},{q:1,p:45,gem:true},{q:10,p:380,gem:true}]},
+      {k:'steel',   packs:[{q:5,p:600},{q:15,p:1600},{q:1,p:70,gem:true},{q:10,p:600,gem:true}]},
+      {k:'pipe',    packs:[{q:5,p:280},{q:15,p:700},{q:30,p:1200}]},
+      {k:'iron',    packs:[{q:5,p:200},{q:15,p:540},{q:30,p:980}]},
+      {k:'coal',    packs:[{q:5,p:180},{q:15,p:480},{q:30,p:850}]},
+      {k:'diamond', packs:[{q:1,p:600},{q:3,p:1600},{q:1,p:100,gem:true},{q:5,p:450,gem:true}]},
+      {k:'crystal', packs:[{q:1,p:1200},{q:1,p:220,gem:true},{q:3,p:580,gem:true}]},
+    ];
+    window._indiv=indiv;
+    indiv.forEach(function(item,ri){
+      var have=G.mats[item.k]||0;
+      html+='<div style="background:rgba(0,0,0,.2);border:1px solid var(--bdr);border-radius:10px;padding:9px;margin-bottom:6px;">';
+      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">';
+      html+='<div style="font-size:24px;">'+mE[item.k]+'</div>';
+      html+='<div><div style="font-size:13px;font-weight:700;color:var(--hay);">'+mN[item.k]+'</div>';
+      html+='<div style="font-size:11px;color:#8BC34A;">Have: '+have+'</div></div></div>';
+      html+='<div style="display:flex;gap:5px;flex-wrap:wrap;">';
+      item.packs.forEach(function(pk,pi){
+        var isG=!!pk.gem;
+        var can=isG?G.gems>=pk.p:G.gold>=pk.p;
+        html+='<button class="btn '+(can?(isG?'bge':'bg'):'')+'  bsm" style="'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-ri="'+ri+'" data-pi="'+pi+'" onclick="buyIndiv(+this.dataset.ri,+this.dataset.pi)" '+(can?'':'disabled')+'>×'+pk.q+' '+(isG?'💎'+pk.p:pk.p+'g')+'</button>';
+      });
+      html+='</div></div>';
+    });
+    return html;
+  }catch(e){return '<div style="padding:14px;color:#ef9a9a;font-size:12px;word-break:break-all;">Shop error: '+e.message+'</div>';}
+}
+function renderBuildingsList(){
+  try{
+    if(!G.buildingLvs)G.buildingLvs={};
+    if(!G.mats)G.mats={};
+    var _m=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+    _m.forEach(function(k){if(!G.mats[k])G.mats[k]=0;});
+    var mE={wood:'🪵',stone:'🪨',clay:'🧱',nails:'🔩',screws:'🪛',bolts:'⚙️',wire:'🔌',glass:'🪟',concrete:'🏗️',steel:'🔧',pipe:'🚿',iron:'🪝',coal:'⚫',diamond:'💎',crystal:'🔮'};
+    if(!G.buildings||!G.buildings.length){
+      return '<div style="text-align:center;padding:28px;color:#555;"><div style="font-size:44px;">🏚️</div><div style="margin-top:9px;">No buildings yet</div><div style="font-size:11px;margin-top:5px;">Buy from Store → Buildings</div></div><button class="btn bg bfw" style="margin-top:8px;" data-t="store" onclick="navTo(this.dataset.t)">🏪 Buy Buildings →</button>';
+    }
+    var html='';
+    G.buildings.forEach(function(id){
+      var b=BUILDINGS.find(function(x){return x.id===id;});
+      if(!b)return;
+      var upgs=b.upgrades||[];
+      var curLv=Math.max(1,Math.min(upgs.length,G.buildingLvs[id]||1));
+      var maxed=curLv>=upgs.length;
+      var curUpg=upgs[curLv-1]||{perk:b.perk,mats:{},gold:0};
+      var nextUpg=(!maxed&&upgs[curLv])||null;
+      var canUp=nextUpg&&(nextUpg.gold===0||G.gold>=nextUpg.gold)&&Object.keys(nextUpg.mats||{}).every(function(k){return (G.mats[k]||0)>=(nextUpg.mats[k]||0);});
+      html+='<div class="card" style="margin-bottom:9px;">';
+      // Header
+      html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">';
+      html+='<div style="font-size:36px;">'+b.e+'</div>';
+      html+='<div style="flex:1;"><div style="font-size:14px;font-weight:800;color:var(--hay);">'+b.n+'</div>';
+      html+='<div style="font-size:11px;color:#8BC34A;">Level '+curLv+'/'+upgs.length+(maxed?' 🌟':'')+'</div>';
+      html+='<div style="display:flex;gap:2px;margin-top:4px;">';
+      for(var s=1;s<=upgs.length;s++)html+='<div style="flex:1;height:4px;border-radius:2px;background:'+(s<=curLv?'var(--hay)':'rgba(255,255,255,.1)')+'"></div>';
+      html+='</div></div></div>';
+      // Current perk
+      html+='<div style="background:rgba(67,160,71,.08);border:1px solid rgba(67,160,71,.2);border-radius:8px;padding:7px;margin-bottom:7px;font-size:12px;color:#8BC34A;">✅ '+curUpg.perk+'</div>';
+      // Next upgrade
+      if(maxed){
+        html+='<div style="text-align:center;font-size:12px;color:var(--hay);font-weight:700;">🌟 FULLY UPGRADED</div>';
+      } else if(nextUpg){
+        html+='<div style="background:rgba(124,77,255,.07);border:1px solid rgba(124,77,255,.2);border-radius:8px;padding:8px;margin-bottom:6px;">';
+        html+='<div style="font-size:10px;color:var(--geml);font-weight:700;margin-bottom:5px;">⬆️ Lv'+(curLv+1)+': '+nextUpg.perk+'</div>';
+        html+='<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px;">';
+        if(nextUpg.gold>0){var gok=G.gold>=nextUpg.gold;html+='<div style="font-size:11px;padding:3px 7px;border-radius:6px;border:1px solid '+(gok?'rgba(67,160,71,.3)':'rgba(229,57,53,.3)')+';color:'+(gok?'#8BC34A':'#ef9a9a')+';">💰'+nextUpg.gold.toLocaleString()+'g</div>';}
+        Object.keys(nextUpg.mats||{}).forEach(function(k){var need=nextUpg.mats[k],have=G.mats[k]||0,ok=have>=need;html+='<div style="font-size:11px;padding:3px 7px;border-radius:6px;border:1px solid '+(ok?'rgba(67,160,71,.3)':'rgba(229,57,53,.3)')+';color:'+(ok?'#8BC34A':'#ef9a9a')+'">'+(mE[k]||k)+' '+need+(ok?'✅':'('+have+')')+'</div>';});
+        html+='</div>';
+        html+='<button class="btn '+(canUp?'bgn':'')+'  bsm bfw" data-bid="'+id+'" onclick="upgradeBuilding(this.dataset.bid)" style="'+(canUp?'':'opacity:.5;background:rgba(255,255,255,.05);')+'" '+(canUp?'':'disabled')+'>⬆️ Upgrade to Lv'+(curLv+1)+'</button>';
+        html+='</div>';
+      }
+      html+='</div>';
+    });
+    html+='<button class="btn bg bfw" style="margin-top:5px;" data-t="store" onclick="navTo(this.dataset.t)">🏪 Buy More Buildings →</button>';
+    return html;
+  }catch(e){return '<div style="padding:14px;color:#ef9a9a;font-size:12px;word-break:break-all;">Buildings error: '+e.message+'</div>';}
+}
+function buyBndl(i){
+  var b=window._bundles&&window._bundles[i];if(!b)return;
+  var isGem=!!b.gem;
+  if(isGem){if(G.gems<b.p){toast('Need '+b.p+'💎!','err');return;}G.gems-=b.p;G.gemsSpent=(G.gemsSpent||0)+b.p;}
+  else{if(G.gold<b.p){toast('Need '+b.p+'g!','err');return;}G.gold-=b.p;}
+  if(!G.mats)G.mats={};
+  var gained=[];
+  Object.keys(b.items).forEach(function(k){G.mats[k]=(G.mats[k]||0)+b.items[k];gained.push(k+'×'+b.items[k]);});
+  toast('📦 '+b.n+'! '+gained.slice(0,3).join(' '),'gld');
+  updateHUD();renderBuilds();saveG();
+}
+function buyIndiv(ri,pi){
+  var item=window._indiv&&window._indiv[ri];if(!item)return;
+  var pk=item.packs[pi];if(!pk)return;
+  var isGem=!!pk.gem;
+  if(isGem){if(G.gems<pk.p){toast('Need '+pk.p+'💎!','err');return;}G.gems-=pk.p;G.gemsSpent=(G.gemsSpent||0)+pk.p;}
+  else{if(G.gold<pk.p){toast('Need '+pk.p+'g!','err');return;}G.gold-=pk.p;}
+  if(!G.mats)G.mats={};
+  G.mats[item.k]=(G.mats[item.k]||0)+pk.q;
+  var mN={wood:'Lumber',stone:'Stone',clay:'Clay',nails:'Nails',screws:'Screws',bolts:'Bolts',wire:'Wire',glass:'Glass',concrete:'Concrete',steel:'Steel Beam',pipe:'Pipe',iron:'Iron',coal:'Coal',diamond:'Diamond',crystal:'Crystal'};
+  toast('✅ '+pk.q+'× '+(mN[item.k]||item.k)+' purchased!','gld');
+  updateHUD();renderBuilds();saveG();
 }
 
 function buyBundle(idx){
@@ -1482,7 +1643,9 @@ function buyBundle(idx){
   var isGem=b.currency==='gems';
   if(isGem){if(G.gems<b.price){toast('Need '+b.price+'💎!','err');return;}G.gems-=b.price;G.gemsSpent=(G.gemsSpent||0)+b.price;}
   else{if(G.gold<b.price){toast('Need '+b.price+'g!','err');return;}G.gold-=b.price;}
-  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
   var gained=[];
   Object.entries(b.items).forEach(function(e){
     G.mats[e[0]]=(G.mats[e[0]]||0)+e[1];
@@ -1494,7 +1657,9 @@ function buyBundle(idx){
 }
 
 function buyMatPack(id,qty,cost,isGem){
-  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
   if(isGem){if(G.gems<cost){toast('Need '+cost+'💎!','err');return;}G.gems-=cost;G.gemsSpent=(G.gemsSpent||0)+cost;}
   else{if(G.gold<cost){toast('Need '+cost+'g!','err');return;}G.gold-=cost;}
   G.mats[id]=(G.mats[id]||0)+qty;
@@ -1518,15 +1683,45 @@ function upgradeHome(){
   var nextLv=G.homeLv+1;
   var costDef=HOME_UPGRADE_COSTS[nextLv-1];if(!costDef)return;
   if(G.gems<costDef.gems){toast('Need '+costDef.gems+'💎!','err');return;}
+  if(costDef.gold&&G.gold<costDef.gold){toast('Need '+costDef.gold.toLocaleString()+'g!','err');return;}
   if(!hasMats(costDef.mats)){
     var miss=getMissingMats(costDef.mats);
     toast('Missing: '+miss.slice(0,2).join(', '),'err');return;
   }
   G.gems-=costDef.gems;G.gemsSpent=(G.gemsSpent||0)+costDef.gems;
+  if(costDef.gold)G.gold-=costDef.gold;
   for(var k in costDef.mats){G.mats[k]=(G.mats[k]||0)-costDef.mats[k];}
   G.homeLv=nextLv;
+  // Apply stamina bonus from home level
+  var stBase={cottage:90,cabin:100,van:110,ranch:120,modern:100}[G.home]||100;
+  G.staminaMax=stBase+G.homeLv*5;
+  G.stamina=Math.min(G.stamina,G.staminaMax);
   toast('🏠 '+hl(G.home)+' upgraded to Level '+G.homeLv+'! 🎉');
   announce('🏠 '+G.playerName+' upgraded their '+hl(G.home)+' to Level '+G.homeLv+'!');
+  updateHUD();renderBuilds();saveG();
+}
+
+function upgradeBuilding(id){
+  if(!G.buildingLvs)G.buildingLvs={};
+  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0,nails:0,screws:0,bolts:0,wire:0,glass:0,concrete:0,steel:0,pipe:0};
+  var b=BUILDINGS.find(function(x){return x.id===id;});if(!b||!b.upgrades)return;
+  var curLv=G.buildingLvs[id]||1;
+  if(curLv>=5){toast(b.n+' is already MAX level!');return;}
+  var nextLv=curLv+1;
+  var upgDef=b.upgrades[nextLv-1];if(!upgDef)return;
+  // Check gold
+  if(upgDef.gold>0&&G.gold<upgDef.gold){toast('Need '+upgDef.gold.toLocaleString()+'g!','err');return;}
+  // Check materials
+  if(!hasMats(upgDef.mats)){
+    var miss=getMissingMats(upgDef.mats);
+    toast('Missing: '+miss.slice(0,2).join(', '),'err');return;
+  }
+  // Deduct
+  if(upgDef.gold>0)G.gold-=upgDef.gold;
+  for(var k in upgDef.mats){G.mats[k]=(G.mats[k]||0)-upgDef.mats[k];}
+  G.buildingLvs[id]=nextLv;
+  toast('🏗️ '+b.n+' upgraded to Level '+nextLv+'! '+upgDef.perk,'gld');
+  announce('🏗️ '+G.playerName+' upgraded their '+b.n+' to Level '+nextLv+'!');
   updateHUD();renderBuilds();saveG();
 }
 function buyMat(id,qty,cost){
@@ -1684,7 +1879,9 @@ function mineCell(idx){
   if(G.water<10){toast('Need 10💧 water!','err');return;}
   G.water-=10;G.qp.mine++;
   G.mineField[idx].dug=true;
-  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
   var roll=Math.random()*100,tot=0,found=null;
   for(var i=0;i<MINERALS.length;i++){tot+=MINERALS[i].rarity;if(roll<=tot){found=MINERALS[i];break;}}
   if(found&&found.id!=='dirt'){
@@ -1714,7 +1911,9 @@ function doMine(){
 }
 function deepMine(){
   if(G.gems<75){toast('Need 75💎!','err');return;}G.gems-=75;
-  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
   var rare=MINERALS.filter(function(m){return m.rarity<=5;});
   var f=rare[Math.floor(Math.random()*rare.length)];
   if(!G.minerals)G.minerals={};G.minerals[f.id]=(G.minerals[f.id]||0)+1;
@@ -2139,7 +2338,9 @@ function renderGuideTips(){
 // INVENTORY
 function renderInv(){
   var c=ge('inv-list');if(!c)return;
-  if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+  if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
   var html='';
   // Building Materials section
   var matTotal=Object.values(G.mats).reduce(function(a,b){return a+b;},0);
@@ -2242,7 +2443,7 @@ function scheduleCritter(){
 function showCritter(){
   var crts=[{e:'🐛',n:'Worm Swarm',c:50},{e:'🦗',n:'Cricket Gang',c:80},{e:'🐜',n:'Ant Colony',c:100},{e:'🦊',n:'Fox',c:150}];
   var cr=crts[Math.floor(Math.random()*crts.length)];
-  showModal('<div class="modal-title">🐛 Critter Attack!</div><div style="font-size:68px;text-align:center;animation:fl 1s ease-in-out infinite;">'+cr.e+'</div><div style="text-align:center;font-size:14px;font-weight:700;margin:10px 0;">'+cr.n+' attacking!</div><div style="font-size:12px;color:#aaa;text-align:center;margin-bottom:14px;">They will destroy 25% of your crops!</div><div style="display:flex;flex-direction:column;gap:8px;"><button class="btn bdr2 bfw" onclick="fightCritter()">⚔️ Fight! (30⚡)</button><button class="btn bg bfw" data-cc="+cr.c+" onclick="bribeCritter(+this.dataset.cc)">💰 Bribe ('+cr.c+'g)</button><button class="btn bfw" style="background:rgba(255,255,255,.08);" onclick="ignoreCritter()">Ignore (risk crops)</button></div>');
+  showModal('<div class="modal-title">🐛 Critter Attack!</div><div style="font-size:68px;text-align:center;animation:fl 1s ease-in-out infinite;">'+cr.e+'</div><div style="text-align:center;font-size:14px;font-weight:700;margin:10px 0;">'+cr.n+' attacking!</div><div style="font-size:12px;color:#aaa;text-align:center;margin-bottom:14px;">They will destroy 25% of your crops!</div><div style="display:flex;flex-direction:column;gap:8px;"><button class="btn bdr2 bfw" onclick="fightCritter()">⚔️ Fight! (30⚡)</button><button class="btn bg bfw" data-cc="'+" + cr.c + "+'" onclick="bribeCritter(+this.dataset.cc)">💰 Bribe ('+cr.c+'g)</button><button class="btn bfw" style="background:rgba(255,255,255,.08);" onclick="ignoreCritter()">Ignore (risk crops)</button></div>');
 }
 function fightCritter(){if(G.stamina<30){toast('Need 30⚡!','err');return;}G.stamina-=30;endCritter();toast('⚔️ Fought off critters! 💪');}
 function bribeCritter(c){if(G.gold<c){toast('Not enough gold!','err');return;}G.gold-=c;endCritter();toast('💰 Critters bribed away!');}
@@ -2260,6 +2461,15 @@ function startTimers(){
 
 function leaveAlliance(){if(confirm("Leave your alliance?")){G.alliance=null;G.allianceRank=0;G.allianceContrib=0;renderAlliance();saveG();}}
 function openGems(){navTo('gems');}
+function buyWhale(){
+  G.gems+=20000;G.gold+=10000;G.goldEarned+=10000;
+  if(!G.mats)G.mats={};
+  var allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+  allMats.forEach(function(m){G.mats[m]=(G.mats[m]||0)+500;});
+  toast('👑 TRUE HOMESTEADER PACK activated! +20,000💎 +10,000g +500 of every material!','gld');
+  announce('👑 '+G.playerName+' got the TRUE HOMESTEADER PACK!');
+  updateHUD();renderGems();saveG();
+}
 
 // ACTIVITY TAB (Hunt/Mine/Pond/Inv)
 function renderActivityTab(sub){
@@ -2318,7 +2528,7 @@ function updateFarmBars(){
   var sd=ge('farm-stam-disp');if(sd)sd.textContent=G.stamina+'/'+G.staminaMax;
   var sb=ge('farm-stam-bar');if(sb)sb.style.width=Math.min(100,(G.stamina/G.staminaMax)*100)+'%';
 }
-function resetGame(){if(confirm('Reset all progress? This cannot be undone.')){localStorage.removeItem('th53');location.reload();}}
+function resetGame(){if(confirm('Reset all progress? This cannot be undone.')){localStorage.removeItem('th54');location.reload();}}
 
 function leaveAlliance(){if(confirm("Leave your alliance?")){G.alliance=null;G.allianceRank=0;G.allianceContrib=0;renderAlliance();saveG();}}
 function openGems(){navTo('gems');}
@@ -2380,7 +2590,7 @@ function renderAllianceCards(list){
       +'<div style="display:flex;align-items:center;justify-content:space-between;">'
       +'<div style="font-size:11px;padding:3px 9px;background:'+typeColor+';border-radius:20px;font-weight:700;">'+typeLabel+'</div>'
       +'<div style="font-size:10px;color:#aaa;">Min Lv'+a.minLv+'</div>'
-      +'<button class="btn '+(a.type==='Open'?'bgn':'bg')+' bsm" onclick="applyToAlliance(this.dataset.aid,event)" data-aid="+a.id+">'+(a.type==='Open'?'Join Now':'Apply →')+'</button>'
+      +'<button class="btn '+(a.type==='Open'?'bgn':'bg')+' bsm" onclick="applyToAlliance(this.dataset.aid,event)" data-aid="'+" + a.id + "+'">'+(a.type==='Open'?'Join Now':'Apply →')+'</button>'
       +'</div>'
       +'</div>';
   }).join('');
@@ -2618,7 +2828,7 @@ function renderAlliChest(a){
   html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;">';
   amounts.forEach(function(amt){
     var can=G.gold>=amt;
-    html+='<button class="btn '+(can?'bg':'')+'  bsm bfw" style="'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-amt="'+amt+'" onclick="donateChest(+this.dataset.amt)" '+(can?'':'disabled')+'>💰 Donate '+amt.toLocaleString()+'g</button>';
+    html+='<button class="btn '+(can?'bg':'')+' bsm bfw" style="'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-amt="'+amt+'" onclick="donateChest(+this.dataset.amt)" '+(can?'':'disabled')+'>💰 Donate '+amt.toLocaleString()+'g</button>';
   });
   html+='</div></div>';
   // Gem donation
@@ -2626,7 +2836,7 @@ function renderAlliChest(a){
   html+='<div style="font-size:12px;font-weight:700;color:var(--geml);margin-bottom:8px;">💎 Donate Gems</div>';
   [50,200,500].forEach(function(amt){
     var can=G.gems>=amt;
-    html+='<button class="btn '+(can?'bge':'')+'  bsm bfw" style="margin-bottom:5px;'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-amt="'+amt+'" onclick="donateGems(+this.dataset.amt)" '+(can?'':'disabled')+'>💎 Donate '+amt+' Gems</button>';
+    html+='<button class="btn '+(can?'bge':'')+' bsm bfw" style="margin-bottom:5px;'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-amt="'+amt+'" onclick="donateGems(+this.dataset.amt)" '+(can?'':'disabled')+'>💎 Donate '+amt+' Gems</button>';
   });
   html+='</div>';
   // Weekly leaderboard
@@ -2704,7 +2914,7 @@ function renderAlliPerks(a){
   html+=ALLIANCE_LV_PERKS.map(function(p){
     var unl=a.lv>=p.lv;
     return '<div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:'+(unl?'rgba(67,160,71,.08)':'rgba(0,0,0,.2)')+';border:1px solid '+(unl?'rgba(67,160,71,.3)':'rgba(255,255,255,.05)')+';border-radius:9px;margin-bottom:5px;">'
-      +'<div style="font-size:13px;font-weight:900;color:'+(unl?'#8BC34A':'#444');+'min-width:34px;">Lv'+p.lv+'</div>'
+      +'<div style="font-size:13px;font-weight:900;color:'+(unl?'#8BC34A':'#444')+'min-width:34px;">Lv'+p.lv+'</div>'
       +'<div style="flex:1;font-size:12px;color:'+(unl?'#ddd':'#444')+';">'+p.perk+'</div>'
       +'<div>'+(unl?'✅':'🔒')+'</div>'
       +'</div>';
@@ -2805,13 +3015,17 @@ function wireEvents(){
   });
   ge('btn-chop').onclick=function(){
     if(G.stamina<5){toast('Need 5⚡!','err');return;}
-    G.stamina-=5;if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+    G.stamina-=5;if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
     var w=2+Math.floor(Math.random()*3);G.mats.wood=(G.mats.wood||0)+w;
     toast('🪵 Chopped! +'+w+' Lumber');updateHUD();saveG();
   };
   ge('btn-quarry').onclick=function(){
     if(G.stamina<5){toast('Need 5⚡!','err');return;}
-    G.stamina-=5;if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};
+    G.stamina-=5;if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
     var s=2+Math.floor(Math.random()*3);G.mats.stone=(G.mats.stone||0)+s;
     var bonus='';
     if(Math.random()<0.2){G.mats.clay=(G.mats.clay||0)+1;bonus=' 🧱+1';}
@@ -2822,7 +3036,9 @@ function wireEvents(){
     G.stamina-=3;G.xp+=5;
     var r=Math.random();
     if(r<0.4){G.water=Math.min(G.waterMax,G.water+2);toast('🌿 Found a stream! +2 Water');}
-    else if(r<0.65){if(!G.mats)G.mats={wood:0,stone:0,clay:0,iron:0,coal:0,diamond:0,crystal:0};G.mats.wood=(G.mats.wood||0)+1;toast('🪵 Found sticks! +1 Lumber');}
+    else if(r<0.65){if(!G.mats)G.mats={};
+var _allMats=['wood','stone','clay','nails','screws','bolts','wire','glass','concrete','steel','pipe','iron','coal','diamond','crystal'];
+_allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});G.mats.wood=(G.mats.wood||0)+1;toast('🪵 Found sticks! +1 Lumber');}
     else if(r<0.8){G.gold+=15;G.goldEarned+=15;toast('🍄 Wild mushrooms! +15g','gld');}
     else{G.xp+=20;toast('🌺 Rare herb! +20xp');}
     checkLv();updateHUD();saveG();
@@ -2897,15 +3113,22 @@ function wireEvents(){
 }
 
 // BOOT
+window.onerror=function(msg,src,line,col,err){
+  var box=ge('err-box');
+  if(box){box.style.display='block';box.textContent='Error: '+msg+' (line '+line+')';}
+  return false;
+};
 window.addEventListener('load',function(){
   wireEvents();
   // Check if returning player
   loadG();
   if(G.home){
     ge('splash').style.display='none';
-    startGame();
+    try{startGame();}catch(e){
+      var box=ge('err-box');
+      if(box){box.style.display='block';box.textContent='startGame crash: '+e.message+' at '+e.stack.split('\n')[1];}
+    }
   }
-  // else splash is already visible, waiting for tap
 });
 </script>
 </body>
