@@ -240,8 +240,13 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
   <div id="critter-bar">🐛 CRITTER ATTACK! Tap to fight!</div>
   <div id="content">
 
-    <!-- FARM -->
+    <!-- FARM (Crops + Animals) -->
     <div class="tab on" id="tab-farm">
+      <div class="tabs" id="farm-tabs">
+        <button class="tabbtn on" data-farm="crops">🌾 Crops</button>
+        <button class="tabbtn" data-farm="animals">🐄 Animals</button>
+      </div>
+      <div class="subp on" id="tab-crops">
       <div class="stl">🌾 Your Homestead</div>
       <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
         <button class="btn bgn bsm" id="btn-harv-all">🌾 Harvest All</button>
@@ -295,6 +300,11 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <div class="pb pbg"><div class="pf" id="xp-bar" style="width:0%"></div></div>
       </div>
       <button class="btn bdr2 bsm" id="btn-reset">🗑️ Reset Game</button>
+      </div>
+      <div class="subp" id="tab-animals">
+        <div class="stl">🐄 Your Animals</div>
+        <div id="animal-list"><div style="text-align:center;padding:36px;color:#555;"><div style="font-size:44px;margin-bottom:10px;">🐾</div><div>No animals yet!</div><div style="font-size:11px;margin-top:5px;">Buy from Store → Animals</div></div></div>
+      </div>
     </div>
 
     <!-- STORE -->
@@ -309,12 +319,6 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <button class="tabbtn" data-cat="defense">🛡️ Defense</button>
       </div>
       <div id="store-items"></div>
-    </div>
-
-    <!-- ANIMALS -->
-    <div class="tab" id="tab-animals">
-      <div class="stl">🐄 Your Animals</div>
-      <div id="animal-list"><div style="text-align:center;padding:36px;color:#555;"><div style="font-size:44px;margin-bottom:10px;">🐾</div><div>No animals yet!</div><div style="font-size:11px;margin-top:5px;">Buy from Store → Animals</div></div></div>
     </div>
 
     <!-- UPGRADES / BUILDINGS -->
@@ -1012,11 +1016,11 @@ const BOSSES=[
 ];
 // STALLIONS & TERRAIN MAP
 const STALLION_BREEDS=[
-  {id:'black',n:'Black Stallion',e:'🐴',trait:'speed',label:'⚡ Travel Speed',rarity:38},
-  {id:'brown',n:'Brown Stallion',e:'🐴',trait:'yield',label:'📦 Resource Yield',rarity:34},
-  {id:'white',n:'White Stallion',e:'🐴',trait:'luck',label:'🍀 Rare Find Chance',rarity:16},
-  {id:'pinto_bw',n:'Black & White Stallion',e:'🐴',trait:'dual',label:'⚡📦 Speed + Yield',rarity:8},
-  {id:'pinto_wb',n:'White & Brown Stallion',e:'🐴',trait:'goldrush',label:'💰 Bonus Gold/Trip',rarity:4},
+  {id:'black',n:'Black Stallion',e:'🐴',trait:'speed',label:'⚡ Travel Speed',rarity:38,sellBase:150},
+  {id:'brown',n:'Brown Stallion',e:'🐴',trait:'yield',label:'📦 Resource Yield',rarity:34,sellBase:150},
+  {id:'white',n:'White Stallion',e:'🐴',trait:'luck',label:'🍀 Rare Find Chance',rarity:16,sellBase:280},
+  {id:'pinto_bw',n:'Black & White Stallion',e:'🐴',trait:'dual',label:'⚡📦 Speed + Yield',rarity:8,sellBase:450},
+  {id:'pinto_wb',n:'White & Brown Stallion',e:'🐴',trait:'goldrush',label:'💰 Bonus Gold/Trip',rarity:4,sellBase:650},
 ];
 const TERRAIN_ZONES=[
   {id:'river',n:'River Bend',e:'🏞️',resource:'water',icon:'💧',amtMin:3,amtMax:7,travelMin:12},
@@ -1145,7 +1149,11 @@ function navTo(tab){
 }
 function renderTab(t){
   var map={
-    farm:renderFarm,store:function(){renderStore(currentCat);},
+    farm:function(){
+      var activeSub=document.querySelector('#tab-farm .subp.on');
+      var subId=activeSub?activeSub.id.replace('tab-',''):'crops';
+      if(subId==='animals')renderAnimals();else renderFarm();
+    },store:function(){renderStore(currentCat);},
     animals:renderAnimals,builds:renderBuilds,market:renderMarket,
     hunt:renderHunt,mine:renderMine,pond:function(){},boss:renderBoss,
     vip:renderVIP,quests:renderQuests,social:renderSocial,guide:renderGuide,
@@ -2699,6 +2707,18 @@ function breedStallions(){
   toast('🐎 A foal was born! New '+breedInfo(breed).n,'gld');
   updateHUD();renderMap();saveG();
 }
+function stallionSellPrice(s){return Math.round(breedInfo(s.breed).sellBase*(1+0.15*(s.lvl-1)));}
+function sellStallion(id){
+  var s=(G.stallions||[]).find(function(x){return x.id===id;});
+  if(!s)return;
+  if(s.status!=='idle'){toast('Stallion must be home to sell it','err');return;}
+  var price=stallionSellPrice(s);
+  if(!confirm('Sell '+breedInfo(s.breed).n+' (Lv'+s.lvl+') for '+price+'g?'))return;
+  G.stallions=G.stallions.filter(function(x){return x.id!==id;});
+  G.gold+=price;G.goldEarned=(G.goldEarned||0)+price;
+  toast('💰 Sold for '+price+'g!','gld');
+  updateHUD();renderMap();saveG();
+}
 function trainStallion(id){
   var s=(G.stallions||[]).find(function(x){return x.id===id;});
   if(!s)return;
@@ -2784,7 +2804,10 @@ function renderMap(){
             '<div style="font-size:10px;color:var(--hay);">'+b.label+'</div>'+
             '<div style="font-size:11px;margin-top:3px;">'+statusHtml+'</div>'+
           '</div>'+
-          (s.status==='idle'?'<button class="btn bsm bg" style="font-size:10px;" onclick="trainStallion(\''+s.id+'\')">⬆️ '+(s.lvl<10?(s.lvl*100+'g'):'MAX')+'</button>':'')+
+          (s.status==='idle'?'<div style="display:flex;flex-direction:column;gap:4px;">'+
+            '<button class="btn bsm bg" style="font-size:10px;" onclick="trainStallion(\''+s.id+'\')">⬆️ '+(s.lvl<10?(s.lvl*100+'g'):'MAX')+'</button>'+
+            '<button class="btn bsm bdr2" style="font-size:10px;" onclick="sellStallion(\''+s.id+'\')">💰 '+stallionSellPrice(s)+'g</button>'+
+          '</div>':'')+
         '</div>';
       }).join('');
     }
@@ -2813,6 +2836,16 @@ function renderMap(){
 var _mapTimer=null;
 function startMapTimer(){stopMapTimer();_mapTimer=setInterval(renderMap,15000);}
 function stopMapTimer(){if(_mapTimer){clearInterval(_mapTimer);_mapTimer=null;}}
+
+// FARM TAB (Crops/Animals)
+function farmTab(btn,sub){
+  document.querySelectorAll('#farm-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  document.querySelectorAll('#tab-farm .subp').forEach(function(p){p.classList.remove('on');});
+  var target=ge(sub==='animals'?'tab-animals':'tab-crops');
+  if(target)target.classList.add('on');
+  if(sub==='animals')renderAnimals();else renderFarm();
+}
 
 // ACTIVITY TAB (Hunt/Mine/Pond/Inv/Map)
 
@@ -3378,6 +3411,11 @@ _allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});G.mats.wood
     else{G.xp+=20;toast('🌺 Rare herb! +20xp');}
     checkLv();updateHUD();saveG();
   };
+
+  // Farm tabs (Crops/Animals)
+  document.querySelectorAll('#farm-tabs .tabbtn').forEach(function(btn){
+    btn.onclick=function(){farmTab(btn,btn.dataset.farm);};
+  });
 
   // Store tabs
   document.querySelectorAll('#store-tabs .tabbtn').forEach(function(btn){
