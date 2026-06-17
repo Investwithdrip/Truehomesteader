@@ -56,6 +56,8 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
 #content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .tab{display:none;padding:12px;min-height:100%}
 .tab.on{display:block}
+.subp{display:none;}
+.subp.on{display:block;}
 #bnav{background:linear-gradient(0deg,#050c05,#0a1208);border-top:1px solid var(--bdr);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none}
 #bnav::-webkit-scrollbar{display:none}
 .nb{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 11px;min-width:56px;cursor:pointer;border:none;background:none;color:#666;font-size:10px;gap:2px;flex-shrink:0;position:relative}
@@ -339,123 +341,22 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
     </div>
 
     <!-- HUNT -->
-    <div class="tab" id="tab-hunt">
-      <div class="stl">🦌 Hunting Ground</div>
-      <div class="card" style="text-align:center;padding:18px;background:linear-gradient(135deg,#180c04,#0d1a0d);margin-bottom:10px;">
-        <div id="hunt-target" style="font-size:64px;animation:fl 2s ease-in-out infinite;">🌲</div>
-        <div id="hunt-status" style="font-size:13px;color:#aaa;margin-top:8px;">Select a weapon & animal, then hunt!</div>
-        <div id="hunt-acc" style="font-size:12px;color:var(--hay);margin-top:4px;">🎯 Accuracy: 40%</div>
-        <button class="btn bdr2" style="margin-top:12px;" id="btn-hunt">🎯 HUNT! (15⚡)</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;">
-        <div class="card" style="text-align:center;padding:9px;">
-          <div style="font-size:11px;color:#aaa;">Hunter Level</div>
-          <div style="font-size:20px;font-weight:900;color:var(--hay);" id="h-hlv">1/50</div>
-          <div class="pb pbg" style="margin-top:5px;"><div class="pf" id="h-hxp" style="width:0%"></div></div>
-        </div>
-        <div class="card" style="text-align:center;padding:9px;">
-          <div style="font-size:11px;color:#aaa;">Marksmanship</div>
-          <div style="font-size:20px;font-weight:900;color:var(--geml);" id="h-mlv">1/50</div>
-          <div class="pb pbp" style="margin-top:5px;"><div class="pf" id="h-mxp" style="width:0%"></div></div>
-        </div>
-      </div>
-      <div class="stl">🔫 Weapons</div>
-      <div class="wep-grid" id="wep-grid"></div>
-      <div class="stl">🦌 Hunt Animals</div>
-      <div id="hunt-animal-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;"></div>
-      <div class="stl">📋 Hunt Log</div>
-      <div id="hunt-log" style="font-size:12px;color:#555;padding:4px 0;">No hunts yet. Good luck!</div>
-    </div>
+    
 
     <!-- MINE -->
-    <div class="tab" id="tab-mine">
-      <div class="stl">⛏️ Mine Your Land</div>
-      <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(124,77,255,.12),rgba(45,27,14,.8));margin-bottom:10px;">
-        <div style="font-size:32px;margin-bottom:5px;">⛏️</div>
-        <div style="font-size:13px;font-weight:700;color:var(--geml);">Dig for minerals!</div>
-        <div style="font-size:11px;color:#aaa;margin:5px 0;">Each dig costs 10💧 • Deep mine costs 75💎</div>
-        <div style="display:flex;gap:7px;justify-content:center;margin-top:9px;">
-          <button class="btn bsm" style="background:rgba(124,77,255,.3);color:var(--geml);" id="btn-mine">⛏️ Mine (10💧)</button>
-          <button class="btn bge bsm" id="btn-deep-mine">💎 Deep (75💎)</button>
-        </div>
-      </div>
-      <div class="mine-grid" id="mine-field"></div>
-      <div class="card">
-        <div class="stl" style="margin:0 0 7px;">💎 Found</div>
-        <div id="minerals-found" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;"></div>
-        <div style="margin-top:8px;font-size:13px;">Total: <strong id="min-total">0</strong></div>
-      </div>
-    </div>
+    
 
     <!-- POND -->
-    <div class="tab" id="tab-pond">
-      <div class="stl">🎣 Fishing Pond</div>
-      <div style="background:linear-gradient(180deg,#091c2c,#0d3040,#091c2c);border:1px solid rgba(126,200,227,.3);border-radius:14px;padding:18px;text-align:center;margin-bottom:10px;position:relative;min-height:140px;overflow:hidden;">
-        <div style="font-size:18px;position:absolute;animation:swim 5s linear infinite;top:50%;">🐟</div>
-        <div style="font-size:18px;position:absolute;animation:swim 7s linear 2s infinite;top:35%;">🐠</div>
-        <div style="position:relative;z-index:2;">
-          <div id="pond-status" style="font-size:14px;font-weight:700;color:var(--sky);margin-bottom:7px;">🎣 Ready to cast!</div>
-          <div id="pond-bobber"></div>
-          <div id="pond-timer" style="font-size:12px;color:#aaa;min-height:18px;"></div>
-        </div>
-      </div>
-      <div style="display:flex;gap:7px;margin-bottom:10px;">
-        <button class="btn bgn bfw" id="btn-cast">🎣 Cast Line (5💧 • 30s)</button>
-        <button class="btn bge bsm" id="btn-fish-speed">⚡ (10💎)</button>
-      </div>
-      <div class="card"><div style="font-weight:700;color:var(--hay);">🐟 Fish Caught: <span id="fish-count">0</span></div><div id="fish-log" style="margin-top:7px;font-size:12px;color:#777;"></div></div>
-    </div>
+    
 
     <!-- BOSS -->
-    <div class="tab" id="tab-boss">
-      <div class="stl">👹 Saturday Boss Battle</div>
-      <div class="boss-box">
-        <div id="boss-icon" style="font-size:76px;">💀</div>
-        <div id="boss-name" style="font-size:15px;font-weight:900;color:#E53935;margin:7px 0;">Awaiting Boss...</div>
-        <div style="font-size:11px;color:#888;">HP: <span id="boss-hp-txt">Full</span></div>
-        <div class="boss-hpbar"><div class="boss-hpfill" id="boss-hp-fill" style="width:100%"></div></div>
-        <div style="font-size:11px;color:#666;" id="boss-next">Next boss: Saturday 12PM EST</div>
-        <div id="boss-loot" style="margin-top:8px;"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-        <div class="zcard" id="z1card"><div style="font-size:12px;font-weight:800;color:var(--hay);">⚔️ Zone 1 Frontier</div><div style="font-size:22px;font-weight:900;" id="z1dmg">0</div><div style="font-size:10px;color:#aaa;">damage</div></div>
-        <div class="zcard" id="z2card"><div style="font-size:12px;font-weight:800;color:var(--hay);">🛡️ Zone 2 Heartland</div><div style="font-size:22px;font-weight:900;" id="z2dmg">0</div><div style="font-size:10px;color:#aaa;">damage</div></div>
-      </div>
-      <div class="card" style="margin-bottom:10px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <div><div style="font-size:13px;font-weight:700;">Your Zone: <span id="my-zone">?</span></div><div style="font-size:11px;color:#aaa;">Your damage: <span id="my-dmg">0</span></div></div>
-          <div style="font-size:28px;" id="my-wep">🪃</div>
-        </div>
-        <button class="btn bdr2 bfw" id="btn-boss-attack">⚔️ ATTACK! (20⚡)</button>
-      </div>
-      <div class="card"><div style="font-size:12px;font-weight:700;color:var(--hay);margin-bottom:5px;">🏆 Boss Rewards</div><div style="font-size:12px;color:#aaa;line-height:1.9;">🥇 Win: 500💎 + Rare Animal + 2x Gold week<br>🥈 Lose: 200💎 + 25% all boosts + 3 spins</div></div>
-    </div>
+    
 
     <!-- VIP -->
-    <div class="tab" id="tab-vip">
-      <div class="stl">👑 VIP Status</div>
-      <div class="card" style="text-align:center;margin-bottom:12px;background:linear-gradient(135deg,rgba(124,77,255,.2),rgba(45,27,14,.8));">
-        <div style="font-size:46px;margin-bottom:5px;">👑</div>
-        <div style="font-size:22px;font-weight:900;color:var(--geml);">VIP <span id="vip-cur">0</span></div>
-        <div style="font-size:11px;color:#aaa;margin-top:3px;">ONLY way to expand acres • Gems only</div>
-        <div style="margin-top:7px;font-size:12px;color:var(--hay);">💎 <span id="vip-spent">0</span> gems spent total</div>
-      </div>
-      <div class="card" style="margin-bottom:10px;background:rgba(124,77,255,.08);border-color:rgba(124,77,255,.3);">
-        <div style="font-size:12px;color:var(--geml);font-weight:700;margin-bottom:5px;">🌾 HOW TO GET MORE ACRES</div>
-        <div style="font-size:12px;color:#ddd;line-height:1.6;">VIP = ONLY way to expand land. Start at 4 acres. Max 50. Every 5 acres = -5% all timers!</div>
-      </div>
-      <div id="vip-list"></div>
-    </div>
+    
 
     <!-- QUESTS -->
-    <div class="tab" id="tab-quests">
-      <div class="stl">📜 Daily Quests</div>
-      <div id="quest-list"></div>
-      <div class="stl">🏆 Achievements</div>
-      <div id="ach-list"></div>
-      <div class="stl">🗺️ Level Unlocks</div>
-      <div id="lv-unlocks"></div>
-    </div>
+    
 
     <!-- SOCIAL -->
     <div class="tab" id="tab-social">
@@ -481,105 +382,24 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
     </div>
 
     <!-- AI -->
-    <div class="tab" id="tab-ai">
-      <div class="stl">🤖 Vera — AI Homestead Advisor</div>
-      <div class="card" style="margin-bottom:9px;background:linear-gradient(135deg,rgba(74,124,89,.2),rgba(30,61,47,.5));">
-        <div style="font-size:12px;color:#8BC34A;font-weight:700;">🌱 Real Homesteading Knowledge</div>
-        <div style="font-size:12px;color:#aaa;margin-top:3px;">Ask Vera anything about farming, animals, food preservation, land & off-grid living.</div>
-      </div>
-      <div class="tabs" id="vera-qs" style="flex-wrap:wrap;">
-        <button class="tabbtn" data-q="Best crops for my state?">🌱 Best crops?</button>
-        <button class="tabbtn" data-q="How to raise chickens?">🐔 Chickens?</button>
-        <button class="tabbtn" data-q="Food preservation tips?">🥫 Preserve food?</button>
-        <button class="tabbtn" data-q="How to improve my soil?">🪱 Soil tips?</button>
-        <button class="tabbtn" data-q="How to make money homesteading?">💰 Make money?</button>
-      </div>
-      <div style="display:flex;flex-direction:column;height:calc(100vh - 280px);">
-        <div id="ai-msgs" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding-bottom:8px;">
-          <div style="max-width:85%;padding:12px 13px;border-radius:14px;font-size:13px;line-height:1.5;background:rgba(45,27,14,.85);border:1px solid var(--bdr);border-bottom-left-radius:4px;"><div style="font-size:10px;color:var(--hay);font-weight:700;margin-bottom:3px;">🌿 Vera</div>Hey! I'm Vera, your AI homestead advisor. Ask me anything about real farming, animals, land, or off-grid living. 🌱</div>
-        </div>
-        <div style="display:flex;gap:7px;padding-top:7px;">
-          <input class="chin" id="ai-inp" placeholder="Ask Vera..." style="flex:1;">
-          <button class="btn bgn bsm" id="btn-ai-send">Ask</button>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- SPIN -->
-    <div class="tab" id="tab-spin">
-      <div class="stl">🎰 Daily Spin</div>
-      <div class="wheel-wrap">
-        <div style="position:relative;display:inline-block;">
-          <div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:24px;z-index:10;">▼</div>
-          <canvas id="wcanvas" width="240" height="240" style="border-radius:50%;border:4px solid var(--hay);box-shadow:0 0 28px rgba(212,168,71,.35);"></canvas>
-        </div>
-        <div id="spin-result" style="font-size:16px;font-weight:800;color:var(--hay);min-height:26px;margin-top:11px;"></div>
-        <div id="spin-status" style="font-size:12px;color:#aaa;margin:5px 0;">Free spin available!</div>
-        <button class="btn bg" style="padding:13px 42px;font-size:15px;" id="btn-spin">🎰 SPIN NOW!</button>
-        <div style="font-size:11px;color:#555;margin-top:7px;">Extra spin: 100💎</div>
-      </div>
-    </div>
+    
 
-    <!-- INVENTORY -->
-    <div class="tab" id="tab-inv">
-      <div class="stl">🎒 Inventory</div>
-      <div id="inv-list"><div style="text-align:center;padding:28px;color:#555;"><div style="font-size:38px;margin-bottom:9px;">🎒</div><div>Inventory empty</div></div></div>
-    </div>
+
 
     <!-- GUIDE -->
-    <div class="tab" id="tab-guide">
-      <div class="stl">📖 Home Guide</div>
-      <div class="tabs">
-        <button class="tabbtn on" data-guide="perks">🏠 Perks</button>
-        <button class="tabbtn" data-guide="economy">🔗 Economy</button>
-        <button class="tabbtn" data-guide="tips">💡 Strategy</button>
-      </div>
-      <div id="guide-perks"><div id="guide-perks-list"></div></div>
-      <div id="guide-economy" style="display:none;"><div id="guide-eco-list"></div></div>
-      <div id="guide-tips" style="display:none;"><div id="guide-tips-list"></div></div>
-    </div>
+    
 
     <!-- DAILY -->
-    <div class="tab" id="tab-daily">
-      <div class="stl">📅 Daily Rewards</div>
-      <div style="text-align:center;margin-bottom:16px;">
-        <div style="font-size:52px;animation:fl 2s ease-in-out infinite;">🔥</div>
-        <div style="font-size:36px;font-weight:900;color:var(--hay);" id="streak-n">1</div>
-        <div style="font-size:13px;color:#aaa;">Day Streak</div>
-      </div>
-      <div id="day-rewards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;"></div>
-      <button class="btn bg bfw" id="btn-daily">🎁 Claim Today!</button>
-      <div class="stl" style="margin-top:14px;">🏆 Milestones</div>
-      <div class="card" style="font-size:12px;line-height:2;">Day 7: 🎰 Bonus Spin + 50💎<br>Day 30: 500💎 + 3 daily spins<br>Day 100: 1,000💎 + Exclusive Animal<br>Day 365: 2,000💎 + TRUE LEGEND 👑</div>
-    </div>
+    
 
     <!-- PROFILE -->
-    <div class="tab" id="tab-profile">
-      <div style="text-align:center;padding:18px 0;">
-        <div style="font-size:76px;" id="prof-av">🌱</div>
-        <div style="font-size:20px;font-weight:900;color:var(--hay);" id="prof-nm">Farmer</div>
-        <div style="font-size:12px;color:#8BC34A;" id="prof-title">Beginner Homesteader</div>
-        <div style="font-size:11px;color:#555;margin-top:3px;" id="prof-zone">Zone ?</div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px;">
-        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-harv">0</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Harvests</div></div>
-        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-hunt">0</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Hunts</div></div>
-        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-fish">0</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Fish</div></div>
-        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-gold">0g</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Earned</div></div>
-        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-days">1</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Days</div></div>
-        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-acres">4</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Acres</div></div>
-      </div>
-    </div>
+    
 
     <!-- LEADERBOARD -->
-    <div class="tab" id="tab-ranks">
-      <div class="stl">🏆 Leaderboard</div>
-      <div class="card" style="text-align:center;margin-bottom:10px;background:linear-gradient(135deg,rgba(255,179,0,.1),rgba(45,27,14,.8));">
-        <div style="font-size:11px;color:var(--hay);">🏆 WEEKLY PRIZES (Top 25)</div>
-        <div style="font-size:12px;color:#ddd;line-height:1.9;margin-top:4px;">🥇 Rank 1: 500💎 | 🥈 2-3: 300💎<br>🥉 4-10: 200💎 | 🏅 11-25: 100💎</div>
-      </div>
-      <div id="lb-list"></div>
-    </div>
+    
 
     <!-- GEMS -->
     <div class="tab" id="tab-gems">
@@ -633,7 +453,7 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
       <div id="gem-convert-list"></div>
     </div>
 
-    <!-- ACTIVITY (Hunt + Mine + Pond) -->
+    <!-- ACTIVITY (Hunt + Mine + Pond + Inv) -->
     <div class="tab" id="tab-activity">
       <div class="tabs" id="activity-tabs">
         <button class="tabbtn on" data-act="hunt">🦌 Hunt</button>
@@ -641,17 +461,127 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <button class="tabbtn" data-act="pond">🎣 Pond</button>
         <button class="tabbtn" data-act="inv">🎒 Inventory</button>
       </div>
-      <div id="activity-content"></div>
+      <div class="subp on" id="tab-hunt">
+      <div class="stl">🦌 Hunting Ground</div>
+      <div class="card" style="text-align:center;padding:18px;background:linear-gradient(135deg,#180c04,#0d1a0d);margin-bottom:10px;">
+        <div id="hunt-target" style="font-size:64px;animation:fl 2s ease-in-out infinite;">🌲</div>
+        <div id="hunt-status" style="font-size:13px;color:#aaa;margin-top:8px;">Select a weapon & animal, then hunt!</div>
+        <div id="hunt-acc" style="font-size:12px;color:var(--hay);margin-top:4px;">🎯 Accuracy: 40%</div>
+        <button class="btn bdr2" style="margin-top:12px;" id="btn-hunt">🎯 HUNT! (15⚡)</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;">
+        <div class="card" style="text-align:center;padding:9px;">
+          <div style="font-size:11px;color:#aaa;">Hunter Level</div>
+          <div style="font-size:20px;font-weight:900;color:var(--hay);" id="h-hlv">1/50</div>
+          <div class="pb pbg" style="margin-top:5px;"><div class="pf" id="h-hxp" style="width:0%"></div></div>
+        </div>
+        <div class="card" style="text-align:center;padding:9px;">
+          <div style="font-size:11px;color:#aaa;">Marksmanship</div>
+          <div style="font-size:20px;font-weight:900;color:var(--geml);" id="h-mlv">1/50</div>
+          <div class="pb pbp" style="margin-top:5px;"><div class="pf" id="h-mxp" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="stl">🔫 Weapons</div>
+      <div class="wep-grid" id="wep-grid"></div>
+      <div class="stl">🦌 Hunt Animals</div>
+      <div id="hunt-animal-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;"></div>
+      <div class="stl">📋 Hunt Log</div>
+      <div id="hunt-log" style="font-size:12px;color:#555;padding:4px 0;">No hunts yet. Good luck!</div>
+    </div><div class="subp" id="tab-mine">
+      <div class="stl">⛏️ Mine Your Land</div>
+      <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(124,77,255,.12),rgba(45,27,14,.8));margin-bottom:10px;">
+        <div style="font-size:32px;margin-bottom:5px;">⛏️</div>
+        <div style="font-size:13px;font-weight:700;color:var(--geml);">Dig for minerals!</div>
+        <div style="font-size:11px;color:#aaa;margin:5px 0;">Each dig costs 10💧 • Deep mine costs 75💎</div>
+        <div style="display:flex;gap:7px;justify-content:center;margin-top:9px;">
+          <button class="btn bsm" style="background:rgba(124,77,255,.3);color:var(--geml);" id="btn-mine">⛏️ Mine (10💧)</button>
+          <button class="btn bge bsm" id="btn-deep-mine">💎 Deep (75💎)</button>
+        </div>
+      </div>
+      <div class="mine-grid" id="mine-field"></div>
+      <div class="card">
+        <div class="stl" style="margin:0 0 7px;">💎 Found</div>
+        <div id="minerals-found" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;"></div>
+        <div style="margin-top:8px;font-size:13px;">Total: <strong id="min-total">0</strong></div>
+      </div>
+    </div><div class="subp" id="tab-pond">
+      <div class="stl">🎣 Fishing Pond</div>
+      <div style="background:linear-gradient(180deg,#091c2c,#0d3040,#091c2c);border:1px solid rgba(126,200,227,.3);border-radius:14px;padding:18px;text-align:center;margin-bottom:10px;position:relative;min-height:140px;overflow:hidden;">
+        <div style="font-size:18px;position:absolute;animation:swim 5s linear infinite;top:50%;">🐟</div>
+        <div style="font-size:18px;position:absolute;animation:swim 7s linear 2s infinite;top:35%;">🐠</div>
+        <div style="position:relative;z-index:2;">
+          <div id="pond-status" style="font-size:14px;font-weight:700;color:var(--sky);margin-bottom:7px;">🎣 Ready to cast!</div>
+          <div id="pond-bobber"></div>
+          <div id="pond-timer" style="font-size:12px;color:#aaa;min-height:18px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:7px;margin-bottom:10px;">
+        <button class="btn bgn bfw" id="btn-cast">🎣 Cast Line (5💧 • 30s)</button>
+        <button class="btn bge bsm" id="btn-fish-speed">⚡ (10💎)</button>
+      </div>
+      <div class="card"><div style="font-weight:700;color:var(--hay);">🐟 Fish Caught: <span id="fish-count">0</span></div><div id="fish-log" style="margin-top:7px;font-size:12px;color:#777;"></div></div>
+    </div>
+      <div class="subp" id="tab-inv">
+        <div class="stl">🎒 Inventory</div>
+        <div id="inv-list"></div>
+      </div>
     </div>
 
-    <!-- COMBAT (Boss + VIP) -->
+    <!-- COMBAT (Boss + VIP + Spin) -->
     <div class="tab" id="tab-combat">
       <div class="tabs" id="combat-tabs">
         <button class="tabbtn on" data-cbt="boss">👹 Boss</button>
         <button class="tabbtn" data-cbt="vip">👑 VIP</button>
         <button class="tabbtn" data-cbt="spin">🎰 Spin</button>
       </div>
-      <div id="combat-content"></div>
+      <div class="subp on" id="tab-boss">
+      <div class="stl">👹 Saturday Boss Battle</div>
+      <div class="boss-box">
+        <div id="boss-icon" style="font-size:76px;">💀</div>
+        <div id="boss-name" style="font-size:15px;font-weight:900;color:#E53935;margin:7px 0;">Awaiting Boss...</div>
+        <div style="font-size:11px;color:#888;">HP: <span id="boss-hp-txt">Full</span></div>
+        <div class="boss-hpbar"><div class="boss-hpfill" id="boss-hp-fill" style="width:100%"></div></div>
+        <div style="font-size:11px;color:#666;" id="boss-next">Next boss: Saturday 12PM EST</div>
+        <div id="boss-loot" style="margin-top:8px;"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div class="zcard" id="z1card"><div style="font-size:12px;font-weight:800;color:var(--hay);">⚔️ Zone 1 Frontier</div><div style="font-size:22px;font-weight:900;" id="z1dmg">0</div><div style="font-size:10px;color:#aaa;">damage</div></div>
+        <div class="zcard" id="z2card"><div style="font-size:12px;font-weight:800;color:var(--hay);">🛡️ Zone 2 Heartland</div><div style="font-size:22px;font-weight:900;" id="z2dmg">0</div><div style="font-size:10px;color:#aaa;">damage</div></div>
+      </div>
+      <div class="card" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div><div style="font-size:13px;font-weight:700;">Your Zone: <span id="my-zone">?</span></div><div style="font-size:11px;color:#aaa;">Your damage: <span id="my-dmg">0</span></div></div>
+          <div style="font-size:28px;" id="my-wep">🪃</div>
+        </div>
+        <button class="btn bdr2 bfw" id="btn-boss-attack">⚔️ ATTACK! (20⚡)</button>
+      </div>
+      <div class="card"><div style="font-size:12px;font-weight:700;color:var(--hay);margin-bottom:5px;">🏆 Boss Rewards</div><div style="font-size:12px;color:#aaa;line-height:1.9;">🥇 Win: 500💎 + Rare Animal + 2x Gold week<br>🥈 Lose: 200💎 + 25% all boosts + 3 spins</div></div>
+    </div><div class="subp" id="tab-vip">
+      <div class="stl">👑 VIP Status</div>
+      <div class="card" style="text-align:center;margin-bottom:12px;background:linear-gradient(135deg,rgba(124,77,255,.2),rgba(45,27,14,.8));">
+        <div style="font-size:46px;margin-bottom:5px;">👑</div>
+        <div style="font-size:22px;font-weight:900;color:var(--geml);">VIP <span id="vip-cur">0</span></div>
+        <div style="font-size:11px;color:#aaa;margin-top:3px;">ONLY way to expand acres • Gems only</div>
+        <div style="margin-top:7px;font-size:12px;color:var(--hay);">💎 <span id="vip-spent">0</span> gems spent total</div>
+      </div>
+      <div class="card" style="margin-bottom:10px;background:rgba(124,77,255,.08);border-color:rgba(124,77,255,.3);">
+        <div style="font-size:12px;color:var(--geml);font-weight:700;margin-bottom:5px;">🌾 HOW TO GET MORE ACRES</div>
+        <div style="font-size:12px;color:#ddd;line-height:1.6;">VIP = ONLY way to expand land. Start at 4 acres. Max 50. Every 5 acres = -5% all timers!</div>
+      </div>
+      <div id="vip-list"></div>
+    </div><div class="subp" id="tab-spin">
+      <div class="stl">🎰 Daily Spin</div>
+      <div class="wheel-wrap">
+        <div style="position:relative;display:inline-block;">
+          <div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:24px;z-index:10;">▼</div>
+          <canvas id="wcanvas" width="240" height="240" style="border-radius:50%;border:4px solid var(--hay);box-shadow:0 0 28px rgba(212,168,71,.35);"></canvas>
+        </div>
+        <div id="spin-result" style="font-size:16px;font-weight:800;color:var(--hay);min-height:26px;margin-top:11px;"></div>
+        <div id="spin-status" style="font-size:12px;color:#aaa;margin:5px 0;">Free spin available!</div>
+        <button class="btn bg" style="padding:13px 42px;font-size:15px;" id="btn-spin">🎰 SPIN NOW!</button>
+        <div style="font-size:11px;color:#555;margin-top:7px;">Extra spin: 100💎</div>
+      </div>
+    </div>
     </div>
 
     <!-- PROGRESS (Quests + Daily + Profile + Ranks + Guide + AI) -->
@@ -664,7 +594,79 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <button class="tabbtn" data-prg="guide">📖 Guide</button>
         <button class="tabbtn" data-prg="ai">🤖 Vera AI</button>
       </div>
-      <div id="progress-content"></div>
+      <div class="subp on" id="tab-quests">
+      <div class="stl">📜 Daily Quests</div>
+      <div id="quest-list"></div>
+      <div class="stl">🏆 Achievements</div>
+      <div id="ach-list"></div>
+      <div class="stl">🗺️ Level Unlocks</div>
+      <div id="lv-unlocks"></div>
+    </div><div class="subp" id="tab-daily">
+      <div class="stl">📅 Daily Rewards</div>
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="font-size:52px;animation:fl 2s ease-in-out infinite;">🔥</div>
+        <div style="font-size:36px;font-weight:900;color:var(--hay);" id="streak-n">1</div>
+        <div style="font-size:13px;color:#aaa;">Day Streak</div>
+      </div>
+      <div id="day-rewards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;"></div>
+      <button class="btn bg bfw" id="btn-daily">🎁 Claim Today!</button>
+      <div class="stl" style="margin-top:14px;">🏆 Milestones</div>
+      <div class="card" style="font-size:12px;line-height:2;">Day 7: 🎰 Bonus Spin + 50💎<br>Day 30: 500💎 + 3 daily spins<br>Day 100: 1,000💎 + Exclusive Animal<br>Day 365: 2,000💎 + TRUE LEGEND 👑</div>
+    </div><div class="subp" id="tab-profile">
+      <div style="text-align:center;padding:18px 0;">
+        <div style="font-size:76px;" id="prof-av">🌱</div>
+        <div style="font-size:20px;font-weight:900;color:var(--hay);" id="prof-nm">Farmer</div>
+        <div style="font-size:12px;color:#8BC34A;" id="prof-title">Beginner Homesteader</div>
+        <div style="font-size:11px;color:#555;margin-top:3px;" id="prof-zone">Zone ?</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px;">
+        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-harv">0</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Harvests</div></div>
+        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-hunt">0</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Hunts</div></div>
+        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-fish">0</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Fish</div></div>
+        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-gold">0g</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Earned</div></div>
+        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-days">1</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Days</div></div>
+        <div class="card" style="text-align:center;padding:10px;"><div style="font-size:20px;font-weight:900;color:var(--hay);" id="p-acres">4</div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;">Acres</div></div>
+      </div>
+    </div><div class="subp" id="tab-ranks">
+      <div class="stl">🏆 Leaderboard</div>
+      <div class="card" style="text-align:center;margin-bottom:10px;background:linear-gradient(135deg,rgba(255,179,0,.1),rgba(45,27,14,.8));">
+        <div style="font-size:11px;color:var(--hay);">🏆 WEEKLY PRIZES (Top 25)</div>
+        <div style="font-size:12px;color:#ddd;line-height:1.9;margin-top:4px;">🥇 Rank 1: 500💎 | 🥈 2-3: 300💎<br>🥉 4-10: 200💎 | 🏅 11-25: 100💎</div>
+      </div>
+      <div id="lb-list"></div>
+    </div><div class="subp" id="tab-guide">
+      <div class="stl">📖 Home Guide</div>
+      <div class="tabs">
+        <button class="tabbtn on" data-guide="perks">🏠 Perks</button>
+        <button class="tabbtn" data-guide="economy">🔗 Economy</button>
+        <button class="tabbtn" data-guide="tips">💡 Strategy</button>
+      </div>
+      <div id="guide-perks"><div id="guide-perks-list"></div></div>
+      <div id="guide-economy" style="display:none;"><div id="guide-eco-list"></div></div>
+      <div id="guide-tips" style="display:none;"><div id="guide-tips-list"></div></div>
+    </div><div class="subp" id="tab-ai">
+      <div class="stl">🤖 Vera — AI Homestead Advisor</div>
+      <div class="card" style="margin-bottom:9px;background:linear-gradient(135deg,rgba(74,124,89,.2),rgba(30,61,47,.5));">
+        <div style="font-size:12px;color:#8BC34A;font-weight:700;">🌱 Real Homesteading Knowledge</div>
+        <div style="font-size:12px;color:#aaa;margin-top:3px;">Ask Vera anything about farming, animals, food preservation, land & off-grid living.</div>
+      </div>
+      <div class="tabs" id="vera-qs" style="flex-wrap:wrap;">
+        <button class="tabbtn" data-q="Best crops for my state?">🌱 Best crops?</button>
+        <button class="tabbtn" data-q="How to raise chickens?">🐔 Chickens?</button>
+        <button class="tabbtn" data-q="Food preservation tips?">🥫 Preserve food?</button>
+        <button class="tabbtn" data-q="How to improve my soil?">🪱 Soil tips?</button>
+        <button class="tabbtn" data-q="How to make money homesteading?">💰 Make money?</button>
+      </div>
+      <div style="display:flex;flex-direction:column;height:calc(100vh - 280px);">
+        <div id="ai-msgs" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding-bottom:8px;">
+          <div style="max-width:85%;padding:12px 13px;border-radius:14px;font-size:13px;line-height:1.5;background:rgba(45,27,14,.85);border:1px solid var(--bdr);border-bottom-left-radius:4px;"><div style="font-size:10px;color:var(--hay);font-weight:700;margin-bottom:3px;">🌿 Vera</div>Hey! I'm Vera, your AI homestead advisor. Ask me anything about real farming, animals, land, or off-grid living. 🌱</div>
+        </div>
+        <div style="display:flex;gap:7px;padding-top:7px;">
+          <input class="chin" id="ai-inp" placeholder="Ask Vera..." style="flex:1;">
+          <button class="btn bgn bsm" id="btn-ai-send">Ask</button>
+        </div>
+      </div>
+    </div>
     </div>
 
     <!-- ALLIANCE -->
@@ -1108,18 +1110,9 @@ function renderTab(t){
     daily:renderDaily,profile:renderProfile,ranks:renderLB,gems:renderGems,
     spin:function(){renderSpin();drawWheel();},inv:renderInv,ai:function(){},
     alliance:renderAlliance,
-    activity:function(){
-      var c=ge('activity-content');
-      if(c&&!c.innerHTML){renderHunt();c.innerHTML=ge('tab-hunt').innerHTML;}
-    },
-    combat:function(){
-      var c=ge('combat-content');
-      if(c&&!c.innerHTML){renderBoss();c.innerHTML=ge('tab-boss').innerHTML;}
-    },
-    progress:function(){
-      var c=ge('progress-content');
-      if(c&&!c.innerHTML){renderQuests();c.innerHTML=ge('tab-quests').innerHTML;}
-    }
+    activity:function(){renderHunt();},
+    combat:function(){renderBoss();},
+    progress:function(){renderQuests();}
   };
   if(map[t])map[t]();
 }
@@ -2493,53 +2486,42 @@ function buyWhale(){
 }
 
 // ACTIVITY TAB (Hunt/Mine/Pond/Inv)
-function renderActivityTab(sub){
-  var c=ge('activity-content');if(!c)return;
-  // Get inner HTML from existing tabs
-  var map={
-    hunt:function(){renderHunt();return ge('tab-hunt').innerHTML;},
-    mine:function(){renderMine();return ge('tab-mine').innerHTML;},
-    pond:function(){return ge('tab-pond').innerHTML;},
-    inv:function(){renderInv();return ge('inv-list')?'<div id="inv-list">'+ge('inv-list').innerHTML+'</div>':'';}
-  };
-  if(map[sub])c.innerHTML='<div id="inv-list" style="display:'+(sub==='inv'?'block':'none')+'"></div>'+map[sub]();
-  else c.innerHTML='';
-  if(sub==='inv'){renderInv();}
-  if(sub==='hunt'){renderHunt();}
-  if(sub==='mine'){renderMine();}
-}
+
 function actTab(btn,sub){
   document.querySelectorAll('#activity-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
-  var c=ge('activity-content');if(!c)return;
-  // Pull content from the hidden source tabs
-  if(sub==='hunt'){renderHunt();c.innerHTML=ge('tab-hunt').innerHTML;}
-  else if(sub==='mine'){renderMine();c.innerHTML=ge('tab-mine').innerHTML;}
-  else if(sub==='pond'){c.innerHTML=ge('tab-pond').innerHTML;}
-  else if(sub==='inv'){c.innerHTML='<div id="inv-list"></div>';renderInv();}
+  document.querySelectorAll('#tab-activity .subp').forEach(function(p){p.classList.remove('on');});
+  var target=ge('tab-'+sub);
+  if(target)target.classList.add('on');
+  if(sub==='hunt')renderHunt();
+  else if(sub==='mine')renderMine();
+  else if(sub==='inv')renderInv();
 }
 
 // COMBAT TAB (Boss/VIP/Spin)
 function cbtTab(btn,sub){
   document.querySelectorAll('#combat-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
-  var c=ge('combat-content');if(!c)return;
-  if(sub==='boss'){renderBoss();c.innerHTML=ge('tab-boss').innerHTML;}
-  else if(sub==='vip'){renderVIP();c.innerHTML=ge('tab-vip').innerHTML;}
-  else if(sub==='spin'){renderSpin();drawWheel();c.innerHTML=ge('tab-spin').innerHTML;}
+  document.querySelectorAll('#tab-combat .subp').forEach(function(p){p.classList.remove('on');});
+  var target=ge('tab-'+sub);
+  if(target)target.classList.add('on');
+  if(sub==='boss')renderBoss();
+  else if(sub==='vip')renderVIP();
+  else if(sub==='spin'){renderSpin();drawWheel();}
 }
 
 // PROGRESS TAB (Quests/Daily/Profile/Ranks/Guide/AI)
 function prgTab(btn,sub){
   document.querySelectorAll('#progress-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
-  var c=ge('progress-content');if(!c)return;
-  if(sub==='quests'){renderQuests();c.innerHTML=ge('tab-quests').innerHTML;}
-  else if(sub==='daily'){renderDaily();c.innerHTML=ge('tab-daily').innerHTML;}
-  else if(sub==='profile'){renderProfile();c.innerHTML=ge('tab-profile').innerHTML;}
-  else if(sub==='ranks'){renderLB();c.innerHTML=ge('tab-ranks').innerHTML;}
-  else if(sub==='guide'){renderGuide();c.innerHTML=ge('tab-guide').innerHTML;}
-  else if(sub==='ai'){c.innerHTML=ge('tab-ai').innerHTML;}
+  document.querySelectorAll('#tab-progress .subp').forEach(function(p){p.classList.remove('on');});
+  var target=ge('tab-'+sub);
+  if(target)target.classList.add('on');
+  if(sub==='quests')renderQuests();
+  else if(sub==='daily')renderDaily();
+  else if(sub==='profile')renderProfile();
+  else if(sub==='ranks')renderLB();
+  else if(sub==='guide')renderGuide();
 }
 
 // Update farm water/stamina display
