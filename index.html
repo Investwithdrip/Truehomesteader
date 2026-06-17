@@ -1025,7 +1025,7 @@ const FAKE_PLAYERS=[
 
 // GAME STATE
 var G={
-  gold:50,gems:0,lv:1,xp:0,xpMax:100,
+  gold:200,gems:0,lv:1,xp:0,xpMax:100,
   stamina:100,staminaMax:100,water:10,waterMax:10,
   season:'Spring',day:1,playerName:'',playerState:'',avatar:'🌱',home:'',
   homeLv:1,homeUpgradeCost:500,
@@ -1501,8 +1501,8 @@ function renderMatShop(){
     // Bundles
     html+='<div style="font-size:11px;color:var(--hay);font-weight:700;letter-spacing:1px;margin-bottom:7px;">📦 BUNDLE PACKS</div>';
     var bundles=[
-      {n:'Framing Pack', e:'🪵',p:400,  d:'Home Lv1-2 basics',items:{wood:50,stone:30,nails:40,screws:20}},
-      {n:'Hardware Kit', e:'🔩',p:600,  d:'All fasteners stocked',items:{nails:100,screws:80,bolts:40,wire:30}},
+      {n:'Framing Pack', e:'🪵',p:150,  d:'Home Lv1-2 basics',items:{wood:50,stone:30,nails:40,screws:20}},
+      {n:'Hardware Kit', e:'🔩',p:250,  d:'All fasteners stocked',items:{nails:100,screws:80,bolts:40,wire:30}},
       {n:'Builder Pack', e:'🏗️',p:1200, d:'Home Lv3-4 + buildings',items:{wood:80,stone:60,nails:60,screws:40,glass:20,bolts:25,clay:20}},
       {n:'Glass & Pipe', e:'🪟',p:1800, d:'Greenhouse & Well upgrades',items:{glass:50,pipe:40,concrete:20,wire:30}},
       {n:'Contractor',   e:'👷',p:3500, d:'Home Lv5-6 power move',items:{wood:120,concrete:40,steel:20,bolts:60,wire:40,glass:35,pipe:20}},
@@ -1522,7 +1522,10 @@ function renderMatShop(){
       html+='<div style="font-size:12px;font-weight:800;color:var(--hay);">'+b.n+'</div>';
       html+='<div style="font-size:10px;color:#aaa;margin:2px 0;">'+b.d+'</div>';
       html+='<div style="font-size:10px;color:#8BC34A;margin:4px 0;line-height:1.5;">'+matStr+'</div>';
-      html+='<button class="btn '+(can?(isGem?'bge':'bg'):'')+'  bsm bfw" style="margin-top:5px;'+(can?'':'opacity:.4;background:rgba(255,255,255,.05);')+'" data-bi="'+i+'" onclick="buyBndl(+this.dataset.bi)" '+(can?'':'disabled')+'>'+(isGem?'💎':'💰')+b.p+(isGem?'💎':'g')+'</button>';
+      html+='<div style="margin-top:5px;">';
+      html+='<button class="btn '+(can?(isGem?'bge':'bg'):'')+'  bsm bfw" style="'+(can?'':'opacity:.55;background:rgba(255,255,255,.08);')+'" data-bi="'+ i +'" onclick="buyBndl(+this.dataset.bi)" '+(can?'':'disabled')+'>'+(isGem?'💎 ':'💰 ')+b.p+(isGem?' gems':' gold')+'</button>';
+      if(!can&&!isGem)html+='<div style="font-size:9px;color:#ef9a9a;text-align:center;margin-top:3px;">Need '+(b.p-G.gold).toLocaleString()+'g more</div>';
+      html+='</div>';
       html+='</div>';
     });
     html+='</div>';
