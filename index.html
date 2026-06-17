@@ -535,27 +535,39 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <button class="tabbtn" data-cbt="spin">🎰 Spin</button>
       </div>
       <div class="subp on" id="tab-boss">
-      <div class="stl">👹 Saturday Boss Battle</div>
+      <div class="stl">👹 Server Boss Raid</div>
+      <div id="boss-window-banner" style="font-size:12px;font-weight:700;text-align:center;padding:8px;border-radius:10px;background:var(--card);border:1px solid var(--bdr);margin-bottom:10px;">Loading raid status...</div>
       <div class="boss-box">
         <div id="boss-icon" style="font-size:76px;">💀</div>
         <div id="boss-name" style="font-size:15px;font-weight:900;color:#E53935;margin:7px 0;">Awaiting Boss...</div>
         <div style="font-size:11px;color:#888;">HP: <span id="boss-hp-txt">Full</span></div>
         <div class="boss-hpbar"><div class="boss-hpfill" id="boss-hp-fill" style="width:100%"></div></div>
-        <div style="font-size:11px;color:#666;" id="boss-next">Next boss: Saturday 12PM EST</div>
+        <div style="font-size:10px;color:#666;margin-top:4px;">One shared boss — every alliance on both servers is hitting it</div>
         <div id="boss-loot" style="margin-top:8px;"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-        <div class="zcard" id="z1card"><div style="font-size:12px;font-weight:800;color:var(--hay);">⚔️ Zone 1 Frontier</div><div style="font-size:22px;font-weight:900;" id="z1dmg">0</div><div style="font-size:10px;color:#aaa;">damage</div></div>
-        <div class="zcard" id="z2card"><div style="font-size:12px;font-weight:800;color:var(--hay);">🛡️ Zone 2 Heartland</div><div style="font-size:22px;font-weight:900;" id="z2dmg">0</div><div style="font-size:10px;color:#aaa;">damage</div></div>
       </div>
       <div class="card" style="margin-bottom:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <div><div style="font-size:13px;font-weight:700;">Your Zone: <span id="my-zone">?</span></div><div style="font-size:11px;color:#aaa;">Your damage: <span id="my-dmg">0</span></div></div>
+          <div><div style="font-size:13px;font-weight:700;">Your damage this raid: <span id="my-dmg">0</span></div></div>
           <div style="font-size:28px;" id="my-wep">🪃</div>
         </div>
-        <button class="btn bdr2 bfw" id="btn-boss-attack">⚔️ ATTACK! (20⚡)</button>
+        <button class="btn bdr2 bfw" id="btn-boss-attack">⚔️ ATTACK!</button>
+        <button class="btn bsm bg" id="btn-test-raid" style="margin-top:6px;font-size:10px;opacity:.7;">🧪 Dev: Force Raid Active (remove before launch)</button>
       </div>
-      <div class="card"><div style="font-size:12px;font-weight:700;color:var(--hay);margin-bottom:5px;">🏆 Boss Rewards</div><div style="font-size:12px;color:#aaa;line-height:1.9;">🥇 Win: 500💎 + Rare Animal + 2x Gold week<br>🥈 Lose: 200💎 + 25% all boosts + 3 spins</div></div>
+      <div class="card" style="margin-bottom:10px;">
+        <div style="font-weight:700;color:var(--hay);font-size:12px;">🐝 Bees &amp; Honey</div>
+        <div style="font-size:12px;color:#aaa;margin-top:4px;">Bees this raid: <span id="bee-count">0</span> · Honey banked: <span id="honey-count">0</span></div>
+        <div style="font-size:10px;color:#666;margin-top:4px;">10 bees → 1 honey. Honey will fuel the Vehicles system in a future update.</div>
+        <button class="btn bsm bge" id="btn-convert-honey" style="margin-top:7px;">🍯 Convert Bees to Honey</button>
+      </div>
+      <div class="card" style="margin-bottom:10px;">
+        <div style="font-weight:700;color:var(--hay);font-size:12px;margin-bottom:6px;">⚔️ Live Raid Feed</div>
+        <div id="ally-feed" style="font-size:11px;color:#9bb5d6;max-height:100px;overflow-y:auto;line-height:1.8;"></div>
+      </div>
+      <div class="card" style="margin-bottom:10px;">
+        <div style="font-weight:700;color:var(--hay);font-size:12px;margin-bottom:6px;">🏆 Top Alliances — <span id="lb-server-label">Server 1</span></div>
+        <div id="alliance-leaderboard"></div>
+      </div>
+      <div class="card"><div style="font-size:12px;font-weight:700;color:var(--hay);margin-bottom:5px;">🏆 Raid Rewards</div><div style="font-size:12px;color:#aaa;line-height:1.9;">⚔️ Every hit: gold + a material, guaranteed<br>💎 Gem bonus every 20th hit (1-5💎)<br>🥇 Top 10 alliance on your server: 500💎 + rare animal<br>🥈 Participated, not top 10: 150💎 consolation</div></div>
     </div><div class="subp" id="tab-vip">
       <div class="stl">👑 VIP Status</div>
       <div class="card" style="text-align:center;margin-bottom:12px;background:linear-gradient(135deg,rgba(124,77,255,.2),rgba(45,27,14,.8));">
@@ -735,6 +747,8 @@ const WEAPONS=[
   {id:'sniper',n:'Sniper',e:'🎯',acc:80,cost:1500,minLv:25,dMin:100,dMax:250},
   {id:'gatorgun',n:'Gator Gun',e:'🐊',acc:70,cost:3000,minLv:40,dMin:180,dMax:400},
 ];
+// Boss-raid damage multiplier per weapon — better weapon = harder hits on the boss
+const BOSS_MULT={slingshot:1,bow:1.8,rifle:2.8,shotgun:3.8,sniper:5.5,gatorgun:8};
 const HUNT_ANIMALS=[
   {id:'rabbit',n:'Rabbit',e:'🐰',minHLv:1,gold:20,xp:15},
   {id:'squirrel',n:'Squirrel',e:'🐿️',minHLv:3,gold:15,xp:10},
@@ -1045,7 +1059,7 @@ var G={
   qp:{harv:0,watr:0,anml:0,fish:0,mine:0,hunt:0},
   qDone:[],
   bossHP:1000000,bossTotalHP:1000000,bossActive:false,bossIdx:0,
-  zone:1,myDmg:0,z1dmg:0,z2dmg:0,
+  zone:1,myDmg:0,bees:0,honeyTotal:0,bossGemHits:0,bossWindowKey:'',testForceRaid:false,
   huntTarget:null,fishingActive:false,mineField:[],critterActive:false,
   reputation:0,
 };
@@ -1111,9 +1125,19 @@ function renderTab(t){
     spin:function(){renderSpin();drawWheel();},inv:renderInv,ai:function(){},
     alliance:renderAlliance,
     activity:function(){renderHunt();},
-    combat:function(){renderBoss();},
+    combat:function(){
+      var activeSub=document.querySelector('#tab-combat .subp.on');
+      var subId=activeSub?activeSub.id.replace('tab-',''):'boss';
+      if(subId==='boss'){renderBoss();startAllyFeed();}
+      else{
+        stopAllyFeed();
+        if(subId==='vip')renderVIP();
+        else if(subId==='spin'){renderSpin();drawWheel();}
+      }
+    },
     progress:function(){renderQuests();}
   };
+  if(t!=='combat')stopAllyFeed();
   if(map[t])map[t]();
 }
 
@@ -1980,52 +2004,164 @@ function speedFish(){
   G.gems-=10;clearInterval(fishTimer);reelIn();updateHUD();
 }
 
-// BOSS
+// BOSS RAID — shared boss, real Saturday 6PM-Sunday 6PM window, alliance leaderboards per server
+function strHash(s){var h=0;for(var i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0;}return Math.abs(h)||1;}
+function seededRand(seed){var s=seed%2147483647;if(s<=0)s+=2147483646;return function(){s=s*16807%2147483647;return (s-1)/2147483646;};}
+function fmtCountdown(ms){if(ms<0)ms=0;var totalMin=Math.floor(ms/60000);var d=Math.floor(totalMin/1440);var h=Math.floor((totalMin%1440)/60);var m=totalMin%60;if(d>0)return d+'d '+h+'h';if(h>0)return h+'h '+m+'m';return m+'m';}
+function getBossWindow(){
+  var now=new Date();
+  if(G.testForceRaid){return {active:true,windowEnd:new Date(now.getTime()+24*3600*1000),nextStart:null,weekKey:'TEST'};}
+  var day=now.getDay();
+  var mostRecentSat=new Date(now);
+  mostRecentSat.setDate(now.getDate()-((day-6+7)%7));
+  mostRecentSat.setHours(18,0,0,0);
+  if(mostRecentSat.getTime()>now.getTime())mostRecentSat.setDate(mostRecentSat.getDate()-7);
+  var windowEnd=new Date(mostRecentSat.getTime()+24*3600*1000);
+  var active=now.getTime()>=mostRecentSat.getTime()&&now.getTime()<windowEnd.getTime();
+  var nextStart=active?null:new Date(mostRecentSat.getTime()+7*24*3600*1000);
+  var weekKey=mostRecentSat.toISOString().slice(0,10);
+  return {active:active,windowEnd:windowEnd,nextStart:nextStart,weekKey:weekKey};
+}
+function attackStaminaCost(){return Math.max(10,20-Math.floor(((G.homeLv||1)-1)/3));}
+function computeAllianceWeekTotal(alliance,weekKey){
+  var rnd=seededRand(strHash(weekKey+alliance.id));
+  return Math.round(alliance.members*alliance.lv*(600+rnd()*900));
+}
+function getServerLeaderboard(server,weekKey,myAllianceId,myContribution){
+  var list=FAKE_ALLIANCES.filter(function(a){return a.zone===server;}).map(function(a){
+    var total=computeAllianceWeekTotal(a,weekKey);
+    if(a.id===myAllianceId)total+=(myContribution||0);
+    return {a:a,total:total};
+  });
+  list.sort(function(x,y){return y.total-x.total;});
+  return list;
+}
+function processBossWindowIfNeeded(win){
+  if(!G.bossWindowKey){G.bossWindowKey=win.weekKey;return;}
+  if(G.bossWindowKey===win.weekKey||win.weekKey==='TEST')return;
+  // a raid window just closed — settle rewards off the OLD key before resetting
+  var oldKey=G.bossWindowKey;
+  var server=G.zone||1;
+  var participated=(G.myDmg||0)>0;
+  if(participated){
+    var lb=getServerLeaderboard(server,oldKey,G.alliance,G.myDmg||0);
+    var myRank=G.alliance?lb.findIndex(function(r){return r.a.id===G.alliance;}):-1;
+    if(myRank>=0&&myRank<10){G.gems+=500;toast('🏆 Your alliance finished top 10 last raid! +500💎','gld');}
+    else{G.gems+=150;toast('🥈 Last raid ended. +150💎 for participating.');}
+  }
+  G.myDmg=0;G.bees=0;G.bossGemHits=0;
+  G.bossHP=BOSSES[G.bossIdx||0].hp;G.bossTotalHP=G.bossHP;
+  G.bossWindowKey=win.weekKey;
+  saveG();
+}
 function renderBoss(){
+  var win=getBossWindow();
+  processBossWindowIfNeeded(win);
   var boss=BOSSES[G.bossIdx||0];
   var hp=G.bossHP||boss.hp,thp=G.bossTotalHP||boss.hp;
   var bi=ge('boss-icon');if(bi)bi.textContent=boss.e;
-  st('boss-name',G.bossActive?boss.n:'Awaiting Boss...');
+  st('boss-name',win.active?boss.n:'Boss Sleeping...');
   st('boss-hp-txt',hp.toLocaleString()+' / '+thp.toLocaleString());
   var hb=ge('boss-hp-fill');if(hb)hb.style.width=Math.max(0,(hp/thp)*100)+'%';
-  st('boss-next',G.bossActive?'BOSS ACTIVE — Attack now!':'Next boss: Saturday 12PM EST');
-  st('z1dmg',(G.z1dmg||0).toLocaleString());st('z2dmg',(G.z2dmg||0).toLocaleString());
-  st('my-zone','Zone '+G.zone+' ('+(G.zone===1?'Frontier':'Heartland')+')');
-  st('my-dmg',G.myDmg||0);
-  var z1=ge('z1card');if(z1)z1.classList.toggle('win',(G.z1dmg||0)>=(G.z2dmg||0));
-  var z2=ge('z2card');if(z2)z2.classList.toggle('win',(G.z2dmg||0)>(G.z1dmg||0));
+  var banner=ge('boss-window-banner');
+  if(banner){
+    if(win.active){banner.innerHTML='🔥 RAID ACTIVE — ends in '+fmtCountdown(win.windowEnd-new Date());banner.style.color='var(--ok)';}
+    else{banner.innerHTML='💤 Next raid: Saturday 6PM — starts in '+fmtCountdown(win.nextStart-new Date());banner.style.color='#888';}
+  }
+  st('my-dmg',(G.myDmg||0).toLocaleString());
+  st('bee-count',(G.bees||0).toLocaleString());
+  st('honey-count',(G.honeyTotal||0).toLocaleString());
   var w=WEAPONS.find(function(x){return x.id===G.weapon;})||WEAPONS[0];
   var mw=ge('my-wep');if(mw)mw.textContent=w.e;
+  var atkBtn=ge('btn-boss-attack');
+  if(atkBtn)atkBtn.textContent=win.active?'⚔️ ATTACK! ('+attackStaminaCost()+'⚡)':'💤 Raid not active';
+  var server=G.zone||1;
+  st('lb-server-label','Server '+server);
+  var lb=getServerLeaderboard(server,win.weekKey,G.alliance,G.myDmg||0).slice(0,10);
+  var lc=ge('alliance-leaderboard');
+  if(lc){
+    lc.innerHTML=lb.map(function(r,i){
+      var mine=r.a.id===G.alliance;
+      return '<div style="display:flex;justify-content:space-between;padding:4px 0;'+(mine?'color:var(--gold);font-weight:700;':'')+'border-bottom:1px solid rgba(255,255,255,.06);font-size:11px;"><span>#'+(i+1)+' '+r.a.emoji+' '+r.a.name+(mine?' (you)':'')+'</span><span>'+r.total.toLocaleString()+'</span></div>';
+    }).join('');
+  }
 }
 function attackBoss(){
-  G.bossActive=true;
-  if(G.stamina<20){toast('Need 20⚡ stamina!','err');return;}
-  G.stamina-=20;
+  var win=getBossWindow();
+  processBossWindowIfNeeded(win);
+  if(!win.active){toast('💤 Raid is not active. It returns Saturday 6PM!','err');return;}
+  var boss=BOSSES[G.bossIdx||0];
+  var cost=attackStaminaCost();
+  if(G.stamina<cost){toast('Need '+cost+'⚡ stamina!','err');return;}
+  G.stamina-=cost;
   var w=WEAPONS.find(function(x){return x.id===G.weapon;})||WEAPONS[0];
   var hit=Math.random()*100<=w.acc+G.marksLv;
   if(hit){
-    var dmg=w.dMin+Math.floor(Math.random()*(w.dMax-w.dMin));
-    G.bossHP=Math.max(0,(G.bossHP||1000000)-dmg);
-    if(G.zone===1)G.z1dmg=(G.z1dmg||0)+dmg;else G.z2dmg=(G.z2dmg||0)+dmg;
+    var homeMult=1+(((G.homeLv||1)-1)*0.06);
+    var bMult=BOSS_MULT[w.id]||1;
+    var dmg=Math.round(15*bMult*homeMult*(0.85+Math.random()*0.3));
+    G.bossHP=Math.max(0,(G.bossHP||boss.hp)-dmg);
     G.myDmg=(G.myDmg||0)+dmg;
+    G.bees=(G.bees||0)+dmg;
     var drops=[];
-    if(Math.random()<.6){var g=Math.floor(Math.random()*100+50);drops.push('💰+'+g+'g');G.gold+=g;G.goldEarned+=g;}
-    if(Math.random()<.15){var gm=Math.floor(Math.random()*8+3);drops.push('💎+'+gm);G.gems+=gm;}
-    if(Math.random()<.2){drops.push('⚡+10');G.stamina=Math.min(G.staminaMax,G.stamina+10);}
+    var g=Math.floor(Math.random()*60+40);G.gold+=g;G.goldEarned=(G.goldEarned||0)+g;drops.push('💰+'+g+'g');
+    var matPick=BUILD_MATS[Math.floor(Math.random()*BUILD_MATS.length)];
+    var matAmt=1+Math.floor(Math.random()*3);
+    if(!G.mats)G.mats={};
+    G.mats[matPick.id]=(G.mats[matPick.id]||0)+matAmt;
+    drops.push(matPick.e+'+'+matAmt);
+    G.bossGemHits=(G.bossGemHits||0)+1;
+    if(G.bossGemHits>=20){
+      var gm=1+Math.floor(Math.random()*5);
+      G.gems+=gm;drops.push('💎+'+gm);G.bossGemHits=0;
+    }
     var bl=ge('boss-loot');if(bl)bl.innerHTML=drops.map(function(d){return '<div class="loot-i">'+d+'</div>';}).join('');
     toast('⚔️ Hit '+dmg.toLocaleString()+' dmg! '+drops.join(' '),'gld');
-    if(G.bossHP<=0){bossDefeated();return;}
+    if(G.bossHP<=0)respawnBoss();
   } else toast('❌ Missed! Try a better weapon.');
   updateHUD();renderBoss();saveG();
 }
-function bossDefeated(){
-  var winZ=(G.z1dmg||0)>=(G.z2dmg||0)?1:2,won=G.zone===winZ;
-  if(won){G.gems+=500;toast('🏆 YOUR ZONE WON! +500💎!','gld');}
-  else{G.gems+=200;toast('🥈 Boss defeated. +200💎 consolation.');}
-  G.bossHP=BOSSES[G.bossIdx||0].hp;G.bossTotalHP=G.bossHP;
-  G.bossActive=false;G.myDmg=0;G.z1dmg=0;G.z2dmg=0;
+function respawnBoss(){
+  toast('💀 Boss defeated! A fresh one rises — keep grinding the raid window!','gld');
   G.bossIdx=(G.bossIdx+1)%BOSSES.length;
+  G.bossHP=BOSSES[G.bossIdx].hp;G.bossTotalHP=G.bossHP;
+}
+function convertHoney(){
+  var b=G.bees||0;
+  if(b<10){toast('Need at least 10 bees to convert.','err');return;}
+  var h=Math.floor(b/10);
+  G.honeyTotal=(G.honeyTotal||0)+h;
+  G.bees=b%10;
+  toast('🍯 Converted to +'+h+' honey!','gld');
   updateHUD();renderBoss();saveG();
+}
+function toggleTestRaid(){
+  G.testForceRaid=!G.testForceRaid;
+  toast(G.testForceRaid?'🧪 Test raid forced ON':'🧪 Test raid forced OFF');
+  renderBoss();saveG();
+}
+var _allyFeedTimer=null;
+function startAllyFeed(){
+  stopAllyFeed();
+  tickAllyFeed();
+  _allyFeedTimer=setInterval(tickAllyFeed,4000);
+}
+function stopAllyFeed(){if(_allyFeedTimer){clearInterval(_allyFeedTimer);_allyFeedTimer=null;}}
+function tickAllyFeed(){
+  var fc=ge('ally-feed');if(!fc)return;
+  var win=getBossWindow();
+  if(!win.active){fc.innerHTML='<div style="color:#666;">No raid in progress right now.</div>';return;}
+  var names=['WildRootsCo','MountainMike','BluegrassHmstd','SunflowerFarm','PeachTreeGrace','RustyAcres','ClaySprings','Hollerfolk'];
+  var homes=['🏡','🛖','🚐','🐄','🏠'];
+  var n=1+Math.floor(Math.random()*3);
+  var lines=[];
+  for(var i=0;i<n;i++){
+    var nm=names[Math.floor(Math.random()*names.length)];
+    var dmg=50+Math.floor(Math.random()*900);
+    lines.push('<div>'+homes[Math.floor(Math.random()*homes.length)]+' <b>'+nm+'</b> hit for '+dmg.toLocaleString()+' dmg</div>');
+  }
+  fc.insertAdjacentHTML('afterbegin',lines.join(''));
+  while(fc.children.length>12)fc.removeChild(fc.lastChild);
 }
 
 // VIP
@@ -2505,9 +2641,12 @@ function cbtTab(btn,sub){
   document.querySelectorAll('#tab-combat .subp').forEach(function(p){p.classList.remove('on');});
   var target=ge('tab-'+sub);
   if(target)target.classList.add('on');
-  if(sub==='boss')renderBoss();
-  else if(sub==='vip')renderVIP();
-  else if(sub==='spin'){renderSpin();drawWheel();}
+  if(sub==='boss'){renderBoss();startAllyFeed();}
+  else{
+    stopAllyFeed();
+    if(sub==='vip')renderVIP();
+    else if(sub==='spin'){renderSpin();drawWheel();}
+  }
 }
 
 // PROGRESS TAB (Quests/Daily/Profile/Ranks/Guide/AI)
@@ -3073,6 +3212,8 @@ _allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});G.mats.wood
 
   // Boss
   ge('btn-boss-attack').onclick=attackBoss;
+  ge('btn-convert-honey').onclick=convertHoney;
+  ge('btn-test-raid').onclick=toggleTestRaid;
 
   // VIP
   ge('hud-vip').onclick=function(){navTo('vip');};
