@@ -460,6 +460,7 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <button class="tabbtn" data-act="mine">⛏️ Mine</button>
         <button class="tabbtn" data-act="pond">🎣 Pond</button>
         <button class="tabbtn" data-act="inv">🎒 Inventory</button>
+        <button class="tabbtn" data-act="map">🗺️ Map</button>
       </div>
       <div class="subp on" id="tab-hunt">
       <div class="stl">🦌 Hunting Ground</div>
@@ -524,6 +525,17 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
       <div class="subp" id="tab-inv">
         <div class="stl">🎒 Inventory</div>
         <div id="inv-list"></div>
+      </div>
+      <div class="subp" id="tab-map">
+        <div class="stl">🐴 Stable</div>
+        <div id="stable-list"></div>
+        <div style="display:flex;gap:7px;margin-bottom:14px;">
+          <button class="btn bdr2 bfw" id="btn-buy-stallion">🐴 Buy Stallion</button>
+          <button class="btn bsm bg" id="btn-breed-stallion">🐎 Breed (500g)</button>
+        </div>
+        <div class="stl">🗺️ Terrain Map</div>
+        <div style="font-size:11px;color:#888;margin-bottom:8px;">Send an idle stallion to a region to collect resources. They travel out, gather, and come back — check in later to collect.</div>
+        <div id="zone-list"></div>
       </div>
     </div>
 
@@ -998,6 +1010,21 @@ const BOSSES=[
   {n:'Demon Boar',e:'😈🐗',hp:1500000},
   {n:'Ancient Gator',e:'🌊🐊',hp:2000000},
 ];
+// STALLIONS & TERRAIN MAP
+const STALLION_BREEDS=[
+  {id:'black',n:'Black Stallion',e:'🐴',trait:'speed',label:'⚡ Travel Speed',rarity:38},
+  {id:'brown',n:'Brown Stallion',e:'🐴',trait:'yield',label:'📦 Resource Yield',rarity:34},
+  {id:'white',n:'White Stallion',e:'🐴',trait:'luck',label:'🍀 Rare Find Chance',rarity:16},
+  {id:'pinto_bw',n:'Black & White Stallion',e:'🐴',trait:'dual',label:'⚡📦 Speed + Yield',rarity:8},
+  {id:'pinto_wb',n:'White & Brown Stallion',e:'🐴',trait:'goldrush',label:'💰 Bonus Gold/Trip',rarity:4},
+];
+const TERRAIN_ZONES=[
+  {id:'river',n:'River Bend',e:'🏞️',resource:'water',icon:'💧',amtMin:3,amtMax:7,travelMin:12},
+  {id:'meadow',n:'Golden Meadow',e:'🌾',resource:'gold',icon:'💰',amtMin:40,amtMax:90,travelMin:8},
+  {id:'forest',n:'Whispering Forest',e:'🌲',resource:'material',icon:'🪵',amtMin:1,amtMax:3,travelMin:18},
+  {id:'quarry',n:'Old Quarry',e:'⛰️',resource:'mineral',icon:'🪨',amtMin:1,amtMax:2,travelMin:25},
+  {id:'ruins',n:'Sunken Ruins',e:'🏛️',resource:'gem',icon:'💎',amtMin:10,amtMax:20,travelMin:45},
+];
 const BUILD_MATS=[
   // Basic natural
   {id:'wood',     n:'Lumber',      e:'🪵', desc:'Basic framing. Chop trees or buy bundles.',      cat:'basic'},
@@ -1060,6 +1087,7 @@ var G={
   qDone:[],
   bossHP:1000000,bossTotalHP:1000000,bossActive:false,bossIdx:0,
   zone:1,myDmg:0,bees:0,honeyTotal:0,bossGemHits:0,bossWindowKey:'',testForceRaid:false,
+  stallions:[],zoneDepletion:{},
   huntTarget:null,fishingActive:false,mineField:[],critterActive:false,
   reputation:0,
 };
@@ -1124,7 +1152,17 @@ function renderTab(t){
     daily:renderDaily,profile:renderProfile,ranks:renderLB,gems:renderGems,
     spin:function(){renderSpin();drawWheel();},inv:renderInv,ai:function(){},
     alliance:renderAlliance,
-    activity:function(){renderHunt();},
+    activity:function(){
+      var activeSub=document.querySelector('#tab-activity .subp.on');
+      var subId=activeSub?activeSub.id.replace('tab-',''):'hunt';
+      if(subId==='map'){renderMap();startMapTimer();}
+      else{
+        stopMapTimer();
+        if(subId==='hunt')renderHunt();
+        else if(subId==='mine')renderMine();
+        else if(subId==='inv')renderInv();
+      }
+    },
     combat:function(){
       var activeSub=document.querySelector('#tab-combat .subp.on');
       var subId=activeSub?activeSub.id.replace('tab-',''):'boss';
@@ -1138,6 +1176,7 @@ function renderTab(t){
     progress:function(){renderQuests();}
   };
   if(t!=='combat')stopAllyFeed();
+  if(t!=='activity')stopMapTimer();
   if(map[t])map[t]();
 }
 
@@ -1876,7 +1915,7 @@ function doHunt(){
     G.gold+=g;G.goldEarned+=g;G.xp+=a.xp;G.hunterXP+=a.xp;G.marksXP+=10;
     G.totalHunts++;G.qp.hunt++;
     var hl2=ge('hunt-log');
-    if(hl2)hl2.innerHTML='<div style="color:#8BC34A;padding:4px 0;">✅ '+a.e+' '+a.n+' caught! +'+g+'g</div>'+hl2.innerHTML;
+    if(hl2){hl2.insertAdjacentHTML('afterbegin','<div style="color:#8BC34A;padding:4px 0;">✅ '+a.e+' '+a.n+' caught! +'+g+'g</div>');while(hl2.children.length>8)hl2.removeChild(hl2.lastChild);}
     var hs=ge('hunt-status');if(hs)hs.textContent='✅ '+a.n+' caught! +'+g+'g';
     toast('🎯 Hit! +'+g+'g','gld');
     if(G.hunterXP>=G.hunterLv*50&&G.hunterLv<50){G.hunterLv++;G.hunterXP=0;toast('🦌 Hunter Lv '+G.hunterLv+'!');}
@@ -1884,7 +1923,7 @@ function doHunt(){
     checkLv();
   } else {
     G.marksXP+=3;
-    var hl3=ge('hunt-log');if(hl3)hl3.innerHTML='<div style="color:#555;padding:4px 0;">❌ Missed '+a.e+' '+a.n+'</div>'+hl3.innerHTML;
+    var hl3=ge('hunt-log');if(hl3){hl3.insertAdjacentHTML('afterbegin','<div style="color:#555;padding:4px 0;">❌ Missed '+a.e+' '+a.n+'</div>');while(hl3.children.length>8)hl3.removeChild(hl3.lastChild);}
     var hs2=ge('hunt-status');if(hs2)hs2.textContent='❌ Missed! Try again.';
     toast('❌ Missed! Better luck next time.');
   }
@@ -1994,7 +2033,7 @@ function reelIn(){
   G.gold+=caught.g;G.goldEarned+=caught.g;G.fishCount++;G.xp+=15;G.qp.fish++;
   var ps=ge('pond-status');if(ps)ps.textContent='🎉 Caught '+caught.e+' '+caught.n+'! +'+caught.g+'g';
   st('fish-count',G.fishCount);
-  var fl=ge('fish-log');if(fl)fl.innerHTML='<div style="padding:3px 0;border-bottom:1px solid var(--bdr);">'+caught.e+' '+caught.n+' +'+caught.g+'g</div>'+fl.innerHTML;
+  var fl=ge('fish-log');if(fl){fl.insertAdjacentHTML('afterbegin','<div style="padding:3px 0;border-bottom:1px solid var(--bdr);">'+caught.e+' '+caught.n+' +'+caught.g+'g</div>');while(fl.children.length>8)fl.removeChild(fl.lastChild);}
   toast('🎣 '+caught.e+' '+caught.n+'! +'+caught.g+'g','gld');
   checkLv();updateHUD();saveG();
 }
@@ -2621,7 +2660,161 @@ function buyWhale(){
   updateHUD();renderGems();saveG();
 }
 
-// ACTIVITY TAB (Hunt/Mine/Pond/Inv)
+// STABLE & MAP
+function breedInfo(id){return STALLION_BREEDS.find(function(b){return b.id===id;})||STALLION_BREEDS[0];}
+function rollBreed(){
+  var r=Math.random()*100,acc=0;
+  for(var i=0;i<STALLION_BREEDS.length;i++){acc+=STALLION_BREEDS[i].rarity;if(r<=acc)return STALLION_BREEDS[i].id;}
+  return STALLION_BREEDS[0].id;
+}
+function stallionUid(){return 's'+Date.now()+Math.floor(Math.random()*1000);}
+function stallionCost(){return 200+(G.stallions||[]).length*150;}
+function resourceLabel(r){return {water:'Water',gold:'Gold',material:'Materials',mineral:'Minerals',gem:'Gems (rare)'}[r]||r;}
+function weightedMineral(){
+  var r=Math.random()*100,acc=0;
+  for(var i=0;i<MINERALS.length;i++){acc+=MINERALS[i].rarity;if(r<=acc)return MINERALS[i];}
+  return MINERALS[0];
+}
+function buyStallion(){
+  if(!G.stallions)G.stallions=[];
+  if(G.stallions.length>=5){toast('Stable is full (5 max)!','err');return;}
+  var cost=stallionCost();
+  if(G.gold<cost){toast('Need '+cost+'g for a stallion','err');return;}
+  G.gold-=cost;
+  var breed=rollBreed();
+  G.stallions.push({id:stallionUid(),breed:breed,lvl:1,status:'idle',zoneId:null,returnAt:0});
+  toast('🐴 New '+breedInfo(breed).n+' joined your stable!','gld');
+  updateHUD();renderMap();saveG();
+}
+function breedStallions(){
+  if(!G.stallions)G.stallions=[];
+  if(G.stallions.length>=5){toast('Stable is full (5 max) — cannot breed more','err');return;}
+  var idle=G.stallions.filter(function(s){return s.status==='idle';});
+  if(idle.length<2){toast('Need 2 stallions home (not out collecting) to breed','err');return;}
+  var cost=500;
+  if(G.gold<cost){toast('Breeding costs '+cost+'g','err');return;}
+  G.gold-=cost;
+  var breed=rollBreed();
+  G.stallions.push({id:stallionUid(),breed:breed,lvl:1,status:'idle',zoneId:null,returnAt:0});
+  toast('🐎 A foal was born! New '+breedInfo(breed).n,'gld');
+  updateHUD();renderMap();saveG();
+}
+function trainStallion(id){
+  var s=(G.stallions||[]).find(function(x){return x.id===id;});
+  if(!s)return;
+  if(s.lvl>=10){toast('Already max level!','err');return;}
+  var cost=s.lvl*100,matCost=s.lvl*3;
+  if(G.gold<cost){toast('Need '+cost+'g to train','err');return;}
+  if(!G.mats)G.mats={};
+  if((G.mats.wood||0)<matCost){toast('Need '+matCost+'🪵 Lumber to train','err');return;}
+  G.gold-=cost;G.mats.wood-=matCost;
+  s.lvl++;
+  toast('🐴 '+breedInfo(s.breed).n+' trained to Lv'+s.lvl+'!','gld');
+  updateHUD();renderMap();saveG();
+}
+function sendStallion(stallionId,zoneId){
+  var s=(G.stallions||[]).find(function(x){return x.id===stallionId;});
+  var z=TERRAIN_ZONES.find(function(x){return x.id===zoneId;});
+  if(!s||!z||s.status!=='idle')return;
+  var b=breedInfo(s.breed);
+  var speedMult=b.trait==='speed'?(1-0.03*s.lvl):(b.trait==='dual'?(1-0.015*s.lvl):1);
+  var travelMs=Math.max(60000,Math.round(z.travelMin*60000*speedMult));
+  s.status='traveling';s.zoneId=zoneId;s.returnAt=Date.now()+travelMs;
+  toast('🐴 Sent to '+z.n+'! Back in '+fmtCountdown(travelMs),'gld');
+  renderMap();saveG();
+}
+function collectStallion(stallionId){
+  var s=(G.stallions||[]).find(function(x){return x.id===stallionId;});
+  if(!s||s.status!=='traveling'||Date.now()<s.returnAt)return;
+  var z=TERRAIN_ZONES.find(function(x){return x.id===s.zoneId;});
+  var b=breedInfo(s.breed);
+  var yieldMult=b.trait==='yield'?(1+0.04*s.lvl):(b.trait==='dual'?(1+0.02*s.lvl):1);
+  var luckBonus=b.trait==='luck'?(0.02*s.lvl):0;
+  var goldBonus=b.trait==='goldrush'?(5*s.lvl):0;
+  if(!G.zoneDepletion)G.zoneDepletion={};
+  var dep=G.zoneDepletion[z.id]||{level:0,lastAt:0};
+  var elapsedMin=(Date.now()-dep.lastAt)/60000;
+  var curLevel=Math.max(0,dep.level-elapsedMin*5);
+  var depletionMult=1-(curLevel/100)*0.5;
+  var drops=[];
+  if(z.resource==='water'){
+    var amt=Math.max(1,Math.round((z.amtMin+Math.random()*(z.amtMax-z.amtMin))*yieldMult*depletionMult));
+    G.water=Math.min(G.waterMax,G.water+amt);drops.push('💧+'+amt);
+  } else if(z.resource==='gold'){
+    var amt2=Math.max(1,Math.round((z.amtMin+Math.random()*(z.amtMax-z.amtMin))*yieldMult*depletionMult));
+    G.gold+=amt2;G.goldEarned=(G.goldEarned||0)+amt2;drops.push('💰+'+amt2+'g');
+  } else if(z.resource==='material'){
+    var mp=BUILD_MATS[Math.floor(Math.random()*BUILD_MATS.length)];
+    var amt3=Math.max(1,Math.round((z.amtMin+Math.random()*(z.amtMax-z.amtMin))*yieldMult*depletionMult));
+    if(!G.mats)G.mats={};G.mats[mp.id]=(G.mats[mp.id]||0)+amt3;drops.push(mp.e+'+'+amt3);
+  } else if(z.resource==='mineral'){
+    var mn=weightedMineral();
+    var amt4=Math.max(1,Math.round((z.amtMin+Math.random()*(z.amtMax-z.amtMin))*yieldMult*depletionMult));
+    if(!G.minerals)G.minerals={};G.minerals[mn.id]=(G.minerals[mn.id]||0)+amt4;drops.push(mn.e+'+'+amt4);
+  } else if(z.resource==='gem'){
+    var gAmt=Math.max(1,Math.round((z.amtMin+Math.random()*(z.amtMax-z.amtMin))*yieldMult*depletionMult));
+    G.gold+=gAmt;drops.push('💰+'+gAmt+'g');
+    if(Math.random()<0.10+luckBonus){var gm=1+Math.floor(Math.random()*3);G.gems+=gm;drops.push('💎+'+gm);}
+  }
+  if(goldBonus>0){G.gold+=goldBonus;G.goldEarned=(G.goldEarned||0)+goldBonus;drops.push('💰+'+goldBonus+'g bonus');}
+  G.zoneDepletion[z.id]={level:Math.min(100,curLevel+25),lastAt:Date.now()};
+  s.status='idle';s.zoneId=null;s.returnAt=0;
+  toast('🐴 '+breedInfo(s.breed).n+' returned! '+drops.join(' '),'gld');
+  updateHUD();renderMap();saveG();
+}
+function renderMap(){
+  if(!G.stallions)G.stallions=[];
+  var sc=ge('stable-list');
+  if(sc){
+    if(G.stallions.length===0){
+      sc.innerHTML='<div style="font-size:12px;color:#888;padding:10px 0;">No stallions yet. Buy your first one below!</div>';
+    } else {
+      sc.innerHTML=G.stallions.map(function(s){
+        var b=breedInfo(s.breed),statusHtml='';
+        if(s.status==='idle'){statusHtml='<span style="color:#8BC34A;">🟢 Home</span>';}
+        else{
+          var left=s.returnAt-Date.now();
+          if(left<=0)statusHtml='<button class="btn bsm bgn" onclick="collectStallion(\''+s.id+'\')">📦 Collect!</button>';
+          else{var z=TERRAIN_ZONES.find(function(x){return x.id===s.zoneId;});statusHtml='<span style="color:#aaa;">🐎 at '+(z?z.n:'?')+' — back in '+fmtCountdown(left)+'</span>';}
+        }
+        return '<div class="card" style="padding:9px;margin-bottom:7px;display:flex;align-items:center;gap:9px;">'+
+          '<div style="font-size:30px;">'+b.e+'</div>'+
+          '<div style="flex:1;">'+
+            '<div style="font-size:12px;font-weight:700;">'+b.n+' <span style="color:#777;font-size:10px;">Lv'+s.lvl+'/10</span></div>'+
+            '<div style="font-size:10px;color:var(--hay);">'+b.label+'</div>'+
+            '<div style="font-size:11px;margin-top:3px;">'+statusHtml+'</div>'+
+          '</div>'+
+          (s.status==='idle'?'<button class="btn bsm bg" style="font-size:10px;" onclick="trainStallion(\''+s.id+'\')">⬆️ '+(s.lvl<10?(s.lvl*100+'g'):'MAX')+'</button>':'')+
+        '</div>';
+      }).join('');
+    }
+  }
+  var bbtn=ge('btn-buy-stallion');
+  if(bbtn){bbtn.textContent=G.stallions.length>=5?'🐴 Stable Full (5/5)':'🐴 Buy Stallion ('+stallionCost()+'g)';bbtn.disabled=G.stallions.length>=5;}
+  var brbtn=ge('btn-breed-stallion');if(brbtn)brbtn.disabled=G.stallions.length>=5;
+  var zc=ge('zone-list');
+  if(zc){
+    var idleStallions=G.stallions.filter(function(s){return s.status==='idle';});
+    zc.innerHTML=TERRAIN_ZONES.map(function(z){
+      var dep=(G.zoneDepletion||{})[z.id],depLevel=0;
+      if(dep){var elapsedMin=(Date.now()-dep.lastAt)/60000;depLevel=Math.max(0,dep.level-elapsedMin*5);}
+      var depTxt=depLevel>10?' <span style="color:#E53935;font-size:9px;">('+Math.round(depLevel)+'% depleted)</span>':'';
+      var picker;
+      if(idleStallions.length===0)picker='<span style="font-size:10px;color:#666;">No stallions available</span>';
+      else picker=idleStallions.map(function(s){return '<button class="btn bsm bdr2" style="margin-right:4px;margin-bottom:4px;" onclick="sendStallion(\''+s.id+'\',\''+z.id+'\')">Send '+breedInfo(s.breed).e+'</button>';}).join('');
+      return '<div class="card" style="padding:9px;margin-bottom:7px;">'+
+        '<div style="font-size:13px;font-weight:700;">'+z.e+' '+z.n+depTxt+'</div>'+
+        '<div style="font-size:10px;color:#aaa;margin-bottom:6px;">'+z.icon+' '+resourceLabel(z.resource)+' • ⏱️ '+z.travelMin+'m trip</div>'+
+        '<div>'+picker+'</div>'+
+      '</div>';
+    }).join('');
+  }
+}
+var _mapTimer=null;
+function startMapTimer(){stopMapTimer();_mapTimer=setInterval(renderMap,15000);}
+function stopMapTimer(){if(_mapTimer){clearInterval(_mapTimer);_mapTimer=null;}}
+
+// ACTIVITY TAB (Hunt/Mine/Pond/Inv/Map)
 
 function actTab(btn,sub){
   document.querySelectorAll('#activity-tabs .tabbtn').forEach(function(b){b.classList.remove('on');});
@@ -2629,6 +2822,8 @@ function actTab(btn,sub){
   document.querySelectorAll('#tab-activity .subp').forEach(function(p){p.classList.remove('on');});
   var target=ge('tab-'+sub);
   if(target)target.classList.add('on');
+  if(sub==='map'){renderMap();startMapTimer();return;}
+  stopMapTimer();
   if(sub==='hunt')renderHunt();
   else if(sub==='mine')renderMine();
   else if(sub==='inv')renderInv();
@@ -2672,8 +2867,6 @@ function updateFarmBars(){
 }
 function resetGame(){if(confirm('Reset all progress? This cannot be undone.')){localStorage.removeItem('th54');location.reload();}}
 
-function leaveAlliance(){if(confirm("Leave your alliance?")){G.alliance=null;G.allianceRank=0;G.allianceContrib=0;renderAlliance();saveG();}}
-function openGems(){navTo('gems');}
 // ===== ALLIANCE SYSTEM =====
 function renderAlliance(){
   var c=ge('alliance-main');if(!c)return;
@@ -3214,6 +3407,10 @@ _allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});G.mats.wood
   ge('btn-boss-attack').onclick=attackBoss;
   ge('btn-convert-honey').onclick=convertHoney;
   ge('btn-test-raid').onclick=toggleTestRaid;
+
+  // Stable
+  ge('btn-buy-stallion').onclick=buyStallion;
+  ge('btn-breed-stallion').onclick=breedStallions;
 
   // VIP
   ge('hud-vip').onclick=function(){navTo('vip');};
