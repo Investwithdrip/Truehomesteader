@@ -1681,6 +1681,24 @@ function bldTab(btn,sub){
   renderBuilds();
 }
 
+function hasMats(req){
+  if(!req)return true;
+  if(!G.mats)return false;
+  for(var k in req){if((G.mats[k]||0)<req[k])return false;}
+  return true;
+}
+function getMissingMats(req){
+  var miss=[];
+  if(!req)return miss;
+  for(var k in req){
+    var need=req[k],have=G.mats[k]||0;
+    if(have<need){
+      var mE={wood:'🪵',stone:'🪨',clay:'🧱',nails:'🔩',screws:'🪛',bolts:'⚙️',wire:'🔌',glass:'🪟',concrete:'🏗️',steel:'🔧',pipe:'🚿',iron:'🪝',coal:'⚫',diamond:'💎',crystal:'🔮'};
+      miss.push((mE[k]||k)+' '+(need-have)+' more');
+    }
+  }
+  return miss;
+}
 function upgradeHome(){
   if(G.homeLv>=10){toast('Already max level!');return;}
   var nextLv=G.homeLv+1;
