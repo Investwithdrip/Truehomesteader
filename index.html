@@ -607,12 +607,13 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
       </div>
     </div>
 
-    <!-- COMBAT (Boss + VIP + Spin) -->
+    <!-- COMBAT (Boss + VIP + Spin + Bees) -->
     <div class="tab" id="tab-combat">
       <div class="tabs" id="combat-tabs">
         <button class="tabbtn on" data-cbt="boss">👹 Boss</button>
         <button class="tabbtn" data-cbt="vip">👑 VIP</button>
         <button class="tabbtn" data-cbt="spin">🎰 Spin</button>
+        <button class="tabbtn" data-cbt="bees">🐝 Bees</button>
       </div>
       <div class="subp on" id="tab-boss">
       <div class="stl">👹 Server Boss Raid</div>
@@ -636,7 +637,7 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
       <div class="card" style="margin-bottom:10px;">
         <div style="font-weight:700;color:var(--hay);font-size:12px;">🐝 Bees &amp; Honey</div>
         <div style="font-size:12px;color:#aaa;margin-top:4px;">Bees this raid: <span id="bee-count">0</span> · Honey banked: <span id="honey-count">0</span></div>
-        <div style="font-size:10px;color:#666;margin-top:4px;">10 bees → 1 honey. Honey will fuel the Vehicles system in a future update.</div>
+        <div style="font-size:10px;color:#666;margin-top:4px;">10 bees → 1 honey. Spend honey on Vehicles in the 🐝 Bees tab.</div>
         <button class="btn bsm bge" id="btn-convert-honey" style="margin-top:7px;">🍯 Convert Bees to Honey</button>
       </div>
       <div class="card" style="margin-bottom:10px;">
@@ -661,6 +662,18 @@ html,body{height:100%;overflow:hidden;background:#0a1208;font-family:system-ui,s
         <div style="font-size:12px;color:#ddd;line-height:1.6;">VIP = ONLY way to expand land. Start at 4 acres. Max 50. Every 5 acres = -5% all timers!</div>
       </div>
       <div id="vip-list"></div>
+    </div><div class="subp" id="tab-bees">
+      <div class="stl">🐝 Bees &amp; Vehicles</div>
+      <div class="card" style="text-align:center;margin-bottom:12px;background:linear-gradient(135deg,rgba(255,179,0,.15),rgba(45,27,14,.8));">
+        <div style="font-size:46px;margin-bottom:5px;">🍯</div>
+        <div style="font-size:22px;font-weight:900;color:var(--hay);"><span id="bees-honey-big">0</span> Honey</div>
+        <div style="font-size:11px;color:#aaa;margin-top:3px;">Bees this raid: <span id="bees-bee-big">0</span> · 10 bees → 1 honey</div>
+        <button class="btn bsm bge" id="btn-bees-convert" style="margin-top:8px;">🍯 Convert Bees to Honey</button>
+      </div>
+      <div class="card" style="margin-bottom:10px;">
+        <div style="font-size:12px;color:#aaa;line-height:1.7;">Earn bees by dealing damage in the Boss Raid (1 damage = 1 bee). Honey is spent here only — on Vehicles that give your homestead permanent bonuses.</div>
+      </div>
+      <div id="vehicle-list"></div>
     </div><div class="subp" id="tab-spin">
       <div class="stl">🎰 Daily Spin</div>
       <div class="wheel-wrap">
@@ -862,6 +875,21 @@ const BUILDINGS=[
     {lv:3,perk:'+200 hay • Auto feed animals',  mats:{wood:40,screws:20,concrete:5},gold:500},
     {lv:4,perk:'+400 hay • 2x animal growth',   mats:{wood:60,steel:5,bolts:10},   gold:1000},
     {lv:5,perk:'MEGA BARN: infinite hay • 3x growth', mats:{wood:100,steel:15,bolts:20,glass:5},gold:2000},
+    {lv:6,perk:'3.5x growth • +25% animal sell price',mats:{wood:120,steel:20,bolts:25,glass:8},gold:2800},
+    {lv:7,perk:'4x growth • auto-collect eggs/wool',mats:{wood:140,steel:25,bolts:30,glass:10},gold:3700},
+    {lv:8,perk:'4.5x growth • +50% animal sell price',mats:{wood:165,steel:32,bolts:38,glass:14},gold:4800},
+    {lv:9,perk:'5x growth • animals never get sick',mats:{wood:190,steel:40,bolts:46,glass:18},gold:6100},
+    {lv:10,perk:'GRAND BARN: 6x growth • +75% sell price',mats:{wood:220,steel:50,bolts:55,glass:24},gold:7700},
+    {lv:11,perk:'7x growth • barn capacity +10',mats:{wood:255,steel:62,bolts:66,glass:30},gold:9600},
+    {lv:12,perk:'8x growth • +100% animal sell price',mats:{wood:295,steel:76,bolts:79,glass:38},gold:11900},
+    {lv:13,perk:'9x growth • free vet visits',mats:{wood:340,steel:92,bolts:94,glass:47},gold:14600},
+    {lv:14,perk:'10x growth • barn capacity +20',mats:{wood:390,steel:111,bolts:111,glass:58},gold:17900},
+    {lv:15,perk:'12x growth • +150% sell price',mats:{wood:450,steel:133,bolts:131,glass:71},gold:21800},
+    {lv:16,perk:'14x growth • daily free baby animal',mats:{wood:515,steel:159,bolts:154,glass:86},gold:26500},
+    {lv:17,perk:'16x growth • barn capacity +35',mats:{wood:590,steel:189,bolts:181,glass:104},gold:32000},
+    {lv:18,perk:'18x growth • +200% sell price',mats:{wood:675,steel:224,bolts:212,glass:125},gold:38500},
+    {lv:19,perk:'20x growth • gem chance on every birth',mats:{wood:770,steel:264,bolts:248,glass:150},gold:46100},
+    {lv:20,perk:'LEGENDARY BARN: 25x growth, +300% sell price, capacity +50',mats:{wood:880,steel:310,bolts:290,glass:180},gold:55000},
   ]},
   {id:'silo',      n:'Grain Silo',   e:'🏛️',cost:400, perk:'+25% crop yield', cat:'buildings',
    upgrades:[
@@ -870,6 +898,21 @@ const BUILDINGS=[
     {lv:3,perk:'+75% crop yield • auto water', mats:{stone:40,concrete:10,pipe:5},gold:500},
     {lv:4,perk:'+100% crop yield',        mats:{stone:60,steel:8,pipe:10},      gold:1000},
     {lv:5,perk:'MEGA SILO: 2x all crop gold', mats:{stone:100,steel:20,concrete:20},gold:2000},
+    {lv:6,perk:'2.5x crop gold • +25% rare seed chance',mats:{stone:120,steel:26,concrete:26},gold:2800},
+    {lv:7,perk:'3x crop gold • auto-harvest 1 plot',mats:{stone:140,steel:32,concrete:32},gold:3700},
+    {lv:8,perk:'3.5x crop gold • +50% rare seed chance',mats:{stone:165,steel:40,concrete:40},gold:4800},
+    {lv:9,perk:'4x crop gold • auto-harvest 2 plots',mats:{stone:190,steel:48,concrete:48},gold:6100},
+    {lv:10,perk:'GRAND SILO: 5x crop gold • auto-harvest 3 plots',mats:{stone:220,steel:58,concrete:58},gold:7700},
+    {lv:11,perk:'6x crop gold • +75% rare seed chance',mats:{stone:255,steel:70,concrete:70},gold:9600},
+    {lv:12,perk:'7x crop gold • auto-harvest 4 plots',mats:{stone:295,steel:84,concrete:84},gold:11900},
+    {lv:13,perk:'8x crop gold • storage capacity doubled',mats:{stone:340,steel:100,concrete:100},gold:14600},
+    {lv:14,perk:'9x crop gold • +100% rare seed chance',mats:{stone:390,steel:119,concrete:119},gold:17900},
+    {lv:15,perk:'11x crop gold • auto-harvest 6 plots',mats:{stone:450,steel:141,concrete:141},gold:21800},
+    {lv:16,perk:'13x crop gold • daily free rare seed',mats:{stone:515,steel:166,concrete:166},gold:26500},
+    {lv:17,perk:'15x crop gold • auto-harvest 8 plots',mats:{stone:590,steel:195,concrete:195},gold:32000},
+    {lv:18,perk:'17x crop gold • storage capacity tripled',mats:{stone:675,steel:228,concrete:228},gold:38500},
+    {lv:19,perk:'19x crop gold • auto-harvest entire farm',mats:{stone:770,steel:266,concrete:266},gold:46100},
+    {lv:20,perk:'LEGENDARY SILO: 25x crop gold, auto-harvest everything, never spoils',mats:{stone:880,steel:310,concrete:310},gold:55000},
   ]},
   {id:'smokehouse',n:'Smokehouse',   e:'🏠',cost:600, perk:'Meat 2x value',   cat:'buildings',
    upgrades:[
@@ -878,6 +921,21 @@ const BUILDINGS=[
     {lv:3,perk:'Meat 3x • Fish 2x',      mats:{wood:40,stone:30,steel:5},      gold:600},
     {lv:4,perk:'All food 3x • Gem drops', mats:{stone:50,steel:10,bolts:15},    gold:1200},
     {lv:5,perk:'PREMIUM: All food 5x + daily gem', mats:{steel:20,glass:10,bolts:25},gold:2500},
+    {lv:6,perk:'All food 6x • +10% gem drop chance',mats:{steel:26,glass:13,bolts:31},gold:3400},
+    {lv:7,perk:'All food 7x • 2 daily gems',mats:{steel:32,glass:16,bolts:38},gold:4400},
+    {lv:8,perk:'All food 8x • +20% gem drop chance',mats:{steel:40,glass:20,bolts:47},gold:5700},
+    {lv:9,perk:'All food 9x • 3 daily gems',mats:{steel:48,glass:24,bolts:56},gold:7200},
+    {lv:10,perk:'GRAND SMOKEHOUSE: All food 10x • 5 daily gems',mats:{steel:58,glass:29,bolts:67},gold:9100},
+    {lv:11,perk:'All food 12x • +35% gem drop chance',mats:{steel:70,glass:35,bolts:81},gold:11300},
+    {lv:12,perk:'All food 14x • 7 daily gems',mats:{steel:84,glass:42,bolts:97},gold:14000},
+    {lv:13,perk:'All food 16x • +50% gem drop chance',mats:{steel:100,glass:50,bolts:115},gold:17200},
+    {lv:14,perk:'All food 18x • 10 daily gems',mats:{steel:119,glass:60,bolts:136},gold:21000},
+    {lv:15,perk:'All food 21x • +65% gem drop chance',mats:{steel:141,glass:71,bolts:160},gold:25600},
+    {lv:16,perk:'All food 24x • 14 daily gems',mats:{steel:166,glass:84,bolts:188},gold:31100},
+    {lv:17,perk:'All food 27x • +80% gem drop chance',mats:{steel:195,glass:98,bolts:220},gold:37600},
+    {lv:18,perk:'All food 30x • 18 daily gems',mats:{steel:228,glass:115,bolts:255},gold:45200},
+    {lv:19,perk:'All food 34x • +95% gem drop chance',mats:{steel:266,glass:135,bolts:296},gold:54000},
+    {lv:20,perk:'LEGENDARY SMOKEHOUSE: All food 40x, 25 daily gems, guaranteed gem on every sale',mats:{steel:310,glass:158,bolts:343},gold:64200},
   ]},
   {id:'greenhouse',n:'Greenhouse',   e:'🌿',cost:800, perk:'Year-round crops', cat:'buildings',
    upgrades:[
@@ -886,6 +944,21 @@ const BUILDINGS=[
     {lv:3,perk:'2x speed • Rare crops',   mats:{glass:35,wire:10,pipe:8},       gold:800},
     {lv:4,perk:'3x speed • Auto plant',   mats:{glass:50,steel:8,pipe:15},      gold:1500},
     {lv:5,perk:'HYDROPONIC: 5x speed • never water', mats:{glass:80,steel:20,pipe:25,wire:20},gold:3000},
+    {lv:6,perk:'6x speed • +25% rare crop chance',mats:{glass:96,steel:26,pipe:31,wire:26},gold:4100},
+    {lv:7,perk:'7x speed • auto-harvest greenhouse plots',mats:{glass:115,steel:32,pipe:38,wire:32},gold:5400},
+    {lv:8,perk:'8x speed • +50% rare crop chance',mats:{glass:138,steel:40,pipe:47,wire:40},gold:7000},
+    {lv:9,perk:'9x speed • crops never die from neglect',mats:{glass:165,steel:48,pipe:56,wire:48},gold:8900},
+    {lv:10,perk:'GRAND GREENHOUSE: 10x speed • +75% rare crop chance',mats:{glass:190,steel:58,pipe:67,wire:58},gold:11200},
+    {lv:11,perk:'12x speed • all-weather immunity',mats:{glass:220,steel:70,pipe:81,wire:70},gold:13900},
+    {lv:12,perk:'14x speed • +100% rare crop chance',mats:{glass:255,steel:84,pipe:97,wire:84},gold:17200},
+    {lv:13,perk:'16x speed • duplicate crop chance 10%',mats:{glass:295,steel:100,pipe:115,wire:100},gold:21000},
+    {lv:14,perk:'18x speed • +125% rare crop chance',mats:{glass:340,steel:119,pipe:136,wire:119},gold:25700},
+    {lv:15,perk:'21x speed • duplicate crop chance 20%',mats:{glass:390,steel:141,pipe:160,wire:141},gold:31300},
+    {lv:16,perk:'24x speed • +150% rare crop chance',mats:{glass:450,steel:166,pipe:188,wire:166},gold:38000},
+    {lv:17,perk:'27x speed • duplicate crop chance 30%',mats:{glass:515,steel:195,pipe:220,wire:195},gold:46000},
+    {lv:18,perk:'30x speed • +175% rare crop chance',mats:{glass:590,steel:228,pipe:255,wire:228},gold:55400},
+    {lv:19,perk:'34x speed • duplicate crop chance 40%',mats:{glass:675,steel:266,pipe:296,wire:266},gold:66400},
+    {lv:20,perk:'LEGENDARY GREENHOUSE: 40x speed, every harvest duplicates, all crops always rare',mats:{glass:770,steel:310,pipe:343,wire:310},gold:79100},
   ]},
   {id:'workshop',  n:'Workshop',     e:'🔧',cost:700, perk:'Craft items',     cat:'buildings',
    upgrades:[
@@ -894,6 +967,21 @@ const BUILDINGS=[
     {lv:3,perk:'Craft weapons • 20% discount', mats:{iron:20,steel:5,wire:10},  gold:700},
     {lv:4,perk:'Craft rare items • refine ore', mats:{steel:15,bolts:20,wire:15},gold:1400},
     {lv:5,perk:'FORGE: craft anything • gems from refining', mats:{steel:30,diamond:3,bolts:30},gold:3000},
+    {lv:6,perk:'30% material discount • +10% refine gem chance',mats:{steel:38,diamond:4,bolts:38},gold:4100},
+    {lv:7,perk:'Craft legendary weapons • 40% discount',mats:{steel:47,diamond:5,bolts:47},gold:5400},
+    {lv:8,perk:'+20% refine gem chance • free repairs',mats:{steel:58,diamond:7,bolts:58},gold:7000},
+    {lv:9,perk:'50% material discount • craft vehicles parts',mats:{steel:70,diamond:8,bolts:70},gold:8900},
+    {lv:10,perk:'GRAND FORGE: +30% refine gem chance • instant crafting',mats:{steel:84,diamond:10,bolts:84},gold:11200},
+    {lv:11,perk:'60% material discount on all crafts',mats:{steel:100,diamond:12,bolts:100},gold:13900},
+    {lv:12,perk:'+40% refine gem chance • craft 2 at once',mats:{steel:119,diamond:15,bolts:119},gold:17200},
+    {lv:13,perk:'Craft mythic-tier gear, exclusive to max Workshop',mats:{steel:141,diamond:18,bolts:141},gold:21000},
+    {lv:14,perk:'70% material discount • +50% refine gem chance',mats:{steel:166,diamond:21,bolts:166},gold:25700},
+    {lv:15,perk:'Craft 3 at once • zero gold cost crafting',mats:{steel:195,diamond:25,bolts:195},gold:31300},
+    {lv:16,perk:'+60% refine gem chance • 80% material discount',mats:{steel:228,diamond:30,bolts:228},gold:38000},
+    {lv:17,perk:'Craft 4 at once • bonus gem on every craft',mats:{steel:266,diamond:35,bolts:266},gold:46000},
+    {lv:18,perk:'+75% refine gem chance • 90% material discount',mats:{steel:310,diamond:42,bolts:310},gold:55400},
+    {lv:19,perk:'Craft 5 at once • free materials on critical craft',mats:{steel:360,diamond:50,bolts:360},gold:66400},
+    {lv:20,perk:'LEGENDARY FORGE: crafting is free, instant, and always yields bonus gems',mats:{steel:415,diamond:60,bolts:415},gold:79100},
   ]},
   {id:'watchtower',n:'Watch Tower',  e:'🗼',cost:300, perk:'-50% critters',  cat:'buildings',
    upgrades:[
@@ -902,6 +990,21 @@ const BUILDINGS=[
     {lv:3,perk:'-75% critters • trap',    mats:{stone:40,iron:8,wire:15},       gold:400},
     {lv:4,perk:'-90% critters • auto kill', mats:{stone:50,steel:8,wire:20},    gold:800},
     {lv:5,perk:'FORTRESS: 0% critters ever', mats:{stone:80,steel:20,bolts:20,wire:30},gold:1800},
+    {lv:6,perk:'Scout range +25% • spot rare animals on map',mats:{stone:96,steel:26,bolts:26,wire:38},gold:2500},
+    {lv:7,perk:'Spot boss raid drops from afar',mats:{stone:115,steel:32,bolts:32,wire:47},gold:3300},
+    {lv:8,perk:'Scout range +50% • see neighbor activity',mats:{stone:138,steel:40,bolts:40,wire:58},gold:4300},
+    {lv:9,perk:'Early warning on all events server-wide',mats:{stone:165,steel:48,bolts:48,wire:70},gold:5500},
+    {lv:10,perk:'GRAND WATCHTOWER: scout entire map • +10% rare find chance',mats:{stone:190,steel:58,bolts:58,wire:84},gold:6900},
+    {lv:11,perk:'+20% rare find chance everywhere',mats:{stone:220,steel:70,bolts:70,wire:100},gold:8600},
+    {lv:12,perk:'Scout boss weak points • +15% raid damage',mats:{stone:255,steel:84,bolts:84,wire:119},gold:10600},
+    {lv:13,perk:'+35% rare find chance everywhere',mats:{stone:295,steel:100,bolts:100,wire:141},gold:13000},
+    {lv:14,perk:'Permanent map-wide visibility on all activity',mats:{stone:340,steel:119,bolts:119,wire:166},gold:15800},
+    {lv:15,perk:'+50% rare find chance everywhere',mats:{stone:390,steel:141,bolts:141,wire:195},gold:19200},
+    {lv:16,perk:'+25% raid damage from scouted weak points',mats:{stone:450,steel:166,bolts:166,wire:228},gold:23300},
+    {lv:17,perk:'+70% rare find chance everywhere',mats:{stone:515,steel:195,bolts:195,wire:266},gold:28100},
+    {lv:18,perk:'Never ambushed • all threats visible in advance',mats:{stone:590,steel:228,bolts:228,wire:310},gold:33800},
+    {lv:19,perk:'+90% rare find chance everywhere',mats:{stone:675,steel:266,bolts:266,wire:360},gold:40500},
+    {lv:20,perk:'LEGENDARY WATCHTOWER: see everything, find everything, +35% raid damage',mats:{stone:770,steel:310,bolts:310,wire:415},gold:48400},
   ]},
   {id:'well',      n:'Water Well',   e:'⛲',cost:250, perk:'+5 water/day',   cat:'buildings',
    upgrades:[
@@ -910,6 +1013,21 @@ const BUILDINGS=[
     {lv:3,perk:'+20 water • auto refill', mats:{stone:50,pipe:20,concrete:8},   gold:400},
     {lv:4,perk:'+35 water • irrigation',  mats:{stone:60,pipe:30,steel:5},      gold:900},
     {lv:5,perk:'CISTERN: unlimited water', mats:{stone:100,pipe:50,steel:15,concrete:20},gold:2000},
+    {lv:6,perk:'Irrigate 2 extra plots automatically',mats:{stone:120,pipe:60,steel:19,concrete:25},gold:2700},
+    {lv:7,perk:'Irrigate 4 extra plots automatically',mats:{stone:140,pipe:73,steel:24,concrete:31},gold:3600},
+    {lv:8,perk:'Water never runs dry, even at max plots',mats:{stone:165,pipe:88,steel:30,concrete:38},gold:4600},
+    {lv:9,perk:'Irrigate 8 extra plots automatically',mats:{stone:190,pipe:105,steel:36,concrete:46},gold:5900},
+    {lv:10,perk:'GRAND CISTERN: irrigate whole farm automatically',mats:{stone:220,pipe:125,steel:44,concrete:55},gold:7400},
+    {lv:11,perk:'Free water-fill for visiting allies too',mats:{stone:255,pipe:150,steel:53,concrete:67},gold:9200},
+    {lv:12,perk:'+25% crop growth from premium irrigation',mats:{stone:295,pipe:178,steel:64,concrete:81},gold:11400},
+    {lv:13,perk:'Water purification — +10% sell price on all crops',mats:{stone:340,pipe:210,steel:77,concrete:97},gold:13900},
+    {lv:14,perk:'+50% crop growth from premium irrigation',mats:{stone:390,pipe:248,steel:92,concrete:117},gold:17000},
+    {lv:15,perk:'+20% sell price on all crops from purified water',mats:{stone:450,pipe:292,steel:110,concrete:140},gold:20700},
+    {lv:16,perk:'+75% crop growth from premium irrigation',mats:{stone:515,pipe:343,steel:131,concrete:167},gold:25100},
+    {lv:17,perk:'+30% sell price on all crops, server-wide praise',mats:{stone:590,pipe:402,steel:155,concrete:198},gold:30400},
+    {lv:18,perk:'+100% crop growth from premium irrigation',mats:{stone:675,pipe:470,steel:183,concrete:235},gold:36700},
+    {lv:19,perk:'+45% sell price on all crops, best water in the kingdom',mats:{stone:770,pipe:548,steel:216,concrete:278},gold:44000},
+    {lv:20,perk:'LEGENDARY CISTERN: 2x crop growth, +60% sell price, water for everyone free',mats:{stone:880,pipe:638,steel:255,concrete:328},gold:52600},
   ]},
   {id:'henhouse',  n:'Hen House',    e:'🐔',cost:350, perk:'Chickens 2x eggs', cat:'buildings',
    upgrades:[
@@ -918,6 +1036,21 @@ const BUILDINGS=[
     {lv:3,perk:'All birds 3x • rare drops', mats:{wood:40,wire:25,glass:8},     gold:500},
     {lv:4,perk:'All birds 4x • gem drops', mats:{wood:50,steel:5,wire:30},      gold:1000},
     {lv:5,perk:'MEGA COOP: 5x all birds + daily rare animal', mats:{wood:80,steel:15,wire:50,glass:15},gold:2200},
+    {lv:6,perk:'6x all birds • +15% rare animal chance daily',mats:{wood:96,steel:19,wire:60,glass:19},gold:3000},
+    {lv:7,perk:'7x all birds • 2 daily rare animals',mats:{wood:115,steel:24,wire:73,glass:24},gold:4000},
+    {lv:8,perk:'8x all birds • +30% rare animal chance daily',mats:{wood:138,steel:30,wire:88,glass:30},gold:5100},
+    {lv:9,perk:'9x all birds • 3 daily rare animals',mats:{wood:165,steel:36,wire:105,glass:36},gold:6500},
+    {lv:10,perk:'GRAND COOP: 10x all birds • +50% rare animal chance daily',mats:{wood:190,steel:44,wire:125,glass:44},gold:8200},
+    {lv:11,perk:'12x all birds • 5 daily rare animals',mats:{wood:220,steel:53,wire:150,glass:53},gold:10200},
+    {lv:12,perk:'14x all birds • +70% rare animal chance daily',mats:{wood:255,steel:64,wire:178,glass:64},gold:12600},
+    {lv:13,perk:'16x all birds • 7 daily rare animals',mats:{wood:295,steel:77,wire:210,glass:77},gold:15400},
+    {lv:14,perk:'18x all birds • +90% rare animal chance daily',mats:{wood:340,steel:92,wire:248,glass:92},gold:18800},
+    {lv:15,perk:'21x all birds • 10 daily rare animals',mats:{wood:390,steel:110,wire:292,glass:110},gold:22900},
+    {lv:16,perk:'24x all birds • guaranteed rare animal daily',mats:{wood:450,steel:131,wire:343,glass:131},gold:27800},
+    {lv:17,perk:'27x all birds • 15 daily rare animals',mats:{wood:515,steel:155,wire:402,glass:155},gold:33600},
+    {lv:18,perk:'30x all birds • 2 guaranteed rare animals daily',mats:{wood:590,steel:183,wire:470,glass:183},gold:40500},
+    {lv:19,perk:'34x all birds • 20 daily rare animals',mats:{wood:675,steel:216,wire:548,glass:216},gold:48600},
+    {lv:20,perk:'LEGENDARY COOP: 40x all birds, 3 guaranteed rare animals every single day',mats:{wood:770,steel:255,wire:638,glass:255},gold:58100},
   ]},
 ];
 const TOOLS=[
@@ -985,6 +1118,16 @@ const HOME_UPGRADES={
     {lv:8,t:'Herbal Boost — herbs make animals grow 2x faster',boost:'Rare tinctures 600g'},
     {lv:9,t:'Apothecary — craft rare items no other home can make',boost:'Gem drops from sales'},
     {lv:10,t:'GODMODE: Medicine sells for gems. Vet free. Animals immune forever.',boost:'Highest community value'},
+    {lv:11,t:'Master Herbalist — brew elixirs that instantly mature any animal',boost:'Medicine sells 400g'},
+    {lv:12,t:'Medicine Exchange — set your own prices, server-wide',boost:'Carry 15 packs'},
+    {lv:13,t:'Sacred Garden — herbs regrow 2x faster, never wilt',boost:'+40% crop yield'},
+    {lv:14,t:'Plague Ward — allies near you get sickness immunity too',boost:'Medicine sells 500g'},
+    {lv:15,t:'Royal Apothecary — vitamins worth 500g, gem chance doubled',boost:'Vitamins worth 500g'},
+    {lv:16,t:'Healing Network — passive gems from every sale, server-wide',boost:'+5 gems/hr passive'},
+    {lv:17,t:'Elixir Mastery — craft Legendary Tonics worth 1000g',boost:'Medicine sells 700g'},
+    {lv:18,t:'Cottage Sanctuary — visiting allies heal animals for free',boost:'+50% crop yield'},
+    {lv:19,t:'Eternal Herb Grove — infinite herbs, zero stamina to harvest',boost:'Carry 25 packs'},
+    {lv:20,t:'TRUE HEALER: You control the medicine economy. Every player needs you.',boost:'Legendary status'},
   ]},
   cabin:{upgrades:[
     {lv:1,t:'Nothing decays offline. EVER.',boost:'100 max stamina'},
@@ -997,6 +1140,16 @@ const HOME_UPGRADES={
     {lv:8,t:'Resource Preservation — sell preserved food premium',boost:'Offline vault 250g/hr'},
     {lv:9,t:'Surplus Market — sell offline stockpile automatically',boost:'2x all offline earnings'},
     {lv:10,t:'GODMODE: 10x ALL rewards. Offline OR online. Highest ceiling.',boost:'Richest home at max'},
+    {lv:11,t:'Night Watch — offline earnings keep going for days, uninterrupted',boost:'Offline vault 300g/hr'},
+    {lv:12,t:'Frost Vault — gold accumulates even faster while you sleep',boost:'Offline vault 400g/hr'},
+    {lv:13,t:'Silent Harvest — offline crops drop bonus seeds every cycle',boost:'3x offline earnings'},
+    {lv:14,t:'Away Empire — offline vault scales up with every home level',boost:'Offline vault 600g/hr'},
+    {lv:15,t:'Cabin Network — share your offline bonus with visiting allies',boost:'4x offline earnings'},
+    {lv:16,t:'Permafrost Storage — nothing ever spoils, anywhere, ever',boost:'Offline vault 800g/hr'},
+    {lv:17,t:'Dream Farming — offline progress counts double toward quests',boost:'5x offline earnings'},
+    {lv:18,t:'Eternal Cabin — offline vault caps removed entirely',boost:'Offline vault 1000g/hr'},
+    {lv:19,t:'Hibernation Mastery — offline earning cap removed completely',boost:'8x offline earnings'},
+    {lv:20,t:'TRUE HERMIT: Richest home in the game purely from being offline.',boost:'Ultimate passive empire'},
   ]},
   van:{upgrades:[
     {lv:1,t:'+50% XP on every single action from Day 1',boost:'110 max stamina'},
@@ -1009,6 +1162,16 @@ const HOME_UPGRADES={
     {lv:8,t:'XP God — excess XP auto-converts to gold and gems',boost:'3x XP on all actions'},
     {lv:9,t:'Road Empire — passive income from 5 trade routes',boost:'5x XP on daily quests'},
     {lv:10,t:'GODMODE: 7x XP forever + first to 250 gets LEGEND server title',boost:'Fastest path to max'},
+    {lv:11,t:'Turbo Engine — +125% XP stacks on top of every other bonus',boost:'8x XP forever'},
+    {lv:12,t:'Highway Trade Routes — sell at 2x price anywhere on the map',boost:'Oil sells 1000g'},
+    {lv:13,t:"Nomad's Fortune — bonus gold every time you travel the map",boost:'9x XP forever'},
+    {lv:14,t:'Double XP Forever — every event doubled permanently for Van',boost:'Mobile Farm +4 plots'},
+    {lv:15,t:'Road Legend — oil income triples, oil sells for 1000g',boost:'10x XP forever'},
+    {lv:16,t:'Convoy Master — passive income from 8 trade routes',boost:'Oil income every 30min'},
+    {lv:17,t:'XP Overflow Mastery — excess XP converts to gems too',boost:'12x XP forever'},
+    {lv:18,t:'Mobile Empire — 4x XP multiplier on absolutely everything',boost:'Mobile Farm +6 plots'},
+    {lv:19,t:'Interstate Tycoon — 10x XP specifically on daily quests',boost:'15x XP forever'},
+    {lv:20,t:'TRUE NOMAD: 10x XP forever. Guaranteed fastest path to Level 250.',boost:'Road legend status'},
   ]},
   ranch:{upgrades:[
     {lv:1,t:'Animals NEVER die. No vet. EVER.',boost:'120 max stamina'},
@@ -1021,6 +1184,16 @@ const HOME_UPGRADES={
     {lv:8,t:'Rare Gem Drops — 15% chance animals drop gems at Prime',boost:'5x Prime sell price'},
     {lv:9,t:'Exotic Animals unlocked — rare breeds worth 10x base',boost:'Gem drops 25% chance'},
     {lv:10,t:'GODMODE: Ostrich + exotics. Animals drop gems DAILY. 5x market.',boost:'Wealthiest active home'},
+    {lv:11,t:'Mega Herd — herd capacity raised to 25 animals',boost:'6x Prime sell price'},
+    {lv:12,t:'Prime Auction House — host server-wide bidding wars',boost:'Gem drops 30% chance'},
+    {lv:13,t:'Genetic Mastery — guarantee a rare trait on offspring',boost:'7x Prime sell price'},
+    {lv:14,t:'Herd capacity raised to 30 animals',boost:'Rare traits worth 8x'},
+    {lv:15,t:'Exotic Breeding Program — create animals no one else can get',boost:'8x Prime sell price'},
+    {lv:16,t:'Gem Storm — animals drop gems 35% chance at Prime',boost:'Gem drops 35% chance'},
+    {lv:17,t:'Herd Empire — Prime sell price multiplier hits 9x',boost:'9x Prime sell price'},
+    {lv:18,t:'Legendary Stock — animals worth 15x their base value',boost:'Rare traits worth 12x'},
+    {lv:19,t:'Ranch Dynasty — guaranteed daily gem drops from the herd',boost:'Gem drops daily, guaranteed'},
+    {lv:20,t:'TRUE RANCHER: Wealthiest animal economy in the game. Exotic monopoly.',boost:'Ultimate herd'},
   ]},
   modern:{upgrades:[
     {lv:1,t:'Vehicle Trading — passive gold every 30 min Day 1',boost:'100 max stamina'},
@@ -1033,6 +1206,16 @@ const HOME_UPGRADES={
     {lv:8,t:'Full Automation — planting watering harvesting all automatic',boost:'10 drones active'},
     {lv:9,t:'AI Farm Manager — optimizes all operations automatically',boost:'20 drones active'},
     {lv:10,t:'GODMODE: 25 free spins daily. Farm runs zero input. Passive king.',boost:'Most passive income'},
+    {lv:11,t:'Drone Swarm — fleet expands to 30 drones active',boost:'30 drones active'},
+    {lv:12,t:'Quantum Refinery — oil to gas profit margin jumps to 5x',boost:'Refinery: oil to gas 5x'},
+    {lv:13,t:'Full AI Takeover — zero manual input needed for anything',boost:'30 free spins daily'},
+    {lv:14,t:'Gem Mining Drones — automatic gem discovery while mining',boost:'+gem chance while mining'},
+    {lv:15,t:'40 drones active + auto-everything across the homestead',boost:'40 drones active'},
+    {lv:16,t:'Smart Grid — passive income scales with every home level',boost:'35 free spins daily'},
+    {lv:17,t:'Mega Factory — gas production output triples again',boost:'Refinery: oil to gas 7x'},
+    {lv:18,t:'50 drones active, zero stamina cost on all farm operations',boost:'50 drones active'},
+    {lv:19,t:'AI Overlord — optimizes your whole economy automatically',boost:'40 free spins daily'},
+    {lv:20,t:'TRUE FUTURIST: 50 free spins daily. Total automation. Zero input needed.',boost:'Most passive income in the game'},
   ]},
 };
 const ALLIANCE_RANKS=['Recruit','Member','Veteran','Officer','Founder'];
@@ -1093,6 +1276,48 @@ const TERRAIN_ZONES=[
   {id:'quarry',n:'Old Quarry',e:'⛰️',resource:'mineral',icon:'🪨',amtMin:1,amtMax:2,travelMin:25},
   {id:'ruins',n:'Sunken Ruins',e:'🏛️',resource:'gem',icon:'💎',amtMin:10,amtMax:20,travelMin:45},
 ];
+const VEHICLES=[
+  {id:'wagon',n:'Hay Wagon',e:'🛒',cost:5, perk:'+5% stallion resource yield',  yield:0.05, speed:0,    boss:0},
+  {id:'pickup',n:'Pickup Truck',e:'🛻',cost:15,perk:'-10% stallion travel time', yield:0,    speed:0.10, boss:0},
+  {id:'tractor',n:'Tractor',e:'🚜',cost:30,perk:'+10% boss raid damage',        yield:0,    speed:0,    boss:0.10},
+  {id:'bigrig',n:'Big Rig',e:'🚛',cost:60,perk:'+15% yield AND -15% travel time', yield:0.15, speed:0.15, boss:0},
+  {id:'cargovan',n:'Cargo Van',e:'🚐',cost:100,perk:'+20% boss damage AND +10% yield', yield:0.10, speed:0,    boss:0.20},
+];
+function getVehicleYieldBonus(){return 1+(G.vehicles||[]).reduce(function(s,id){var v=VEHICLES.find(function(x){return x.id===id;});return s+(v?v.yield:0);},0);}
+function getVehicleSpeedBonus(){return 1-(G.vehicles||[]).reduce(function(s,id){var v=VEHICLES.find(function(x){return x.id===id;});return s+(v?v.speed:0);},0);}
+function getVehicleBossBonus(){return 1+(G.vehicles||[]).reduce(function(s,id){var v=VEHICLES.find(function(x){return x.id===id;});return s+(v?v.boss:0);},0);}
+function buyVehicle(id){
+  var v=VEHICLES.find(function(x){return x.id===id;});if(!v)return;
+  if(!G.vehicles)G.vehicles=[];
+  if(G.vehicles.indexOf(id)!==-1){toast('Already own this vehicle!');return;}
+  if((G.honeyTotal||0)<v.cost){toast('Need '+v.cost+'🍯 Honey!','err');return;}
+  G.honeyTotal-=v.cost;G.vehicles.push(id);
+  toast(v.e+' '+v.n+' purchased!','gld');
+  renderBees();updateHUD();saveG();
+}
+function renderBees(){
+  try{
+    if(!G.vehicles)G.vehicles=[];
+    st('bees-honey-big',(G.honeyTotal||0).toLocaleString());
+    st('bees-bee-big',(G.bees||0).toLocaleString());
+    var p=ge('vehicle-list');if(!p)return;
+    var html='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">🚗 Vehicles</div>';
+    VEHICLES.forEach(function(v){
+      var owned=G.vehicles.indexOf(v.id)!==-1;
+      var can=!owned&&(G.honeyTotal||0)>=v.cost;
+      html+='<div class="card" style="margin-bottom:8px;'+(owned?'border-color:rgba(67,160,71,.4);':'')+'">';
+      html+='<div style="display:flex;align-items:center;gap:10px;">';
+      html+='<div style="font-size:32px;">'+v.e+'</div>';
+      html+='<div style="flex:1;"><div style="font-size:13px;font-weight:800;color:var(--hay);">'+v.n+(owned?' ✅':'')+'</div>';
+      html+='<div style="font-size:11px;color:#8BC34A;">'+v.perk+'</div></div></div>';
+      if(!owned){
+        html+='<button class="btn '+(can?'bge':'')+' bsm bfw" style="margin-top:7px;'+(can?'':'opacity:.5;background:rgba(255,255,255,.05);')+'" data-vid="'+v.id+'" onclick="buyVehicle(this.dataset.vid)" '+(can?'':'disabled')+'>🍯 '+v.cost+' Honey</button>';
+      }
+      html+='</div>';
+    });
+    p.innerHTML=html;
+  }catch(e){var p2=ge('vehicle-list');if(p2)p2.innerHTML='<div style="padding:14px;color:#ef9a9a;font-size:12px;">Error: '+e.message+'</div>';}
+}
 // Fixed fantasy-map positions (percent coordinates) — boss lair sits in the center, zones ring around it
 const MAP_ZONE_POS={river:{x:50,y:14},meadow:{x:83,y:38},forest:{x:67,y:86},quarry:{x:33,y:86},ruins:{x:17,y:38}};
 const BOSS_LAIR_POS={x:50,y:50};
@@ -1138,6 +1363,16 @@ const HOME_UPGRADE_COSTS=[
   {lv:8, gems:1500,gold:18000, mats:{steel:30,concrete:50,bolts:40,glass:35,wire:30,diamond:10,pipe:20}},
   {lv:9, gems:2000,gold:25000, mats:{steel:50,concrete:75,bolts:60,glass:50,wire:40,diamond:18,crystal:3}},
   {lv:10,gems:3000,gold:40000, mats:{steel:80,concrete:100,bolts:80,glass:75,wire:60,diamond:30,crystal:8}},
+  {lv:11,gems:4200,gold:56000, mats:{steel:100,concrete:130,bolts:100,glass:95,wire:80,diamond:40,crystal:12}},
+  {lv:12,gems:5800,gold:78000, mats:{steel:125,concrete:165,bolts:125,glass:120,wire:100,diamond:52,crystal:16}},
+  {lv:13,gems:7800,gold:106000,mats:{steel:155,concrete:205,bolts:155,glass:150,wire:125,diamond:67,crystal:21}},
+  {lv:14,gems:10200,gold:142000,mats:{steel:190,concrete:250,bolts:190,glass:185,wire:155,diamond:85,crystal:27}},
+  {lv:15,gems:13200,gold:188000,mats:{steel:230,concrete:300,bolts:230,glass:225,wire:190,diamond:107,crystal:34}},
+  {lv:16,gems:17000,gold:246000,mats:{steel:280,concrete:360,bolts:280,glass:270,wire:230,diamond:133,crystal:42}},
+  {lv:17,gems:21800,gold:320000,mats:{steel:335,concrete:430,bolts:335,glass:325,wire:280,diamond:165,crystal:52}},
+  {lv:18,gems:27800,gold:412000,mats:{steel:400,concrete:510,bolts:400,glass:390,wire:335,diamond:203,crystal:64}},
+  {lv:19,gems:35200,gold:528000,mats:{steel:475,concrete:605,bolts:475,glass:465,wire:400,diamond:248,crystal:78}},
+  {lv:20,gems:44400,gold:674000,mats:{steel:565,concrete:715,bolts:565,glass:555,wire:475,diamond:300,crystal:95}},
 ];
 const FAKE_PLAYERS=[
   {n:'WildRootsCo',e:'👨🏽',lv:67,home:'van',zone:1,gold:158400},
@@ -1296,6 +1531,7 @@ function checkLv(){
     G.stamina=G.staminaMax;G.water=G.waterMax;
     announce('⭐ LEVEL UP! You reached Level '+G.lv+'!');
     if(G.lv===250)announce('👑 '+G.playerName+' is a TRUE HOMESTEADER! Level 250! 🌾');
+    else if(G.lv%10===0)announce('🎉 '+G.playerName+' just reached Level '+G.lv+'! 🌾');
   }
 }
 
@@ -1559,9 +1795,9 @@ function renderBuildsUpgrade(){
     html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
     html+='<div style="font-size:44px;">'+emoji+'</div>';
     html+='<div><div style="font-size:16px;font-weight:900;color:var(--hay);">'+hl(G.home)+'</div>';
-    html+='<div style="font-size:12px;color:#8BC34A;">Level '+G.homeLv+' / 10</div>';
-    html+='<div style="display:flex;gap:2px;margin-top:5px;">';
-    for(var s=1;s<=10;s++)html+='<div style="width:20px;height:5px;border-radius:2px;background:'+(s<=G.homeLv?'var(--hay)':'rgba(255,255,255,.1)')+'"></div>';
+    html+='<div style="font-size:12px;color:#8BC34A;">Level '+G.homeLv+' / 20</div>';
+    html+='<div style="display:flex;gap:2px;margin-top:5px;flex-wrap:wrap;">';
+    for(var s=1;s<=20;s++)html+='<div style="width:9px;height:5px;border-radius:2px;background:'+(s<=G.homeLv?'var(--hay)':'rgba(255,255,255,.1)')+'"></div>';
     html+='</div></div></div>';
     // Materials you have
     html+='<div style="font-size:11px;color:var(--hay);font-weight:700;margin-bottom:6px;">🎒 Your Materials</div>';
@@ -1580,7 +1816,7 @@ function renderBuildsUpgrade(){
     });
     html+='</div>';
     // Next upgrade cost
-    if(G.homeLv<10&&nc){
+    if(G.homeLv<20&&nc){
       html+='<div style="background:rgba(124,77,255,.1);border:1px solid rgba(124,77,255,.3);border-radius:10px;padding:10px;margin-bottom:10px;">';
       html+='<div style="font-size:12px;font-weight:700;color:var(--geml);margin-bottom:7px;">⬆️ Next: Level '+nextLv+'</div>';
       var gemOk=G.gems>=(nc.gems||0);
@@ -1601,7 +1837,7 @@ function renderBuildsUpgrade(){
         html+='<div style="text-align:center;margin-top:5px;"><button class="btn bsm" style="font-size:10px;background:rgba(255,179,0,.15);color:var(--hay);" data-bsub="shop" onclick="bldTab(null,this.dataset.bsub)">🛒 Buy Materials</button></div>';
       }
       html+='</div>';
-    } else if(G.homeLv>=10){
+    } else if(G.homeLv>=20){
       html+='<div style="text-align:center;padding:14px;background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.3);border-radius:10px;font-weight:900;color:var(--hay);">🌟 MAX LEVEL!</div>';
     }
     // Perk path
@@ -1841,7 +2077,7 @@ function getMissingMats(req){
   return miss;
 }
 function upgradeHome(){
-  if(G.homeLv>=10){toast('Already max level!');return;}
+  if(G.homeLv>=20){toast('Already max level!');return;}
   var nextLv=G.homeLv+1;
   var costDef=HOME_UPGRADE_COSTS[nextLv-1];if(!costDef)return;
   if(G.gems<costDef.gems){toast('Need '+costDef.gems+'💎!','err');return;}
@@ -2225,7 +2461,7 @@ function attackBoss(){
   if(hit){
     var homeMult=1+(((G.homeLv||1)-1)*0.06);
     var bMult=BOSS_MULT[w.id]||1;
-    var dmg=Math.round(15*bMult*homeMult*bossDistBonus()*(0.85+Math.random()*0.3));
+    var dmg=Math.round(15*bMult*homeMult*bossDistBonus()*getVehicleBossBonus()*(0.85+Math.random()*0.3));
     G.bossHP=Math.max(0,(G.bossHP||boss.hp)-dmg);
     G.myDmg=(G.myDmg||0)+dmg;
     G.bees=(G.bees||0)+dmg;
@@ -2259,7 +2495,7 @@ function convertHoney(){
   G.honeyTotal=(G.honeyTotal||0)+h;
   G.bees=b%10;
   toast('🍯 Converted to +'+h+' honey!','gld');
-  updateHUD();renderBoss();saveG();
+  updateHUD();renderBoss();renderBees();saveG();
 }
 function toggleTestRaid(){
   G.testForceRaid=!G.testForceRaid;
@@ -2376,7 +2612,7 @@ function renderSocial(){
   var ol=ge('online-list');
   if(ol&&!ol.children.length){
     ol.innerHTML=FAKE_PLAYERS.map(function(p){
-      return '<div style="display:flex;align-items:center;gap:9px;padding:10px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;margin-bottom:5px;"><div style="font-size:26px;">'+p.e+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+p.n+'</div><div style="font-size:11px;color:#aaa;">Lv'+p.lv+' • '+hl(p.home)+' • Zone '+p.zone+(p.zone===G.zone?' <span style="color:#8BC34A;">✅ Same Zone</span>':'')+'</div></div><button class="btn bsm '+(p.zone===G.zone?'bgn':' bg"')+'" style="font-size:10px;" onclick="toast(this.dataset.msg)" data-msg="Contacting...">Visit</button>';
+      return '<div style="display:flex;align-items:center;gap:9px;padding:10px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;margin-bottom:5px;"><div style="font-size:26px;">'+p.e+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+p.n+'</div><div style="font-size:11px;color:#aaa;">Lv'+p.lv+' • '+hl(p.home)+' • Zone '+p.zone+(p.zone===G.zone?' <span style="color:#8BC34A;">✅ Same Zone</span>':'')+'</div></div><button class="btn bsm '+(p.zone===G.zone?'bgn':' bg"')+'" style="font-size:10px;" onclick="toast(this.dataset.msg)" data-msg="Contacting...">Visit</button></div>';
     }).join('');
   }
   var sc=ge('share-content');
@@ -2390,7 +2626,7 @@ function renderSocial(){
   if(vl&&!vl.innerHTML){
     vl.innerHTML=FAKE_PLAYERS.map(function(p){
       var sameZone=p.zone===G.zone;
-      return '<div style="display:flex;align-items:center;gap:9px;padding:11px;background:var(--card);border:1px solid '+(sameZone?'rgba(67,160,71,.3)':'var(--bdr)')+';border-radius:11px;margin-bottom:6px;"><div style="font-size:28px;">'+p.e+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+p.n+'</div><div style="font-size:11px;color:#aaa;">'+hl(p.home)+' • Zone '+p.zone+'</div><div style="font-size:11px;color:'+(sameZone?'#8BC34A':'#666')+'">'+(sameZone?'✅ Same zone — can BUY their resources':'🔒 Different zone — friends only')+'</div></div><button class="btn bsm '+(sameZone?'bgn':'')+(sameZone?'':' " style="background:rgba(255,255,255,.08)"')+'" onclick="toast(this.dataset.msg)" data-msg="Contacting...">'+(sameZone?'Buy 🛒':'Visit')+'</button>';
+      return '<div style="display:flex;align-items:center;gap:9px;padding:11px;background:var(--card);border:1px solid '+(sameZone?'rgba(67,160,71,.3)':'var(--bdr)')+';border-radius:11px;margin-bottom:6px;"><div style="font-size:28px;">'+p.e+'</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;">'+p.n+'</div><div style="font-size:11px;color:#aaa;">'+hl(p.home)+' • Zone '+p.zone+'</div><div style="font-size:11px;color:'+(sameZone?'#8BC34A':'#666')+'">'+(sameZone?'✅ Same zone — can BUY their resources':'🔒 Different zone — friends only')+'</div></div><button class="btn bsm '+(sameZone?'bgn':'')+(sameZone?'':' " style="background:rgba(255,255,255,.08)"')+'" onclick="toast(this.dataset.msg)" data-msg="Contacting...">'+(sameZone?'Buy 🛒':'Visit')+'</button></div>';
     }).join('');
   }
 }
@@ -2633,7 +2869,7 @@ _allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});
   });
   html+='</div>';
   // Quick upgrade button
-  if(G.home&&G.homeLv<10){
+  if(G.home&&G.homeLv<20){
     var nc=HOME_UPGRADE_COSTS[G.homeLv];
     html+='<button class="btn bgn bfw" style="margin-bottom:12px;" onclick="navTo(this.dataset.t)" data-t="builds">🏠 Upgrade '+hl(G.home)+' (Lv'+(G.homeLv+1)+') →</button>';
   }
@@ -2817,7 +3053,7 @@ function sendStallion(stallionId,zoneId){
   if(!s||!z||s.status!=='idle')return;
   var b=breedInfo(s.breed);
   var speedMult=b.trait==='speed'?(1-0.03*s.lvl):(b.trait==='dual'?(1-0.015*s.lvl):1);
-  var travelMs=Math.max(60000,Math.round(z.travelMin*60000*speedMult*travelDistMult(zoneId)));
+  var travelMs=Math.max(60000,Math.round(z.travelMin*60000*speedMult*travelDistMult(zoneId)*getVehicleSpeedBonus()));
   s.status='traveling';s.zoneId=zoneId;s.returnAt=Date.now()+travelMs;
   toast('🐴 Sent to '+z.n+'! Back in '+fmtCountdown(travelMs),'gld');
   renderMap();saveG();
@@ -2827,7 +3063,7 @@ function collectStallion(stallionId){
   if(!s||s.status!=='traveling'||Date.now()<s.returnAt)return;
   var z=TERRAIN_ZONES.find(function(x){return x.id===s.zoneId;});
   var b=breedInfo(s.breed);
-  var yieldMult=b.trait==='yield'?(1+0.04*s.lvl):(b.trait==='dual'?(1+0.02*s.lvl):1);
+  var yieldMult=(b.trait==='yield'?(1+0.04*s.lvl):(b.trait==='dual'?(1+0.02*s.lvl):1))*getVehicleYieldBonus();
   var luckBonus=b.trait==='luck'?(0.02*s.lvl):0;
   var goldBonus=b.trait==='goldrush'?(5*s.lvl):0;
   if(!G.zoneDepletion)G.zoneDepletion={};
@@ -3100,6 +3336,7 @@ function cbtTab(btn,sub){
     stopAllyFeed();
     if(sub==='vip')renderVIP();
     else if(sub==='spin'){renderSpin();drawWheel();}
+    else if(sub==='bees')renderBees();
   }
 }
 
@@ -3671,6 +3908,7 @@ _allMats.forEach(function(m){if(G.mats[m]===undefined)G.mats[m]=0;});G.mats.wood
   ge('btn-boss-attack').onclick=attackBoss;
   ge('btn-convert-honey').onclick=convertHoney;
   ge('btn-test-raid').onclick=toggleTestRaid;
+  ge('btn-bees-convert').onclick=convertHoney;
 
   // Stable
   ge('btn-buy-stallion').onclick=buyStallion;
